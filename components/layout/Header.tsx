@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
+import { StartProjectButton } from "@/components/contact/StartProjectButton";
 
 const navItems = [
+  { href: "/", label: "Hem" },
   { href: "/tjanster", label: "Tjänster" },
-  { href: "/portfolio", label: "Portfolio" },
+  { href: "/projekt", label: "Projekt" },
   { href: "/artiklar", label: "Artiklar" },
   { href: "/om-oss", label: "Om oss" },
 ];
@@ -43,10 +44,10 @@ export function Header() {
             );
           })}
         </nav>
-        <Button href="/kontakt" className="hidden md:inline-flex">
+        <StartProjectButton className="hidden md:inline-flex">
           Starta ett projekt
           <ChevronRight size={14} strokeWidth={2.5} />
-        </Button>
+        </StartProjectButton>
       </Container>
     </header>
   );

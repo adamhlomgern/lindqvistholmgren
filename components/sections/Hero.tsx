@@ -2,11 +2,12 @@ import { ChevronRight, Code2, Palette, TrendingUp } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
+import { StartProjectButton } from "@/components/contact/StartProjectButton";
 
 const tags = [
   { icon: Code2, label: "Webb" },
   { icon: Palette, label: "Design" },
-  { icon: TrendingUp, label: "Marknadsföring" },
+  { icon: TrendingUp, label: "Tillväxt" },
 ];
 
 export function Hero() {
@@ -34,11 +35,11 @@ export function Hero() {
           pålitligt.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
-          <Button href="/kontakt">
+          <StartProjectButton>
             Starta ett projekt
             <ChevronRight size={16} strokeWidth={2.5} />
-          </Button>
-          <Button href="/portfolio" variant="ghost">
+          </StartProjectButton>
+          <Button href="/projekt" variant="ghost">
             Se vårt arbete
           </Button>
         </div>

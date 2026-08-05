@@ -32,6 +32,21 @@ const faqs = [
     answer:
       "Ja, vi finns kvar som stöd för underhåll, uppdateringar och vidareutveckling när ni behöver det.",
   },
+  {
+    question: "Vilka verktyg och plattformar bygger ni på?",
+    answer:
+      "Det varierar från projekt till projekt — vi väljer den lösning som passar era behov och budget bäst, snarare än att pressa in alla i samma mall.",
+  },
+  {
+    question: "Jag har redan en sajt eller logga, kan ni bygga vidare på det?",
+    answer:
+      "Absolut. Har ni redan något på plats utgår vi gärna från det istället för att börja om helt från noll.",
+  },
+  {
+    question: "Tar ni bara kunder i Karlstad och Värmland?",
+    answer:
+      "Nej, Karlstad är vår bas men vi jobbar med kunder i hela Sverige på distans.",
+  },
 ];
 
 export function Faq() {

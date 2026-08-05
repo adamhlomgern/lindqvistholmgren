@@ -1,5 +1,15 @@
 import Link from "next/link";
-import { ArrowUpRight, ChevronRight, Code2, Palette, Sparkles, TrendingUp, Wrench } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronRight,
+  Code2,
+  LifeBuoy,
+  Palette,
+  Search,
+  Sparkles,
+  TrendingUp,
+  Zap,
+} from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
@@ -9,9 +19,11 @@ import { services } from "@/lib/data/services";
 
 const icons = {
   webb: Code2,
+  seo: Search,
   design: Palette,
-  marknadsforing: TrendingUp,
-  utveckling: Wrench,
+  tillvaxt: TrendingUp,
+  automation: Zap,
+  support: LifeBuoy,
 } as const;
 
 export function Services() {
@@ -30,7 +42,7 @@ export function Services() {
             <ChevronRight size={16} strokeWidth={2.5} />
           </Button>
         </div>
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
             const Icon = icons[service.slug as keyof typeof icons];
             return (

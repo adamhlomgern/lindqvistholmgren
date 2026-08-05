@@ -3,7 +3,7 @@ import { Container } from "@/components/ui/Container";
 
 const navItems = [
   { href: "/tjanster", label: "Tjänster" },
-  { href: "/portfolio", label: "Portfolio" },
+  { href: "/projekt", label: "Projekt" },
   { href: "/artiklar", label: "Artiklar" },
   { href: "/om-oss", label: "Om oss" },
   { href: "/kontakt", label: "Kontakta oss" },

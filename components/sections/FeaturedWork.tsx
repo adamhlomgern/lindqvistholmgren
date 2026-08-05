@@ -9,6 +9,8 @@ import { Tag } from "@/components/ui/Tag";
 import { Button } from "@/components/ui/Button";
 import { projects } from "@/lib/data/projects";
 
+const featuredProjects = projects.slice(0, 3);
+
 export function FeaturedWork() {
   return (
     <Section tone="forest">
@@ -20,14 +22,14 @@ export function FeaturedWork() {
               Ett urval av vad vi byggt
             </h2>
           </div>
-          <Button href="/portfolio" variant="secondary" className="shrink-0">
+          <Button href="/projekt" variant="secondary" className="shrink-0">
             Se allt arbete
             <ChevronRight size={16} strokeWidth={2.5} />
           </Button>
         </div>
         <div className="mt-12 grid gap-4 md:grid-cols-3">
-          {projects.map((project) => (
-            <Link key={project.slug} href={`/portfolio/${project.slug}`} className="block">
+          {featuredProjects.map((project) => (
+            <Link key={project.slug} href={`/projekt/${project.slug}`} className="block">
               <Card className="group flex h-full flex-col justify-between overflow-hidden transition-colors hover:bg-bone/[0.08]">
                 <div>
                   <div className="relative -mx-6 -mt-6 mb-4 aspect-[4/3] overflow-hidden">
@@ -36,6 +38,7 @@ export function FeaturedWork() {
                       alt={project.title}
                       fill
                       sizes="(min-width: 768px) 33vw, 100vw"
+                      quality={90}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
