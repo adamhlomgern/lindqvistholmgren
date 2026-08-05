@@ -1,9 +1,9 @@
-import Link, { LinkProps } from "next/link";
-import { ReactNode } from "react";
+import { AnchorHTMLAttributes, ReactNode } from "react";
 
 type Variant = "primary" | "secondary" | "ghost";
 
-type ButtonProps = LinkProps & {
+type ButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+  href: string;
   variant?: Variant;
   className?: string;
   children: ReactNode;
@@ -17,11 +17,11 @@ const variantClasses: Record<Variant, string> = {
 
 export function Button({ variant = "primary", className = "", children, ...props }: ButtonProps) {
   return (
-    <Link
+    <a
       className={`inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors ${variantClasses[variant]} ${className}`}
       {...props}
     >
       {children}
-    </Link>
+    </a>
   );
 }

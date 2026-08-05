@@ -14,7 +14,7 @@ export function Footer() {
     <footer className="bg-charcoal">
       <Container className="flex flex-col gap-10 py-16 md:flex-row md:items-start md:justify-between">
         <div className="max-w-sm">
-          <p className="font-display text-xl font-semibold text-bone">Lindqvist Holmgren</p>
+          <p className="font-display text-xl font-semibold text-bone">Lindqvist / Holmgren</p>
           <p className="mt-4 text-sm leading-relaxed text-stone">
             Två frilansare med bas i Karlstad. Vi hjälper lokala företag växa digitalt
             — personligt, nära och utan mellanhänder.
@@ -36,7 +36,7 @@ export function Footer() {
         </div>
       </Container>
       <Container className="py-6 text-xs text-stone/70">
-        © {new Date().getFullYear()} Lindqvist Holmgren
+        © {new Date().getFullYear()} Lindqvist / Holmgren
       </Container>
     </footer>
   );

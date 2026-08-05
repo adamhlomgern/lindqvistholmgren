@@ -23,9 +23,9 @@ export function Header() {
           href="/"
           className="font-display text-lg font-bold tracking-tight text-bone"
         >
-          Lindqvist Holmgren
+          Lindqvist / Holmgren
         </Link>
-        <nav className="hidden items-center gap-1 rounded-full bg-bone/5 p-1.5 md:flex">
+        <nav className="hidden items-center gap-1 rounded-full border border-bone/10 bg-bone/10 p-1.5 backdrop-blur-md md:flex">
           {navItems.map((item) => {
             const active = pathname === item.href;
             return (

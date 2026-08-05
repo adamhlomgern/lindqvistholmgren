@@ -1,0 +1,10 @@
+{
+  "projectId": "8112cca4-d170-4fd3-a05a-e36345065a9a",
+  "shape": "package",
+  "pkg": "lindqvistholmgren-ui",
+  "globalName": "LindqvistHolmgrenUI",
+  "srcDir": "components/ui",
+  "tsconfig": "tsconfig.json",
+  "cssEntry": ".design-sync/.cache/app-build.css",
+  "readmeHeader": ".design-sync/conventions.md"
+}

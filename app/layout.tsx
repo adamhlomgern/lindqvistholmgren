@@ -15,7 +15,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Lindqvist Holmgren — Kreativ digital byrå",
+  title: "Lindqvist / Holmgren — Kreativ digital byrå",
   description:
     "Webbutveckling, design, varumärken och digital strategi med ett eget uttryck.",
 };

@@ -47,7 +47,7 @@ export function AboutTeaser() {
         <div>
           <p className="text-lg leading-relaxed text-stone">
             Vi är inte en stor byrå med projektledare och mellanhänder — vi är två
-            frilansare som driver Lindqvist Holmgren tillsammans, med bas i Karlstad.
+            frilansare som driver Lindqvist / Holmgren tillsammans, med bas i Karlstad.
             Ni pratar alltid direkt med den som faktiskt gör jobbet, och vi lägger
             stolthet i att leverera något genomarbetat, oavsett hur stort eller litet
             projektet är.
