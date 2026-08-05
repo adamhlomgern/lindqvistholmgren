@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -6,6 +7,7 @@ import { Section } from "@/components/ui/Section";
 import { Tag } from "@/components/ui/Tag";
 import { Button } from "@/components/ui/Button";
 import { articles } from "@/lib/data/articles";
+import { RelatedArticles } from "@/components/sections/RelatedArticles";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -41,12 +43,19 @@ export default async function ArticlePage({ params }: Props) {
     notFound();
   }
 
+  const articleUrl = `https://lindqvistholmgren.se/artiklar/${article.slug}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: article.title,
     description: article.excerpt,
     datePublished: article.date,
+    articleSection: article.category,
+    keywords: article.tags.join(", "),
+    url: articleUrl,
+    mainEntityOfPage: articleUrl,
+    image: `${articleUrl}/opengraph-image`,
     author: {
       "@type": "Organization",
       name: "Lindqvist / Holmgren",
@@ -62,7 +71,18 @@ export default async function ArticlePage({ params }: Props) {
       <Section tone="forest" className="pt-20 md:pt-28">
         <Container>
           <div className="mx-auto max-w-3xl">
-            <div className="flex items-center gap-3">
+            <nav aria-label="Brödsmulor" className="flex items-center gap-1.5 text-xs text-stone">
+              <Link href="/" className="hover:text-emerald">
+                Hem
+              </Link>
+              <ChevronRight size={12} strokeWidth={2.5} />
+              <Link href="/artiklar" className="hover:text-emerald">
+                Artiklar
+              </Link>
+              <ChevronRight size={12} strokeWidth={2.5} />
+              <span className="truncate text-stone/70">{article.title}</span>
+            </nav>
+            <div className="mt-4 flex items-center gap-3">
               <Tag>{article.category}</Tag>
               <span className="text-xs text-stone">
                 {formatDate(article.date)} · {article.readTime}
@@ -108,6 +128,7 @@ export default async function ArticlePage({ params }: Props) {
                 </Button>
               </div>
             </div>
+            <RelatedArticles currentSlug={article.slug} category={article.category} />
           </div>
         </Container>
       </Section>

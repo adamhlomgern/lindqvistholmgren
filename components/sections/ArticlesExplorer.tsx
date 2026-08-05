@@ -2,24 +2,28 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Search, X } from "lucide-react";
+import { LayoutGrid, ListFilter, Search, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { articleCategories } from "@/lib/data/articles";
+import {
+  articleIcons,
+  badgeClasses,
+  blobClasses,
+  categoryIcons,
+  getAccent,
+  iconTextClasses,
+} from "@/lib/articles/visuals";
 import type { Article } from "@/lib/types";
 
 type ArticlesExplorerProps = {
   articles: Article[];
 };
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat("sv-SE", { dateStyle: "long" }).format(new Date(date));
-}
-
 export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const sortedArticles = useMemo(
     () => [...articles].sort((a, b) => (a.date < b.date ? 1 : -1)),
@@ -34,47 +38,53 @@ export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
     return counts;
   }, [articles]);
 
-  const tagCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const article of articles) {
-      for (const tag of article.tags) {
-        counts.set(tag, (counts.get(tag) ?? 0) + 1);
-      }
-    }
-    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
-  }, [articles]);
-
-  function toggleTag(tag: string) {
-    setActiveTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  }
-
   const normalizedQuery = query.trim().toLowerCase();
 
   const filteredArticles = useMemo(() => {
     return sortedArticles.filter((article) => {
       if (activeCategory && article.category !== activeCategory) return false;
-      if (activeTags.length > 0 && !activeTags.some((tag) => article.tags.includes(tag))) {
-        return false;
-      }
       if (normalizedQuery) {
         const haystack = `${article.title} ${article.excerpt} ${article.tags.join(" ")}`.toLowerCase();
         if (!haystack.includes(normalizedQuery)) return false;
       }
       return true;
     });
-  }, [sortedArticles, activeCategory, activeTags, normalizedQuery]);
+  }, [sortedArticles, activeCategory, normalizedQuery]);
 
-  const hasActiveFilters = Boolean(activeCategory) || activeTags.length > 0 || normalizedQuery.length > 0;
+  const hasActiveFilters = Boolean(activeCategory) || normalizedQuery.length > 0;
+  const activeFilterCount = (activeCategory ? 1 : 0) + (normalizedQuery.length > 0 ? 1 : 0);
 
   function clearFilters() {
     setQuery("");
     setActiveCategory(null);
-    setActiveTags([]);
+  }
+
+  function selectCategory(category: string | null) {
+    setActiveCategory(category);
+    setFiltersOpen(false);
   }
 
   return (
     <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:items-start">
-      <aside className="lg:sticky lg:top-24">
+      <div className="lg:hidden">
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((open) => !open)}
+          className="flex w-full items-center justify-between rounded-full border border-bone/10 bg-bone/5 px-4 py-2.5 text-sm font-medium text-bone"
+        >
+          <span className="flex items-center gap-2">
+            <ListFilter size={16} strokeWidth={2.25} />
+            Filtrera
+          </span>
+          {activeFilterCount > 0 && (
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-xs font-semibold text-charcoal">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      <aside className={`${filtersOpen ? "block" : "hidden"} lg:sticky lg:top-24 lg:block`}>
         <Card>
           <div className="relative">
             <Search
@@ -102,60 +112,43 @@ export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
 
           <div className="mt-6">
             <p className="text-xs font-medium uppercase tracking-label text-stone/70">Kategori</p>
-            <div className="mt-3 flex flex-col gap-1">
+            <div className="mt-3 flex flex-col gap-0.5">
               <button
                 type="button"
-                onClick={() => setActiveCategory(null)}
-                className={`flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
+                onClick={() => selectCategory(null)}
+                className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm font-medium transition-colors ${
                   activeCategory === null ? "bg-charcoal text-emerald" : "text-bone/80 hover:bg-bone/5"
                 }`}
               >
-                Alla
+                <span className="flex items-center gap-2">
+                  <LayoutGrid size={14} strokeWidth={2.25} />
+                  Alla
+                </span>
                 <span className="text-xs text-stone/60">{articles.length}</span>
               </button>
-              {articleCategories.map((category) => (
-                <button
-                  key={category}
-                  type="button"
-                  onClick={() => setActiveCategory(category === activeCategory ? null : category)}
-                  className={`flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${
-                    activeCategory === category
-                      ? "bg-charcoal text-emerald"
-                      : "text-bone/80 hover:bg-bone/5"
-                  }`}
-                >
-                  {category}
-                  <span className="text-xs text-stone/60">{categoryCounts.get(category) ?? 0}</span>
-                </button>
-              ))}
+              {articleCategories.map((category) => {
+                const active = activeCategory === category;
+                const accent = getAccent(category);
+                const CategoryIcon = categoryIcons[category] ?? LayoutGrid;
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    onClick={() => selectCategory(active ? null : category)}
+                    className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm font-medium transition-colors ${
+                      active ? "bg-charcoal text-emerald" : "text-bone/80 hover:bg-bone/5"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <CategoryIcon size={14} strokeWidth={2.25} className={iconTextClasses[accent]} />
+                      {category}
+                    </span>
+                    <span className="text-xs text-stone/60">{categoryCounts.get(category) ?? 0}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
-
-          {tagCounts.length > 0 && (
-            <div className="mt-6">
-              <p className="text-xs font-medium uppercase tracking-label text-stone/70">Ämnen</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {tagCounts.map(([tag, count]) => {
-                  const active = activeTags.includes(tag);
-                  return (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => toggleTag(tag)}
-                      className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                        active
-                          ? "bg-emerald text-charcoal"
-                          : "bg-bone/5 text-stone hover:bg-bone/10 hover:text-bone"
-                      }`}
-                    >
-                      {tag}
-                      <span className={active ? "text-charcoal/60" : "text-stone/60"}> {count}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           {hasActiveFilters && (
             <button
@@ -175,33 +168,61 @@ export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
         </p>
 
         {filteredArticles.length > 0 ? (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {filteredArticles.map((article) => (
-              <Link key={article.slug} href={`/artiklar/${article.slug}`} className="block">
-                <Card className="group flex h-full flex-col justify-between transition-colors hover:bg-bone/[0.08]">
-                  <div>
-                    <div className="flex items-center gap-3">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredArticles.map((article) => {
+              const accent = getAccent(article.category);
+              const Icon = articleIcons[article.icon];
+              return (
+                // Fixed height + absolute-positioned overlay only kick in at
+                // lg, where hover is reliable. Below lg (touch devices) the
+                // card is a normal static block with the excerpt and meta
+                // always visible, since there's no hover to reveal them.
+                <div key={article.slug} className="group relative lg:h-44">
+                  <Link
+                    href={`/artiklar/${article.slug}`}
+                    className="relative z-10 flex flex-col overflow-hidden rounded-2xl border border-bone/10 bg-charcoal/60 p-5 transition-all duration-300 ease-out lg:absolute lg:top-0 lg:right-0 lg:bottom-0 lg:left-0 lg:group-hover:top-[-6px] lg:group-hover:right-[-8px] lg:group-hover:bottom-[-4.5rem] lg:group-hover:left-[-8px] lg:group-hover:z-30 lg:group-hover:border-bone/20 lg:group-hover:bg-charcoal/80 lg:group-hover:shadow-2xl lg:group-hover:shadow-black/40 lg:group-hover:backdrop-blur-xl"
+                  >
+                    <div
+                      className={`pointer-events-none absolute -right-10 -top-12 h-44 w-44 rounded-full blur-[90px] ${blobClasses[accent].big}`}
+                    />
+                    <div
+                      className={`pointer-events-none absolute -bottom-10 -left-8 h-28 w-28 rounded-full blur-[70px] ${blobClasses[accent].small}`}
+                    />
+                    <div className="bg-grain pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay" />
+
+                    <span
+                      className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${badgeClasses[accent]}`}
+                    >
+                      <Icon size={20} strokeWidth={2} />
+                    </span>
+                    <h2 className="relative z-10 mt-4 break-words font-display text-base font-bold leading-snug text-bone">
+                      {article.title}
+                    </h2>
+                    <p className="relative z-10 mt-2 line-clamp-2 text-xs leading-relaxed text-stone/80 lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100">
+                      {article.excerpt}
+                    </p>
+                    <div className="relative z-10 mt-auto flex items-center gap-2 pt-2 lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100">
                       <Tag>{article.category}</Tag>
                       <span className="text-xs text-stone">{article.readTime}</span>
                     </div>
-                    <h2 className="mt-4 font-display text-lg font-bold text-bone">{article.title}</h2>
-                    <p className="mt-2 text-sm leading-relaxed text-stone">{article.excerpt}</p>
-                  </div>
-                  <div className="mt-6 flex items-center justify-between">
-                    <span className="text-xs text-stone">{formatDate(article.date)}</span>
-                    <ArrowUpRight
-                      className="text-emerald transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
-                      size={18}
-                    />
-                  </div>
-                </Card>
-              </Link>
-            ))}
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         ) : (
-          <p className="mt-8 text-sm text-stone">
-            Inga artiklar matchar din sökning eller dina filter. Prova att rensa filtren.
-          </p>
+          <div className="mt-8 rounded-2xl border border-bone/10 bg-bone/5 p-6 text-center">
+            <p className="text-sm text-stone">
+              Inga artiklar matchar din sökning eller dina filter.
+            </p>
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="mt-3 text-sm font-medium text-emerald underline decoration-emerald/40 underline-offset-4 hover:text-bone"
+            >
+              Rensa alla filter
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -20,6 +20,7 @@ export const articles: Article[] = [
       "Prislappen för en ny hemsida kan variera enormt. Här är vad som faktiskt påverkar kostnaden — och hur ni undviker att betala för mycket eller för lite.",
     category: "Webb",
     tags: ["prissättning", "budget", "webbplats"],
+    icon: "wallet",
     date: "2026-01-15",
     readTime: "5 min läsning",
     content: [
@@ -39,6 +40,7 @@ export const articles: Article[] = [
       "WordPress driver en stor del av världens webbplatser — men det är inte alltid rätt val. Här är vad ni bör fundera på innan ni bestämmer er.",
     category: "WordPress",
     tags: ["wordpress", "cms", "plattformsval"],
+    icon: "layers",
     date: "2026-02-10",
     readTime: "4 min läsning",
     content: [
@@ -58,6 +60,7 @@ export const articles: Article[] = [
       "Snygg design räcker inte om besökaren inte hittar det de letar efter. Så påverkar UX er konvertering i praktiken.",
     category: "UX",
     tags: ["ux", "konvertering", "användbarhet"],
+    icon: "mouse-pointer-click",
     date: "2026-03-05",
     readTime: "4 min läsning",
     content: [
@@ -77,6 +80,7 @@ export const articles: Article[] = [
       "Ska innehållet vara hårdkodat eller redigerbart via ett admin-system? Här är skillnaden, och när ni bör välja vad.",
     category: "Utveckling",
     tags: ["cms", "prestanda", "plattformsval"],
+    icon: "git-compare",
     date: "2026-03-22",
     readTime: "4 min läsning",
     content: [
@@ -96,6 +100,7 @@ export const articles: Article[] = [
       "En bra grafisk profil är mer än en fin logotyp. Så tar ni fram en identitet som växer med företaget.",
     category: "Design",
     tags: ["grafisk-profil", "varumärke", "logotyp"],
+    icon: "palette",
     date: "2026-04-18",
     readTime: "5 min läsning",
     content: [
@@ -115,6 +120,7 @@ export const articles: Article[] = [
       "Rätt sökord gör skillnaden mellan att synas för rätt kunder eller att bli osynliga i mängden. Så kommer ni igång.",
     category: "SEO",
     tags: ["sökordsanalys", "seo", "innehåll"],
+    icon: "search",
     date: "2026-05-09",
     readTime: "4 min läsning",
     content: [
@@ -134,6 +140,7 @@ export const articles: Article[] = [
       "Många småföretag förlorar kunder utan att ens veta om det. Här är fem vanliga varningstecken — och vad ni kan göra åt dem.",
     category: "Webb",
     tags: ["konvertering", "webbplats", "ux"],
+    icon: "triangle-alert",
     date: "2026-06-12",
     readTime: "4 min läsning",
     content: [
@@ -153,6 +160,7 @@ export const articles: Article[] = [
       "Trafik räcker inte om besökarna inte handlar. Så bygger ni en e-handel som omvandlar besök till försäljning.",
     category: "E-handel",
     tags: ["e-handel", "konvertering", "produktsidor"],
+    icon: "shopping-cart",
     date: "2026-06-25",
     readTime: "5 min läsning",
     content: [
@@ -172,6 +180,7 @@ export const articles: Article[] = [
       "Att anlita en byrå är ett förtroende. Här är vad ni bör tänka på innan ni bestämmer er.",
     category: "Rådgivning",
     tags: ["byråval", "samarbete", "rådgivning"],
+    icon: "handshake",
     date: "2026-07-03",
     readTime: "5 min läsning",
     content: [
@@ -191,6 +200,7 @@ export const articles: Article[] = [
       "Om era kunder är lokala ska er sökmotoroptimering också vara det. Så funkar lokal SEO i praktiken.",
     category: "SEO",
     tags: ["lokal-seo", "seo", "google-business"],
+    icon: "map-pin",
     date: "2026-07-28",
     readTime: "4 min läsning",
     content: [
@@ -209,6 +219,7 @@ export const articles: Article[] = [
       "Att gissa sig fram till en marknadsföringsbudget är ett dyrt sätt att lära sig. Så tänker ni istället.",
     category: "Marknadsföring",
     tags: ["marknadsföring", "budget", "strategi"],
+    icon: "piggy-bank",
     date: "2026-08-01",
     readTime: "5 min läsning",
     content: [

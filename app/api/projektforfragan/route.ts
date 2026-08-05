@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { ProjectInquiry } from "@/lib/types";
+import { createServiceRoleClient } from "@/lib/supabase/server";
 
 const VALID_CATEGORIES = [
   "grafisk-design",
@@ -36,9 +37,6 @@ function isValidInquiry(body: unknown): body is ProjectInquiry {
   );
 }
 
-// TODO(Fas 4): byt loggningen nedan mot en riktig leverans (Supabase-tabell
-// och/eller e-postutskick) när backend kopplas in. Se .design-sync/NOTES.md
-// eller projektplanen för fasindelningen.
 export async function POST(request: NextRequest) {
   let body: unknown;
 
@@ -52,10 +50,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ofullständig eller ogiltig förfrågan" }, { status: 400 });
   }
 
-  console.log("[projektförfrågan]", {
-    receivedAt: new Date().toISOString(),
-    ...body,
+  const supabase = createServiceRoleClient();
+
+  const { error } = await supabase.from("projektforfragningar").insert({
+    categories: body.categories,
+    budget: body.budget,
+    timeline: body.timeline,
+    description: body.description,
+    name: body.name,
+    company: body.company,
+    email: body.email,
+    phone: body.phone,
   });
+
+  if (error) {
+    console.error("[projektförfrågan] Supabase insert misslyckades", error);
+    return NextResponse.json({ error: "Kunde inte spara förfrågan" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -45,12 +45,26 @@ export type Testimonial = {
   avatar: string;
 };
 
+export type ArticleIconKey =
+  | "wallet"
+  | "layers"
+  | "mouse-pointer-click"
+  | "git-compare"
+  | "palette"
+  | "search"
+  | "triangle-alert"
+  | "shopping-cart"
+  | "handshake"
+  | "map-pin"
+  | "piggy-bank";
+
 export type Article = {
   slug: string;
   title: string;
   excerpt: string;
   category: string;
   tags: string[];
+  icon: ArticleIconKey;
   date: string;
   readTime: string;
   content: string[];
