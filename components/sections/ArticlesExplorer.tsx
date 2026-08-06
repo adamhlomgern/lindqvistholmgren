@@ -4,23 +4,19 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { LayoutGrid, ListFilter, Search, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Tag } from "@/components/ui/Tag";
-import { articleCategories } from "@/lib/data/articles";
-import {
-  articleIcons,
-  badgeClasses,
-  blobClasses,
-  categoryIcons,
-  getAccent,
-  iconTextClasses,
-} from "@/lib/articles/visuals";
+import { articleIcons, resolveCategoryVisual, iconTextClasses } from "@/lib/articles/visuals";
 import type { Article } from "@/lib/types";
+import type { ArticleCategory } from "@/lib/data/categories";
 
 type ArticlesExplorerProps = {
   articles: Article[];
+  categories: ArticleCategory[];
 };
 
-export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
+export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps) {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -126,10 +122,10 @@ export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
                 </span>
                 <span className="text-xs text-stone/60">{articles.length}</span>
               </button>
-              {articleCategories.map((category) => {
+              {categories.map(({ name: category }) => {
                 const active = activeCategory === category;
-                const accent = getAccent(category);
-                const CategoryIcon = categoryIcons[category] ?? LayoutGrid;
+                const { icon, accent } = resolveCategoryVisual(categories, category);
+                const CategoryIcon = articleIcons[icon] ?? LayoutGrid;
                 return (
                   <button
                     key={category}
@@ -170,43 +166,24 @@ export function ArticlesExplorer({ articles }: ArticlesExplorerProps) {
         {filteredArticles.length > 0 ? (
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredArticles.map((article) => {
-              const accent = getAccent(article.category);
+              const accent = resolveCategoryVisual(categories, article.category).accent;
               const Icon = articleIcons[article.icon];
               return (
-                // Fixed height + absolute-positioned overlay only kick in at
-                // lg, where hover is reliable. Below lg (touch devices) the
-                // card is a normal static block with the excerpt and meta
-                // always visible, since there's no hover to reveal them.
-                <div key={article.slug} className="group relative lg:h-44">
-                  <Link
-                    href={`/artiklar/${article.slug}`}
-                    className="relative z-10 flex flex-col overflow-hidden rounded-2xl border border-bone/10 bg-charcoal/60 p-5 transition-all duration-300 ease-out lg:absolute lg:top-0 lg:right-0 lg:bottom-0 lg:left-0 lg:group-hover:top-[-6px] lg:group-hover:right-[-8px] lg:group-hover:bottom-[-4.5rem] lg:group-hover:left-[-8px] lg:group-hover:z-30 lg:group-hover:border-bone/20 lg:group-hover:bg-charcoal/80 lg:group-hover:shadow-2xl lg:group-hover:shadow-black/40 lg:group-hover:backdrop-blur-xl"
-                  >
-                    <div
-                      className={`pointer-events-none absolute -right-10 -top-12 h-44 w-44 rounded-full blur-[90px] ${blobClasses[accent].big}`}
-                    />
-                    <div
-                      className={`pointer-events-none absolute -bottom-10 -left-8 h-28 w-28 rounded-full blur-[70px] ${blobClasses[accent].small}`}
-                    />
-                    <div className="bg-grain pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay" />
-
-                    <span
-                      className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${badgeClasses[accent]}`}
-                    >
-                      <Icon size={20} strokeWidth={2} />
-                    </span>
-                    <h2 className="relative z-10 mt-4 break-words font-display text-base font-bold leading-snug text-bone">
+                <Link key={article.slug} href={`/artiklar/${article.slug}`} className="group block">
+                  <GlassCard accent={accent}>
+                    <AccentBadge icon={Icon} accent={accent} size={20} className="h-11 w-11" />
+                    <h2 className="mt-4 break-words font-display text-base font-bold leading-snug text-bone">
                       {article.title}
                     </h2>
-                    <p className="relative z-10 mt-2 line-clamp-2 text-xs leading-relaxed text-stone/80 lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100">
+                    <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-stone/80">
                       {article.excerpt}
                     </p>
-                    <div className="relative z-10 mt-auto flex items-center gap-2 pt-2 lg:opacity-0 lg:transition-opacity lg:duration-300 lg:group-hover:opacity-100">
+                    <div className="mt-auto flex items-center gap-2 pt-3">
                       <Tag>{article.category}</Tag>
                       <span className="text-xs text-stone">{article.readTime}</span>
                     </div>
-                  </Link>
-                </div>
+                  </GlassCard>
+                </Link>
               );
             })}
           </div>

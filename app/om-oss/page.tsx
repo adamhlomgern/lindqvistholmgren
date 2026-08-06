@@ -3,7 +3,9 @@ import { Heart, MapPin, Sparkles, Users } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
-import { Card } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { AccentBadge } from "@/components/ui/AccentBadge";
+import { accents, badgeClasses, type Accent } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 
 export const metadata: Metadata = {
@@ -12,18 +14,18 @@ export const metadata: Metadata = {
     "Lindqvist / Holmgren är två frilansare, Ada och Malin, som tillsammans hjälper småföretag i Karlstad och hela Sverige med webb, design och marknadsföring.",
 };
 
-const team = [
+const team: { initial: string; name: string; role: string; accent: Accent }[] = [
   {
     initial: "A",
     name: "Ada",
     role: "Projektledning, frontend & marknadsföring",
-    accent: "bg-emerald/20 text-emerald",
+    accent: "emerald",
   },
   {
     initial: "M",
     name: "Malin",
     role: "Utveckling, UX & digital design",
-    accent: "bg-peach/20 text-peach",
+    accent: "peach",
   },
 ];
 
@@ -58,29 +60,32 @@ export default function OmOssPage() {
         <Container>
           <div className="grid gap-4 sm:grid-cols-2">
             {team.map((person) => (
-              <Card key={person.name} className="flex items-center gap-4">
-                <span
-                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-display text-xl font-bold ${person.accent}`}
-                >
-                  {person.initial}
-                </span>
-                <div>
-                  <p className="font-display text-lg font-bold text-bone">{person.name}</p>
-                  <p className="mt-1 text-sm text-stone">{person.role}</p>
+              <GlassCard key={person.name} accent={person.accent}>
+                <div className="flex items-center gap-4">
+                  <span
+                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-display text-xl font-bold ${badgeClasses[person.accent]}`}
+                  >
+                    {person.initial}
+                  </span>
+                  <div>
+                    <p className="font-display text-lg font-bold text-bone">{person.name}</p>
+                    <p className="mt-1 text-sm text-stone">{person.role}</p>
+                  </div>
                 </div>
-              </Card>
+              </GlassCard>
             ))}
           </div>
           <div className="mt-12 grid gap-4 sm:grid-cols-3">
-            {values.map((value) => (
-              <Card key={value.title}>
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald/10 text-emerald">
-                  <value.icon size={18} strokeWidth={2} />
-                </span>
-                <h2 className="mt-4 font-display text-lg font-bold text-bone">{value.title}</h2>
-                <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
-              </Card>
-            ))}
+            {values.map((value, index) => {
+              const accent = accents[index % accents.length];
+              return (
+                <GlassCard key={value.title} accent={accent}>
+                  <AccentBadge icon={value.icon} accent={accent} />
+                  <h2 className="mt-4 font-display text-lg font-bold text-bone">{value.title}</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
+                </GlassCard>
+              );
+            })}
           </div>
         </Container>
       </Section>

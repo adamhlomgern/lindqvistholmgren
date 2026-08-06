@@ -35,9 +35,93 @@ body {
   }
 }
 
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 @layer utilities {
+  .animate-marquee {
+    animation: marquee 50s linear infinite;
+  }
+
   .bg-grain {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 120px 120px;
   }
+}
+
+/* Rendered/edited article body — used both on the public article page
+   (dangerouslySetInnerHTML) and inside the Tiptap admin editor, so the two
+   always look the same. */
+.article-prose {
+  color: var(--color-stone);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.article-prose > * + * {
+  margin-top: 1.25em;
+}
+.article-prose h2 {
+  margin-top: 1.75em;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-bone);
+}
+.article-prose h3 {
+  margin-top: 1.5em;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-bone);
+}
+.article-prose h4 {
+  margin-top: 1.25em;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-bone);
+}
+.article-prose ul,
+.article-prose ol {
+  padding-left: 1.25em;
+}
+.article-prose ul {
+  list-style: disc;
+}
+.article-prose ol {
+  list-style: decimal;
+}
+.article-prose li + li {
+  margin-top: 0.4em;
+}
+.article-prose blockquote {
+  border-left: 2px solid var(--color-emerald);
+  padding-left: 1em;
+  color: var(--color-bone);
+  font-style: italic;
+}
+.article-prose strong {
+  color: var(--color-bone);
+  font-weight: 700;
+}
+.article-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.article-prose th,
+.article-prose td {
+  border: 1px solid color-mix(in srgb, var(--color-bone) 10%, transparent);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+.article-prose th {
+  color: var(--color-bone);
+  background: color-mix(in srgb, var(--color-bone) 5%, transparent);
 }

@@ -5,8 +5,9 @@ import { ChevronDown, HelpCircle } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { GlassCard } from "@/components/ui/GlassCard";
 
-const faqs = [
+const defaultFaqs = [
   {
     question: "Vad kostar ett projekt?",
     answer:
@@ -49,47 +50,63 @@ const faqs = [
   },
 ];
 
-export function Faq() {
+type FaqProps = {
+  items?: { question: string; answer: string }[];
+  eyebrow?: string;
+  title?: string;
+  tone?: "forest" | "charcoal" | "olive";
+};
+
+export function Faq({
+  items = defaultFaqs,
+  eyebrow = "Vanliga frågor",
+  title = "Bra att veta innan ni hör av er",
+  tone = "olive",
+}: FaqProps) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <Section tone="olive">
+    <Section tone={tone}>
       <Container>
-        <Eyebrow icon={HelpCircle}>Vanliga frågor</Eyebrow>
+        <Eyebrow icon={HelpCircle}>{eyebrow}</Eyebrow>
         <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
-          Bra att veta innan ni hör av er
+          {title}
         </h2>
-        <div className="mt-8 divide-y divide-bone/10 overflow-hidden rounded-xl border border-bone/10 bg-bone/5">
-          {faqs.map((faq, index) => {
-            const isOpen = open === index;
-            return (
-              <div key={faq.question}>
-                <button
-                  type="button"
-                  onClick={() => setOpen(isOpen ? null : index)}
-                  className="flex w-full items-center justify-between gap-4 px-5 py-3.5 text-left"
-                  aria-expanded={isOpen}
-                >
-                  <span className="text-sm font-semibold text-bone">{faq.question}</span>
-                  <ChevronDown
-                    size={16}
-                    className={`shrink-0 text-emerald transition-transform duration-300 ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                <div
-                  className={`grid transition-all duration-300 ease-out ${
-                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="px-5 pb-3.5 text-sm leading-relaxed text-stone">{faq.answer}</p>
+        <div className="mt-8">
+          <GlassCard accent="emerald">
+            <div className="-m-6 divide-y divide-bone/10">
+              {items.map((faq, index) => {
+                const isOpen = open === index;
+                return (
+                  <div key={faq.question}>
+                    <button
+                      type="button"
+                      onClick={() => setOpen(isOpen ? null : index)}
+                      className="flex w-full items-center justify-between gap-4 px-6 py-3.5 text-left"
+                      aria-expanded={isOpen}
+                    >
+                      <span className="text-sm font-semibold text-bone">{faq.question}</span>
+                      <ChevronDown
+                        size={16}
+                        className={`shrink-0 text-emerald transition-transform duration-300 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <div
+                      className={`grid transition-all duration-300 ease-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="px-6 pb-3.5 text-sm leading-relaxed text-stone">{faq.answer}</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </GlassCard>
         </div>
       </Container>
     </Section>

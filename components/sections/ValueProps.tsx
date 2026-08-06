@@ -2,7 +2,9 @@ import { Clock, ShieldCheck, Target, Users } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Card } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { AccentBadge } from "@/components/ui/AccentBadge";
+import { accents } from "@/lib/design/accents";
 
 const values = [
   {
@@ -34,15 +36,16 @@ export function ValueProps() {
           Det som skiljer oss från en vanlig byrå
         </h2>
         <div className="mt-12 grid gap-4 sm:grid-cols-3">
-          {values.map((value) => (
-            <Card key={value.title}>
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald/10 text-emerald">
-                <value.icon size={18} strokeWidth={2} />
-              </span>
-              <h3 className="mt-5 font-display text-lg font-bold text-bone">{value.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
-            </Card>
-          ))}
+          {values.map((value, index) => {
+            const accent = accents[index % accents.length];
+            return (
+              <GlassCard key={value.title} accent={accent}>
+                <AccentBadge icon={value.icon} accent={accent} />
+                <h3 className="mt-5 font-display text-lg font-bold text-bone">{value.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
+              </GlassCard>
+            );
+          })}
         </div>
       </Container>
     </Section>

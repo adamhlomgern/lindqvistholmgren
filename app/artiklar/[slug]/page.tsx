@@ -6,20 +6,16 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Tag } from "@/components/ui/Tag";
 import { Button } from "@/components/ui/Button";
-import { articles } from "@/lib/data/articles";
+import { getArticleBySlug } from "@/lib/data/articles";
 import { RelatedArticles } from "@/components/sections/RelatedArticles";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = articles.find((item) => item.slug === slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     return {};
@@ -37,7 +33,7 @@ function formatDate(date: string) {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = articles.find((item) => item.slug === slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     notFound();
@@ -109,13 +105,7 @@ export default async function ArticlePage({ params }: Props) {
       <Section tone="olive">
         <Container>
           <div className="mx-auto max-w-3xl">
-            <div className="flex flex-col gap-5">
-              {article.content.map((paragraph, index) => (
-                <p key={index} className="text-base leading-relaxed text-stone">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            <div className="article-prose" dangerouslySetInnerHTML={{ __html: article.content }} />
             <div className="mt-12 flex flex-col items-start gap-4 border-t border-bone/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-stone">Har ni frågor eller ett projekt på gång?</p>
               <div className="flex gap-3">

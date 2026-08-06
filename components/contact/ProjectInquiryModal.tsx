@@ -59,6 +59,7 @@ const initialState = {
   company: "",
   email: "",
   phone: "",
+  website: "",
 };
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
@@ -245,6 +246,20 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
               onSubmit={step === TOTAL_STEPS - 1 ? handleSubmit : (event) => event.preventDefault()}
               className="mt-6 flex flex-1 flex-col"
             >
+              <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+                <label htmlFor="modal-website">Lämna detta fält tomt</label>
+                <input
+                  id="modal-website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={form.website}
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, website: event.target.value }))
+                  }
+                />
+              </div>
               <div className="flex-1">
                 {step === 0 && (
                   <div>

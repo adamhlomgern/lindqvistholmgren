@@ -1,20 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { ProjectInquiry } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-
-const VALID_CATEGORIES = [
-  "grafisk-design",
-  "tryck",
-  "forpackning",
-  "webb",
-  "app-utveckling",
-  "marknadsforing",
-  "vet-inte",
-];
-
-const VALID_BUDGETS = ["under-15k", "15k-50k", "50k-150k", "over-150k", "vet-inte"];
-
-const VALID_TIMELINES = ["asap", "1-3-manader", "3-6-manader", "utforskar"];
+import { projectBudgets, projectCategories, projectTimelines } from "@/lib/constants";
+import { isRateLimited } from "@/lib/rate-limit";
 
 function isValidInquiry(body: unknown): body is ProjectInquiry {
   if (typeof body !== "object" || body === null) return false;
@@ -23,11 +11,11 @@ function isValidInquiry(body: unknown): body is ProjectInquiry {
   return (
     Array.isArray(b.categories) &&
     b.categories.length > 0 &&
-    b.categories.every((c) => VALID_CATEGORIES.includes(c as string)) &&
+    b.categories.every((c) => projectCategories.includes(c as ProjectInquiry["categories"][number])) &&
     typeof b.budget === "string" &&
-    VALID_BUDGETS.includes(b.budget) &&
+    projectBudgets.includes(b.budget as ProjectInquiry["budget"]) &&
     typeof b.timeline === "string" &&
-    VALID_TIMELINES.includes(b.timeline) &&
+    projectTimelines.includes(b.timeline as ProjectInquiry["timeline"]) &&
     typeof b.description === "string" &&
     b.description.trim().length >= 20 &&
     typeof b.name === "string" &&
@@ -38,6 +26,12 @@ function isValidInquiry(body: unknown): body is ProjectInquiry {
 }
 
 export async function POST(request: NextRequest) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "För många förfrågningar, försök igen senare" }, { status: 429 });
+  }
+
   let body: unknown;
 
   try {
@@ -46,11 +40,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ogiltig JSON" }, { status: 400 });
   }
 
+  // Honeypot: a hidden field real visitors never fill in. Bots that
+  // autofill every input trip it — respond as if it succeeded so they
+  // don't learn to avoid the field, but skip the actual write.
+  if (typeof body === "object" && body !== null && "website" in body) {
+    const honeypot = String((body as Record<string, unknown>).website ?? "").trim();
+    if (honeypot !== "") {
+      return NextResponse.json({ ok: true });
+    }
+  }
+
   if (!isValidInquiry(body)) {
     return NextResponse.json({ error: "Ofullständig eller ogiltig förfrågan" }, { status: 400 });
   }
 
   const supabase = createServiceRoleClient();
+
+  const { count } = await supabase
+    .from("projektforfragningar")
+    .select("*", { count: "exact", head: true })
+    .eq("email", body.email)
+    .gte("created_at", new Date(Date.now() - 5 * 60 * 1000).toISOString());
+
+  if (count !== null && count >= 3) {
+    return NextResponse.json({ error: "För många förfrågningar, försök igen senare" }, { status: 429 });
+  }
 
   const { error } = await supabase.from("projektforfragningar").insert({
     categories: body.categories,

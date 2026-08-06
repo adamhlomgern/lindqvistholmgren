@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 type PageHeroProps = {
   icon: LucideIcon;
@@ -10,12 +11,14 @@ type PageHeroProps = {
   title: string;
   description?: string;
   children?: ReactNode;
+  breadcrumbs?: { label: string; href?: string }[];
 };
 
-export function PageHero({ icon, eyebrow, title, description, children }: PageHeroProps) {
+export function PageHero({ icon, eyebrow, title, description, children, breadcrumbs }: PageHeroProps) {
   return (
     <Section tone="forest" className="pt-20 md:pt-28">
       <Container>
+        {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-6" />}
         <Eyebrow icon={icon}>{eyebrow}</Eyebrow>
         <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-[0.95] tracking-tight text-bone md:text-6xl">
           {title}

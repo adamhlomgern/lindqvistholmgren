@@ -127,6 +127,11 @@ export const servicePages: ServicePage[] = [
       "Teknisk struktur, laddtider och mobilanpassning spelar extra stor roll för e-handel eftersom konkurrensen ofta är hög.",
       "Målet är fler organiska besök som faktiskt handlar, inte bara mer trafik i stort.",
     ],
+    highlights: [
+      "Produkt- och kategorisidor optimerade var för sig, utan intern konkurrens",
+      "Teknisk SEO anpassad för stora sortiment och filtreringar",
+      "Fokus på organisk trafik som faktiskt konverterar",
+    ],
   },
   {
     category: "seo",
@@ -138,6 +143,11 @@ export const servicePages: ServicePage[] = [
       "Som lokal byrå förstår vi hur konkurrensen ser ut för företag i Karlstad och Värmland specifikt — inte bara generella SEO-principer.",
       "Vi jobbar med både teknisk SEO, innehåll och lokal synlighet, som Google Business-profil och lokala sökord.",
       "Ni får tydlig uppföljning så att ni ser vad som faktiskt förbättras över tid.",
+    ],
+    highlights: [
+      "Lokal marknadskännedom för Karlstad och Värmland",
+      "Teknisk SEO, innehåll och Google Business-profil i samma paket",
+      "Tydlig rapportering utan onödigt jargong",
     ],
   },
   {
@@ -151,6 +161,11 @@ export const servicePages: ServicePage[] = [
       "Vi går igenom er nuvarande sida — synlighet, innehåll och användarupplevelse — för att hitta var ni faktiskt tappar potentiella kunder.",
       "Utifrån det sätter vi in rätt åtgärder, oavsett om det handlar om SEO, design eller struktur.",
     ],
+    highlights: [
+      "Genomgång av synlighet, innehåll och användarupplevelse",
+      "Konkreta åtgärder istället för generella råd",
+      "Insatser oavsett om orsaken är SEO, design eller struktur",
+    ],
   },
   {
     category: "seo",
@@ -163,6 +178,11 @@ export const servicePages: ServicePage[] = [
       "Vi kartlägger vilka sökord som är relevanta för er verksamhet och optimerar innehållet på sajten utifrån det.",
       "Utöver innehåll spelar teknisk SEO, laddtider och en tydlig Google Business-profil stor roll för hur ni syns lokalt.",
       "SEO är sällan en snabb fix, men med rätt grund byggd från start ser ni resultat som håller i sig över tid.",
+    ],
+    highlights: [
+      "Sökordskartläggning utifrån vad era kunder faktiskt söker efter",
+      "Teknisk SEO, laddtider och Google Business-profil i samma helhet",
+      "Resultat som byggs för att hålla i sig över tid",
     ],
   },
 ];

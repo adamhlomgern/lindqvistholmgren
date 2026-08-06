@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { notFound } from "next/navigation";
-import { articles } from "@/lib/data/articles";
-import { accentHex, getAccent } from "@/lib/articles/visuals";
+import { getArticleBySlug } from "@/lib/data/articles";
+import { getCategories } from "@/lib/data/categories";
+import { accentHex, resolveCategoryVisual } from "@/lib/articles/visuals";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -12,13 +13,14 @@ type Props = {
 
 export default async function Image({ params }: Props) {
   const { slug } = await params;
-  const article = articles.find((item) => item.slug === slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     notFound();
   }
 
-  const accent = getAccent(article.category);
+  const categories = await getCategories();
+  const accent = resolveCategoryVisual(categories, article.category).accent;
   const hex = accentHex[accent];
 
   return new ImageResponse(

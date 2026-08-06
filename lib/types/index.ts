@@ -1,9 +1,58 @@
+export type ServiceIconKey =
+  | "search"
+  | "gauge"
+  | "file-text"
+  | "map-pin"
+  | "line-chart"
+  | "target"
+  | "code-2"
+  | "smartphone"
+  | "layout-template"
+  | "palette-icon"
+  | "layers"
+  | "pen-tool"
+  | "trending-up"
+  | "megaphone"
+  | "bar-chart"
+  | "zap"
+  | "workflow"
+  | "mail"
+  | "calendar-clock"
+  | "life-buoy"
+  | "shield-check"
+  | "refresh-cw"
+  | "rocket";
+
+export type ServiceFeature = {
+  icon: ServiceIconKey;
+  title: string;
+  description: string;
+};
+
+export type ServiceProcessStep = {
+  icon: ServiceIconKey;
+  title: string;
+  description: string;
+};
+
+export type ServiceFaqItem = {
+  question: string;
+  answer: string;
+};
+
 export type Service = {
   slug: string;
   title: string;
   description: string;
   intro: string;
-  features: string[];
+  heroHeadline?: string;
+  heroAccentWord?: string;
+  // Lowercase form used mid-sentence ("läs mer om {titleLower}"). Defaults
+  // to title.toLowerCase(), but acronyms like "SEO" need to stay uppercase.
+  titleLower?: string;
+  features: ServiceFeature[];
+  process?: ServiceProcessStep[];
+  faq?: ServiceFaqItem[];
 };
 
 export type ServicePage = {
@@ -13,6 +62,7 @@ export type ServicePage = {
   description: string;
   intro: string;
   body: string[];
+  highlights?: string[];
 };
 
 export type ProjectStat = {
@@ -56,7 +106,10 @@ export type ArticleIconKey =
   | "shopping-cart"
   | "handshake"
   | "map-pin"
-  | "piggy-bank";
+  | "piggy-bank"
+  | "code-2"
+  | "globe"
+  | "megaphone";
 
 export type Article = {
   slug: string;
@@ -67,7 +120,7 @@ export type Article = {
   icon: ArticleIconKey;
   date: string;
   readTime: string;
-  content: string[];
+  content: string;
 };
 
 export type ProjectCategory =

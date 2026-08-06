@@ -1,30 +1,14 @@
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  ChevronRight,
-  Code2,
-  LifeBuoy,
-  Palette,
-  Search,
-  Sparkles,
-  TrendingUp,
-  Zap,
-} from "lucide-react";
+import { ArrowUpRight, ChevronRight, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
-import { Card } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Button } from "@/components/ui/Button";
 import { services } from "@/lib/data/services";
-
-const icons = {
-  webb: Code2,
-  seo: Search,
-  design: Palette,
-  tillvaxt: TrendingUp,
-  automation: Zap,
-  support: LifeBuoy,
-} as const;
+import { getServiceAccent, iconTextClasses } from "@/lib/design/accents";
+import { serviceIcons } from "@/lib/design/service-icons";
 
 export function Services() {
   return (
@@ -44,12 +28,13 @@ export function Services() {
         </div>
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
-            const Icon = icons[service.slug as keyof typeof icons];
+            const Icon = serviceIcons[service.slug];
+            const accent = getServiceAccent(service.slug);
             return (
-              <Link key={service.slug} href={`/tjanster/${service.slug}`} className="block">
-                <Card className="group flex h-full flex-col justify-between transition-colors hover:bg-bone/[0.08]">
+              <Link key={service.slug} href={`/tjanster/${service.slug}`} className="group block">
+                <GlassCard accent={accent} className="justify-between">
                   <div>
-                    <Icon className="text-emerald" size={22} strokeWidth={2} />
+                    <AccentBadge icon={Icon} accent={accent} size={22} />
                     <h3 className="mt-4 font-display text-lg font-bold text-bone">
                       {service.title}
                     </h3>
@@ -58,10 +43,10 @@ export function Services() {
                     </p>
                   </div>
                   <ArrowUpRight
-                    className="mt-6 text-emerald transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
+                    className={`mt-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 ${iconTextClasses[accent]}`}
                     size={18}
                   />
-                </Card>
+                </GlassCard>
               </Link>
             );
           })}

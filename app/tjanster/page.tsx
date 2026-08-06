@@ -1,54 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Check,
-  Code2,
-  LifeBuoy,
-  Palette,
-  Search,
-  Sparkles,
-  TrendingUp,
-  Zap,
-} from "lucide-react";
+import { ArrowUpRight, Check, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
-import { Card } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { services } from "@/lib/data/services";
+import { getServiceAccent, iconTextClasses } from "@/lib/design/accents";
+import { serviceIcons } from "@/lib/design/service-icons";
 import { Process } from "@/components/sections/Process";
 import { ValueProps } from "@/components/sections/ValueProps";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBanner } from "@/components/sections/CtaBanner";
-
-const icons = {
-  webb: Code2,
-  seo: Search,
-  design: Palette,
-  tillvaxt: TrendingUp,
-  automation: Zap,
-  support: LifeBuoy,
-} as const;
-
-const accentBg = {
-  webb: "bg-emerald/15 text-emerald",
-  seo: "bg-moss/15 text-moss",
-  design: "bg-peach/15 text-peach",
-  tillvaxt: "bg-lavender/15 text-lavender",
-  automation: "bg-coral/15 text-coral",
-  support: "bg-stone/15 text-stone",
-} as const;
-
-const accentText = {
-  webb: "text-emerald",
-  seo: "text-moss",
-  design: "text-peach",
-  tillvaxt: "text-lavender",
-  automation: "text-coral",
-  support: "text-stone",
-} as const;
 
 export const metadata: Metadata = {
   title: "Tjänster",
@@ -77,20 +43,15 @@ export default function TjansterPage() {
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {services.map((service, index) => {
-              const Icon = icons[service.slug as keyof typeof icons];
+              const Icon = serviceIcons[service.slug];
+              const accent = getServiceAccent(service.slug);
               return (
-                <Link key={service.slug} href={`/tjanster/${service.slug}`} className="block">
-                  <Card className="group flex h-full flex-col transition-colors hover:bg-bone/[0.08]">
+                <Link key={service.slug} href={`/tjanster/${service.slug}`} className="group block">
+                  <GlassCard accent={accent}>
                     <div className="flex items-center gap-4">
-                      <span
-                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${accentBg[service.slug as keyof typeof accentBg]}`}
-                      >
-                        <Icon size={20} strokeWidth={2} />
-                      </span>
+                      <AccentBadge icon={Icon} accent={accent} size={20} className="h-12 w-12" />
                       <div>
-                        <span
-                          className={`font-display text-xs font-bold ${accentText[service.slug as keyof typeof accentText]}`}
-                        >
+                        <span className={`font-display text-xs font-bold ${iconTextClasses[accent]}`}>
                           0{index + 1}
                         </span>
                         <h3 className="font-display text-xl font-bold text-bone">
@@ -103,24 +64,26 @@ export default function TjansterPage() {
                     </p>
                     <ul className="mt-4 flex flex-col gap-2">
                       {service.features.slice(0, 3).map((feature) => (
-                        <li key={feature} className="flex items-start gap-2 text-sm text-bone/90">
+                        <li key={feature.title} className="flex items-start gap-2 text-sm text-bone/90">
                           <Check
-                            className="mt-0.5 shrink-0 text-emerald"
+                            className={`mt-0.5 shrink-0 ${iconTextClasses[accent]}`}
                             size={14}
                             strokeWidth={2.5}
                           />
-                          {feature}
+                          {feature.title}
                         </li>
                       ))}
                     </ul>
-                    <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-emerald transition-all group-hover:gap-2.5">
-                      Utforska {service.title.toLowerCase()}
+                    <span
+                      className={`mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold transition-all group-hover:gap-2.5 ${iconTextClasses[accent]}`}
+                    >
+                      Utforska {service.titleLower ?? service.title.toLowerCase()}
                       <ArrowUpRight
                         size={16}
                         className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                       />
                     </span>
-                  </Card>
+                  </GlassCard>
                 </Link>
               );
             })}

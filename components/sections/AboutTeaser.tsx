@@ -3,19 +3,20 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Button } from "@/components/ui/Button";
+import { badgeClasses, type Accent } from "@/lib/design/accents";
 
-const team = [
+const team: { initial: string; name: string; role: string; accent: Accent }[] = [
   {
     initial: "A",
     name: "Ada",
     role: "Projektledning, frontend & marknadsföring",
-    accent: "bg-emerald/20 text-emerald",
+    accent: "emerald",
   },
   {
     initial: "M",
     name: "Malin",
     role: "Utveckling, UX & digital design",
-    accent: "bg-peach/20 text-peach",
+    accent: "peach",
   },
 ];
 
@@ -32,7 +33,7 @@ export function AboutTeaser() {
             {team.map((person) => (
               <div key={person.name} className="flex items-center gap-3">
                 <span
-                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold ${person.accent}`}
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold ${badgeClasses[person.accent]}`}
                 >
                   {person.initial}
                 </span>

@@ -1,12 +1,14 @@
 import type { MetadataRoute } from "next";
 import { services } from "@/lib/data/services";
 import { servicePages } from "@/lib/data/service-pages";
-import { projects } from "@/lib/data/projects";
-import { articles } from "@/lib/data/articles";
+import { getProjects } from "@/lib/data/projects";
+import { getArticles } from "@/lib/data/articles";
 
 const baseUrl = "https://lindqvistholmgren.se";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [projects, articles] = await Promise.all([getProjects(), getArticles()]);
+
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: "monthly", priority: 1 },
     { url: `${baseUrl}/tjanster`, changeFrequency: "monthly", priority: 0.9 },
@@ -14,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/artiklar`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${baseUrl}/om-oss`, changeFrequency: "yearly", priority: 0.6 },
     { url: `${baseUrl}/kontakt`, changeFrequency: "yearly", priority: 0.8 },
+    { url: `${baseUrl}/integritetspolicy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${baseUrl}/starta-ett-projekt`, changeFrequency: "yearly", priority: 0.8 },
   ];
 

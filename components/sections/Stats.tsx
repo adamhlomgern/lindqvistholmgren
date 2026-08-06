@@ -1,7 +1,9 @@
 import { Building2, Clock, MapPin, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import { Card } from "@/components/ui/Card";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { AccentBadge } from "@/components/ui/AccentBadge";
+import { accents } from "@/lib/design/accents";
 
 const stats = [
   { icon: Building2, value: "50+", label: "Företag vi hjälpt" },
@@ -15,19 +17,20 @@ export function Stats() {
     <Section tone="forest">
       <Container>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <Card key={stat.label} className="flex flex-col items-start gap-4">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald/10 text-emerald">
-                <stat.icon size={18} strokeWidth={2} />
-              </span>
-              <div>
-                <p className="font-display text-3xl font-bold tracking-tight text-bone md:text-4xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-sm text-stone">{stat.label}</p>
-              </div>
-            </Card>
-          ))}
+          {stats.map((stat, index) => {
+            const accent = accents[index % accents.length];
+            return (
+              <GlassCard key={stat.label} accent={accent} className="items-start gap-4">
+                <AccentBadge icon={stat.icon} accent={accent} />
+                <div>
+                  <p className="font-display text-3xl font-bold tracking-tight text-bone md:text-4xl">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1 text-sm text-stone">{stat.label}</p>
+                </div>
+              </GlassCard>
+            );
+          })}
         </div>
       </Container>
     </Section>

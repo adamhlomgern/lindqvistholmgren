@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Menu } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { StartProjectButton } from "@/components/contact/StartProjectButton";
+import { MobileMenu } from "@/components/layout/MobileMenu";
 
 const navItems = [
   { href: "/", label: "Hem" },
@@ -16,15 +19,28 @@ const navItems = [
 
 export function Header() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-50">
       <Container className="flex items-center justify-between gap-6 py-4">
-        <Link
-          href="/"
-          className="font-display text-lg font-bold tracking-tight text-bone"
-        >
-          Lindqvist / Holmgren
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/images/lindqvist-holmgren/lindqvist-holmgren-full-logo.svg"
+            alt="Lindqvist / Holmgren"
+            width={6065}
+            height={2124}
+            priority
+            className="hidden h-9 w-auto md:block"
+          />
+          <Image
+            src="/images/lindqvist-holmgren/LH-liten-svg.svg"
+            alt="Lindqvist / Holmgren"
+            width={1108}
+            height={1066}
+            priority
+            className="h-9 w-auto md:hidden"
+          />
         </Link>
         <nav className="hidden items-center gap-1 rounded-full border border-bone/10 bg-bone/10 p-1.5 backdrop-blur-md md:flex">
           {navItems.map((item) => {
@@ -44,11 +60,24 @@ export function Header() {
             );
           })}
         </nav>
-        <StartProjectButton className="hidden md:inline-flex">
-          Starta ett projekt
-          <ChevronRight size={14} strokeWidth={2.5} />
-        </StartProjectButton>
+        <div className="hidden md:block">
+          <StartProjectButton>
+            Starta ett projekt
+            <ChevronRight size={14} strokeWidth={2.5} />
+          </StartProjectButton>
+        </div>
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Öppna meny"
+          aria-expanded={menuOpen}
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/10 bg-bone/10 text-bone transition-colors hover:bg-bone/15 md:hidden"
+        >
+          <Menu size={20} strokeWidth={2} />
+        </button>
       </Container>
+
+      <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} navItems={navItems} />
     </header>
   );
 }
