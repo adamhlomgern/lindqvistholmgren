@@ -17,6 +17,8 @@ export const metadata: Metadata = {
     "Ett urval av webbplatser, grafiska profiler och skräddarsydda lösningar vi byggt åt småföretag i Karlstad och Värmland.",
 };
 
+export const revalidate = 3600;
+
 export default async function ProjektPage() {
   const projects = await getProjects();
 

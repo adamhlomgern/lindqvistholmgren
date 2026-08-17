@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
@@ -45,6 +46,8 @@ export async function createArticle(
     return { error: `Kunde inte skapa artikeln: ${error.message}` };
   }
 
+  revalidatePath("/artiklar");
+  revalidatePath(`/artiklar/${row.slug}`);
   redirect("/admin/artiklar");
 }
 
@@ -67,6 +70,8 @@ export async function updateArticle(
     return { error: `Kunde inte spara ändringarna: ${error.message}` };
   }
 
+  revalidatePath("/artiklar");
+  revalidatePath(`/artiklar/${slug}`);
   redirect("/admin/artiklar");
 }
 
@@ -74,5 +79,7 @@ export async function deleteArticle(slug: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
   await supabase.from("articles").delete().eq("slug", slug);
+  revalidatePath("/artiklar");
+  revalidatePath(`/artiklar/${slug}`);
   redirect("/admin/artiklar");
 }
