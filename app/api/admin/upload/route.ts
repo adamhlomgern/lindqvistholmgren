@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
+const ALLOWED_TYPES: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/avif": "avif",
+  "image/gif": "gif",
+};
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
+
 export async function POST(request: NextRequest) {
   await verifySession();
 
@@ -12,7 +21,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ingen fil vald" }, { status: 400 });
   }
 
-  const extension = file.name.split(".").pop() ?? "bin";
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json({ error: "Filen är för stor (max 8 MB)" }, { status: 400 });
+  }
+
+  const extension = ALLOWED_TYPES[file.type];
+
+  if (!extension) {
+    return NextResponse.json(
+      { error: "Filtypen stöds inte. Använd JPG, PNG, WEBP, AVIF eller GIF." },
+      { status: 400 },
+    );
+  }
   const path = `${crypto.randomUUID()}.${extension}`;
 
   const supabase = createServiceRoleClient();
