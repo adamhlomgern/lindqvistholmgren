@@ -54,33 +54,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Ofullständig eller ogiltig förfrågan" }, { status: 400 });
   }
 
-  const supabase = createServiceRoleClient();
+  try {
+    const supabase = createServiceRoleClient();
 
-  const { count } = await supabase
-    .from("projektforfragningar")
-    .select("*", { count: "exact", head: true })
-    .eq("email", body.email)
-    .gte("created_at", new Date(Date.now() - 5 * 60 * 1000).toISOString());
+    const { count, error: countError } = await supabase
+      .from("projektforfragningar")
+      .select("*", { count: "exact", head: true })
+      .eq("email", body.email)
+      .gte("created_at", new Date(Date.now() - 5 * 60 * 1000).toISOString());
 
-  if (count !== null && count >= 3) {
-    return NextResponse.json({ error: "För många förfrågningar, försök igen senare" }, { status: 429 });
-  }
+    if (countError) {
+      console.error("[projektförfrågan] Supabase-fråga misslyckades", countError);
+      return NextResponse.json({ error: "Kunde inte spara förfrågan" }, { status: 500 });
+    }
 
-  const { error } = await supabase.from("projektforfragningar").insert({
-    categories: body.categories,
-    budget: body.budget,
-    timeline: body.timeline,
-    description: body.description,
-    name: body.name,
-    company: body.company,
-    email: body.email,
-    phone: body.phone,
-  });
+    if (count !== null && count >= 3) {
+      return NextResponse.json({ error: "För många förfrågningar, försök igen senare" }, { status: 429 });
+    }
 
-  if (error) {
-    console.error("[projektförfrågan] Supabase insert misslyckades", error);
+    const { error } = await supabase.from("projektforfragningar").insert({
+      categories: body.categories,
+      budget: body.budget,
+      timeline: body.timeline,
+      description: body.description,
+      name: body.name,
+      company: body.company,
+      email: body.email,
+      phone: body.phone,
+    });
+
+    if (error) {
+      console.error("[projektförfrågan] Supabase insert misslyckades", error);
+      return NextResponse.json({ error: "Kunde inte spara förfrågan" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("[projektförfrågan] Oväntat fel", err);
     return NextResponse.json({ error: "Kunde inte spara förfrågan" }, { status: 500 });
   }
-
-  return NextResponse.json({ ok: true });
 }
