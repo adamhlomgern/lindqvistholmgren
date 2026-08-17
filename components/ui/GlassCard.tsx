@@ -26,7 +26,7 @@ export function GlassCard({ accent = "emerald", className = "", children }: Glas
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage: `radial-gradient(220px 220px at 88% -10%, ${glow}1f, transparent 70%), radial-gradient(180px 180px at -5% 110%, ${glow}12, transparent 70%)`,
+          backgroundImage: `radial-gradient(220px 220px at 88% -10%, ${glow}14, transparent 70%), radial-gradient(180px 180px at -5% 110%, ${glow}0c, transparent 70%)`,
         }}
       />
       <div className={`relative z-10 flex h-full flex-col ${className}`}>{children}</div>
