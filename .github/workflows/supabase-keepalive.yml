@@ -1,0 +1,17 @@
+name: Supabase keep-alive
+
+# Supabase free-tier projects auto-pause after 7 days without any API
+# activity. Loading the homepage triggers a real Supabase query (project
+# list), so a periodic visit well within that window keeps the project
+# active without needing a paid plan.
+on:
+  schedule:
+    - cron: "0 6 */3 * *"
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping homepage
+        run: curl -sf --max-time 30 https://lindqvistholmgren.se/ > /dev/null
