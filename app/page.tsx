@@ -9,6 +9,8 @@ import { AboutTeaser } from "@/components/sections/AboutTeaser";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 
+export const revalidate = 3600;
+
 export default function Home() {
   return (
     <>

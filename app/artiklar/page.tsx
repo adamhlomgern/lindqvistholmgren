@@ -13,6 +13,8 @@ export const metadata: Metadata = {
     "Tips och råd om webb, design och digital marknadsföring för småföretag — skrivet av Lindqvist / Holmgren.",
 };
 
+export const revalidate = 3600;
+
 export default async function ArtiklarPage() {
   const [articles, categories] = await Promise.all([getArticles(), getCategories()]);
 

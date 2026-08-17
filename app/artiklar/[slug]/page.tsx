@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/Button";
 import { getArticleBySlug } from "@/lib/data/articles";
 import { RelatedArticles } from "@/components/sections/RelatedArticles";
 
+export const revalidate = 3600;
+
 type Props = {
   params: Promise<{ slug: string }>;
 };

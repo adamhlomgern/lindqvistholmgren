@@ -17,6 +17,8 @@ import { RelatedProjects } from "@/components/projects/RelatedProjects";
 
 const SITE_URL = "https://lindqvistholmgren.se";
 
+export const revalidate = 3600;
+
 type Props = {
   params: Promise<{ slug: string }>;
 };
