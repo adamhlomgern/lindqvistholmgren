@@ -4,7 +4,13 @@ import { accentHex, type Accent } from "@/lib/design/accents";
 type GlassCardProps = {
   accent?: Accent;
   className?: string;
+  padding?: "default" | "compact";
   children: ReactNode;
+};
+
+const paddingClasses = {
+  default: "p-6",
+  compact: "p-4 sm:p-6",
 };
 
 // className is applied to the inner flex container (content layout: gap,
@@ -18,10 +24,12 @@ type GlassCardProps = {
 // full-page-cost filter repeated on every card (dozens per page), and was
 // the main cause of the janky/disappearing-content scrolling on mobile.
 // A radial-gradient reads the same but is essentially free to paint.
-export function GlassCard({ accent = "emerald", className = "", children }: GlassCardProps) {
+export function GlassCard({ accent = "emerald", className = "", padding = "default", children }: GlassCardProps) {
   const glow = accentHex[accent];
   return (
-    <div className="relative h-full overflow-hidden rounded-2xl border border-bone/10 bg-charcoal/60 p-6 transition-colors group-hover:border-bone/20 group-hover:bg-charcoal/80">
+    <div
+      className={`relative h-full overflow-hidden rounded-2xl border border-bone/10 bg-charcoal/60 transition-colors group-hover:border-bone/20 group-hover:bg-charcoal/80 ${paddingClasses[padding]}`}
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
