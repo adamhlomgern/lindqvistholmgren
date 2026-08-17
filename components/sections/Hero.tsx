@@ -27,12 +27,12 @@ export function Hero() {
         </div>
         <h1 className="mt-6 max-w-3xl font-display text-5xl font-bold leading-[0.92] tracking-[-0.04em] text-bone md:text-7xl">
           Två frilansare. <span className="text-emerald">Ett team.</span> Er digitala
-          partner i Karlstad.
+          partner.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone">
-          Vi är ett litet, familjärt team som hjälper lokala företag i Karlstad och
-          Värmland med webb, design och digital marknadsföring — nära, personligt och
-          pålitligt.
+          Vi är ett litet, sammansvetsat team som hjälper företag växa digitalt med
+          webb, design och marknadsföring — lokalt i Karlstad och Värmland, och på
+          distans i hela landet.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <StartProjectButton>

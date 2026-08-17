@@ -33,7 +33,7 @@ const values = [
   {
     icon: Users,
     title: "Ingen mellanhand",
-    description: "Ni pratar alltid direkt med den som faktiskt gör jobbet — främst Ada.",
+    description: "Ni pratar alltid direkt med den som faktiskt gör jobbet — Ada eller Malin.",
   },
   {
     icon: Sparkles,

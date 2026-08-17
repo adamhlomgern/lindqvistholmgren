@@ -7,9 +7,8 @@ export const services: Service[] = [
     description: "Snabba, responsiva webbplatser byggda för att konvertera besökare till kunder.",
     intro:
       "En hemsida är ofta första intrycket kunder får av ert företag. Vi bygger snabba, moderna och lättnavigerade webbplatser som fungerar lika bra på mobilen som på datorn — och som är gjorda för att omvandla besökare till förfrågningar och kunder.",
-    heroHeadline:
-      "En hemsida ska göra jobbet med att sälja, inte bara se fin ut. Det handlar om resultat.",
-    heroAccentWord: "resultat",
+    heroHeadline: "Vi bygger snabba hemsidor som omvandlar besökare till kunder.",
+    heroAccentWord: "kunder",
     features: [
       {
         icon: "layout-template",
@@ -100,8 +99,8 @@ export const services: Service[] = [
     description: "Sökmotoroptimering som gör att fler kunder hittar er på Google.",
     intro:
       "Att ha en fin hemsida räcker inte om ingen hittar den. Vi optimerar er webbplats tekniskt och innehållsmässigt så att ni syns högre upp i Google för de sökord som faktiskt ger kunder.",
-    heroHeadline: "Synas på Google är ingen slump. Det är strategi.",
-    heroAccentWord: "strategi",
+    heroHeadline: "Vi optimerar er hemsida så fler kunder hittar er på Google.",
+    heroAccentWord: "Google",
     titleLower: "SEO",
     features: [
       {
@@ -193,8 +192,8 @@ export const services: Service[] = [
     description: "Visuell identitet och digital design som stärker ert varumärke.",
     intro:
       "En tydlig visuell identitet gör att ni känns igen och uppfattas som seriösa. Vi tar fram logotyper, färgpaletter och grafiska profiler som håller ihop hela ert varumärke — från hemsida till visitkort.",
-    heroHeadline: "Ett starkt varumärke är ingen tillfällighet. Det handlar om identitet.",
-    heroAccentWord: "identitet",
+    heroHeadline: "Vi tar fram logotyp, grafisk profil och design som stärker ert varumärke.",
+    heroAccentWord: "varumärke",
     features: [
       {
         icon: "pen-tool",
@@ -275,8 +274,8 @@ export const services: Service[] = [
     description: "Strategier och marknadsföring som får ert företag att växa långsiktigt.",
     intro:
       "Att växa digitalt handlar om mer än en enskild kanal. Vi hjälper er sätta en tydlig tillväxtstrategi — från innehåll och annonsering till uppföljning — så att insatserna faktiskt leder någonstans.",
-    heroHeadline: "Fler kanaler ger inte fler kunder — rätt riktning gör.",
-    heroAccentWord: "riktning",
+    heroHeadline: "Vi sätter strategi och driver marknadsföring som får er att växa.",
+    heroAccentWord: "växa",
     features: [
       {
         icon: "target",
@@ -352,7 +351,7 @@ export const services: Service[] = [
     description: "Automatiserade flöden som sparar tid i vardagen.",
     intro:
       "Mycket av det ni gör manuellt idag går att automatisera — bokningar, uppföljningsmejl, orderhantering och mer. Vi bygger automatiserade flöden som sparar tid och minskar risken för mänskliga misstag.",
-    heroHeadline: "Manuellt arbete äter upp tid ni inte har att ge bort.",
+    heroHeadline: "Vi automatiserar bokningar, mejl och rutiner så ni sparar tid.",
     heroAccentWord: "tid",
     features: [
       {
@@ -429,8 +428,8 @@ export const services: Service[] = [
     description: "Löpande support och underhåll så att sajten fortsätter fungera bra.",
     intro:
       "En lanserad hemsida är inte ett avslutat projekt. Vi finns kvar som stöd med uppdateringar, säkerhet och mindre vidareutveckling, så att ni slipper oroa er för att något går sönder eller blir omodernt.",
-    heroHeadline: "En lanserad hemsida är inte färdig — den behöver trygghet över tid.",
-    heroAccentWord: "trygghet",
+    heroHeadline: "Vi sköter drift, uppdateringar och säkerhet efter lansering.",
+    heroAccentWord: "säkerhet",
     features: [
       {
         icon: "shield-check",

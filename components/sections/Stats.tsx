@@ -16,7 +16,7 @@ export function Stats() {
   return (
     <Section tone="forest">
       <Container>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map((stat, index) => {
             const accent = accents[index % accents.length];
             return (

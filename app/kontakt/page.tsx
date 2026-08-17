@@ -53,11 +53,11 @@ export default function KontaktPage() {
             <div className="flex flex-col gap-4">
               <GlassCard accent="emerald">
                 <span className={`flex h-14 w-14 items-center justify-center rounded-full font-display text-xl font-bold ${badgeClasses.emerald}`}>
-                  A
+                  A/M
                 </span>
-                <p className="mt-4 font-display text-lg font-bold text-bone">Prata med Ada</p>
+                <p className="mt-4 font-display text-lg font-bold text-bone">Prata med Ada & Malin</p>
                 <p className="mt-2 text-sm leading-relaxed text-stone">
-                  All kontakt går genom Ada, som håller ihop projektet från start till mål —
+                  All kontakt går direkt till oss, som håller ihop projektet från start till mål —
                   inga mellanhänder, inga väntetider.
                 </p>
               </GlassCard>

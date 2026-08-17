@@ -81,8 +81,8 @@ export function Footer() {
               />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-stone">
-              Två frilansare med bas i Karlstad. Vi hjälper lokala företag växa digitalt —
-              personligt, nära och utan mellanhänder.
+              Två frilansare med bas i Karlstad. Vi hjälper företag växa digitalt —
+              lokalt och i hela Sverige, personligt och utan mellanhänder.
             </p>
             <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-bone/5 py-1.5 pl-2.5 pr-3.5 text-xs font-medium uppercase tracking-label text-stone">
               <Clock className="text-emerald" size={14} strokeWidth={2.25} />

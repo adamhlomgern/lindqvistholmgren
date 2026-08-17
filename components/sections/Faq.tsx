@@ -26,7 +26,7 @@ const defaultFaqs = [
   {
     question: "Vem pratar jag med under projektet?",
     answer:
-      "All kontakt sker främst med Ada, som håller ihop projektet från start till mål. Inga projektledare eller mellanhänder i vägen.",
+      "All kontakt sker direkt med Ada och Malin, som håller ihop projektet från start till mål. Inga projektledare eller mellanhänder i vägen.",
   },
   {
     question: "Hjälper ni till efter lansering också?",
