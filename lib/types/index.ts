@@ -133,7 +133,8 @@ export type ProjectCategory =
   | "vet-inte";
 
 export type ProjectBudget =
-  | "under-15k"
+  | "under-5k"
+  | "5k-15k"
   | "15k-50k"
   | "50k-150k"
   | "over-150k"

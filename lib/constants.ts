@@ -11,7 +11,8 @@ export const projectCategories: ProjectCategory[] = [
 ];
 
 export const projectBudgets: ProjectBudget[] = [
-  "under-15k",
+  "under-5k",
+  "5k-15k",
   "15k-50k",
   "50k-150k",
   "over-150k",
@@ -31,7 +32,8 @@ export const projectCategoryLabels: Record<ProjectCategory, string> = {
 };
 
 export const projectBudgetLabels: Record<ProjectBudget, string> = {
-  "under-15k": "Under 15 000 kr",
+  "under-5k": "Under 5 000 kr",
+  "5k-15k": "5 000–15 000 kr",
   "15k-50k": "15 000–50 000 kr",
   "50k-150k": "50 000–150 000 kr",
   "over-150k": "Över 150 000 kr",

@@ -34,7 +34,8 @@ const CATEGORY_OPTIONS: { value: ProjectCategory; label: string; icon: LucideIco
 ];
 
 const BUDGET_OPTIONS: { value: ProjectBudget; label: string }[] = [
-  { value: "under-15k", label: "Under 15 000 kr" },
+  { value: "under-5k", label: "Under 5 000 kr" },
+  { value: "5k-15k", label: "5 000–15 000 kr" },
   { value: "15k-50k", label: "15 000–50 000 kr" },
   { value: "50k-150k", label: "50 000–150 000 kr" },
   { value: "over-150k", label: "Över 150 000 kr" },
