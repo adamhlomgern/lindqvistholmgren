@@ -57,7 +57,7 @@ export default function ServicekollCustomersPage() {
         <EmptyState
           icon={Users}
           title="Den här vyn har inga externa kunder"
-          description="I underhållsläget hör objekten till er egen utrustning. Byt till Bilverkstad eller Värmepump i topbaren för att se kundexempel."
+          description="I underhållsläget hör objekten till er egen utrustning — det finns inga kunder att visa här. Byt till Bilverkstad eller VVS i topbaren för att se kundexempel."
         />
       ) : (
         <>

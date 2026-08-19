@@ -13,6 +13,7 @@ type Action =
   | { type: "ADD_CUSTOMER"; customer: Customer }
   | { type: "ADD_ASSET"; asset: Asset }
   | { type: "REGISTER_SERVICE"; assetId: string; event: ServiceEvent; nextServiceDate: string | null }
+  | { type: "TOGGLE_MANUAL_CONTACT"; assetId: string; contactedAt: string | null }
   | { type: "SET_INDUSTRY"; industry: IndustryKey }
   | { type: "RESET"; seed: SeedData };
 
@@ -28,8 +29,22 @@ function reducer(state: State, action: Action): State {
         serviceEvents: [action.event, ...state.serviceEvents],
         assets: state.assets.map((asset) =>
           asset.id === action.assetId
-            ? { ...asset, lastServiceDate: action.event.performedAt, nextServiceDate: action.nextServiceDate }
+            ? {
+                ...asset,
+                lastServiceDate: action.event.performedAt,
+                nextServiceDate: action.nextServiceDate,
+                // A fresh service cycle starts — any earlier "we called
+                // about this" note no longer applies.
+                manualContactedAt: null,
+              }
             : asset,
+        ),
+      };
+    case "TOGGLE_MANUAL_CONTACT":
+      return {
+        ...state,
+        assets: state.assets.map((asset) =>
+          asset.id === action.assetId ? { ...asset, manualContactedAt: action.contactedAt } : asset,
         ),
       };
     case "SET_INDUSTRY":
@@ -42,13 +57,14 @@ function reducer(state: State, action: Action): State {
 }
 
 type NewCustomerInput = Omit<Customer, "id" | "createdAt">;
-type NewAssetInput = Omit<Asset, "id" | "createdAt">;
+type NewAssetInput = Omit<Asset, "id" | "createdAt" | "manualContactedAt">;
 type RegisterServiceInput = { performedAt: string; serviceType?: string; notes?: string; nextServiceDate: string | null };
 
 type ServicePlatformContextValue = Omit<State, "industryTouched"> & {
   addCustomer: (input: NewCustomerInput) => Customer;
   addAsset: (input: NewAssetInput) => Asset;
   registerService: (assetId: string, input: RegisterServiceInput) => void;
+  toggleManualContact: (assetId: string) => void;
   setIndustry: (industry: IndustryKey) => void;
   resetDemo: () => void;
 };
@@ -86,7 +102,12 @@ export function ServicePlatformProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addAsset = useCallback((input: NewAssetInput) => {
-    const asset: Asset = { ...input, id: generateId("asset"), createdAt: new Date().toISOString() };
+    const asset: Asset = {
+      ...input,
+      id: generateId("asset"),
+      manualContactedAt: null,
+      createdAt: new Date().toISOString(),
+    };
     dispatch({ type: "ADD_ASSET", asset });
     return asset;
   }, []);
@@ -101,6 +122,18 @@ export function ServicePlatformProvider({ children }: { children: ReactNode }) {
     };
     dispatch({ type: "REGISTER_SERVICE", assetId, event, nextServiceDate: input.nextServiceDate });
   }, []);
+
+  const toggleManualContact = useCallback(
+    (assetId: string) => {
+      const current = state.assets.find((asset) => asset.id === assetId)?.manualContactedAt ?? null;
+      dispatch({
+        type: "TOGGLE_MANUAL_CONTACT",
+        assetId,
+        contactedAt: current ? null : toISODate(new Date()),
+      });
+    },
+    [state.assets],
+  );
 
   const setIndustry = useCallback((industry: IndustryKey) => {
     dispatch({ type: "SET_INDUSTRY", industry });
@@ -119,10 +152,11 @@ export function ServicePlatformProvider({ children }: { children: ReactNode }) {
       addCustomer,
       addAsset,
       registerService,
+      toggleManualContact,
       setIndustry,
       resetDemo,
     }),
-    [state, resolvedIndustry, addCustomer, addAsset, registerService, setIndustry, resetDemo],
+    [state, resolvedIndustry, addCustomer, addAsset, registerService, toggleManualContact, setIndustry, resetDemo],
   );
 
   return <ServicePlatformContext.Provider value={value}>{children}</ServicePlatformContext.Provider>;

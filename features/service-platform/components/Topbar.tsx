@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { TopbarShell } from "@/components/demo/TopbarShell";
 import { Badge } from "@/components/demo/Badge";
 import { servicePlatformConfig } from "@/features/service-platform/config/product";
@@ -10,13 +11,20 @@ export function Topbar() {
     <TopbarShell
       left={
         <>
+          <Image src={servicePlatformConfig.logo} alt="" width={22} height={22} className="h-[22px] w-[22px] md:hidden" />
           <span className="font-display text-sm font-bold text-demo-text">{servicePlatformConfig.name}</span>
-          <Badge tone="primary">Demo</Badge>
+          {/* On desktop the persona switcher lives in the sidebar instead, so the badge has room to breathe. On mobile it's dropped to keep this to one row. */}
+          <span className="hidden md:inline-flex">
+            <Badge tone="primary">Demo</Badge>
+          </span>
         </>
       }
       right={
         <>
-          <IndustrySwitcher />
+          {/* Desktop switches persona from the sidebar; this is the mobile-only equivalent. */}
+          <span className="md:hidden">
+            <IndustrySwitcher />
+          </span>
           <ResetDemoButton />
           <LeadCta />
         </>

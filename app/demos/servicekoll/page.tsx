@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 
 const useCases = [
   { icon: Car, title: "Bil & verkstad", description: "Registreringsnummer, servicehistorik och påminnelser för kundernas fordon." },
-  { icon: Flame, title: "Värmepumpar", description: "Serienummer och serviceintervall för anläggningar hos era kunder." },
+  { icon: Flame, title: "VVS", description: "Serienummer och serviceintervall för värmepumpar och installationer hos era kunder." },
   { icon: Wind, title: "Ventilation", description: "Kontroll- och servicedatum för ventilationsaggregat." },
   { icon: Cog, title: "Maskiner", description: "Underhållsplaner för maskinpark, kompressorer och entreprenadmaskiner." },
   { icon: ClipboardList, title: "Företagets egen utrustning", description: "Egna fordon, truckar och utrustning som behöver återkommande kontroll." },
@@ -111,7 +111,7 @@ export default function ServicekollMarketingPage() {
                 Klicka runt i en färdig demo
               </h2>
               <p className="mt-2 text-stone">
-                Ingen inloggning behövs — testa med färdig exempeldata direkt, för bilverkstad, värmepump eller eget underhåll.
+                Ingen inloggning behövs — testa med färdig exempeldata direkt, för bilverkstad, VVS eller eget underhåll.
               </p>
             </div>
             <Link

@@ -67,7 +67,7 @@ export default function ServicekollDashboardPage() {
               description="Alla objekt i den här vyn ligger inom god tid till nästa service."
             />
           ) : (
-            <AssetsTable assets={actionItems} customers={customers} />
+            <AssetsTable assets={actionItems} customers={customers} showOwnerColumn={preset.ownership === "customer"} />
           )}
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -36,7 +37,11 @@ export default function DemosPage() {
                 <GlassCard accent={accent} className="justify-between">
                   <div>
                     <div className="flex items-center justify-between gap-3">
-                      <AccentBadge icon={demo.icon} accent={accent} size={22} />
+                      {demo.logo ? (
+                        <Image src={demo.logo} alt="" width={44} height={44} className="h-11 w-11" />
+                      ) : (
+                        <AccentBadge icon={demo.icon} accent={accent} size={22} />
+                      )}
                       {comingSoon && <Tag>Kommer snart</Tag>}
                     </div>
                     <h2 className="mt-4 font-display text-lg font-bold text-bone">{demo.title}</h2>

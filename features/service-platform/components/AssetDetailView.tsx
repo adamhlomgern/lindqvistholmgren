@@ -16,7 +16,7 @@ import { RegisterServiceModal } from "@/features/service-platform/components/Reg
 import { EmptyState } from "@/components/demo/EmptyState";
 
 export function AssetDetailView({ assetId }: { assetId: string }) {
-  const { assets, customers, serviceEvents } = useServicePlatform();
+  const { assets, customers, serviceEvents, toggleManualContact } = useServicePlatform();
   const [registerOpen, setRegisterOpen] = useState(false);
 
   const asset = assets.find((item) => item.id === assetId);
@@ -137,6 +137,30 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
               })
             )}
           </div>
+
+          {customer && (
+            <button
+              type="button"
+              onClick={() => toggleManualContact(asset.id)}
+              className={`mt-3 flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors ${
+                asset.manualContactedAt
+                  ? "border-demo-primary/30 bg-demo-primary-soft"
+                  : "border-dashed border-demo-border bg-demo-surface hover:border-demo-text-faint"
+              }`}
+            >
+              <span
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+                  asset.manualContactedAt ? "border-demo-primary bg-demo-primary text-white" : "border-demo-border"
+                }`}
+              >
+                {asset.manualContactedAt && <Check size={13} />}
+              </span>
+              <span className={asset.manualContactedAt ? "text-demo-primary-soft-text" : "text-demo-text"}>
+                Vi har själva ringt {customer.name} om servicen
+                {asset.manualContactedAt && ` — ${formatDateSv(asset.manualContactedAt)}`}
+              </span>
+            </button>
+          )}
         </div>
       </div>
 

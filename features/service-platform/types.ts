@@ -27,6 +27,11 @@ export type Asset = {
   lastServiceDate: string | null;
   nextServiceDate: string | null;
   serviceIntervalMonths: number | null;
+  // Set when someone has manually called the customer to follow up about the
+  // upcoming service (separate from the automated email/SMS reminders).
+  // Cleared whenever a new service is registered, since it's a note about
+  // the *current* upcoming cycle.
+  manualContactedAt: string | null;
   createdAt: string;
 };
 

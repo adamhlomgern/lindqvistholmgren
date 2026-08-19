@@ -8,6 +8,9 @@ export type DemoListing = {
   tagline: string;
   description: string;
   icon: LucideIcon;
+  // Optional dedicated product mark — falls back to the AccentBadge/icon
+  // combo when a demo doesn't have its own logo yet.
+  logo?: string;
   status: DemoStatus;
 };
 
@@ -17,8 +20,9 @@ export const demos: DemoListing[] = [
     title: "Servicekoll",
     tagline: "Service- och underhållssystem",
     description:
-      "Håll koll på vad som behöver service innan det blir för sent — för bilverkstäder, värmepumpsföretag eller företagets egen utrustning.",
+      "Håll koll på vad som behöver service innan det blir för sent — för bilverkstäder, VVS-företag eller företagets egen utrustning.",
     icon: Wrench,
+    logo: "/images/demos/servicekoll-logo.svg",
     status: "live",
   },
 ];

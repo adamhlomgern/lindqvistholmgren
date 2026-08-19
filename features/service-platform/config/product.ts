@@ -1,5 +1,6 @@
 export const servicePlatformConfig = {
   name: "Servicekoll",
+  logo: "/images/demos/servicekoll-logo.svg",
   demoMode: true,
 };
 

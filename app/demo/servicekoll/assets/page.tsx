@@ -7,6 +7,7 @@ import { filterAssetsByIndustry, industryPresets } from "@/features/service-plat
 import { getAssetStatus } from "@/features/service-platform/utils/status";
 import { useQueryParam } from "@/features/service-platform/utils/useQueryParam";
 import { SearchInput } from "@/components/demo/SearchInput";
+import { HorizontalScroller } from "@/components/demo/HorizontalScroller";
 import { AssetsTable } from "@/features/service-platform/components/AssetsTable";
 import { EmptyState } from "@/components/demo/EmptyState";
 import { Button } from "@/components/demo/Button";
@@ -14,7 +15,7 @@ import { AddAssetModal } from "@/features/service-platform/components/AddAssetMo
 
 type FilterKey = "all" | "customer" | "own" | "due_soon" | "overdue";
 
-const filterOptions: { key: FilterKey; label: string }[] = [
+const baseFilterOptions: { key: FilterKey; label: string }[] = [
   { key: "all", label: "Alla" },
   { key: "customer", label: "Kundobjekt" },
   { key: "own", label: "Egna objekt" },
@@ -25,10 +26,19 @@ const filterOptions: { key: FilterKey; label: string }[] = [
 export default function ServicekollAssetsPage() {
   const { assets, customers, industry } = useServicePlatform();
   const preset = industryPresets[industry];
+  const isInternal = preset.ownership === "internal";
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterKey>("all");
   const [customerFilterCleared, setCustomerFilterCleared] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+
+  // Every object is already "egen utrustning" in the internal persona, so
+  // the ownership split is meaningless there — drop those two pills.
+  const filterOptions = useMemo(
+    () => (isInternal ? baseFilterOptions.filter((option) => option.key !== "customer" && option.key !== "own") : baseFilterOptions),
+    [isInternal],
+  );
+  const effectiveFilter = isInternal && (filter === "customer" || filter === "own") ? "all" : filter;
 
   const customerIdFromUrl = useQueryParam("customer");
   const customerId = customerFilterCleared ? null : customerIdFromUrl;
@@ -41,10 +51,10 @@ export default function ServicekollAssetsPage() {
   const filteredAssets = useMemo(() => {
     let result = visibleAssets;
     if (customerId) result = result.filter((asset) => asset.customerId === customerId);
-    if (filter === "customer") result = result.filter((asset) => asset.customerId !== null);
-    if (filter === "own") result = result.filter((asset) => asset.customerId === null);
-    if (filter === "due_soon") result = result.filter((asset) => getAssetStatus(asset) === "due_soon");
-    if (filter === "overdue") result = result.filter((asset) => getAssetStatus(asset) === "overdue");
+    if (effectiveFilter === "customer") result = result.filter((asset) => asset.customerId !== null);
+    if (effectiveFilter === "own") result = result.filter((asset) => asset.customerId === null);
+    if (effectiveFilter === "due_soon") result = result.filter((asset) => getAssetStatus(asset) === "due_soon");
+    if (effectiveFilter === "overdue") result = result.filter((asset) => getAssetStatus(asset) === "overdue");
 
     const query = search.trim().toLowerCase();
     if (query) {
@@ -57,7 +67,7 @@ export default function ServicekollAssetsPage() {
     }
 
     return result;
-  }, [visibleAssets, customerId, filter, search, customerById]);
+  }, [visibleAssets, customerId, effectiveFilter, search, customerById]);
 
   function clearCustomerFilter() {
     setCustomerFilterCleared(true);
@@ -92,22 +102,26 @@ export default function ServicekollAssetsPage() {
         </div>
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
         <SearchInput value={search} onChange={setSearch} placeholder="Sök namn, identifierare eller kund…" />
-        <div className="flex flex-wrap gap-1 rounded-full border border-demo-border bg-demo-surface-hover p-1">
+        <HorizontalScroller
+          className="flex items-center gap-1 rounded-full border border-demo-border bg-demo-surface-hover p-1"
+          fadeFrom="from-demo-surface-hover"
+          rounding="full"
+        >
           {filterOptions.map((option) => (
             <button
               key={option.key}
               type="button"
               onClick={() => setFilter(option.key)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                filter === option.key ? "bg-demo-primary text-white" : "text-demo-text-muted hover:text-demo-text"
+              className={`shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                effectiveFilter === option.key ? "bg-demo-primary text-white" : "text-demo-text-muted hover:text-demo-text"
               }`}
             >
               {option.label}
             </button>
           ))}
-        </div>
+        </HorizontalScroller>
       </div>
 
       {filteredAssets.length === 0 ? (
@@ -118,7 +132,7 @@ export default function ServicekollAssetsPage() {
           action={<Button onClick={() => setAddOpen(true)}>Lägg till objekt</Button>}
         />
       ) : (
-        <AssetsTable assets={filteredAssets} customers={customers} />
+        <AssetsTable assets={filteredAssets} customers={customers} showOwnerColumn={!isInternal} />
       )}
 
       <AddAssetModal open={addOpen} onClose={() => setAddOpen(false)} defaultCustomerId={customerId ?? undefined} />

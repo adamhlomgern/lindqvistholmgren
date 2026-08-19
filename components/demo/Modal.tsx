@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { X } from "lucide-react";
 
 type ModalProps = {
@@ -11,16 +11,33 @@ type ModalProps = {
 };
 
 export function Modal({ open, onClose, title, children }: ModalProps) {
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-demo-text/40 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-demo-text/40 p-4 py-10 backdrop-blur-sm sm:items-center"
       onClick={onClose}
       role="presentation"
     >
       <div
-        className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl border border-demo-border bg-demo-surface p-6 shadow-xl"
+        className="max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border border-demo-border bg-demo-surface p-6 shadow-xl"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"

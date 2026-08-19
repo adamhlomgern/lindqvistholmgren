@@ -16,6 +16,7 @@ type AssetBlueprint = {
   intervalMonths: number | null;
   dueInDays: number | null;
   historyEntries?: number;
+  manualContacted?: boolean;
 };
 
 // dueInDays is relative to "today" at seed time, so the demo always shows a
@@ -37,7 +38,7 @@ export function createSeedData(today: Date = new Date()): SeedData {
   const blueprints: AssetBlueprint[] = [
     // Automotive — customer-owned vehicles
     { id: "asset-1", customerId: "cust-1", name: "Kia EV3", category: "vehicle", identifier: "ABC123", intervalMonths: 12, dueInDays: -3, historyEntries: 2 },
-    { id: "asset-2", customerId: "cust-2", name: "Volvo XC60", category: "vehicle", identifier: "XYZ789", intervalMonths: 12, dueInDays: 12 },
+    { id: "asset-2", customerId: "cust-2", name: "Volvo XC60", category: "vehicle", identifier: "XYZ789", intervalMonths: 12, dueInDays: 12, manualContacted: true },
     { id: "asset-3", customerId: "cust-3", name: "Tesla Model Y", category: "vehicle", identifier: "DEF456", intervalMonths: 12, dueInDays: 45 },
     { id: "asset-4", customerId: "cust-1", name: "VW Golf", category: "vehicle", identifier: "GHI321", intervalMonths: 12, dueInDays: 200 },
     { id: "asset-5", customerId: "cust-4", name: "Toyota Hilux", category: "vehicle", identifier: "JKL654", intervalMonths: 12, dueInDays: null },
@@ -45,7 +46,7 @@ export function createSeedData(today: Date = new Date()): SeedData {
 
     // Heatpump & ventilation — customer-owned installations
     { id: "asset-7", customerId: "cust-6", name: "IVT Geo 512", category: "heat_pump", identifier: "SN-183829", intervalMonths: 12, dueInDays: 8, historyEntries: 2 },
-    { id: "asset-8", customerId: "cust-7", name: "Nibe F750", category: "heat_pump", identifier: "SN-220144", intervalMonths: 12, dueInDays: -5 },
+    { id: "asset-8", customerId: "cust-7", name: "Nibe F750", category: "heat_pump", identifier: "SN-220144", intervalMonths: 12, dueInDays: -5, manualContacted: true },
     { id: "asset-9", customerId: "cust-6", name: "Systemair Ventilationsaggregat", category: "ventilation", identifier: "SN-556231", intervalMonths: 6, dueInDays: 60 },
     { id: "asset-10", customerId: "cust-8", name: "Thermia Diplomat", category: "heat_pump", identifier: "SN-778812", intervalMonths: 12, dueInDays: 150 },
     { id: "asset-11", customerId: "cust-9", name: "Ventum VX2", category: "ventilation", identifier: "SN-990011", intervalMonths: 6, dueInDays: null },
@@ -77,6 +78,7 @@ export function createSeedData(today: Date = new Date()): SeedData {
       lastServiceDate,
       nextServiceDate,
       serviceIntervalMonths: bp.intervalMonths,
+      manualContactedAt: bp.manualContacted ? iso(today, -2) : null,
       createdAt: iso(today, -365),
     });
 

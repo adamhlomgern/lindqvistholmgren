@@ -1,6 +1,6 @@
 import type { Asset, AssetCategory } from "@/features/service-platform/types";
 
-export type IndustryKey = "automotive" | "heatpump" | "equipment";
+export type IndustryKey = "automotive" | "vvs" | "equipment";
 
 export type IndustryPreset = {
   key: IndustryKey;
@@ -28,16 +28,16 @@ export const industryPresets: Record<IndustryKey, IndustryPreset> = {
     assetLabelPlural: "Fordon",
     identifierLabel: "Registreringsnummer",
   },
-  heatpump: {
-    key: "heatpump",
-    label: "Värmepump & ventilation",
-    shortLabel: "Värmepump",
-    tagline: "Håll koll på kundernas anläggningar",
-    dashboardIntro: "Anläggningar som snart behöver service hos era kunder.",
+  vvs: {
+    key: "vvs",
+    label: "VVS",
+    shortLabel: "VVS",
+    tagline: "Håll koll på kundernas installationer",
+    dashboardIntro: "Installationer som snart behöver service hos era kunder.",
     ownership: "customer",
     categories: ["heat_pump", "ventilation"],
-    assetLabelSingular: "Anläggning",
-    assetLabelPlural: "Anläggningar",
+    assetLabelSingular: "Installation",
+    assetLabelPlural: "Installationer",
     identifierLabel: "Serienummer",
   },
   equipment: {
@@ -54,7 +54,7 @@ export const industryPresets: Record<IndustryKey, IndustryPreset> = {
   },
 };
 
-export const industryOrder: IndustryKey[] = ["automotive", "heatpump", "equipment"];
+export const industryOrder: IndustryKey[] = ["automotive", "vvs", "equipment"];
 
 export const defaultIndustry: IndustryKey = "automotive";
 
