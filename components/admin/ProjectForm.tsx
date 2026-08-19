@@ -573,7 +573,7 @@ export function ProjectForm({ project, existingCategories = [] }: ProjectFormPro
         <StatsField name="stats" defaultValue={project?.stats ?? []} />
       </Section>
 
-      <div className="sticky bottom-0 -mx-6 -mb-6 flex flex-col gap-3 rounded-b-2xl border-t border-bone/10 bg-charcoal/95 px-6 py-4 backdrop-blur-sm">
+      <div className="flex flex-col gap-3 border-t border-bone/10 pt-6">
         {state?.error && <p className="text-sm text-coral">{state.error}</p>}
         <button
           type="submit"
