@@ -15,7 +15,6 @@ const navItems = [
   { href: "/demos", label: "Demos" },
   { href: "/projekt", label: "Projekt" },
   { href: "/artiklar", label: "Artiklar" },
-  { href: "/om-oss", label: "Om oss" },
 ];
 
 export function Header() {
