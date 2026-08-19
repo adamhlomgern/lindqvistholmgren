@@ -14,6 +14,33 @@
   --color-sky: #8ec5e8;
   --color-rose: #e8a0c0;
 
+  /* Demo design system — a clean, light-mode SaaS palette shared by every
+     product demo under /demo/*. Deliberately separate from the marketing
+     site's dark brand tokens above, so a demo app shell never depends on
+     lindqvistholmgren.se's own visual identity (see AGENTS.md/claude-briefs.md:
+     each demo should be liftable into its own product without a redesign). */
+  --color-demo-bg: #f6f7f9;
+  --color-demo-surface: #ffffff;
+  --color-demo-surface-hover: #f1f2f5;
+  --color-demo-border: #e5e7eb;
+  --color-demo-text: #111827;
+  --color-demo-text-muted: #6b7280;
+  --color-demo-text-faint: #9ca3af;
+
+  --color-demo-primary: #059669;
+  --color-demo-primary-hover: #047857;
+  --color-demo-primary-soft: #d1fae5;
+  --color-demo-primary-soft-text: #047857;
+
+  --color-demo-danger: #dc2626;
+  --color-demo-danger-soft: #fee2e2;
+  --color-demo-warning: #d97706;
+  --color-demo-warning-soft: #fef3c7;
+  --color-demo-info: #2563eb;
+  --color-demo-info-soft: #dbeafe;
+  --color-demo-neutral: #6b7280;
+  --color-demo-neutral-soft: #f3f4f6;
+
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-geist-sans);
 

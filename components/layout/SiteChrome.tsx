@@ -8,8 +8,9 @@ import { Footer } from "@/components/layout/Footer";
 export function SiteChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isProductDemo = pathname?.startsWith("/demo/");
 
-  if (isAdmin) {
+  if (isAdmin || isProductDemo) {
     return <>{children}</>;
   }
 
