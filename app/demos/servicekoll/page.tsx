@@ -50,6 +50,7 @@ export default function ServicekollMarketingPage() {
         eyebrow="Produktdemo från Lindqvist / Holmgren"
         title="Håll koll på vad som behöver service — innan det blir för sent"
         description="Samla kunder, fordon, maskiner och utrustning på ett ställe. Se kommande service, automatisera påminnelser och registrera historik. Fungerar för alla branscher med återkommande underhåll."
+        breadcrumbs={[{ label: "Demos", href: "/demos" }, { label: "Servicekoll" }]}
       >
         <Button href={serviceRoutes.dashboard()}>
           Testa demon

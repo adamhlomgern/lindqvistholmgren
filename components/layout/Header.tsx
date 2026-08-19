@@ -12,6 +12,7 @@ import { MobileMenu } from "@/components/layout/MobileMenu";
 const navItems = [
   { href: "/", label: "Hem" },
   { href: "/tjanster", label: "Tjänster" },
+  { href: "/demos", label: "Demos" },
   { href: "/projekt", label: "Projekt" },
   { href: "/artiklar", label: "Artiklar" },
   { href: "/om-oss", label: "Om oss" },
