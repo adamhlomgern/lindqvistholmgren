@@ -8,11 +8,11 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Tag } from "@/components/ui/Tag";
 import { articleIcons, resolveCategoryVisual, iconTextClasses } from "@/lib/articles/visuals";
-import type { Article } from "@/lib/types";
+import type { ArticleSummary } from "@/lib/types";
 import type { ArticleCategory } from "@/lib/data/categories";
 
 type ArticlesExplorerProps = {
-  articles: Article[];
+  articles: ArticleSummary[];
   categories: ArticleCategory[];
 };
 

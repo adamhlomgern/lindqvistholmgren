@@ -3,20 +3,20 @@ import { ArrowUpRight, Briefcase, Mail, Newspaper } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Tag } from "@/components/ui/Tag";
-import { getProjects } from "@/lib/data/projects";
-import { getArticles } from "@/lib/data/articles";
-import { getInquiries } from "@/lib/data/inquiries";
+import { getProjectsCount } from "@/lib/data/projects";
+import { getArticlesCount } from "@/lib/data/articles";
+import { getInquiriesCount, getRecentInquiries } from "@/lib/data/inquiries";
 import { projectCategoryLabels } from "@/lib/constants";
 import { MigrateButton } from "@/components/admin/MigrateButton";
 
 export default async function AdminDashboardPage() {
-  const [projects, articles, inquiries] = await Promise.all([
-    getProjects(),
-    getArticles(),
-    getInquiries(),
+  const [projectsCount, articlesCount, inquiriesCount, latestInquiries] = await Promise.all([
+    getProjectsCount(),
+    getArticlesCount(),
+    getInquiriesCount(),
+    getRecentInquiries(3),
   ]);
-  const isEmpty = projects.length === 0 && articles.length === 0;
-  const latestInquiries = inquiries.slice(0, 3);
+  const isEmpty = projectsCount === 0 && articlesCount === 0;
 
   return (
     <div>
@@ -33,7 +33,7 @@ export default async function AdminDashboardPage() {
                 className="text-stone/60 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-emerald"
               />
             </div>
-            <p className="mt-6 font-display text-3xl font-bold text-bone">{projects.length}</p>
+            <p className="mt-6 font-display text-3xl font-bold text-bone">{projectsCount}</p>
             <p className="mt-1 text-sm text-stone">Projekt</p>
           </GlassCard>
         </Link>
@@ -46,7 +46,7 @@ export default async function AdminDashboardPage() {
                 className="text-stone/60 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-sky"
               />
             </div>
-            <p className="mt-6 font-display text-3xl font-bold text-bone">{articles.length}</p>
+            <p className="mt-6 font-display text-3xl font-bold text-bone">{articlesCount}</p>
             <p className="mt-1 text-sm text-stone">Artiklar</p>
           </GlassCard>
         </Link>
@@ -59,7 +59,7 @@ export default async function AdminDashboardPage() {
                 className="text-stone/60 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-coral"
               />
             </div>
-            <p className="mt-6 font-display text-3xl font-bold text-bone">{inquiries.length}</p>
+            <p className="mt-6 font-display text-3xl font-bold text-bone">{inquiriesCount}</p>
             <p className="mt-1 text-sm text-stone">Förfrågningar</p>
           </GlassCard>
         </Link>

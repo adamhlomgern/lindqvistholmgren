@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { getArticles } from "@/lib/data/articles";
@@ -21,6 +21,7 @@ export async function renameTag(oldName: string, formData: FormData) {
     await supabase.from("articles").update({ tags: nextTags }).eq("slug", article.slug);
   }
 
+  updateTag("articles");
   revalidatePath("/admin/taggar");
   revalidatePath("/artiklar");
 }
@@ -36,6 +37,7 @@ export async function deleteTag(name: string) {
     await supabase.from("articles").update({ tags: nextTags }).eq("slug", article.slug);
   }
 
+  updateTag("articles");
   revalidatePath("/admin/taggar");
   revalidatePath("/artiklar");
 }

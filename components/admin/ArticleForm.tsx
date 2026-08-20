@@ -64,7 +64,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           <input
             name="slug"
             defaultValue={article?.slug}
-            disabled={isEditing}
+            readOnly={isEditing}
             required
             placeholder="min-artikel"
             className={inputClasses}

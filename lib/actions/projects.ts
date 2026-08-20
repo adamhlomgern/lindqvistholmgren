@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
@@ -68,6 +68,7 @@ export async function createProject(
     return { error: `Kunde inte skapa projektet: ${error.message}` };
   }
 
+  updateTag("projects");
   revalidatePath("/");
   revalidatePath("/projekt");
   revalidatePath(`/projekt/${row.slug}`);
@@ -96,6 +97,7 @@ export async function updateProject(
     return { error: `Kunde inte spara ändringarna: ${error.message}` };
   }
 
+  updateTag("projects");
   revalidatePath("/");
   revalidatePath("/projekt");
   revalidatePath(`/projekt/${slug}`);
@@ -106,6 +108,7 @@ export async function deleteProject(slug: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
   await supabase.from("projects").delete().eq("slug", slug);
+  updateTag("projects");
   revalidatePath("/");
   revalidatePath("/projekt");
   revalidatePath(`/projekt/${slug}`);

@@ -123,6 +123,10 @@ export type Article = {
   content: string;
 };
 
+// Listing/dashboard views never render article body content, so this omits
+// the (often large) rich-text `content` column to avoid fetching it in bulk.
+export type ArticleSummary = Omit<Article, "content">;
+
 export type ProjectCategory =
   | "grafisk-design"
   | "tryck"

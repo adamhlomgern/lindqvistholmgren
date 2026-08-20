@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
@@ -27,6 +27,7 @@ export async function createCategory(
     return { error: `Kunde inte skapa kategorin: ${error.message}` };
   }
 
+  updateTag("categories");
   revalidatePath("/admin/kategorier");
   revalidatePath("/artiklar");
 }
@@ -35,6 +36,7 @@ export async function deleteCategory(name: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
   await supabase.from("article_categories").delete().eq("name", name);
+  updateTag("categories");
   revalidatePath("/admin/kategorier");
   revalidatePath("/artiklar");
 }
