@@ -1,0 +1,193 @@
+import type { MenuCategory, MenuItem, ToppingGroup } from "@/features/restaurant-platform/types";
+
+export const menuCategories: MenuCategory[] = [
+  { id: "cat-pizza", name: "Pizzor" },
+  { id: "cat-sallad", name: "Sallader" },
+  { id: "cat-tillbehor", name: "Tillbehör" },
+  { id: "cat-dryck", name: "Dryck" },
+  { id: "cat-efterratt", name: "Efterrätt" },
+];
+
+// Delade tillbehörsgrupper — samma val oavsett vilken pizza man väljer, så
+// varje rätt bara behöver referera till dem istället för att duplicera dem.
+const sizeGroup: ToppingGroup = {
+  id: "grp-storlek",
+  name: "Storlek",
+  required: true,
+  multiple: false,
+  options: [
+    { id: "size-normal", name: "Normal (Ø 30 cm)", priceDelta: 0 },
+    { id: "size-family", name: "Familjestorlek (Ø 40 cm)", priceDelta: 45 },
+  ],
+};
+
+const extrasGroup: ToppingGroup = {
+  id: "grp-extra",
+  name: "Extra tillbehör",
+  required: false,
+  multiple: true,
+  maxSelect: 5,
+  options: [
+    { id: "extra-ost", name: "Extra ost", priceDelta: 15 },
+    { id: "extra-jalapeno", name: "Jalapeños", priceDelta: 10 },
+    { id: "extra-vitlok", name: "Vitlök", priceDelta: 10 },
+    { id: "extra-champinjon", name: "Champinjoner", priceDelta: 12 },
+    { id: "extra-rakor", name: "Räkor", priceDelta: 25 },
+    { id: "extra-kebab", name: "Kebabkött", priceDelta: 20 },
+  ],
+};
+
+function pizzaToppingGroups(): ToppingGroup[] {
+  return [sizeGroup, extrasGroup];
+}
+
+export const menuItems: MenuItem[] = [
+  {
+    id: "item-margherita",
+    categoryId: "cat-pizza",
+    name: "Margherita",
+    description: "Tomatsås, mozzarella och färsk basilika.",
+    price: 109,
+    image: "/images/demos/mumsa/pizza-margherita.jpg",
+    toppingGroups: pizzaToppingGroups(),
+    popular: true,
+  },
+  {
+    id: "item-pepperoni",
+    categoryId: "cat-pizza",
+    name: "Pepperoni",
+    description: "Tomatsås, mozzarella och rikligt med pepperoni.",
+    price: 119,
+    image: "/images/demos/mumsa/pizza-pepperoni.jpg",
+    toppingGroups: pizzaToppingGroups(),
+    popular: true,
+  },
+  {
+    id: "item-diavola",
+    categoryId: "cat-pizza",
+    name: "Diavola",
+    description: "Tomatsås, mozzarella, het salami och oliver.",
+    price: 125,
+    image: "/images/demos/mumsa/pizza-diavola.jpg",
+    toppingGroups: pizzaToppingGroups(),
+  },
+  {
+    id: "item-vegetarian",
+    categoryId: "cat-pizza",
+    name: "Vegetarian",
+    description: "Tomatsås, mozzarella, paprika, lök, champinjoner och oliver.",
+    price: 115,
+    image: "/images/demos/mumsa/pizza-vegetarian.jpg",
+    toppingGroups: pizzaToppingGroups(),
+  },
+  {
+    id: "item-hawaii",
+    categoryId: "cat-pizza",
+    name: "Hawaii",
+    description: "Tomatsås, mozzarella, skinka och ananas.",
+    price: 115,
+    image: "/images/demos/mumsa/pizza-hawaii.jpg",
+    toppingGroups: pizzaToppingGroups(),
+  },
+  {
+    id: "item-fyra-ostar",
+    categoryId: "cat-pizza",
+    name: "Fyra ostar",
+    description: "Tomatsås och en generös blandning av fyra sorters ost.",
+    price: 125,
+    image: "/images/demos/mumsa/pizza-cheese.jpg",
+    toppingGroups: pizzaToppingGroups(),
+  },
+  {
+    id: "item-caesarsallad",
+    categoryId: "cat-sallad",
+    name: "Caesarsallad",
+    description: "Romansallad, grillad kyckling, parmesan och krutonger.",
+    price: 119,
+    image: "/images/demos/mumsa/salad-caesar.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-grekisk-sallad",
+    categoryId: "cat-sallad",
+    name: "Grekisk sallad",
+    description: "Fetaost, oliver, tomat och sallad med olivolja.",
+    price: 109,
+    image: "/images/demos/mumsa/salad-greek.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-vitloksbrod",
+    categoryId: "cat-tillbehor",
+    name: "Vitlöksbröd",
+    description: "Nybakat bröd med vitlökssmör.",
+    price: 45,
+    image: "/images/demos/mumsa/side-garlic-bread.jpg",
+    toppingGroups: [],
+    popular: true,
+  },
+  {
+    id: "item-pommes",
+    categoryId: "cat-tillbehor",
+    name: "Pommes frites",
+    description: "Serveras med aioli.",
+    price: 49,
+    image: "/images/demos/mumsa/side-fries.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-lokringar",
+    categoryId: "cat-tillbehor",
+    name: "Lökringar",
+    description: "Krispiga friterade lökringar med chilimajonnäs.",
+    price: 55,
+    image: "/images/demos/mumsa/side-onion-rings.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-mozzarellastavar",
+    categoryId: "cat-tillbehor",
+    name: "Mozzarellastavar",
+    description: "Friterade mozzarellastavar med marinarasås.",
+    price: 59,
+    image: "/images/demos/mumsa/side-mozzarella-sticks.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-lask",
+    categoryId: "cat-dryck",
+    name: "Läsk 33cl",
+    description: "Coca-Cola, Fanta eller Sprite.",
+    price: 25,
+    image: "/images/demos/mumsa/drink-cola.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-vatten",
+    categoryId: "cat-dryck",
+    name: "Vatten 50cl",
+    description: "Kolsyrat eller stilla.",
+    price: 20,
+    image: "/images/demos/mumsa/drink-water.jpg",
+    toppingGroups: [],
+  },
+  {
+    id: "item-tiramisu",
+    categoryId: "cat-efterratt",
+    name: "Tiramisu",
+    description: "Husets tiramisu med mascarpone och kakao.",
+    price: 69,
+    image: "/images/demos/mumsa/dessert-tiramisu.jpg",
+    toppingGroups: [],
+    popular: true,
+  },
+  {
+    id: "item-chokladkaka",
+    categoryId: "cat-efterratt",
+    name: "Chokladkaka",
+    description: "Varm chokladkaka med smält kärna.",
+    price: 65,
+    image: "/images/demos/mumsa/dessert-chocolate-cake.jpg",
+    toppingGroups: [],
+  },
+];

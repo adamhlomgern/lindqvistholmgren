@@ -34,10 +34,10 @@ export function PageHero({ icon, eyebrow, title, description, children, breadcru
   );
 
   return (
-    <Section tone="forest" className={`pt-20 md:pt-28 ${visual ? "relative z-10" : ""}`}>
+    <Section tone="forest" className="pt-20 md:pt-28">
       <Container>
         {visual ? (
-          <div className="grid items-center gap-16 lg:grid-cols-[1fr_auto]">
+          <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-16">
             {content}
             {visual}
           </div>

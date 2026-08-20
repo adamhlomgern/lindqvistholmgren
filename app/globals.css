@@ -14,11 +14,26 @@
   --color-sky: #8ec5e8;
   --color-rose: #e8a0c0;
 
-  /* Demo design system — a clean, light-mode SaaS palette shared by every
-     product demo under /demo/*. Deliberately separate from the marketing
-     site's dark brand tokens above, so a demo app shell never depends on
-     lindqvistholmgren.se's own visual identity (see AGENTS.md/claude-briefs.md:
-     each demo should be liftable into its own product without a redesign). */
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-geist-sans);
+
+  --tracking-label: 0.08em;
+}
+
+/* Demo design system — a clean, light-mode SaaS palette shared by every
+   product demo under /demo/*. Deliberately separate from the marketing
+   site's dark brand tokens above, so a demo app shell never depends on
+   lindqvistholmgren.se's own visual identity (see AGENTS.md/claude-briefs.md:
+   each demo should be liftable into its own product without a redesign).
+
+   A plain (non-inline) @theme, unlike the block above: these are plain hex
+   values with no cross-variable references, so there's no need to inline
+   them into generated utilities. Keeping them as real `var(--color-demo-*)`
+   references means a demo can re-skin itself by overriding the custom
+   property on a wrapping element (see .theme-mumsa below) — `inline`d
+   utilities bake the literal hex in at build time and can't be overridden
+   this way. */
+@theme {
   --color-demo-bg: #f6f7f9;
   --color-demo-surface: #ffffff;
   --color-demo-surface-hover: #f1f2f5;
@@ -40,17 +55,41 @@
   --color-demo-info-soft: #dbeafe;
   --color-demo-neutral: #6b7280;
   --color-demo-neutral-soft: #f3f4f6;
-
-  --font-display: var(--font-space-grotesk);
-  --font-sans: var(--font-geist-sans);
-
-  --tracking-label: 0.08em;
 }
 
 body {
   background: var(--color-forest);
   color: var(--color-bone);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Mumsa (restaurant-ordering demo) — a warm, photo-forward palette layered
+   on top of the --color-demo-* tokens above via plain custom-property
+   overrides, scoped to this one demo's shell. Every shared components/demo/*
+   component keeps working unchanged; only the colors it resolves differ.
+   Servicekoll's palette above is untouched. */
+.theme-mumsa {
+  --color-demo-bg: #fdf6ee;
+  --color-demo-surface: #ffffff;
+  --color-demo-surface-hover: #fbebd9;
+  --color-demo-border: #f0ddc3;
+  --color-demo-text: #2e1b12;
+  --color-demo-text-muted: #8a6a53;
+  --color-demo-text-faint: #c9ac8d;
+
+  --color-demo-primary: #e2542b;
+  --color-demo-primary-hover: #c8431d;
+  --color-demo-primary-soft: #fce1d1;
+  --color-demo-primary-soft-text: #b8421f;
+
+  --color-demo-danger: #dc2626;
+  --color-demo-danger-soft: #fee2e2;
+  --color-demo-warning: #c8871f;
+  --color-demo-warning-soft: #faedcb;
+  --color-demo-info: #2f7d5f;
+  --color-demo-info-soft: #dcf1e6;
+  --color-demo-neutral: #8a6a53;
+  --color-demo-neutral-soft: #f4e8d9;
 }
 
 @layer base {
@@ -81,6 +120,21 @@ body {
   }
 }
 
+/* A newly-arrived order card flashes briefly, fading back to its normal
+   background — functional (draws the eye once, then gets out of the way),
+   not a decorative loop. Reads --flash-color (set inline per-card) so the
+   same keyframe serves both "a new order arrived" (primary) and "this
+   card's status just changed" (whatever tone that status is). See
+   features/restaurant-platform/components/restaurant/OrderCard.tsx. */
+@keyframes new-order-flash {
+  0% {
+    background-color: color-mix(in srgb, var(--flash-color, var(--color-demo-primary)) 20%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
 @layer utilities {
   .animate-marquee {
     animation: marquee 50s linear infinite;
@@ -88,6 +142,34 @@ body {
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-new-order {
+    animation: new-order-flash 2.4s ease-out;
+  }
+
+  /* Same flash, quicker — a tap-acknowledgement on the specific card just
+     touched, not a "come look" cue, so it needs to be over fast. */
+  .animate-status-flash {
+    animation: new-order-flash 1s ease-out;
+  }
+
+  /* A thin, theme-colored scrollbar for the few places that genuinely
+     scroll internally (a Kanban column past a few orders) — the default
+     OS scrollbar reads as browser chrome and fights the rest of the UI. */
+  .scroll-area {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-demo-border) transparent;
+  }
+  .scroll-area::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scroll-area::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-area::-webkit-scrollbar-thumb {
+    background-color: var(--color-demo-border);
+    border-radius: 9999px;
   }
 
   .bg-grain {
