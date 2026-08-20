@@ -201,6 +201,9 @@ export function createSeedData(now: Date = new Date()): SeedData {
       status: bp.status,
       createdAt: minutesAgoIso(now, bp.minutesAgo),
       statusUpdatedAt: minutesAgoIso(now, bp.statusMinutesAgo),
+      // Single entry only — seeded orders don't get backfilled multi-step
+      // history, just their current status. See types.ts.
+      statusHistory: [{ status: bp.status, at: minutesAgoIso(now, bp.statusMinutesAgo) }],
     };
   });
 

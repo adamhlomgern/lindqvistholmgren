@@ -105,4 +105,9 @@ export type Order = {
   status: OrderStatus;
   createdAt: string;
   statusUpdatedAt: string;
+  // Per-transition audit trail — not read by any UI yet. statusUpdatedAt
+  // only ever holds when the CURRENT status started, so a future "Service
+  // idag" feature (avg prep time, Redo→utlämnad time, late/rejected counts)
+  // needs this instead of re-deriving history that isn't there.
+  statusHistory: { status: OrderStatus; at: string }[];
 };

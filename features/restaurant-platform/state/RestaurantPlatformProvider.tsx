@@ -39,14 +39,28 @@ function reducer(state: State, action: Action): State {
       return {
         ...state,
         orders: state.orders.map((order) =>
-          order.id === action.orderId ? { ...order, status: action.status, statusUpdatedAt: action.at } : order,
+          order.id === action.orderId
+            ? {
+                ...order,
+                status: action.status,
+                statusUpdatedAt: action.at,
+                statusHistory: [...order.statusHistory, { status: action.status, at: action.at }],
+              }
+            : order,
         ),
       };
     case "CANCEL_ORDER":
       return {
         ...state,
         orders: state.orders.map((order) =>
-          order.id === action.orderId ? { ...order, status: "avbruten", statusUpdatedAt: action.at } : order,
+          order.id === action.orderId
+            ? {
+                ...order,
+                status: "avbruten",
+                statusUpdatedAt: action.at,
+                statusHistory: [...order.statusHistory, { status: "avbruten" as const, at: action.at }],
+              }
+            : order,
         ),
       };
     case "SET_DELIVERY_ENABLED":
@@ -150,6 +164,7 @@ export function RestaurantPlatformProvider({ children }: { children: ReactNode }
         status: "ny",
         createdAt: now,
         statusUpdatedAt: now,
+        statusHistory: [{ status: "ny", at: now }],
       };
       dispatch({ type: "PLACE_ORDER", order });
       return order;

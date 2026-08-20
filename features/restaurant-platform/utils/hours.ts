@@ -6,7 +6,7 @@ export function dayLabel(day: number): string {
   return DAY_LABELS[day];
 }
 
-function hoursForDay(restaurant: Restaurant, day: number): OpeningHours | undefined {
+export function hoursForDay(restaurant: Restaurant, day: number): OpeningHours | undefined {
   return restaurant.openingHours.find((entry) => entry.day === day);
 }
 
