@@ -12,21 +12,38 @@ type PageHeroProps = {
   description?: string;
   children?: ReactNode;
   breadcrumbs?: { label: string; href?: string }[];
+  // Optional side visual (e.g. a floating app-screenshot mockup) — when
+  // present the hero switches to a two-column layout on large screens, with
+  // the visual stacking below the text on mobile.
+  visual?: ReactNode;
 };
 
-export function PageHero({ icon, eyebrow, title, description, children, breadcrumbs }: PageHeroProps) {
+export function PageHero({ icon, eyebrow, title, description, children, breadcrumbs, visual }: PageHeroProps) {
+  const content = (
+    <div>
+      {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-6" />}
+      <Eyebrow icon={icon}>{eyebrow}</Eyebrow>
+      <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-[0.95] tracking-tight text-bone md:text-6xl">
+        {title}
+      </h1>
+      {description && (
+        <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone">{description}</p>
+      )}
+      {children && <div className="mt-8 flex flex-wrap items-center gap-4">{children}</div>}
+    </div>
+  );
+
   return (
     <Section tone="forest" className="pt-20 md:pt-28">
       <Container>
-        {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-6" />}
-        <Eyebrow icon={icon}>{eyebrow}</Eyebrow>
-        <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-[0.95] tracking-tight text-bone md:text-6xl">
-          {title}
-        </h1>
-        {description && (
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone">{description}</p>
+        {visual ? (
+          <div className="grid items-center gap-16 lg:grid-cols-[1fr_auto]">
+            {content}
+            {visual}
+          </div>
+        ) : (
+          content
         )}
-        {children && <div className="mt-8 flex flex-wrap items-center gap-4">{children}</div>}
       </Container>
     </Section>
   );

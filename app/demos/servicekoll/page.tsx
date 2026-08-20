@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowUpRight,
   Bell,
@@ -51,6 +52,28 @@ export default function ServicekollMarketingPage() {
         title="Håll koll på vad som behöver service — innan det blir för sent"
         description="Samla kunder, fordon, maskiner och utrustning på ett ställe. Se kommande service, automatisera påminnelser och registrera historik. Fungerar för alla branscher med återkommande underhåll."
         breadcrumbs={[{ label: "Demos", href: "/demos" }, { label: "Servicekoll" }]}
+        visual={
+          <div className="relative mx-auto w-[240px] rotate-3 sm:w-[270px] lg:mx-0">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute -inset-10 -z-10"
+              style={{
+                backgroundImage:
+                  "radial-gradient(220px 260px at 50% 30%, color-mix(in srgb, var(--color-emerald) 22%, transparent), transparent 70%)",
+              }}
+            />
+            <div className="animate-float overflow-hidden rounded-[1.75rem] border border-bone/10 shadow-2xl shadow-charcoal/50 ring-1 ring-bone/5">
+              <Image
+                src="/images/demos/servicekoll-mobileview.png"
+                alt="Servicekoll i mobilen"
+                width={497}
+                height={907}
+                className="block h-auto w-full"
+                priority
+              />
+            </div>
+          </div>
+        }
       >
         <Button href={serviceRoutes.dashboard()}>
           Testa demon
