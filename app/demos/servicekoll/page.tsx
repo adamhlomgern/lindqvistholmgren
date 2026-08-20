@@ -53,7 +53,7 @@ export default function ServicekollMarketingPage() {
         description="Samla kunder, fordon, maskiner och utrustning på ett ställe. Se kommande service, automatisera påminnelser och registrera historik. Fungerar för alla branscher med återkommande underhåll."
         breadcrumbs={[{ label: "Demos", href: "/demos" }, { label: "Servicekoll" }]}
         visual={
-          <div className="relative mx-auto w-[240px] rotate-3 sm:w-[270px] lg:mx-0">
+          <div className="relative mx-auto w-[220px] rotate-3 sm:w-[260px] lg:mx-0 lg:w-[270px]">
             <div
               aria-hidden
               className="pointer-events-none absolute -inset-10 -z-10"
@@ -62,13 +62,17 @@ export default function ServicekollMarketingPage() {
                   "radial-gradient(220px 260px at 50% 30%, color-mix(in srgb, var(--color-emerald) 22%, transparent), transparent 70%)",
               }}
             />
-            <div className="animate-float overflow-hidden rounded-[1.75rem] border border-bone/10 shadow-2xl shadow-charcoal/50 ring-1 ring-bone/5">
+            {/* Cropped to roughly the top half on small screens so it reads
+                as a preview peeking out rather than a long strip of app
+                stacked under the hero copy — full screenshot only on
+                desktop, where it sits beside the text instead of below it. */}
+            <div className="animate-float relative h-[210px] overflow-hidden rounded-[1.75rem] border border-bone/10 shadow-2xl shadow-charcoal/50 ring-1 ring-bone/5 sm:h-[250px] lg:h-[493px]">
               <Image
                 src="/images/demos/servicekoll-mobileview.png"
                 alt="Servicekoll i mobilen"
-                width={497}
-                height={907}
-                className="block h-auto w-full"
+                fill
+                sizes="(min-width: 1024px) 270px, (min-width: 640px) 260px, 220px"
+                className="object-cover object-top"
                 priority
               />
             </div>
