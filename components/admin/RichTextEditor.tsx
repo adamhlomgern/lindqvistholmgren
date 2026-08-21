@@ -173,7 +173,7 @@ export function RichTextEditor({ name, defaultValue = "" }: RichTextEditorProps)
           <Redo size={14} strokeWidth={2.5} />
         </ToolbarButton>
       </div>
-      <div className="px-4 py-3">
+      <div className="max-h-[28rem] overflow-y-auto px-4 py-3">
         <EditorContent editor={editor} />
       </div>
       <input type="hidden" name={name} ref={hiddenInputRef} defaultValue={defaultValue} />
