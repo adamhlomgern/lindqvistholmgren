@@ -9,7 +9,9 @@ export type ArticleCategory = {
   accent: Accent;
 };
 
-export const getCategories = unstable_cache(
+// Throws on failure instead of returning [] so a transient Supabase error
+// never gets cached as "no categories" for the full revalidate window.
+const fetchCategoriesCached = unstable_cache(
   async (): Promise<ArticleCategory[]> => {
     const supabase = createServiceRoleClient();
     const { data, error } = await supabase
@@ -17,13 +19,19 @@ export const getCategories = unstable_cache(
       .select("*")
       .order("name", { ascending: true });
 
-    if (error) {
-      console.error("[getCategories] Supabase-fråga misslyckades", error);
-      return [];
-    }
+    if (error) throw new Error(`[getCategories] ${error.message}`);
 
     return data as ArticleCategory[];
   },
   ["article-categories"],
-  { tags: ["categories"], revalidate: 3600 },
+  { tags: ["categories"], revalidate: 300 },
 );
+
+export async function getCategories(): Promise<ArticleCategory[]> {
+  try {
+    return await fetchCategoriesCached();
+  } catch (error) {
+    console.error("[getCategories] Supabase-fråga misslyckades", error);
+    return [];
+  }
+}
