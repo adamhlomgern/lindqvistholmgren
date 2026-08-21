@@ -7,7 +7,6 @@ import { getProjectsCount } from "@/lib/data/projects";
 import { getArticlesCount } from "@/lib/data/articles";
 import { getInquiriesCount, getRecentInquiries } from "@/lib/data/inquiries";
 import { projectCategoryLabels } from "@/lib/constants";
-import { MigrateButton } from "@/components/admin/MigrateButton";
 
 export default async function AdminDashboardPage() {
   const [projectsCount, articlesCount, inquiriesCount, latestInquiries] = await Promise.all([
@@ -16,7 +15,6 @@ export default async function AdminDashboardPage() {
     getInquiriesCount(),
     getRecentInquiries(3),
   ]);
-  const isEmpty = projectsCount === 0 && articlesCount === 0;
 
   return (
     <div>
@@ -92,8 +90,6 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
       )}
-
-      {isEmpty && <MigrateButton />}
     </div>
   );
 }
