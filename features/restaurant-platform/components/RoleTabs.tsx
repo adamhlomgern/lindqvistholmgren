@@ -27,11 +27,18 @@ export function RoleTabs() {
   const isOwner = pathname.startsWith(mumsaRoutes.owner());
 
   return (
-    <div className="flex w-full items-center gap-2 sm:w-auto">
-      <span className="hidden shrink-0 text-[10px] font-semibold uppercase tracking-label text-demo-text-faint sm:inline">
-        Demo — visa som
-      </span>
-      <nav className="flex flex-1 gap-1 overflow-x-auto rounded-full border border-demo-border bg-demo-neutral-soft p-1 sm:flex-none">
+    // Owns its own horizontal padding (matches TopbarShell above it and the
+    // main content below it) rather than relying on a parent wrapper for
+    // it — see the comment in Topbar.tsx about why that double-pads.
+    <div className="flex w-full items-center px-4 sm:w-auto md:px-8">
+      {/* The "visa som" label sits inside the same pill as the tabs (a
+          divider, not a gap, separates them) so it reads as one labeled
+          widget rather than a stray caption floating next to it. */}
+      <nav className="flex items-center gap-1 overflow-x-auto rounded-full border border-demo-border bg-demo-neutral-soft p-1">
+        <span className="hidden shrink-0 items-center gap-2 pl-2 pr-1 text-[10px] font-semibold uppercase tracking-label text-demo-text-faint sm:flex">
+          Visa som
+          <span className="h-3.5 w-px shrink-0 bg-demo-border" />
+        </span>
         {tabs.map((tab) => {
           const active = tab.key === "restaurang" ? isRestaurant : tab.key === "agare" ? isOwner : !isRestaurant && !isOwner;
           return (

@@ -344,7 +344,10 @@ export function OrderQueue() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 rounded-2xl border border-demo-border bg-demo-surface px-4 py-3">
-        <div className="flex flex-wrap items-center divide-x divide-demo-border">
+        {/* Dividers only once this fits on one line (sm+) — divide-x can't
+            tell a wrapped row from a continued one, so below that it left a
+            stray border floating at the start of the second line. */}
+        <div className="flex flex-wrap items-center gap-y-1.5 sm:divide-x sm:divide-demo-border">
           <span className="flex items-center gap-1.5 pr-4 text-sm font-semibold text-demo-text">
             <span className={`h-1.5 w-1.5 rounded-full ${open ? "bg-demo-primary" : "bg-demo-text-faint"}`} />
             {open ? "Öppet" : "Stängt"}
@@ -447,14 +450,17 @@ export function OrderQueue() {
                       onKeyDown={(event) => {
                         if (event.key === "Enter") setOpenOrderId(order.id);
                       }}
-                      className={`flex cursor-pointer items-center justify-between gap-3 rounded-lg border-l-2 ${rowTimeToneBorderClasses[info.tone]} px-2 py-1.5 text-left text-sm transition-colors hover:bg-demo-surface-hover`}
+                      className={`flex cursor-pointer flex-col items-start gap-1.5 rounded-lg border-l-2 ${rowTimeToneBorderClasses[info.tone]} px-2 py-1.5 text-left text-sm transition-colors hover:bg-demo-surface-hover sm:flex-row sm:items-center sm:justify-between sm:gap-3`}
                     >
                       <p className="min-w-0 truncate text-demo-text">
                         <span className="font-medium">{order.customerName}</span>{" "}
                         <span className="text-xs font-normal text-demo-text-faint">#{order.number}</span>
                         <span className="text-xs text-demo-text-muted"> · {order.deliveryAddress}</span>
                       </p>
-                      <div className="flex shrink-0 items-center gap-3">
+                      {/* Own row on mobile — sharing the row with the name/
+                          address, as on desktop, left too little width and
+                          truncated the address into something unreadable. */}
+                      <div className="flex w-full shrink-0 items-center justify-between gap-3 sm:w-auto sm:justify-end">
                         <span className={`text-xs ${rowTimeToneClasses[info.tone]}`}>{info.label}</span>
                         <button
                           type="button"

@@ -8,7 +8,11 @@ import { LeadCta } from "@/features/restaurant-platform/components/LeadCta";
 
 export function Topbar() {
   return (
-    <div className="flex flex-col gap-3 border-b border-demo-border bg-demo-surface/95 px-4 pb-3 pt-3 backdrop-blur-md md:px-8">
+    // TopbarShell owns its own horizontal padding (matches the main content
+    // padding below it) — this wrapper must not add another layer of px-*
+    // around it, or the header row ends up double-indented relative to
+    // RoleTabs and the page content. RoleTabs owns its own padding to match.
+    <div className="flex flex-col gap-3 border-b border-demo-border bg-demo-surface/95 pb-3 pt-3 backdrop-blur-md">
       <TopbarShell
         backHref={mumsaRoutes.marketing()}
         left={

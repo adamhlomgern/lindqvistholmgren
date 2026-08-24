@@ -66,7 +66,7 @@ export function MenuBrowser({
           while scrolling through the menu, which read as broken rather than
           helpful, so this now scrolls away with the rest of the content like
           a normal in-page nav. */}
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="scrollbar-hide flex gap-2 overflow-x-auto pb-1">
         {sections.map((section) => (
           <button
             key={section.id}
