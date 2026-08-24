@@ -64,6 +64,11 @@ type OrderBlueprint = {
   status: OrderStatus;
   minutesAgo: number;
   statusMinutesAgo: number;
+  // Delivery orders only, and only when status is already past "levereras"
+  // (i.e. "klar") — backfills the one extra statusHistory entry the courier
+  // dashboard's delivery-duration stat needs (levereras -> klar), since the
+  // single-entry default below only captures the order's *current* status.
+  outForDeliveryMinutesAgo?: number;
 };
 
 // minutesAgo/statusMinutesAgo are relative to "now" at seed time, so the
@@ -158,6 +163,7 @@ export function createSeedData(now: Date = new Date()): SeedData {
       status: "klar",
       minutesAgo: 110,
       statusMinutesAgo: 80,
+      outForDeliveryMinutesAgo: 92,
     },
     {
       number: 124,
@@ -180,11 +186,44 @@ export function createSeedData(now: Date = new Date()): SeedData {
       minutesAgo: 200,
       statusMinutesAgo: 195,
     },
+    {
+      number: 122,
+      lines: [line("item-hawaii", 1), line("item-lask", 1)],
+      fulfillment: "delivery",
+      customerName: "Freja Åkesson",
+      customerPhone: "070-902 33 61",
+      deliveryAddress: "Drottninggatan 50",
+      status: "klar",
+      minutesAgo: 230,
+      statusMinutesAgo: 205,
+      outForDeliveryMinutesAgo: 216,
+    },
+    // Sits in "redo" so the courier view's "Att hämta" queue has a real
+    // order waiting for pickup on first load, not just an empty state.
+    {
+      number: 121,
+      lines: [line("item-vegetarian", 1), line("item-vitloksbrod", 1)],
+      fulfillment: "delivery",
+      customerName: "Leo Malmberg",
+      customerPhone: "073-664 12 50",
+      deliveryAddress: "Hantverkargatan 15",
+      deliveryNote: "Portkod 4471, våning 3.",
+      status: "redo",
+      minutesAgo: 20,
+      statusMinutesAgo: 4,
+    },
   ];
 
   const orders: Order[] = blueprints.map((bp) => {
     const subtotal = bp.lines.reduce((sum, orderLine) => sum + orderLine.unitPrice * orderLine.quantity, 0);
     const deliveryFee = bp.fulfillment === "delivery" ? restaurant.deliveryFee : 0;
+    const statusHistory: Order["statusHistory"] =
+      bp.outForDeliveryMinutesAgo !== undefined
+        ? [
+            { status: "levereras", at: minutesAgoIso(now, bp.outForDeliveryMinutesAgo) },
+            { status: bp.status, at: minutesAgoIso(now, bp.statusMinutesAgo) },
+          ]
+        : [{ status: bp.status, at: minutesAgoIso(now, bp.statusMinutesAgo) }];
     return {
       id: `order-${bp.number}`,
       number: bp.number,
@@ -201,9 +240,10 @@ export function createSeedData(now: Date = new Date()): SeedData {
       status: bp.status,
       createdAt: minutesAgoIso(now, bp.minutesAgo),
       statusUpdatedAt: minutesAgoIso(now, bp.statusMinutesAgo),
-      // Single entry only — seeded orders don't get backfilled multi-step
-      // history, just their current status. See types.ts.
-      statusHistory: [{ status: bp.status, at: minutesAgoIso(now, bp.statusMinutesAgo) }],
+      // Single entry by default (just current status) — most seeded orders
+      // don't get backfilled multi-step history. See types.ts and
+      // outForDeliveryMinutesAgo above for the one exception.
+      statusHistory,
     };
   });
 

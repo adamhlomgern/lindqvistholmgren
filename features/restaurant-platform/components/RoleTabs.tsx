@@ -7,24 +7,26 @@ import { mumsaRoutes } from "@/features/restaurant-platform/config/product";
 const tabs = [
   { key: "kund", href: mumsaRoutes.storefront(), label: "Kund" },
   { key: "restaurang", href: mumsaRoutes.restaurant(), label: "Restaurang" },
+  { key: "leverantor", href: mumsaRoutes.courier(), label: "Leverantör" },
   { key: "agare", href: mumsaRoutes.owner(), label: "Ägare" },
 ] as const;
 
-// The three roles are real, separate routes rather than a client-side view
+// The four roles are real, separate routes rather than a client-side view
 // switch, so each can be linked to directly — but they're surfaced together
 // as tabs (not a normal nav) because switching between them is the whole
-// point of this demo: a prospect can see the same order from all three
-// angles in a couple of clicks.
+// point of this demo: a prospect can see the same order from every angle
+// (customer, kitchen, courier, owner) in a couple of clicks.
 //
 // Styled deliberately as tooling, not product: a neutral dark pill instead
 // of the brand color, plus a small "Visa som" label. A real restaurant
-// account would never see a Kund/Restaurang/Ägare switcher at all — this
-// only exists for the demo, so it shouldn't read as part of the product
-// itself.
+// account would never see a Kund/Restaurang/Leverantör/Ägare switcher at
+// all — this only exists for the demo, so it shouldn't read as part of the
+// product itself.
 export function RoleTabs() {
   const pathname = usePathname() ?? "";
   const isRestaurant = pathname.startsWith(mumsaRoutes.restaurant());
   const isOwner = pathname.startsWith(mumsaRoutes.owner());
+  const isCourier = pathname.startsWith(mumsaRoutes.courier());
 
   return (
     // Owns its own horizontal padding (matches TopbarShell above it and the
@@ -40,7 +42,14 @@ export function RoleTabs() {
           <span className="h-3.5 w-px shrink-0 bg-demo-border" />
         </span>
         {tabs.map((tab) => {
-          const active = tab.key === "restaurang" ? isRestaurant : tab.key === "agare" ? isOwner : !isRestaurant && !isOwner;
+          const active =
+            tab.key === "restaurang"
+              ? isRestaurant
+              : tab.key === "leverantor"
+                ? isCourier
+                : tab.key === "agare"
+                  ? isOwner
+                  : !isRestaurant && !isOwner && !isCourier;
           return (
             <Link
               key={tab.key}

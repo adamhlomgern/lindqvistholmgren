@@ -10,6 +10,7 @@ export const mumsaRoutes = {
   order: (id: string) => `/demo/mumsa/order/${id}`,
   restaurant: () => "/demo/mumsa/restaurang",
   owner: () => "/demo/mumsa/agare",
+  courier: () => "/demo/mumsa/leverantor",
   onboarding: () => "/demo/mumsa/onboarding",
   contactCta: () => "/kontakt?interest=mumsa",
 };
