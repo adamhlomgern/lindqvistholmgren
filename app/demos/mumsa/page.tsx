@@ -47,7 +47,7 @@ export default function MumsaMarketingPage() {
     <>
       <PageHero
         icon={Sparkles}
-        eyebrow="Produktdemo från Lindqvist / Holmgren"
+        eyebrow="Produktdemo"
         title="En egen beställningssida — redo på några minuter"
         description="Onboarda restaurangen med logga, meny och öppettider. Kunder beställer direkt på sajten, restaurangen ser ordrarna live i köket och ägaren följer försäljningen — allt i samma system."
         breadcrumbs={[{ label: "Demos", href: "/demos" }, { label: "Mumsa" }]}

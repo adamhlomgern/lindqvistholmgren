@@ -48,7 +48,7 @@ export default function ServicekollMarketingPage() {
     <>
       <PageHero
         icon={Sparkles}
-        eyebrow="Produktdemo från Lindqvist / Holmgren"
+        eyebrow="Produktdemo"
         title="Håll koll på vad som behöver service — innan det blir för sent"
         description="Samla kunder, fordon, maskiner och utrustning på ett ställe. Se kommande service, automatisera påminnelser och registrera historik. Fungerar för alla branscher med återkommande underhåll."
         breadcrumbs={[{ label: "Demos", href: "/demos" }, { label: "Servicekoll" }]}

@@ -53,6 +53,7 @@ export function OwnerDashboard() {
   // means the first client render briefly shows a loading state instead.
   const [historicalOrNull, setHistoricalOrNull] = useState<DailyStat[] | null>(null);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHistoricalOrNull(createHistoricalDailyStats(now));
   }, [now]);
   const historical = historicalOrNull ?? [];
