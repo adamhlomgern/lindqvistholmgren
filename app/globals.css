@@ -92,6 +92,41 @@ body {
   --color-demo-neutral-soft: #f4e8d9;
 }
 
+/* Bokad (booking marketplace demo) — a calm, clinical blue layered on top
+   of the --color-demo-* tokens above, scoped to this one demo's shell, same
+   mechanism as .theme-mumsa. Servicekoll's (green) and Mumsa's (orange)
+   palettes are untouched. */
+/* Every value below is chosen to clear WCAG AA (4.5:1 text, 3:1 large
+   text/UI boundaries) against whichever of --color-demo-bg/-surface it's
+   actually paired with in components/demo/* and features/booking-platform —
+   verified by computed contrast ratio, not eyeballed. text-muted and
+   text-faint deliberately share the same hue/saturation as the original
+   design (just less lightness) so the two-tier de-emphasis hierarchy is
+   still visible while both individually pass. */
+.theme-bokad {
+  --color-demo-bg: #f5f9fc;
+  --color-demo-surface: #ffffff;
+  --color-demo-surface-hover: #eaf3fa;
+  --color-demo-border: #7c97ac;
+  --color-demo-text: #0f2a3d;
+  --color-demo-text-muted: #4d6b7f;
+  --color-demo-text-faint: #55758b;
+
+  --color-demo-primary: #027cba;
+  --color-demo-primary-hover: #0369a1;
+  --color-demo-primary-soft: #e0f2fe;
+  --color-demo-primary-soft-text: #0369a1;
+
+  --color-demo-danger: #ca2121;
+  --color-demo-danger-soft: #fee2e2;
+  --color-demo-warning: #a65b05;
+  --color-demo-warning-soft: #fef3c7;
+  --color-demo-info: #7c3aed;
+  --color-demo-info-soft: #ede9fe;
+  --color-demo-neutral: #4d6b7f;
+  --color-demo-neutral-soft: #eaf3fa;
+}
+
 @layer base {
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

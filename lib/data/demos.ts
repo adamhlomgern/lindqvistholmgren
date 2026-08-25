@@ -1,4 +1,4 @@
-import { Pizza, Wrench, type LucideIcon } from "lucide-react";
+import { CalendarCheck, Pizza, Wrench, type LucideIcon } from "lucide-react";
 
 export type DemoStatus = "live" | "kommer-snart";
 
@@ -33,6 +33,16 @@ export const demos: DemoListing[] = [
       "En egen beställningssida på minuter — kunder beställer online, restaurangen ser ordrarna live och ägaren följer försäljningen.",
     icon: Pizza,
     logo: "/images/demos/mumsa-logo.svg",
+    status: "live",
+  },
+  {
+    slug: "bokad",
+    title: "Bokad",
+    tagline: "Bokningsplattform för salonger & kliniker",
+    description:
+      "Vår egen bokningsmarknadsplats för frisörer, skönhet, massage, PT, naglar och tandvård — sök, jämför och boka tid hos en av flera salonger.",
+    icon: CalendarCheck,
+    logo: "/images/demos/bokad-logo.svg",
     status: "live",
   },
 ];
