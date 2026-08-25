@@ -80,7 +80,7 @@ export function createSeedData(now: Date = new Date()): SeedData {
   const blueprints: OrderBlueprint[] = [
     {
       number: 132,
-      lines: [line("item-pepperoni", 1), line("item-lask", 1)],
+      lines: [line("item-pepperoni", 1), line("item-cola", 1)],
       fulfillment: "pickup",
       customerName: "Johan Ek",
       customerPhone: "070-234 11 09",
@@ -113,7 +113,7 @@ export function createSeedData(now: Date = new Date()): SeedData {
     },
     {
       number: 129,
-      lines: [line("item-fyra-ostar", 1, [family()]), line("item-lask", 2)],
+      lines: [line("item-fyra-ostar", 1, [family()]), line("item-cola", 2)],
       fulfillment: "delivery",
       customerName: "Elin Berg",
       customerPhone: "070-441 77 02",
@@ -167,7 +167,7 @@ export function createSeedData(now: Date = new Date()): SeedData {
     },
     {
       number: 124,
-      lines: [line("item-fyra-ostar", 1), line("item-lask", 1)],
+      lines: [line("item-fyra-ostar", 1), line("item-cola", 1)],
       fulfillment: "pickup",
       customerName: "Tove Ahlgren",
       customerPhone: "070-663 41 09",
@@ -188,7 +188,7 @@ export function createSeedData(now: Date = new Date()): SeedData {
     },
     {
       number: 122,
-      lines: [line("item-hawaii", 1), line("item-lask", 1)],
+      lines: [line("item-hawaii", 1), line("item-cola", 1)],
       fulfillment: "delivery",
       customerName: "Freja Åkesson",
       customerPhone: "070-902 33 61",

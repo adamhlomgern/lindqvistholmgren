@@ -109,7 +109,7 @@ export function CourierOrderCard({
         {itemCount} {itemCount === 1 ? "artikel" : "artiklar"} · {formatSek(order.total)}
       </p>
 
-      <div className="flex items-center gap-2">
+      <div className="flex min-w-0 items-center gap-2">
         <a
           href={telHref(order.customerPhone)}
           title={`Ring ${order.customerName}`}
@@ -130,7 +130,13 @@ export function CourierOrderCard({
             <span className="hidden sm:inline">Navigera</span>
           </a>
         )}
-        <Button className="flex-1 px-3.5 py-2.5 text-sm transition-transform active:scale-[0.97]" onClick={() => onAction(order)}>
+        {/* min-w-0 lets this shrink below its own text width when Ring/
+            Navigera's labels reveal (sm:) right as the grid also narrows
+            the card (sm:/xl: column-count steps) — without it the button
+            held its full text width and pushed past the card's edge at
+            those exact breakpoints. truncate is the fallback if it's ever
+            squeezed tighter than that anyway. */}
+        <Button className="min-w-0 flex-1 truncate transition-transform active:scale-[0.97]" onClick={() => onAction(order)}>
           {actionLabel}
         </Button>
       </div>
