@@ -9,6 +9,8 @@ import type { Booking } from "@/features/booking-platform/types";
 import { bookingTiming } from "@/features/booking-platform/utils/status";
 import { formatDayHeaderSv } from "@/features/booking-platform/utils/dates";
 import { isOpenNow } from "@/features/booking-platform/utils/hours";
+import { bookingLabels } from "@/features/booking-platform/utils/labels";
+import { CalendarView } from "@/features/booking-platform/components/kalender/CalendarView";
 
 function byStartAscending(a: Booking, b: Booking): number {
   return new Date(a.start).getTime() - new Date(b.start).getTime();
@@ -22,6 +24,7 @@ export function BookingQueue() {
   const { organizations, currentOrgSlug, services, staff, customers, bookings, completeBooking, markNoShow, cancelBooking } =
     useBookingPlatform();
   const [showHistory, setShowHistory] = useState(false);
+  const [view, setView] = useState<"lista" | "kalender">("lista");
   const organization = organizations.find((org) => org.slug === currentOrgSlug);
 
   if (!organization) {
@@ -31,15 +34,7 @@ export function BookingQueue() {
   const orgBookings = bookings.filter((booking) => booking.organizationId === organization.id);
 
   function labelsFor(booking: Booking) {
-    const service = services.find((candidate) => candidate.id === booking.serviceId);
-    const bookedStaff = staff.find((member) => member.id === booking.staffId);
-    const customer = customers.find((candidate) => candidate.id === booking.customerId);
-    return {
-      serviceName: service?.name ?? "Okänd tjänst",
-      staffName: bookedStaff?.name ?? null,
-      customerName: customer?.name ?? "Okänd kund",
-      customerPhone: customer?.phone ?? "",
-    };
+    return bookingLabels(booking, { services, staff, customers });
   }
 
   if (orgBookings.length === 0) {
@@ -70,6 +65,38 @@ export function BookingQueue() {
         </p>
       </div>
 
+      <div className="flex items-center gap-1 self-start rounded-full border border-demo-border bg-demo-neutral-soft p-1">
+        {(
+          [
+            { key: "lista", label: "Lista" },
+            { key: "kalender", label: "Kalender" },
+          ] as const
+        ).map((option) => (
+          <button
+            key={option.key}
+            type="button"
+            onClick={() => setView(option.key)}
+            className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+              view === option.key ? "bg-demo-text text-demo-surface" : "text-demo-text-muted hover:text-demo-text"
+            }`}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      {view === "kalender" ? (
+        <CalendarView
+          bookings={orgBookings}
+          services={services}
+          staff={staff}
+          customers={customers}
+          onComplete={completeBooking}
+          onNoShow={markNoShow}
+          onCancel={cancelBooking}
+        />
+      ) : (
+        <>
       <div>
         <h2 className="font-display text-lg font-bold text-demo-text">Idag</h2>
         {today.length === 0 ? (
@@ -152,6 +179,8 @@ export function BookingQueue() {
             </div>
           )}
         </div>
+      )}
+        </>
       )}
     </div>
   );

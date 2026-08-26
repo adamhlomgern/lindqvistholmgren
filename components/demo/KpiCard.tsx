@@ -38,9 +38,9 @@ export function KpiCard({ icon: Icon, label, value, tone = "primary", trend }: K
       <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full sm:h-10 sm:w-10 ${toneIconBgClasses[tone]}`}>
         <Icon size={16} strokeWidth={2} />
       </span>
-      <div>
+      <div className="min-w-0 flex-1">
         <p className="font-display text-2xl font-bold tracking-tight text-demo-text sm:text-3xl">{value}</p>
-        <p className="mt-1 text-sm text-demo-text-muted">{label}</p>
+        <p className="mt-1 break-words text-sm text-demo-text-muted">{label}</p>
         {trend && TrendIcon && (
           <p className={`mt-1 flex items-center gap-1 text-xs font-semibold ${trendClasses[trend.direction]}`}>
             <TrendIcon size={12} />

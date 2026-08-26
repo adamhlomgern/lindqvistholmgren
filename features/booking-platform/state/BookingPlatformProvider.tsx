@@ -13,6 +13,8 @@ type Action =
   | { type: "MARK_NO_SHOW"; bookingId: string }
   | { type: "COMPLETE_BOOKING"; bookingId: string }
   | { type: "UPDATE_SERVICE"; service: Service }
+  | { type: "ADD_SERVICE"; service: Service }
+  | { type: "DELETE_SERVICE"; serviceId: string }
   | { type: "SET_CURRENT_ORG"; slug: string }
   | { type: "RESET"; seed: SeedData };
 
@@ -35,6 +37,10 @@ function reducer(state: State, action: Action): State {
       return setBookingStatus(state, action.bookingId, "completed");
     case "UPDATE_SERVICE":
       return { ...state, services: state.services.map((service) => (service.id === action.service.id ? action.service : service)) };
+    case "ADD_SERVICE":
+      return { ...state, services: [...state.services, action.service] };
+    case "DELETE_SERVICE":
+      return { ...state, services: state.services.filter((service) => service.id !== action.serviceId) };
     case "SET_CURRENT_ORG":
       return { ...state, currentOrgSlug: action.slug, currentOrgTouched: true };
     case "RESET":
@@ -58,12 +64,21 @@ type PlaceBookingInput = {
   customerEmail: string;
 };
 
+type AddServiceInput = {
+  organizationId: string;
+  name: string;
+  durationMinutes: number;
+  priceSek: number;
+};
+
 type BookingPlatformContextValue = Omit<State, "currentOrgTouched"> & {
   placeBooking: (input: PlaceBookingInput) => Booking;
   cancelBooking: (bookingId: string) => void;
   markNoShow: (bookingId: string) => void;
   completeBooking: (bookingId: string) => void;
   updateService: (service: Service) => void;
+  addService: (input: AddServiceInput) => void;
+  removeService: (serviceId: string) => void;
   setCurrentOrgSlug: (slug: string) => void;
   resetDemo: () => void;
   getOrganization: (slug: string) => State["organizations"][number] | undefined;
@@ -120,6 +135,10 @@ export function BookingPlatformProvider({ children }: { children: ReactNode }) {
   const markNoShow = useCallback((bookingId: string) => dispatch({ type: "MARK_NO_SHOW", bookingId }), []);
   const completeBooking = useCallback((bookingId: string) => dispatch({ type: "COMPLETE_BOOKING", bookingId }), []);
   const updateService = useCallback((service: Service) => dispatch({ type: "UPDATE_SERVICE", service }), []);
+  const addService = useCallback((input: AddServiceInput) => {
+    dispatch({ type: "ADD_SERVICE", service: { id: generateId("svc"), ...input } });
+  }, []);
+  const removeService = useCallback((serviceId: string) => dispatch({ type: "DELETE_SERVICE", serviceId }), []);
   const setCurrentOrgSlug = useCallback((slug: string) => dispatch({ type: "SET_CURRENT_ORG", slug }), []);
   const resetDemo = useCallback(() => dispatch({ type: "RESET", seed: createSeedData() }), []);
 
@@ -139,12 +158,15 @@ export function BookingPlatformProvider({ children }: { children: ReactNode }) {
       services: state.services,
       customers: state.customers,
       bookings: state.bookings,
+      reviews: state.reviews,
       currentOrgSlug: resolvedOrgSlug,
       placeBooking,
       cancelBooking,
       markNoShow,
       completeBooking,
       updateService,
+      addService,
+      removeService,
       setCurrentOrgSlug,
       resetDemo,
       getOrganization,
@@ -158,6 +180,8 @@ export function BookingPlatformProvider({ children }: { children: ReactNode }) {
       markNoShow,
       completeBooking,
       updateService,
+      addService,
+      removeService,
       setCurrentOrgSlug,
       resetDemo,
       getOrganization,

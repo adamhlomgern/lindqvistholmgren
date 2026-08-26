@@ -13,12 +13,13 @@ import { ServicePicker } from "@/features/booking-platform/components/salon/Serv
 import { StaffPicker, AUTO_STAFF } from "@/features/booking-platform/components/salon/StaffPicker";
 import { SlotPicker } from "@/features/booking-platform/components/salon/SlotPicker";
 import { BookingConfirmModal } from "@/features/booking-platform/components/salon/BookingConfirmModal";
+import { ReviewsList } from "@/features/booking-platform/components/salon/ReviewsList";
 import { getAvailableSlots, findFreeStaffId } from "@/features/booking-platform/utils/slots";
 import { formatSlotLabelSv } from "@/features/booking-platform/utils/dates";
 
 export function SalonProfileClient({ slug }: { slug: string }) {
   const router = useRouter();
-  const { organizations, services, staff, bookings, placeBooking } = useBookingPlatform();
+  const { organizations, services, staff, bookings, reviews, placeBooking } = useBookingPlatform();
   const organization = organizations.find((org) => org.slug === slug);
 
   const orgServices = useMemo(
@@ -28,6 +29,13 @@ export function SalonProfileClient({ slug }: { slug: string }) {
   const orgStaff = useMemo(
     () => staff.filter((member) => organization && member.organizationId === organization.id),
     [staff, organization],
+  );
+  const orgReviews = useMemo(
+    () =>
+      reviews
+        .filter((review) => organization && review.organizationId === organization.id)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+    [reviews, organization],
   );
 
   const [selectedServiceIdRaw, setSelectedServiceId] = useState<string | null>(null);
@@ -168,6 +176,8 @@ export function SalonProfileClient({ slug }: { slug: string }) {
           )}
         </div>
       </div>
+
+      <ReviewsList reviews={orgReviews} rating={organization.rating} reviewCount={organization.reviewCount} />
 
       {selectedService && selectedSlotIso && (
         <BookingConfirmModal

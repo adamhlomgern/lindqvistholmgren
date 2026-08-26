@@ -1,11 +1,9 @@
 import type { Booking, Organization, Service } from "@/features/booking-platform/types";
-import { addDays, startOfDay } from "@/features/booking-platform/utils/dates";
+import { addDays, startOfWeek } from "@/features/booking-platform/utils/dates";
 
 // Måndag 00:00 .. nästa måndag 00:00 — the calendar week containing `now`.
 export function getWeekRange(now: Date = new Date()): { start: Date; end: Date } {
-  const day = now.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day;
-  const start = addDays(startOfDay(now), diffToMonday);
+  const start = startOfWeek(now);
   const end = addDays(start, 7);
   return { start, end };
 }

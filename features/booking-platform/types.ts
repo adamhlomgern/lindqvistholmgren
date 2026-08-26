@@ -55,6 +55,18 @@ export type Customer = {
   createdAt: string;
 };
 
+// Static seed data, read-only in the demo — there's no "leave a review" flow,
+// only browsing what's already there (jfr Organization.rating/reviewCount,
+// which stay hand-authored aggregates rather than being derived from these).
+export type Review = {
+  id: string;
+  organizationId: string;
+  authorName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+};
+
 export type BookingStatus = "confirmed" | "cancelled" | "completed" | "no_show";
 
 export type Booking = {

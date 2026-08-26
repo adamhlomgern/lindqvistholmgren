@@ -4,6 +4,7 @@ import type {
   Customer,
   Organization,
   OpeningHours,
+  Review,
   Service,
   Staff,
 } from "@/features/booking-platform/types";
@@ -15,6 +16,7 @@ export type SeedData = {
   services: Service[];
   customers: Customer[];
   bookings: Booking[];
+  reviews: Review[];
 };
 
 type HoursSpec = Partial<Record<number, [string, string]>>;
@@ -144,6 +146,19 @@ export function createSeedData(now: Date = new Date()): SeedData {
     });
   }
 
+  type ReviewBlueprint = [dayOffset: number, authorName: string, rating: number, comment: string];
+
+  function buildReviews(organizationId: string, idPrefix: string, blueprints: ReviewBlueprint[]): Review[] {
+    return blueprints.map(([dayOffset, authorName, rating, comment], index) => ({
+      id: `${idPrefix}-${index + 1}`,
+      organizationId,
+      authorName,
+      rating,
+      comment,
+      createdAt: iso(dayOffset),
+    }));
+  }
+
   // --- 1. Salong Sirlig — frisör, Karlstad -------------------------------
   const sirligServices: Service[] = [
     { id: "svc-sirlig-1", organizationId: "org-sirlig", name: "Klippning dam", durationMinutes: 45, priceSek: 550 },
@@ -166,6 +181,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [3, 10, 30, 1, 0, 2, "confirmed"],
     [2, 9, 0, 3, 1, 4, "cancelled"],
   ]);
+  const sirligReviews = buildReviews("org-sirlig", "rev-sirlig", [
+    [-9, "Linnea Åkesson", 5, "Fantastisk färgning, blev exakt den nyansen jag ville ha. Sara är superduktig!"],
+    [-25, "Mattias Ström", 5, "Alltid proffsigt bemötande och lätt att boka tider som passar."],
+    [-52, "Karin Björk", 4, "Bra klippning men fick vänta en stund trots bokad tid."],
+  ]);
 
   // --- 2. Barberaren på Tingvalla — frisör (barbershop), Karlstad --------
   const barberarenServices: Service[] = [
@@ -182,6 +202,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [1, 11, 30, 0, null, 12, "confirmed"],
     [4, 15, 0, 1, null, 1, "confirmed"],
     [2, 10, 0, 0, null, 14, "cancelled"],
+  ]);
+  const barberarenReviews = buildReviews("org-barberaren", "rev-barberaren", [
+    [-14, "Simon Wester", 5, "Bästa skägget jag haft, riktigt hantverk och trevlig stämning."],
+    [-33, "Oskar Lund", 4, "Bra klippning, lite väntetid även med bokad tid."],
+    [-61, "Robin Falk", 5, "Går alltid hit numera, klippning + skägg är värt varje krona."],
   ]);
 
   // --- 3. Klara Hud & Skönhet — skönhet, Karlstad ------------------------
@@ -204,6 +229,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [5, 11, 0, 0, 0, 7, "confirmed"],
     [3, 9, 0, 2, 1, 15, "cancelled"],
   ]);
+  const klaraReviews = buildReviews("org-klara", "rev-klara", [
+    [-6, "Ebba Holmqvist", 5, "Huden känns helt nyfödd efter ansiktsbehandlingen. Klara tar sig verkligen tid."],
+    [-19, "Nora Ling", 5, "Bästa fransförlängningen jag testat, sitter i veckor utan att lossna."],
+    [-44, "Wilma Sten", 4, "Trevligt bemötande och skönt lokal, men lite dyrt jämfört med andra ställen."],
+  ]);
 
   // --- 4. Brow Bar Kristinehamn — skönhet, Kristinehamn ------------------
   const browBarServices: Service[] = [
@@ -219,6 +249,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [1, 10, 0, 2, null, 3, "confirmed"],
     [3, 11, 30, 1, null, 8, "confirmed"],
     [6, 12, 30, 0, null, 12, "confirmed"],
+  ]);
+  const browBarReviews = buildReviews("org-browbar", "rev-browbar", [
+    [-11, "Alicia Vind", 5, "Perfekt form på brynen, precis det jag bad om."],
+    [-29, "Signe Dahl", 4, "Bra resultat men lokalen är liten och man hör grannbordet."],
+    [-47, "Tuva Ros", 5, "Microbladingen blev över förväntan, rekommenderar starkt!"],
   ]);
 
   // --- 5. Lugna Rum Massage — massage, Karlstad --------------------------
@@ -241,6 +276,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [4, 16, 0, 0, 0, 8, "confirmed"],
     [1, 11, 0, 2, 1, 11, "cancelled"],
   ]);
+  const lugnaRumReviews = buildReviews("org-lugnarum", "rev-lugnarum", [
+    [-8, "Gustav Ek", 5, "Precis den avslappning jag behövde, Peter hittar alla spända partier."],
+    [-22, "Hanna Vik", 5, "Lugn miljö och riktigt skön djupvävnadsmassage."],
+    [-38, "Axel Berg", 4, "Bra massage men rummet var lite kallt."],
+  ]);
 
   // --- 6. Studio Form PT — pt, Karlstad -----------------------------------
   const studioFormServices: Service[] = [
@@ -257,6 +297,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [1, 17, 30, 1, null, 7, "confirmed"],
     [3, 7, 0, 0, null, 12, "confirmed"],
   ]);
+  const studioFormReviews = buildReviews("org-studioform", "rev-studioform", [
+    [-13, "Melker Fors", 5, "Har gått ner 8 kilo på tre månader tack vare bra upplägg och pepp."],
+    [-27, "Cornelia Åhs", 4, "Duktig PT men svårt att få tider på kvällstid."],
+    [-50, "Isak Kron", 5, "Träningsanalysen gav mig helt nya insikter, riktigt proffsigt."],
+  ]);
 
   // --- 7. Nagelbaren Karlstad — naglar, Karlstad --------------------------
   const nagelbarenServices: Service[] = [
@@ -272,6 +317,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [0, 10, 30, 2, null, 0, "confirmed"],
     [2, 12, 0, 1, null, 4, "confirmed"],
     [5, 9, 30, 0, null, 8, "confirmed"],
+  ]);
+  const nagelbarenReviews = buildReviews("org-nagelbaren", "rev-nagelbaren", [
+    [-7, "Saga Lindkvist", 5, "Gellacket håller i veckor och de har ett härligt färgutbud."],
+    [-24, "Ellinor Nord", 5, "Snabb, prydlig och alltid glad stämning i salongen."],
+    [-41, "Julia Ask", 4, "Bra manikyr men kändes lite stressigt på plats."],
   ]);
 
   // --- 8. Värmlands Tandvård — tandvård, Karlstad -------------------------
@@ -293,6 +343,11 @@ export function createSeedData(now: Date = new Date()): SeedData {
     [2, 14, 0, 1, 1, 5, "confirmed"],
     [4, 8, 0, 0, 0, 9, "confirmed"],
     [1, 11, 0, 2, 1, 13, "cancelled"],
+  ]);
+  const varmlandsTandvardReviews = buildReviews("org-tandvard", "rev-tandvard", [
+    [-16, "Rebecka Holt", 5, "Fick akuttid samma dag, väldigt skönt när tanden värkte som mest."],
+    [-31, "Anton Selin", 4, "Kompetent tandläkare men receptionen svarade sent i telefon."],
+    [-58, "Frida Malmborg", 5, "Ingen väntetid alls och otroligt skonsam undersökning."],
   ]);
 
   const organizations: Organization[] = [
@@ -434,5 +489,16 @@ export function createSeedData(now: Date = new Date()): SeedData {
     ...varmlandsTandvardBookings,
   ];
 
-  return { organizations, staff, services, customers, bookings };
+  const reviews: Review[] = [
+    ...sirligReviews,
+    ...barberarenReviews,
+    ...klaraReviews,
+    ...browBarReviews,
+    ...lugnaRumReviews,
+    ...studioFormReviews,
+    ...nagelbarenReviews,
+    ...varmlandsTandvardReviews,
+  ];
+
+  return { organizations, staff, services, customers, bookings, reviews };
 }
