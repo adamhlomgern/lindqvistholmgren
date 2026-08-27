@@ -1,4 +1,4 @@
-import { CalendarCheck, Pizza, Wrench, type LucideIcon } from "lucide-react";
+import { CalendarCheck, Home, Pizza, Wrench, type LucideIcon } from "lucide-react";
 
 export type DemoStatus = "live" | "kommer-snart";
 
@@ -43,6 +43,15 @@ export const demos: DemoListing[] = [
       "Vår egen bokningsmarknadsplats för frisörer, skönhet, massage, PT, naglar och tandvård — sök, jämför och boka tid hos en av flera salonger.",
     icon: CalendarCheck,
     logo: "/images/demos/bokad-logo.svg",
+    status: "live",
+  },
+  {
+    slug: "forma",
+    title: "Forma",
+    tagline: "Produktkonfigurator för attefallshus",
+    description:
+      "Bygg ditt eget attefallshus steg för steg — se priset uppdateras live, upplev en regelmotor som hanterar tillval och krav, och skicka en kvalificerad offertförfrågan.",
+    icon: Home,
     status: "live",
   },
 ];

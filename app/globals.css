@@ -16,6 +16,10 @@
 
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-geist-sans);
+  /* Forma's own typeface (see app/demo/forma/layout.tsx) — one clean sans
+     family used for both body copy and display headings, deliberately not
+     mixed with a second serif family, per art-direction feedback. */
+  --font-forma: var(--font-forma-inter), ui-sans-serif, system-ui, sans-serif;
 
   --tracking-label: 0.08em;
 }
@@ -125,6 +129,31 @@ body {
   --color-demo-info-soft: #ede9fe;
   --color-demo-neutral: #4d6b7f;
   --color-demo-neutral-soft: #eaf3fa;
+}
+
+/* Forma (attefallshus configurator demo) — deliberately its OWN token
+   namespace, not a .theme-forma override of --color-demo-*. The brief for
+   Forma explicitly rules out the shared SaaS-dashboard look those tokens
+   were designed for (sidebar, KPI cards, tables-as-home) — Forma's product
+   experience (configurator, HouseIllustration, floating panels) never
+   touches components/demo/*, so there's nothing to override here, just a
+   fresh warm-editorial palette used directly by features/forma/*. */
+@theme {
+  --color-forma-bg: #f3f0e9;
+  --color-forma-surface: #ffffff;
+  --color-forma-surface-hover: #ece7db;
+  --color-forma-border: #e0d9c8;
+  --color-forma-text: #171714;
+  --color-forma-text-muted: #6b655c;
+  --color-forma-text-faint: #948d7f;
+
+  --color-forma-accent: #b5502f;
+  --color-forma-accent-hover: #9a4326;
+  --color-forma-accent-soft: #f3ddd1;
+  --color-forma-accent-soft-text: #8a3c22;
+
+  --color-forma-danger: #b23a2e;
+  --color-forma-danger-soft: #f6ddd8;
 }
 
 @layer base {
@@ -290,6 +319,25 @@ body {
   padding: 0.5em 0.75em;
   text-align: left;
 }
+/* Forma's "Ladda ner sammanställning" button calls window.print() instead of
+   pulling in a PDF library — see features/forma/success/SuccessView.tsx.
+   Printing hides everything except the #print-summary block rendered by
+   ConfigurationSummary. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-summary,
+  #print-summary * {
+    visibility: visible;
+  }
+  #print-summary {
+    position: absolute;
+    inset: 0;
+    padding: 24px;
+  }
+}
+
 .article-prose th {
   color: var(--color-bone);
   background: color-mix(in srgb, var(--color-bone) 5%, transparent);
