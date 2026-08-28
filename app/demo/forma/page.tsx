@@ -97,14 +97,26 @@ export default function FormaHomePage() {
               <Link
                 key={model.id}
                 href={`${formaRoutes.configure()}?model=${model.id}`}
-                className={`group flex flex-col overflow-hidden rounded-[1.75rem] transition-colors ${
+                className={`group relative flex flex-col overflow-hidden rounded-[1.75rem] transition-colors ${
                   featured ? "bg-forma-accent-soft/40" : "bg-forma-surface-hover"
                 }`}
               >
+                {/* Absolutely positioned so it never adds flow height — the
+                    featured card must reserve exactly the same vertical
+                    space as the other two, or every zone below it (image,
+                    number, title, CTA) drifts out of alignment across the
+                    row. */}
                 {featured && (
-                  <p className="px-7 pt-6 text-xs font-semibold uppercase tracking-label text-forma-accent">Vår mest populära</p>
+                  <p className="absolute left-7 top-6 z-10 text-xs font-semibold uppercase tracking-label text-forma-accent">
+                    Vår mest populära
+                  </p>
                 )}
-                <div className={`flex items-end justify-center overflow-hidden ${featured ? "h-72 pt-2" : "h-72"} sm:h-80`}>
+                {/* Image zone: identical height on every card regardless of
+                    featured status or the model's own footprint — the house
+                    is centered inside it, and HouseIllustration's shared
+                    viewBox keeps every model's foundation line at the same
+                    Y, so this zone alone guarantees the baseline lines up. */}
+                <div className="flex h-72 items-end justify-center overflow-hidden sm:h-80">
                   <HouseIllustration
                     model={model.id}
                     facade="natur"
@@ -113,15 +125,16 @@ export default function FormaHomePage() {
                     className="h-full w-full p-2 transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                 </div>
-                <div className="flex flex-1 flex-col justify-between px-7 pb-8">
-                  <div>
-                    <p className="text-xs font-medium text-forma-text-faint">{String(index + 1).padStart(2, "0")}</p>
-                    <h3 className="mt-1 text-xl font-bold text-forma-text">{model.name}</h3>
-                    <p className="mt-1 text-sm text-forma-text-muted">
-                      {model.sizeSqm} m² · Från {formatSek(model.basePrice)}
-                    </p>
-                  </div>
-                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-forma-text">
+                {/* Content zone: fixed structure, identical on every card —
+                    number, title and meta always the same three lines, so
+                    they land on the same Y across all three cards. */}
+                <div className="flex flex-1 flex-col px-7 pb-8">
+                  <p className="text-xs font-medium text-forma-text-faint">{String(index + 1).padStart(2, "0")}</p>
+                  <h3 className="mt-1 text-xl font-bold text-forma-text">{model.name}</h3>
+                  <p className="mt-1 text-sm text-forma-text-muted">
+                    {model.sizeSqm} m² · Från {formatSek(model.basePrice)}
+                  </p>
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-forma-text">
                     Utforska modellen
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
                   </span>

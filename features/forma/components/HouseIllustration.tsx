@@ -26,16 +26,42 @@ const FOUNDATION = "#57503f";
 
 function WindowUnit({ x, y, w, h, uid, mullions }: WindowRect & { uid: string; mullions?: number }) {
   const frameInset = 3;
-  const mullionCount = mullions ?? (w > 140 ? Math.round(w / 90) : 1);
+  // The new standard windows are a near-square landscape proportion and
+  // stay a single clean pane (no mullion) — only wider openings (a
+  // picture window, the panorama option) get one, and only very wide ones
+  // get two.
+  const mullionCount = mullions ?? (w > 130 ? 2 : w > 90 ? 1 : 0);
   return (
     <g>
-      {/* Reveal — soft, low-contrast wall-thickness cue, not a drawn outline. */}
-      <rect x={x - 1} y={y - 1} width={w + 2} height={h + 2} rx={1.5} fill="#000" opacity={0.07} />
-      <rect x={x - 1} y={y - 1} width={w + 2} height={h + 2} rx={1.5} fill={FRAME} opacity={0.55} />
-      <rect x={x} y={y} width={w} height={h} rx={1} fill={`url(#${uid}-glass)`} />
-      {Array.from({ length: mullionCount }, (_, i) => x + ((i + 1) * w) / (mullionCount + 1)).map((mx) => (
-        <line key={mx} x1={mx} y1={y + frameInset} x2={mx} y2={y + h - frameInset} stroke={FRAME} strokeWidth={1} opacity={0.35} />
-      ))}
+      {/* A single thin, low-opacity surround — the frame should all but
+          disappear against the glass, not read as a drawn border. */}
+      <rect x={x - 0.75} y={y - 0.75} width={w + 1.5} height={h + 1.5} rx={1} fill={FRAME} opacity={0.4} />
+      <rect x={x} y={y} width={w} height={h} rx={0.75} fill={`url(#${uid}-glass)`} />
+      {/* Soft reflection — a broad, low-opacity glow near the upper-left
+          corner, not a hard diagonal shine stroke. */}
+      <rect x={x} y={y} width={w} height={h} rx={0.75} fill={`url(#${uid}-sheen)`} />
+      {mullionCount > 0 &&
+        Array.from({ length: mullionCount }, (_, i) => x + ((i + 1) * w) / (mullionCount + 1)).map((mx) => (
+          <line key={mx} x1={mx} y1={y + frameInset} x2={mx} y2={y + h - frameInset} stroke={FRAME} strokeWidth={0.75} opacity={0.25} />
+        ))}
+    </g>
+  );
+}
+
+// A normal solid entrance leaf with a narrow vertical glass insert near
+// one edge. Rendered twice at two different X positions (see the two
+// crossfaded groups in the door section below) rather than animating one
+// door's position, matching how every other selection-driven change in
+// this file crossfades between two fully-drawn states.
+function EntranceDoor({ x, y, w, h, hasGlass, uid }: { x: number; y: number; w: number; h: number; hasGlass: boolean; uid: string }) {
+  return (
+    <g>
+      <rect x={x - 1} y={y - 1} width={w + 2} height={h + 1} fill={FRAME} opacity={0.45} rx={1.5} />
+      <rect x={x} y={y} width={w} height={h} fill={`url(#${uid}-door)`} rx={1} />
+      <rect x={x + w * 0.14} y={y + h * 0.08} width={w * 0.44} height={h * 0.46} fill="#000" opacity={0.06} rx={1} />
+      {hasGlass && <rect x={x + w * 0.66} y={y + h * 0.1} width={w * 0.2} height={h * 0.55} fill={`url(#${uid}-glass)`} rx={0.5} />}
+      <rect x={x + w - 2} y={y} width={2} height={h} fill="#000" opacity={0.08} />
+      <circle cx={x + w * 0.16} cy={y + h * 0.55} r={1.6} fill="#c9b89a" />
     </g>
   );
 }
@@ -58,10 +84,25 @@ export function HouseIllustration({ model, facade, roof, windows, className }: H
   const isPanorama = windows === "panorama";
   const isSadel = roof === "sadel";
 
-  const { wallX, wallY, wallW, wallH, sideDepth, sideRise, doorX, doorW, doorH, doorHasGlass, standardWindows, panoramaWindow, pitchBandHeight } = geo;
+  const {
+    wallX,
+    wallY,
+    wallW,
+    wallH,
+    sideDepth,
+    sideRise,
+    doorX,
+    doorY,
+    doorW,
+    doorH,
+    doorHasGlass,
+    standardWindows,
+    panoramaWindows,
+    panoramaDoorX,
+    pitchBandHeight,
+  } = geo;
   const wallRight = wallX + wallW;
   const wallBottom = wallY + wallH;
-  const doorY = wallBottom - doorH;
 
   const facadeLight = shade(facadeColor, 10);
   const facadeDark = shade(facadeColor, -8);
@@ -194,6 +235,13 @@ export function HouseIllustration({ model, facade, roof, windows, className }: H
           <stop offset="0%" stopColor="#4f453b" />
           <stop offset="100%" stopColor="#382e24" />
         </linearGradient>
+        {/* Soft glass reflection — a broad, soft-edged glow, not a hard
+            diagonal shine stroke. */}
+        <radialGradient id={`${uid}-sheen`} cx="26%" cy="16%" r="60%">
+          <stop offset="0%" stopColor="#fff" stopOpacity={0.32} />
+          <stop offset="45%" stopColor="#fff" stopOpacity={0.08} />
+          <stop offset="100%" stopColor="#fff" stopOpacity={0} />
+        </radialGradient>
         <clipPath id={`${uid}-sideClip`}>
           <polygon points={sidePoints} />
         </clipPath>
@@ -291,29 +339,37 @@ export function HouseIllustration({ model, facade, roof, windows, className }: H
           <polygon points={eaveFasciaPoints} fill={roofFront} />
         </g>
 
-        {/* Standard window(s) */}
+        {/* Standard windows — separate openings, real solid wall between
+            them, every one on a model sharing the exact same width and
+            height (the same window product repeated), not a continuous
+            glazed run. */}
         <g className="transition-opacity duration-500" style={{ opacity: isPanorama ? 0 : 1 }}>
           {standardWindows.map((w) => (
             <WindowUnit key={`${w.x}-${w.y}`} {...w} uid={uid} />
           ))}
         </g>
 
-        {/* Panorama window — sits behind the door in z-order, same as a
-            continuous glass wall the door is set into. */}
+        {/* Panorama window — two large picture windows that replace the
+            standard windows. The door doesn't hide here; it crossfades to
+            a position at the far left of the facade instead (see below),
+            since this glazing is wide enough that the door's normal spot
+            would otherwise sit right in the middle of it. */}
         <g className="transition-opacity duration-500" style={{ opacity: isPanorama ? 1 : 0 }}>
-          <WindowUnit {...panoramaWindow} uid={uid} />
+          {panoramaWindows.map((w) => (
+            <WindowUnit key={`${w.x}-${w.y}`} {...w} uid={uid} />
+          ))}
         </g>
 
-        {/* Door — dark wood/graphite gradient, thin frame, soft light side. */}
-        <g>
-          <rect x={doorX - 1} y={doorY - 1} width={doorW + 2} height={doorH + 1} fill={FRAME} opacity={0.45} rx={1.5} />
-          <rect x={doorX} y={doorY} width={doorW} height={doorH} fill={`url(#${uid}-door)`} rx={1} />
-          <rect x={doorX + doorW * 0.14} y={doorY + doorH * 0.1} width={doorW * 0.72} height={doorH * 0.42} fill="#000" opacity={0.06} rx={1} />
-          {doorHasGlass && (
-            <rect x={doorX + doorW * 0.68} y={doorY + doorH * 0.08} width={doorW * 0.2} height={doorH * 0.5} fill={`url(#${uid}-glass)`} opacity={0.85} rx={0.5} />
-          )}
-          <rect x={doorX + doorW - 2} y={doorY} width={2} height={doorH} fill="#000" opacity={0.08} />
-          <circle cx={doorX + doorW * 0.16} cy={doorY + doorH * 0.55} r={1.6} fill="#c9b89a" />
+        {/* Door — crossfades between its normal composed position (used
+            with standard windows) and the far-left position used with the
+            panorama option, rather than moving — consistent with how
+            every other selection-driven change in this file crossfades
+            between two fully-drawn states instead of animating one. */}
+        <g className="transition-opacity duration-500" style={{ opacity: isPanorama ? 0 : 1 }}>
+          <EntranceDoor x={doorX} y={doorY} w={doorW} h={doorH} hasGlass={doorHasGlass} uid={uid} />
+        </g>
+        <g className="transition-opacity duration-500" style={{ opacity: isPanorama ? 1 : 0 }}>
+          <EntranceDoor x={panoramaDoorX} y={doorY} w={doorW} h={doorH} hasGlass={doorHasGlass} uid={uid} />
         </g>
       </g>
     </svg>
