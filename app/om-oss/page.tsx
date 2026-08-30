@@ -30,7 +30,7 @@ const team: {
   {
     name: "Ada",
     role: "Utveckling, marknadsföring & grafisk formgivning",
-    bio: "Ada är utvecklare med ett förflutet inom grafisk formgivning och tryckteknik, och det märks — hon har blick för både kod och visuellt uttryck. Driver mycket av marknadsföringen och är lite allt i allo när det behövs.",
+    bio: "Utvecklare med bakgrund inom grafisk formgivning och tryckteknik. Sköter det mesta av marknadsföringen och är lite allt i allo.",
     avatar: "/images/lindqvist-holmgren/ada-avatar-done.png",
     tags: ["Utveckling", "Marknadsföring", "Grafisk formgivning", "Tryckteknik"],
     accent: "emerald",
@@ -38,7 +38,7 @@ const team: {
   {
     name: "Malin",
     role: "Utveckling, UX & digital design",
-    bio: "Malin är utbildad digital designer och UX:are, med tyngdpunkt mot backend och användarupplevelse — riktigt grym både som utvecklare och designer. Och lite kul att veta: hon är även behörig förskollärare.",
+    bio: "Utbildad digital designer och UX:are med fokus på backend och användarupplevelse. Också behörig förskollärare, ifall det skulle behövas.",
     avatar: "/images/lindqvist-holmgren/malin-avataar-done.png",
     tags: ["Utveckling", "UX-design", "Digital design", "Backend"],
     accent: "peach",
