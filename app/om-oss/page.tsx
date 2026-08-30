@@ -77,30 +77,26 @@ export default function OmOssPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             {team.map((person) => (
               <GlassCard key={person.name} accent={person.accent}>
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-charcoal ${
-                      person.accent === "emerald" ? "ring-emerald/40" : "ring-peach/40"
-                    }`}
-                  >
+                <div className="flex gap-5">
+                  <div className="relative h-36 w-28 shrink-0 sm:h-40 sm:w-32">
                     <Image
                       src={person.avatar}
                       alt={person.name}
                       fill
-                      sizes="80px"
-                      className="object-cover object-top"
+                      sizes="112px"
+                      className="object-contain object-top"
                     />
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <p className="font-display text-lg font-bold text-bone">{person.name}</p>
                     <p className="mt-1 text-sm text-stone">{person.role}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-bone/80">{person.bio}</p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {person.tags.map((tag) => (
+                        <Tag key={tag}>{tag}</Tag>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <p className="mt-5 text-sm leading-relaxed text-bone/80">{person.bio}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {person.tags.map((tag) => (
-                    <Tag key={tag}>{tag}</Tag>
-                  ))}
                 </div>
               </GlassCard>
             ))}
