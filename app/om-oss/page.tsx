@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Heart, MapPin, Sparkles, Users } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
-import { accents, badgeClasses, type Accent } from "@/lib/design/accents";
+import { Tag } from "@/components/ui/Tag";
+import { accents, type Accent } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 
 export const metadata: Metadata = {
@@ -17,17 +19,28 @@ export const metadata: Metadata = {
   },
 };
 
-const team: { initial: string; name: string; role: string; accent: Accent }[] = [
+const team: {
+  name: string;
+  role: string;
+  bio: string;
+  avatar: string;
+  tags: string[];
+  accent: Accent;
+}[] = [
   {
-    initial: "A",
     name: "Ada",
-    role: "Projektledning, frontend & marknadsföring",
+    role: "Utveckling, marknadsföring & grafisk formgivning",
+    bio: "Ada är utvecklare med ett förflutet inom grafisk formgivning och tryckteknik, och det märks — hon har blick för både kod och visuellt uttryck. Driver mycket av marknadsföringen och är lite allt i allo när det behövs.",
+    avatar: "/images/lindqvist-holmgren/ada-avatar-done.png",
+    tags: ["Utveckling", "Marknadsföring", "Grafisk formgivning", "Tryckteknik"],
     accent: "emerald",
   },
   {
-    initial: "M",
     name: "Malin",
     role: "Utveckling, UX & digital design",
+    bio: "Malin är utbildad digital designer och UX:are, med tyngdpunkt mot backend och användarupplevelse — riktigt grym både som utvecklare och designer. Och lite kul att veta: hon är även behörig förskollärare.",
+    avatar: "/images/lindqvist-holmgren/malin-avataar-done.png",
+    tags: ["Utveckling", "UX-design", "Digital design", "Backend"],
     accent: "peach",
   },
 ];
@@ -64,16 +77,30 @@ export default function OmOssPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             {team.map((person) => (
               <GlassCard key={person.name} accent={person.accent}>
-                <div className="flex items-center gap-4">
-                  <span
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full font-display text-xl font-bold ${badgeClasses[person.accent]}`}
+                <div className="flex items-start gap-4">
+                  <div
+                    className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-charcoal ${
+                      person.accent === "emerald" ? "ring-emerald/40" : "ring-peach/40"
+                    }`}
                   >
-                    {person.initial}
-                  </span>
+                    <Image
+                      src={person.avatar}
+                      alt={person.name}
+                      fill
+                      sizes="80px"
+                      className="object-cover object-top"
+                    />
+                  </div>
                   <div>
                     <p className="font-display text-lg font-bold text-bone">{person.name}</p>
                     <p className="mt-1 text-sm text-stone">{person.role}</p>
                   </div>
+                </div>
+                <p className="mt-5 text-sm leading-relaxed text-bone/80">{person.bio}</p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {person.tags.map((tag) => (
+                    <Tag key={tag}>{tag}</Tag>
+                  ))}
                 </div>
               </GlassCard>
             ))}
