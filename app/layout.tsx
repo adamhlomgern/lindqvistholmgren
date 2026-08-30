@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ProjectInquiryProvider } from "@/components/contact/ProjectInquiryContext";
 import "./globals.css";
@@ -55,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ProjectInquiryProvider>
           <SiteChrome>{children}</SiteChrome>
         </ProjectInquiryProvider>
+        <Analytics />
       </body>
     </html>
   );
