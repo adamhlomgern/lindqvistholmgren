@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   title: "Tjänster",
   description:
     "Webb, SEO, design, tillväxt, automation och support för småföretag i Karlstad och hela Sverige. Se vad vi kan hjälpa er med.",
+  alternates: {
+    canonical: "/tjanster",
+  },
 };
 
 export default function TjansterPage() {

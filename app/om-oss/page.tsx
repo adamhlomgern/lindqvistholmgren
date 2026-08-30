@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Om oss",
   description:
     "Lindqvist / Holmgren är två frilansare, Ada och Malin, som tillsammans hjälper småföretag i Karlstad och hela Sverige med webb, design och marknadsföring.",
+  alternates: {
+    canonical: "/om-oss",
+  },
 };
 
 const team: { initial: string; name: string; role: string; accent: Accent }[] = [

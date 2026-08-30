@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/Button";
 import { getArticleBySlug } from "@/lib/data/articles";
 import { RelatedArticles } from "@/components/sections/RelatedArticles";
 
+const SITE_URL = "https://lindqvistholmgren.se";
+
 export const revalidate = 3600;
 
 type Props = {
@@ -26,6 +28,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: article.title,
     description: article.excerpt,
+    alternates: {
+      canonical: `${SITE_URL}/artiklar/${article.slug}`,
+    },
   };
 }
 

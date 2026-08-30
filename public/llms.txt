@@ -1,0 +1,26 @@
+# Lindqvist / Holmgren
+
+> Lindqvist / Holmgren är en digital byrå i Karlstad, Sverige, drivet av två frilansare (Ada och Malin) som hjälper småföretag i hela Sverige med webb, SEO, design, tillväxtmarknadsföring, automation samt löpande support och underhåll.
+
+Vi bygger skräddarsydda lösningar utan mellanhänder och svarar normalt inom 24 timmar.
+
+## Tjänster
+
+- [Webb](https://lindqvistholmgren.se/tjanster/webb): Snabba, responsiva webbplatser byggda för att konvertera besökare till kunder.
+- [SEO](https://lindqvistholmgren.se/tjanster/seo): Sökmotoroptimering som gör att fler kunder hittar er på Google.
+- [Design](https://lindqvistholmgren.se/tjanster/design): Visuell identitet och digital design som stärker ert varumärke.
+- [Tillväxt](https://lindqvistholmgren.se/tjanster/tillvaxt): Strategier och marknadsföring som får ert företag att växa långsiktigt.
+- [Automation](https://lindqvistholmgren.se/tjanster/automation): Automatiserade flöden som sparar tid i vardagen.
+- [Support & underhåll](https://lindqvistholmgren.se/tjanster/support): Löpande support och underhåll så att sajten fortsätter fungera bra.
+
+## Företaget
+
+- [Om oss](https://lindqvistholmgren.se/om-oss): Vilka Ada och Malin är och hur de jobbar.
+- [Projekt](https://lindqvistholmgren.se/projekt): Ett urval av webbplatser och lösningar byggda åt kunder.
+- [Artiklar](https://lindqvistholmgren.se/artiklar): Tips och råd om webb, design och digital marknadsföring.
+- [Kontakt](https://lindqvistholmgren.se/kontakt): Kontaktuppgifter och kontaktformulär.
+- [Starta ett projekt](https://lindqvistholmgren.se/starta-ett-projekt): Formulär för att beskriva ett nytt projekt.
+
+## Optional
+
+- [Integritetspolicy](https://lindqvistholmgren.se/integritetspolicy): Hur personuppgifter hanteras.

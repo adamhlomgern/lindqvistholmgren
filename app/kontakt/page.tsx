@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   title: "Kontakta oss",
   description:
     "Har ni ett projekt på gång? Hör av er till Lindqvist / Holmgren — vi svarar inom 24 timmar.",
+  alternates: {
+    canonical: "/kontakt",
+  },
 };
 
 const contactPoints = [

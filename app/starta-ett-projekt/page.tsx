@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Starta ett projekt",
   description:
     "Redo att sätta igång? Berätta kort om ert projekt så återkommer vi inom 24 timmar med nästa steg.",
+  alternates: {
+    canonical: "/starta-ett-projekt",
+  },
 };
 
 export default function StartaEttProjektPage() {

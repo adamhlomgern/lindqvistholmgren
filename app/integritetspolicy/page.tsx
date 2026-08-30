@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Integritetspolicy",
   description:
     "Så samlar, använder och skyddar Lindqvist / Holmgren dina personuppgifter när du kontaktar oss eller skickar en projektförfrågan.",
+  alternates: {
+    canonical: "/integritetspolicy",
+  },
 };
 
 type PolicySection = {

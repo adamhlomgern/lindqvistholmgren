@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "Artiklar",
   description:
     "Tips och råd om webb, design och digital marknadsföring för småföretag — skrivet av Lindqvist / Holmgren.",
+  alternates: {
+    canonical: "/artiklar",
+  },
 };
 
 export const revalidate = 3600;

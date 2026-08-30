@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s — Lindqvist / Holmgren",
   },
   description:
-    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design och digital marknadsföring — personligt, skräddarsytt och utan mellanhänder.",
+    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design och digital marknadsföring — personligt och utan mellanhänder.",
   keywords: [
     "webbyrå Karlstad",
     "webbdesign",
@@ -46,6 +46,24 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  name: "Lindqvist / Holmgren",
+  url: "https://lindqvistholmgren.se",
+  logo: "https://lindqvistholmgren.se/images/lindqvist-holmgren/lindqvist-holmgren-full-logo.svg",
+  image: "https://lindqvistholmgren.se/images/lindqvist-holmgren/lindqvist-holmgren-full-logo.svg",
+  description:
+    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design och digital marknadsföring.",
+  email: "info@lindqvistholmgren.se",
+  areaServed: { "@type": "Country", name: "Sverige" },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Karlstad",
+    addressCountry: "SE",
+  },
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -53,6 +71,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-forest text-bone">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <ProjectInquiryProvider>
           <SiteChrome>{children}</SiteChrome>
         </ProjectInquiryProvider>

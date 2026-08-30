@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   title: "Projekt",
   description:
     "Ett urval av webbplatser, grafiska profiler och skräddarsydda lösningar vi byggt åt småföretag i Karlstad och Värmland.",
+  alternates: {
+    canonical: "/projekt",
+  },
 };
 
 export const revalidate = 3600;
