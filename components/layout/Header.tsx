@@ -8,7 +8,6 @@ import { ChevronRight, Menu } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { StartProjectButton } from "@/components/contact/StartProjectButton";
 import { MobileMenu } from "@/components/layout/MobileMenu";
-import { useCookieConsent } from "@/components/consent/CookieConsentProvider";
 
 const navItems = [
   { href: "/", label: "Hem" },
@@ -21,7 +20,6 @@ const navItems = [
 export function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const { openPreferences } = useCookieConsent();
 
   return (
     <header className="sticky top-0 z-50">
@@ -68,14 +66,6 @@ export function Header() {
             <ChevronRight size={14} strokeWidth={2.5} />
           </StartProjectButton>
         </div>
-        <button
-          type="button"
-          onClick={openPreferences}
-          aria-label="Cookie-inställningar"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/10 bg-bone/10 text-lg transition-colors hover:bg-bone/15"
-        >
-          🍪
-        </button>
         <button
           type="button"
           onClick={() => setMenuOpen(true)}

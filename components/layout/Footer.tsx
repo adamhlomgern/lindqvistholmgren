@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import { services } from "@/lib/data/services";
+import { useCookieConsent } from "@/components/consent/CookieConsentProvider";
 import { socialLinks } from "@/lib/data/site-info";
 
 type FooterLink = { href: string; label: string };
@@ -68,6 +69,7 @@ function FooterContact({ className = "" }: { className?: string }) {
 
 export function Footer() {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const { openPreferences } = useCookieConsent();
 
   return (
     <footer className="bg-charcoal">
@@ -173,9 +175,14 @@ export function Footer() {
       </Container>
       <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-bone/10 py-6 text-xs text-stone/70">
         <p>© {new Date().getFullYear()} Lindqvist / Holmgren</p>
-        <Link href="/integritetspolicy" className="transition-colors hover:text-emerald">
-          Integritetspolicy
-        </Link>
+        <div className="flex items-center gap-4">
+          <button type="button" onClick={openPreferences} className="transition-colors hover:text-emerald">
+            🍪 Cookie-inställningar
+          </button>
+          <Link href="/integritetspolicy" className="transition-colors hover:text-emerald">
+            Integritetspolicy
+          </Link>
+        </div>
       </Container>
     </footer>
   );
