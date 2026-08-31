@@ -10,7 +10,7 @@ import { Tag } from "@/components/ui/Tag";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import { accents, type Accent } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
-import { contactInfo, socialLinks } from "@/lib/data/site-info";
+import { contactInfo, businessInfo, socialLinks } from "@/lib/data/site-info";
 
 export const metadata: Metadata = {
   title: "Om oss",
@@ -170,10 +170,20 @@ export default function OmOssPage() {
             <GlassCard accent="peach">
               <AccentBadge icon={MapPin} accent="peach" />
               <h2 className="mt-4 font-display text-lg font-bold text-bone">Företagsuppgifter</h2>
+              <p className="mt-1 text-xs text-stone/70">
+                Två enskilda firmor som samarbetar under varumärket Lindqvist / Holmgren.
+              </p>
               <ul className="mt-3 flex flex-col gap-2 text-sm text-stone">
                 <li>Adress: {contactInfo.address}</li>
-                <li>Org.nr: {contactInfo.orgNumber}</li>
-                <li>Momsreg.nr: {contactInfo.vatNumber}</li>
+                <li>
+                  {businessInfo.ada.name} — Org.nr: {businessInfo.ada.orgNumber}
+                  <span className="block text-xs text-stone/70">
+                    Momsreg.nr: {businessInfo.ada.vatNumber}
+                  </span>
+                </li>
+                <li>
+                  {businessInfo.malin.name} — Org.nr: {businessInfo.malin.orgNumber}
+                </li>
               </ul>
             </GlassCard>
           </div>
