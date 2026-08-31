@@ -6,7 +6,9 @@ import { useState } from "react";
 import { ChevronDown, Clock, Mail, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import { services } from "@/lib/data/services";
+import { socialLinks } from "@/lib/data/site-info";
 
 type FooterLink = { href: string; label: string };
 
@@ -88,6 +90,26 @@ export function Footer() {
               <Clock className="text-emerald" size={14} strokeWidth={2.25} />
               Svar inom 24 timmar
             </p>
+            <div className="mt-5 flex items-center gap-3">
+              <a
+                href={socialLinks.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Lindqvist / Holmgren på Facebook"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+              >
+                <FacebookIcon size={16} strokeWidth={2} />
+              </a>
+              <a
+                href={socialLinks.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Lindqvist / Holmgren på Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+              >
+                <InstagramIcon size={16} strokeWidth={2} />
+              </a>
+            </div>
           </div>
 
           <div className="hidden md:block">
