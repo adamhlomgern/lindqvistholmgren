@@ -146,6 +146,92 @@ export type ProjectBudget =
 
 export type ProjectTimeline = "asap" | "1-3-manader" | "3-6-manader" | "utforskar";
 
+export type Customer = {
+  id: string;
+  name: string;
+  company?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  postalCode?: string;
+  city?: string;
+  orgNumber?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BillingEntity = {
+  id: string;
+  name: string;
+  address?: string;
+  postalCode?: string;
+  city?: string;
+  orgNumber?: string;
+  email?: string;
+  phone?: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BankAccount = {
+  id: string;
+  label: string;
+  kontonummer: string;
+  bank?: string;
+  isDefault: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type InvoiceStatus = "utkast" | "skickad" | "betald";
+
+export type InvoiceItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  position: number;
+};
+
+export type Invoice = {
+  id: string;
+  invoiceNumber: number;
+  customerId: string;
+  status: InvoiceStatus;
+  billingEntityId: string;
+  bankAccountId: string;
+  paymentLink?: string;
+  momsRate: number;
+  subtotal: number;
+  vatAmount: number;
+  total: number;
+  notes?: string;
+  issuedDate?: string;
+  dueDate?: string;
+  sentAt?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type InvoiceWithCustomer = Invoice & { customer: Customer };
+export type InvoiceWithItems = InvoiceWithCustomer & { items: InvoiceItem[] };
+
+export type Email = {
+  id: string;
+  customerId?: string;
+  messageId: string;
+  fromAddress: string;
+  fromName?: string;
+  toAddress?: string;
+  subject?: string;
+  bodyText?: string;
+  bodyHtml?: string;
+  receivedAt: string;
+  createdAt: string;
+};
+
 export type ProjectInquiry = {
   categories: ProjectCategory[];
   budget: ProjectBudget;

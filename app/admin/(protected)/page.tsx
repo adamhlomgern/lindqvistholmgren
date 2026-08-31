@@ -1,27 +1,32 @@
 import Link from "next/link";
-import { ArrowUpRight, Briefcase, Mail, Newspaper } from "lucide-react";
+import { ArrowUpRight, Briefcase, Mail, Newspaper, Receipt, Users } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Tag } from "@/components/ui/Tag";
 import { getProjectsCount } from "@/lib/data/projects";
 import { getArticlesCount } from "@/lib/data/articles";
 import { getInquiriesCount, getRecentInquiries } from "@/lib/data/inquiries";
+import { getCustomersCount } from "@/lib/data/customers";
+import { getInvoicesCount } from "@/lib/data/invoices";
 import { projectCategoryLabels } from "@/lib/constants";
 
 export default async function AdminDashboardPage() {
-  const [projectsCount, articlesCount, inquiriesCount, latestInquiries] = await Promise.all([
-    getProjectsCount(),
-    getArticlesCount(),
-    getInquiriesCount(),
-    getRecentInquiries(3),
-  ]);
+  const [projectsCount, articlesCount, inquiriesCount, customersCount, invoicesCount, latestInquiries] =
+    await Promise.all([
+      getProjectsCount(),
+      getArticlesCount(),
+      getInquiriesCount(),
+      getCustomersCount(),
+      getInvoicesCount(),
+      getRecentInquiries(3),
+    ]);
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-bone">Översikt</h1>
-      <p className="mt-1 text-sm text-stone">Hantera portfölj, artiklar och förfrågningar från ett ställe.</p>
+      <p className="mt-1 text-sm text-stone">Hantera portfölj, artiklar, förfrågningar och kunder från ett ställe.</p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Link href="/admin/projekt" className="group block">
           <GlassCard accent="emerald">
             <div className="flex items-center justify-between">
@@ -59,6 +64,32 @@ export default async function AdminDashboardPage() {
             </div>
             <p className="mt-6 font-display text-3xl font-bold text-bone">{inquiriesCount}</p>
             <p className="mt-1 text-sm text-stone">Förfrågningar</p>
+          </GlassCard>
+        </Link>
+        <Link href="/admin/kunder" className="group block">
+          <GlassCard accent="lavender">
+            <div className="flex items-center justify-between">
+              <AccentBadge icon={Users} accent="lavender" />
+              <ArrowUpRight
+                size={18}
+                className="text-stone/60 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-lavender"
+              />
+            </div>
+            <p className="mt-6 font-display text-3xl font-bold text-bone">{customersCount}</p>
+            <p className="mt-1 text-sm text-stone">Kunder</p>
+          </GlassCard>
+        </Link>
+        <Link href="/admin/fakturor" className="group block">
+          <GlassCard accent="peach">
+            <div className="flex items-center justify-between">
+              <AccentBadge icon={Receipt} accent="peach" />
+              <ArrowUpRight
+                size={18}
+                className="text-stone/60 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-peach"
+              />
+            </div>
+            <p className="mt-6 font-display text-3xl font-bold text-bone">{invoicesCount}</p>
+            <p className="mt-1 text-sm text-stone">Fakturor</p>
           </GlassCard>
         </Link>
       </div>

@@ -6,12 +6,16 @@ import { usePathname } from "next/navigation";
 import {
   Briefcase,
   Hash,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Mail,
   Menu,
   Newspaper,
+  Receipt,
+  Settings,
   Tags,
+  Users,
   X,
 } from "lucide-react";
 import { logout } from "@/lib/actions/auth";
@@ -23,6 +27,10 @@ const navItems = [
   { href: "/admin/kategorier", label: "Kategorier", icon: Tags },
   { href: "/admin/taggar", label: "Taggar", icon: Hash },
   { href: "/admin/forfragningar", label: "Förfrågningar", icon: Mail },
+  { href: "/admin/kunder", label: "Kunder", icon: Users },
+  { href: "/admin/fakturor", label: "Fakturor", icon: Receipt },
+  { href: "/admin/inkorg", label: "Inkorg", icon: Inbox },
+  { href: "/admin/installningar", label: "Inställningar", icon: Settings },
 ];
 
 function isActive(pathname: string, href: string) {
