@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ProjectInquiryProvider } from "@/components/contact/ProjectInquiryContext";
+import { CookieConsentProvider } from "@/components/consent/CookieConsentProvider";
+import { CookieBanner } from "@/components/consent/CookieBanner";
+import { AnalyticsGate } from "@/components/consent/AnalyticsGate";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -76,11 +78,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <ProjectInquiryProvider>
-          <SiteChrome>{children}</SiteChrome>
-        </ProjectInquiryProvider>
+        <CookieConsentProvider>
+          <ProjectInquiryProvider>
+            <SiteChrome>{children}</SiteChrome>
+          </ProjectInquiryProvider>
+          <CookieBanner />
+          {process.env.NODE_ENV === "production" && <AnalyticsGate />}
+        </CookieConsentProvider>
         <Analytics />
-        {process.env.NODE_ENV === "production" && <GoogleAnalytics gaId="G-Z7KLXKREBF" />}
       </body>
     </html>
   );

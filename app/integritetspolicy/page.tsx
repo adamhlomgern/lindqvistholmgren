@@ -54,8 +54,8 @@ const sections: PolicySection[] = [
   {
     title: "Cookies",
     body: [
-      "Den publika delen av webbplatsen sätter inga cookies för spårning, statistik eller marknadsföring. I vår administrationspanel (/admin) används en teknisk sessionscookie för att hålla dig inloggad — den är nödvändig för att funktionen ska fungera och kräver inte samtycke.",
-      "Om vi i framtiden lägger till analys- eller marknadsföringscookies uppdaterar vi den här sidan och ber om ditt samtycke innan de aktiveras.",
+      "I vår administrationspanel (/admin) används en teknisk sessionscookie för att hålla dig inloggad — den är nödvändig för att funktionen ska fungera och kräver inte samtycke.",
+      "Vi använder Google Analytics för besöksstatistik. De cookies som krävs för det sätts bara om du aktivt godkänner det i cookie-bannern som visas vid ditt första besök — annars laddas Google Analytics inte alls. Du kan när som helst ändra ditt val via kaka-ikonen (🍪) i headern.",
     ],
   },
   {
@@ -77,7 +77,7 @@ export default function IntegritetspolicyPage() {
         icon={ShieldCheck}
         eyebrow="Integritetspolicy"
         title="Så hanterar vi dina uppgifter"
-        description="Vi tror på att vara tydliga med vilka uppgifter vi samlar in, varför, och hur du kan påverka det. Senast uppdaterad 6 augusti 2026."
+        description="Vi tror på att vara tydliga med vilka uppgifter vi samlar in, varför, och hur du kan påverka det. Senast uppdaterad 31 augusti 2026."
       />
       <Section tone="olive">
         <Container>
