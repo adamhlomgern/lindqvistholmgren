@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Space_Grotesk } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ProjectInquiryProvider } from "@/components/contact/ProjectInquiryContext";
 import "./globals.css";
@@ -79,6 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteChrome>{children}</SiteChrome>
         </ProjectInquiryProvider>
         <Analytics />
+        {process.env.NODE_ENV === "production" && <GoogleAnalytics gaId="G-Z7KLXKREBF" />}
       </body>
     </html>
   );

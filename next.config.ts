@@ -6,11 +6,11 @@ const supabaseWsOrigin = supabaseOrigin.replace(/^https/, "wss");
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""};
+  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob: ${supabaseOrigin};
   font-src 'self' data:;
-  connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin};
+  connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin} https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
