@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { ShieldCheck } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
+import { LegalSections, type LegalSection } from "@/components/legal/LegalSections";
 
 export const metadata: Metadata = {
   title: "Integritetspolicy",
@@ -13,12 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-type PolicySection = {
-  title: string;
-  body: string[];
-};
-
-const sections: PolicySection[] = [
+const sections: LegalSection[] = [
   {
     title: "Vem är personuppgiftsansvarig",
     body: [
@@ -55,7 +49,7 @@ const sections: PolicySection[] = [
     title: "Cookies",
     body: [
       "I vår administrationspanel (/admin) används en teknisk sessionscookie för att hålla dig inloggad — den är nödvändig för att funktionen ska fungera och kräver inte samtycke.",
-      "Vi använder Google Analytics för besöksstatistik. De cookies som krävs för det sätts bara om du aktivt godkänner det i cookie-bannern som visas vid ditt första besök — annars laddas Google Analytics inte alls. Du kan när som helst ändra ditt val via kaka-ikonen (🍪) i headern.",
+      "Vi använder Google Analytics för besöksstatistik. De cookies som krävs för det sätts bara om du aktivt godkänner det i cookie-bannern som visas vid ditt första besök — annars laddas Google Analytics inte alls. Du kan när som helst ändra ditt val via länken \"Cookie-inställningar\" i sidfoten.",
     ],
   },
   {
@@ -79,24 +73,7 @@ export default function IntegritetspolicyPage() {
         title="Så hanterar vi dina uppgifter"
         description="Vi tror på att vara tydliga med vilka uppgifter vi samlar in, varför, och hur du kan påverka det. Senast uppdaterad 31 augusti 2026."
       />
-      <Section tone="olive">
-        <Container>
-          <div className="mx-auto flex max-w-3xl flex-col gap-10">
-            {sections.map((section) => (
-              <div key={section.title}>
-                <h2 className="font-display text-xl font-bold text-bone">{section.title}</h2>
-                <div className="mt-3 flex flex-col gap-3">
-                  {section.body.map((paragraph, index) => (
-                    <p key={index} className="text-base leading-relaxed text-stone">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
+      <LegalSections sections={sections} />
     </>
   );
 }

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { ScrollText } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
+import { LegalSections, type LegalSection } from "@/components/legal/LegalSections";
 
 export const metadata: Metadata = {
   title: "Allmänna villkor",
@@ -13,12 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-type TermsSection = {
-  title: string;
-  body: string[];
-};
-
-const sections: TermsSection[] = [
+const sections: LegalSection[] = [
   {
     title: "Vem villkoren gäller för",
     body: [
@@ -121,24 +115,7 @@ export default function AllmannaVillkorPage() {
         title="Villkor för våra kunduppdrag"
         description="Så här jobbar vi tillsammans, från offert till leverans — offert, betalning, rättigheter och ansvar. Senast uppdaterad 31 augusti 2026."
       />
-      <Section tone="olive">
-        <Container>
-          <div className="mx-auto flex max-w-3xl flex-col gap-10">
-            {sections.map((section) => (
-              <div key={section.title}>
-                <h2 className="font-display text-xl font-bold text-bone">{section.title}</h2>
-                <div className="mt-3 flex flex-col gap-3">
-                  {section.body.map((paragraph, index) => (
-                    <p key={index} className="text-base leading-relaxed text-stone">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
+      <LegalSections sections={sections} />
     </>
   );
 }
