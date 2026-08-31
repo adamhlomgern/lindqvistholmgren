@@ -37,8 +37,9 @@ const sections: TermsSection[] = [
     title: "Priser och betalning",
     body: [
       "Priser anges exklusive moms om inget annat framgår. Beroende på uppdragets storlek fakturerar vi antingen ett fast pris i en eller flera delbetalningar, eller löpande på timmar enligt offerten.",
-      "Betalningsvillkor är 30 dagar netto om inget annat avtalats. Vid försenad betalning debiteras dröjsmålsränta enligt räntelagen samt eventuell påminnelseavgift.",
-      "Vid större projekt förbehåller vi oss rätten att fakturera en delbetalning innan arbetet påbörjas.",
+      "Betalningsvillkor beslutas från fall till fall utifrån kund och uppdrag, och anges på respektive faktura — vi tillämpar inget generellt antal dagar för alla kunder.",
+      "Som norm tar vi betalt helt eller delvis i förskott innan arbetet påbörjas, särskilt för nya kunder eller större uppdrag. Omfattningen av förskottsbetalningen framgår av offerten.",
+      "Vid delad betalning kan vi pausa efterföljande del av arbetet tills tidigare delbetalning är genomförd. Vid försenad betalning debiteras dröjsmålsränta enligt räntelagen samt eventuell påminnelseavgift.",
     ],
   },
   {
@@ -58,6 +59,8 @@ const sections: TermsSection[] = [
     title: "Immateriella rättigheter",
     body: [
       "När uppdraget är slutbetalt övergår rättigheterna till det som tagits fram specifikt för kunden — design, texter och kod som skrivits för projektet — till kunden, om inget annat avtalats.",
+      "Färdiga filer, källkod, inloggningsuppgifter och publicering eller överlämning sker först när uppdraget är fullt betalt. Fram tills dess får levererat material — inklusive utkast, förhandsversioner och arbetsmaterial — inte användas, publiceras, kopieras eller spridas av kunden.",
+      "Om en faktura inte betalas i tid, eller bestrids utan grund, har vi rätt att stänga av eller ta bort publicerat material till dess betalning skett, samt vidta de åtgärder som krävs för att driva in skulden.",
       "Vi behåller rätten att använda generella komponenter, interna verktyg och tekniska lösningar som återanvänds mellan projekt, samt att visa upp arbetet i vårt portfolio om inget annat avtalats.",
     ],
   },
