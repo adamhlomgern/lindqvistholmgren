@@ -182,6 +182,9 @@ export function Footer() {
           <Link href="/integritetspolicy" className="transition-colors hover:text-emerald">
             Integritetspolicy
           </Link>
+          <Link href="/allmanna-villkor" className="transition-colors hover:text-emerald">
+            Allmänna villkor
+          </Link>
         </div>
       </Container>
     </footer>

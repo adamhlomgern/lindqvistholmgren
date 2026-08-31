@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/om-oss`, changeFrequency: "yearly", priority: 0.6 },
     { url: `${baseUrl}/kontakt`, changeFrequency: "yearly", priority: 0.8 },
     { url: `${baseUrl}/integritetspolicy`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/allmanna-villkor`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${baseUrl}/starta-ett-projekt`, changeFrequency: "yearly", priority: 0.8 },
   ];
 
