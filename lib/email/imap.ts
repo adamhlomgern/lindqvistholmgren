@@ -58,6 +58,14 @@ export async function syncInbox(): Promise<SyncResult> {
 
       let maxUidSeen = lastUid;
       const rows: Record<string, unknown>[] = [];
+      // Real file attachments only — inline signature/logo images that HTML
+      // emails embed and reference via `cid:` are also parsed as
+      // "attachments" by mailparser, but carry contentDisposition "inline"
+      // rather than "attachment", so this filter naturally excludes them.
+      const attachmentsByMessageId = new Map<
+        string,
+        { filename: string; contentType: string; size: number; content: Buffer }[]
+      >();
 
       for await (const message of client.fetch(
         { uid: `${lastUid + 1}:*` },
@@ -78,9 +86,26 @@ export async function syncInbox(): Promise<SyncResult> {
         const customer = await getCustomerByEmail(fromAddress);
         if (customer) matched += 1;
 
+        const messageId = parsed.messageId ?? `<no-id-${message.uid}@local>`;
+
+        const realAttachments = parsed.attachments.filter(
+          (attachment) => attachment.contentDisposition === "attachment",
+        );
+        if (realAttachments.length > 0) {
+          attachmentsByMessageId.set(
+            messageId,
+            realAttachments.map((attachment) => ({
+              filename: attachment.filename ?? "bilaga",
+              contentType: attachment.contentType,
+              size: attachment.size,
+              content: attachment.content,
+            })),
+          );
+        }
+
         rows.push({
           customer_id: customer?.id ?? null,
-          message_id: parsed.messageId ?? `<no-id-${message.uid}@local>`,
+          message_id: messageId,
           uid: message.uid,
           from_address: fromAddress,
           from_name: parsed.from?.value[0]?.name ?? null,
@@ -95,10 +120,40 @@ export async function syncInbox(): Promise<SyncResult> {
       }
 
       if (rows.length > 0) {
-        const { error } = await supabase
+        const { data: savedEmails, error } = await supabase
           .from("emails")
-          .upsert(rows, { onConflict: "message_id", ignoreDuplicates: true });
+          .upsert(rows, { onConflict: "message_id", ignoreDuplicates: true })
+          .select("id, message_id");
         if (error) console.error("[syncInbox] Kunde inte spara mejl", error);
+
+        // ignoreDuplicates means a re-run of a partially-synced batch won't
+        // return already-existing rows here, so their attachments simply
+        // won't be (re-)uploaded — acceptable, since last_uid only advances
+        // past a batch once it has been saved.
+        for (const saved of savedEmails ?? []) {
+          const attachments = attachmentsByMessageId.get(saved.message_id);
+          if (!attachments) continue;
+
+          for (const attachment of attachments) {
+            const storagePath = `email/${saved.id}/${crypto.randomUUID()}-${attachment.filename}`;
+            const { error: uploadError } = await supabase.storage
+              .from("attachments")
+              .upload(storagePath, attachment.content, { contentType: attachment.contentType });
+            if (uploadError) {
+              console.error("[syncInbox] Kunde inte ladda upp bilaga", uploadError);
+              continue;
+            }
+
+            const { error: insertError } = await supabase.from("email_attachments").insert({
+              email_id: saved.id,
+              filename: attachment.filename,
+              content_type: attachment.contentType,
+              size: attachment.size,
+              storage_path: storagePath,
+            });
+            if (insertError) console.error("[syncInbox] Kunde inte spara bilaga", insertError);
+          }
+        }
       }
 
       await supabase

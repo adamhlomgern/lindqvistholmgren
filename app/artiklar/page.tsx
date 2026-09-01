@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { ArticlesExplorer } from "@/components/sections/ArticlesExplorer";
-import { getArticles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/articles";
 import { getCategories } from "@/lib/data/categories";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function ArtiklarPage() {
-  const [articles, categories] = await Promise.all([getArticles(), getCategories()]);
+  const [articles, categories] = await Promise.all([getPublishedArticles(), getCategories()]);
 
   const jsonLd = {
     "@context": "https://schema.org",

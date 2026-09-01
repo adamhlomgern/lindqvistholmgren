@@ -2,12 +2,12 @@ import type { MetadataRoute } from "next";
 import { services } from "@/lib/data/services";
 import { servicePages } from "@/lib/data/service-pages";
 import { getProjects } from "@/lib/data/projects";
-import { getArticles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/articles";
 
 const baseUrl = "https://lindqvistholmgren.se";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [projects, articles] = await Promise.all([getProjects(), getArticles()]);
+  const [projects, articles] = await Promise.all([getProjects(), getPublishedArticles()]);
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: "monthly", priority: 1 },

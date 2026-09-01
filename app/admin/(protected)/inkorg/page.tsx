@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Inbox } from "lucide-react";
+import { Inbox, Paperclip } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { getRecentEmails } from "@/lib/data/emails";
 import { getCustomers } from "@/lib/data/customers";
 import { getBlockedSenders } from "@/lib/data/blocked-senders";
+import { getEmailAttachmentCounts } from "@/lib/data/files";
 import { matchEmailToCustomer, deleteEmail, unblockSender } from "@/lib/actions/emails";
 import { DeleteEmailButton } from "@/components/admin/DeleteEmailButton";
 import { BlockSenderButton } from "@/components/admin/BlockSenderButton";
@@ -17,6 +18,7 @@ export default async function AdminInboxPage() {
     getCustomers(),
     getBlockedSenders(),
   ]);
+  const attachmentCounts = await getEmailAttachmentCounts(emails.map((email) => email.id));
 
   return (
     <div>
@@ -41,7 +43,15 @@ export default async function AdminInboxPage() {
                   </p>
                   <p className="text-sm text-stone">{email.fromAddress}</p>
                 </Link>
-                <span className="shrink-0 text-xs text-stone">{formatDateSv(email.receivedAt)}</span>
+                <div className="flex shrink-0 items-center gap-2">
+                  {(attachmentCounts.get(email.id) ?? 0) > 0 && (
+                    <span className="flex items-center gap-1 text-xs text-stone">
+                      <Paperclip size={12} strokeWidth={2.25} />
+                      {attachmentCounts.get(email.id)}
+                    </span>
+                  )}
+                  <span className="text-xs text-stone">{formatDateSv(email.receivedAt)}</span>
+                </div>
               </div>
 
               <Link href={`/admin/inkorg/${email.id}`} className="block">

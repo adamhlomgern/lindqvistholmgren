@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Tag } from "@/components/ui/Tag";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
-import { getArticles } from "@/lib/data/articles";
+import { getPublishedArticles } from "@/lib/data/articles";
 import { getCategories } from "@/lib/data/categories";
 import { articleIcons, resolveCategoryVisual } from "@/lib/articles/visuals";
 
@@ -12,7 +12,7 @@ type RelatedArticlesProps = {
 };
 
 export async function RelatedArticles({ currentSlug, category }: RelatedArticlesProps) {
-  const [articles, categories] = await Promise.all([getArticles(), getCategories()]);
+  const [articles, categories] = await Promise.all([getPublishedArticles(), getCategories()]);
   const others = articles.filter((article) => article.slug !== currentSlug);
   const sameCategory = others.filter((article) => article.category === category);
   const rest = others

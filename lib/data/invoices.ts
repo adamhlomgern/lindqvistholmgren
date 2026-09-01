@@ -154,6 +154,7 @@ export type InvoiceStats = {
   overdueCount: number;
   paidThisYear: number;
   invoicedThisYear: number;
+  draftCount: number;
 };
 
 const emptyStats: InvoiceStats = {
@@ -163,6 +164,7 @@ const emptyStats: InvoiceStats = {
   overdueCount: 0,
   paidThisYear: 0,
   invoicedThisYear: 0,
+  draftCount: 0,
 };
 
 // Aggregated in JS rather than via SQL grouping — at the scale of a
@@ -197,6 +199,9 @@ export async function getInvoiceStats(): Promise<InvoiceStats> {
     }
     if (row.status !== "utkast" && issuedYear === currentYear) {
       stats.invoicedThisYear += row.total;
+    }
+    if (row.status === "utkast") {
+      stats.draftCount += 1;
     }
   }
 

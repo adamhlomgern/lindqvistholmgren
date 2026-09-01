@@ -72,7 +72,7 @@ export async function createProject(
   revalidatePath("/");
   revalidatePath("/projekt");
   revalidatePath(`/projekt/${row.slug}`);
-  redirect("/admin/projekt");
+  redirect("/admin/portfolio");
 }
 
 export async function updateProject(
@@ -101,7 +101,7 @@ export async function updateProject(
   revalidatePath("/");
   revalidatePath("/projekt");
   revalidatePath(`/projekt/${slug}`);
-  redirect("/admin/projekt");
+  redirect("/admin/portfolio");
 }
 
 export async function deleteProject(slug: string) {
@@ -112,5 +112,5 @@ export async function deleteProject(slug: string) {
   revalidatePath("/");
   revalidatePath("/projekt");
   revalidatePath(`/projekt/${slug}`);
-  redirect("/admin/projekt");
+  redirect("/admin/portfolio");
 }

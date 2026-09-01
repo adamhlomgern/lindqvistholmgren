@@ -111,6 +111,8 @@ export type ArticleIconKey =
   | "globe"
   | "megaphone";
 
+export type ArticleStatus = "publicerad" | "utkast" | "schemalagd" | "avpublicerad";
+
 export type Article = {
   slug: string;
   title: string;
@@ -121,6 +123,10 @@ export type Article = {
   date: string;
   readTime: string;
   content: string;
+  status: ArticleStatus;
+  updatedAt: string;
+  seoTitle?: string;
+  metaDescription?: string;
 };
 
 // Listing/dashboard views never render article body content, so this omits
@@ -221,6 +227,54 @@ export type Invoice = {
 
 export type InvoiceWithCustomer = Invoice & { customer: Customer };
 export type InvoiceWithItems = InvoiceWithCustomer & { items: InvoiceItem[] };
+
+export type ClientProjectStatus = "planerat" | "pagaende" | "vantar_pa_kund" | "pausat" | "klar";
+
+export type ClientProject = {
+  id: string;
+  title: string;
+  customerId?: string;
+  status: ClientProjectStatus;
+  notes?: string;
+  deadline?: string;
+  nextStep?: string;
+  assigneeEntityId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ClientProjectWithCustomer = ClientProject & {
+  customer?: Customer;
+  assignee?: BillingEntity;
+};
+
+export type ProjectChecklistItem = {
+  id: string;
+  projectId: string;
+  label: string;
+  done: boolean;
+  position: number;
+  createdAt: string;
+};
+
+export type ProjectActivityEntry = {
+  id: string;
+  projectId: string;
+  message: string;
+  createdAt: string;
+};
+
+type StoredFile = {
+  id: string;
+  filename: string;
+  contentType?: string;
+  size?: number;
+  storagePath: string;
+  createdAt: string;
+};
+
+export type EmailAttachment = StoredFile & { emailId: string };
+export type ProjectFile = StoredFile & { projectId: string };
 
 export type BlockedSender = {
   id: string;

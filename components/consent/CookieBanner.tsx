@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Cookie } from "lucide-react";
 import { useCookieConsent } from "@/components/consent/CookieConsentProvider";
 
 export function CookieBanner() {
   const { bannerOpen, acceptAll, rejectAll } = useCookieConsent();
+  const pathname = usePathname();
 
-  if (!bannerOpen) {
+  // The admin panel is an internal tool for a logged-in user, not a public
+  // visitor — the GA consent prompt has no audience there.
+  if (!bannerOpen || pathname.startsWith("/admin")) {
     return null;
   }
 

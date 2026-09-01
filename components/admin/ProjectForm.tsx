@@ -580,7 +580,7 @@ export function ProjectForm({ project, existingCategories = [] }: ProjectFormPro
           disabled={pending}
           className="self-start rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
         >
-          {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa projekt"}
+          {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa case"}
         </button>
       </div>
     </form>

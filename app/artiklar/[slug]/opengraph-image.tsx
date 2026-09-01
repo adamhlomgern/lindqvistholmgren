@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { notFound } from "next/navigation";
-import { getArticleBySlug } from "@/lib/data/articles";
+import { getPublishedArticleBySlug } from "@/lib/data/articles";
 import { getCategories } from "@/lib/data/categories";
 import { accentHex, resolveCategoryVisual } from "@/lib/articles/visuals";
 
@@ -13,7 +13,7 @@ type Props = {
 
 export default async function Image({ params }: Props) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const article = await getPublishedArticleBySlug(slug);
 
   if (!article) {
     notFound();

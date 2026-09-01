@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { updateInvoiceStatus } from "@/lib/actions/invoices";
 import type { InvoiceStatus } from "@/lib/types";
 
@@ -17,20 +18,28 @@ function StatusButton({
   label: string;
   confirmMessage?: string;
 }) {
-  const action = updateInvoiceStatus.bind(null, id, status);
-  return (
-    <form
-      action={action}
-      onSubmit={(event) => {
-        if (confirmMessage && !confirm(confirmMessage)) {
-          event.preventDefault();
+  const action = () => updateInvoiceStatus(id, status);
+
+  if (confirmMessage) {
+    return (
+      <ConfirmDialog
+        trigger={
+          <button type="button" className={buttonClasses}>
+            {label}
+          </button>
         }
-      }}
-    >
-      <button type="submit" className={buttonClasses}>
-        {label}
-      </button>
-    </form>
+        title={label}
+        description={confirmMessage}
+        confirmLabel={label}
+        onConfirm={action}
+      />
+    );
+  }
+
+  return (
+    <button type="button" className={buttonClasses} onClick={action}>
+      {label}
+    </button>
   );
 }
 

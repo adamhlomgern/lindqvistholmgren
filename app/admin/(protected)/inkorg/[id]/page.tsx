@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getEmailById } from "@/lib/data/emails";
 import { getCustomers } from "@/lib/data/customers";
+import { getEmailAttachments } from "@/lib/data/files";
 import { deleteEmail, matchEmailToCustomer } from "@/lib/actions/emails";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
@@ -9,6 +10,7 @@ import { BackLink } from "@/components/admin/BackLink";
 import { DeleteEmailButton } from "@/components/admin/DeleteEmailButton";
 import { BlockSenderButton } from "@/components/admin/BlockSenderButton";
 import { EmailHtmlView } from "@/components/admin/EmailHtmlView";
+import { FileThumb } from "@/components/admin/FileThumb";
 import { formatDateSv } from "@/lib/format";
 import { Select } from "@/components/ui/Select";
 
@@ -22,7 +24,10 @@ export default async function EmailDetailPage({ params }: Props) {
     notFound();
   }
 
-  const customers = email.customerId ? [] : await getCustomers();
+  const [customers, attachments] = await Promise.all([
+    email.customerId ? Promise.resolve([]) : getCustomers(),
+    getEmailAttachments(email.id),
+  ]);
 
   return (
     <div>
@@ -82,6 +87,24 @@ export default async function EmailDetailPage({ params }: Props) {
           <p className="text-sm text-stone">Inget innehåll.</p>
         )}
       </Card>
+
+      {attachments.length > 0 && (
+        <div className="mt-8">
+          <h2 className="font-display text-sm font-bold text-bone">
+            Bilagor <span className="text-stone">({attachments.length})</span>
+          </h2>
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+            {attachments.map((attachment) => (
+              <FileThumb
+                key={attachment.id}
+                filename={attachment.filename}
+                contentType={attachment.contentType}
+                url={attachment.url}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -64,3 +64,21 @@ export async function getInquiriesCount(): Promise<number> {
 
   return count ?? 0;
 }
+
+export async function getRecentInquiriesCount(days: number): Promise<number> {
+  const supabase = createServiceRoleClient();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+
+  const { count, error } = await supabase
+    .from("projektforfragningar")
+    .select("*", { count: "exact", head: true })
+    .gte("created_at", cutoff.toISOString());
+
+  if (error) {
+    console.error("[getRecentInquiriesCount] Supabase-fråga misslyckades", error);
+    return 0;
+  }
+
+  return count ?? 0;
+}

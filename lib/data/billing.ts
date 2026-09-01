@@ -1,7 +1,7 @@
 import type { BillingEntity, BankAccount } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
-type BillingEntityRow = {
+export type BillingEntityRow = {
   id: string;
   name: string;
   address: string | null;
@@ -29,7 +29,7 @@ type BankAccountRow = {
   updated_at: string;
 };
 
-function toBillingEntity(row: BillingEntityRow): BillingEntity {
+export function toBillingEntity(row: BillingEntityRow): BillingEntity {
   return {
     id: row.id,
     name: row.name,

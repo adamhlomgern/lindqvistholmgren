@@ -1,5 +1,9 @@
 import type { ArticleIconKey, ProjectBudget, ProjectCategory, ProjectTimeline } from "@/lib/types";
 
+// Window used both for the dashboard's "Att hantera" panel and the sidebar's
+// Förfrågningar badge, so the two numbers never drift apart.
+export const RECENT_INQUIRY_WINDOW_DAYS = 7;
+
 export const projectCategories: ProjectCategory[] = [
   "grafisk-design",
   "tryck",

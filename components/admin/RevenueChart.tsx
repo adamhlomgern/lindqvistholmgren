@@ -1,7 +1,7 @@
 import type { MonthlyRevenue } from "@/lib/data/invoices";
 import { formatCurrencySek } from "@/lib/format";
 
-const CHART_HEIGHT = 110;
+const CHART_HEIGHT = 64;
 
 export function RevenueChart({ data }: { data: MonthlyRevenue[] }) {
   const max = Math.max(...data.map((d) => d.total), 1);

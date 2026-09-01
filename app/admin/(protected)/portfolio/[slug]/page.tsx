@@ -12,7 +12,7 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export default async function EditProjectPage({ params }: Props) {
+export default async function EditPortfolioProjectPage({ params }: Props) {
   const { slug } = await params;
   const [project, existingCategories] = await Promise.all([
     getProjectBySlug(slug),
@@ -25,12 +25,12 @@ export default async function EditProjectPage({ params }: Props) {
 
   return (
     <div>
-      <BackLink href="/admin/projekt" label="Tillbaka till projekt" />
+      <BackLink href="/admin/portfolio" label="Tillbaka till portfolio" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h1 className="truncate font-display text-2xl font-bold text-bone">{project.title}</h1>
           <div className="mt-1.5 flex items-center gap-3 text-xs text-stone">
-            <span>Redigera projekt</span>
+            <span>Redigera case</span>
             <Link
               href={`/projekt/${project.slug}`}
               target="_blank"
