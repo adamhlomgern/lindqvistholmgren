@@ -14,6 +14,7 @@ import {
   Link as LinkIcon,
   List,
   ListOrdered,
+  ListTree,
   Quote,
   Redo,
   Table as TableIcon,
@@ -38,6 +39,7 @@ type RichTextEditorProps = {
   defaultValue?: string;
   onOutlineChange?: (headings: OutlineHeading[]) => void;
   onWordCountChange?: (count: number) => void;
+  onOpenStructure?: () => void;
 };
 
 function ToolbarButton({
@@ -63,7 +65,7 @@ function ToolbarButton({
       disabled={disabled}
       aria-label={label}
       title={label}
-      className={`flex h-8 min-w-8 items-center justify-center rounded-lg px-2 text-xs font-semibold transition-colors disabled:opacity-40 ${
+      className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg px-2 text-xs font-semibold transition-colors disabled:opacity-40 ${
         active ? "bg-emerald/15 text-emerald" : "text-stone hover:bg-bone/10 hover:text-bone"
       }`}
     >
@@ -86,7 +88,13 @@ function extractOutline(doc: Editor["state"]["doc"]): OutlineHeading[] {
   return headings;
 }
 
-export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWordCountChange }: RichTextEditorProps) {
+export function RichTextEditor({
+  name,
+  defaultValue = "",
+  onOutlineChange,
+  onWordCountChange,
+  onOpenStructure,
+}: RichTextEditorProps) {
   const hiddenInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   // Bumped on update/selection change purely to re-render the toolbar's
@@ -131,7 +139,7 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
     },
     editorProps: {
       attributes: {
-        class: "article-prose min-h-[32rem] focus:outline-none",
+        class: "article-prose article-editor min-h-[32rem] focus:outline-none",
       },
     },
   });
@@ -178,7 +186,7 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
 
   return (
     <div className="rounded-lg border border-bone/10 bg-bone/5">
-      <div className="sticky top-28 z-10 flex flex-wrap items-center gap-1 rounded-t-lg border-b border-bone/10 bg-charcoal/95 p-2 backdrop-blur sm:top-16">
+      <div className="sticky top-28 z-10 flex flex-nowrap items-center gap-1 overflow-x-auto rounded-t-lg border-b border-bone/10 bg-charcoal/95 p-2 backdrop-blur sm:top-16 sm:flex-wrap sm:overflow-visible">
         <ToolbarButton
           label="Rubrik H2"
           active={toolbarState.h2}
@@ -200,7 +208,7 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
         >
           H4
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
         <ToolbarButton
           label="Fet text"
           active={toolbarState.bold}
@@ -215,7 +223,7 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
         >
           <Italic size={14} strokeWidth={2.5} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
         <ToolbarButton
           label="Punktlista"
           active={toolbarState.bulletList}
@@ -237,8 +245,8 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
         >
           <Quote size={14} strokeWidth={2.5} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px bg-bone/10" />
-        <div className="relative">
+        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+        <div className="relative shrink-0">
           <ToolbarButton
             label="Länk"
             active={toolbarState.link}
@@ -294,7 +302,7 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
           {uploadingImage ? "…" : <ImageIcon size={14} strokeWidth={2.5} />}
         </ToolbarButton>
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChoice} />
-        <div className="mx-1 h-5 w-px bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
         <ToolbarButton
           label="Infoga tabell"
           onClick={() =>
@@ -303,15 +311,29 @@ export function RichTextEditor({ name, defaultValue = "", onOutlineChange, onWor
         >
           <TableIcon size={14} strokeWidth={2.5} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
         <ToolbarButton label="Ångra" onClick={() => editor.chain().focus().undo().run()}>
           <Undo size={14} strokeWidth={2.5} />
         </ToolbarButton>
         <ToolbarButton label="Gör om" onClick={() => editor.chain().focus().redo().run()}>
           <Redo size={14} strokeWidth={2.5} />
         </ToolbarButton>
+        {onOpenStructure && (
+          <div className="flex shrink-0 items-center gap-1 lg:hidden">
+            <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+            <button
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={onOpenStructure}
+              className="flex h-8 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+            >
+              <ListTree size={14} strokeWidth={2.5} />
+              Struktur
+            </button>
+          </div>
+        )}
       </div>
-      <div className="px-4 py-3">
+      <div className="px-3 py-2 sm:px-4 sm:py-3">
         <EditorContent editor={editor} />
       </div>
       <input type="hidden" name={name} ref={hiddenInputRef} defaultValue={defaultValue} />

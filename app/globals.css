@@ -261,6 +261,15 @@ body {
   font-size: 1rem;
   line-height: 1.75;
 }
+/* Editor-only: smaller than the public reading size on narrow screens, so a
+   long article doesn't turn editing into endless scrolling on a phone. The
+   public page never gets this class, so its typography is untouched. */
+@media (max-width: 640px) {
+  .article-editor.article-prose {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+}
 .article-prose > * + * {
   margin-top: 1.25em;
 }

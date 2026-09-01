@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, MoreHorizontal, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, MoreHorizontal, Trash2, X } from "lucide-react";
 import type { Article, ArticleStatus } from "@/lib/types";
 import type { ArticleCategory } from "@/lib/data/categories";
 import { articleIcons, resolveCategoryVisual } from "@/lib/articles/visuals";
@@ -12,12 +12,13 @@ import { Select } from "@/components/ui/Select";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { TagPicker } from "@/components/admin/TagPicker";
 import { ArticleOutline } from "@/components/admin/ArticleOutline";
+import { AutoGrowTextarea } from "@/components/admin/AutoGrowTextarea";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Card } from "@/components/ui/Card";
 import type { OutlineHeading } from "@/lib/articles/outline";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full min-w-0 rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   // A <label> here would be nice for a11y, but native label-click-delegation
@@ -25,7 +26,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   // real problem once a field contains more than one control (toolbar
   // buttons, tag pills), where it hijacks clicks meant for something else.
   return (
-    <div className="block">
+    <div className="block min-w-0">
       <span className="block text-xs font-medium uppercase tracking-label text-stone">{label}</span>
       {hint && <span className="mt-0.5 block text-xs text-stone/70">{hint}</span>}
       <div className="mt-2">{children}</div>
@@ -70,7 +71,10 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
   const [seoTitleValue, setSeoTitleValue] = useState(article?.seoTitle ?? "");
   const [metaDescriptionValue, setMetaDescriptionValue] = useState(article?.metaDescription ?? "");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [structureOpen, setStructureOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -80,6 +84,14 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [menuOpen]);
+
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setCompact(!entry.isIntersecting), { threshold: 0 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const { icon, accent } = resolveCategoryVisual(categories, category);
   const Icon = articleIcons[icon];
@@ -99,30 +111,45 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
-      <div className="sticky top-0 z-30 -mx-4 flex min-h-16 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-bone/10 bg-charcoal/95 px-4 py-2 backdrop-blur sm:-mx-6 sm:px-6 md:-mx-10 md:px-10">
-        <div className="min-w-0">
-          <p className="truncate font-display text-sm font-bold text-bone">{titleValue || "Ny artikel"}</p>
-          <p className="text-xs text-stone">
-            {wordCount > 0 ? `${wordCount} ord · cirka ${readMinutes} min läsning` : "Inget innehåll ännu"}
-          </p>
+      <div ref={sentinelRef} aria-hidden className="h-px" />
+
+      <div className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-bone/10 bg-charcoal/95 px-4 py-2 backdrop-blur sm:px-6">
+        <div className="flex min-w-0 items-center gap-2">
+          <Link
+            href="/admin/artiklar"
+            aria-label="Tillbaka till artiklar"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/5 hover:text-bone md:hidden"
+          >
+            <ArrowLeft size={16} strokeWidth={2.25} />
+          </Link>
+          <div className="min-w-0">
+            <p className="truncate font-display text-sm font-bold text-bone">{titleValue || "Ny artikel"}</p>
+            {!compact && (
+              <p className="text-xs text-stone">
+                {wordCount > 0 ? `${wordCount} ord · cirka ${readMinutes} min läsning` : "Inget innehåll ännu"}
+              </p>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {isEditing && (
             <Link
               href={`/admin/artiklar/${article!.slug}/forhandsgranska`}
               target="_blank"
+              aria-label="Förhandsgranska"
+              title="Förhandsgranska"
               className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline"
             >
-              Förhandsgranska
-              <ArrowUpRight size={12} strokeWidth={2.5} />
+              <span className="hidden sm:inline">Förhandsgranska</span>
+              <ArrowUpRight size={14} strokeWidth={2.5} />
             </Link>
           )}
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-emerald px-5 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60 sm:px-5"
           >
-            {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa artikel"}
+            {pending ? "Sparar…" : isEditing ? "Spara" : "Skapa"}
           </button>
           {isEditing && (
             <div className="relative" ref={menuRef}>
@@ -183,24 +210,31 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
       {state?.error && <p className="text-sm text-coral">{state.error}</p>}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_260px] lg:items-start">
-        <div>
-          <Card className={tab === "innehall" ? "flex flex-col gap-5" : "hidden"}>
+        <div className="min-w-0">
+          <div
+            className={
+              tab === "innehall"
+                ? "flex flex-col gap-5 sm:rounded-2xl sm:bg-bone/5 sm:p-6"
+                : "hidden"
+            }
+          >
             <Field label="Titel">
-              <input
+              <AutoGrowTextarea
                 name="title"
                 value={titleValue}
-                onChange={(event) => setTitleValue(event.target.value)}
+                onChange={setTitleValue}
                 required
-                className={inputClasses}
+                maxHeight={110}
+                className={`${inputClasses} font-display font-bold`}
               />
             </Field>
             <Field label="Ingress (visas i listan)" hint={`${excerptValue.length} tecken`}>
-              <textarea
+              <AutoGrowTextarea
                 name="excerpt"
                 value={excerptValue}
-                onChange={(event) => setExcerptValue(event.target.value)}
+                onChange={setExcerptValue}
                 required
-                rows={2}
+                maxHeight={200}
                 className={inputClasses}
               />
             </Field>
@@ -209,8 +243,9 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
               defaultValue={article?.content ?? ""}
               onOutlineChange={setOutline}
               onWordCountChange={setWordCount}
+              onOpenStructure={() => setStructureOpen(true)}
             />
-          </Card>
+          </div>
 
           <Card className={tab === "publicering" ? "flex flex-col gap-5" : "hidden"}>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -224,18 +259,24 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
                 />
               </Field>
               <Field label={status === "schemalagd" ? "Schemalagd till" : "Publiceringsdatum"}>
-                <input name="date" type="date" defaultValue={article?.date} required className={inputClasses} />
+                <input
+                  name="date"
+                  type="date"
+                  defaultValue={article?.date}
+                  required
+                  className={`${inputClasses} min-w-[9.5rem]`}
+                />
               </Field>
             </div>
 
             <Field label="Kategori">
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <AccentBadge icon={Icon} accent={accent} boxSize="compact" />
                 <Select
                   name="category"
                   value={category}
                   onValueChange={setCategory}
-                  className="w-full rounded-lg px-4 py-3 text-sm"
+                  className="w-full min-w-0 rounded-lg px-4 py-3 text-sm"
                   options={categories.map((value) => ({ value: value.name, label: value.name }))}
                 />
               </div>
@@ -248,9 +289,9 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           </Card>
 
           <Card className={tab === "seo" ? "flex flex-col gap-5" : "hidden"}>
-            <div>
+            <div className="min-w-0">
               <span className="block text-xs font-medium uppercase tracking-label text-stone">Sökmotorvisning</span>
-              <div className="mt-2 rounded-lg border border-bone/10 bg-bone/5 px-4 py-3">
+              <div className="mt-2 min-w-0 rounded-lg border border-bone/10 bg-bone/5 px-4 py-3">
                 <p className="truncate text-sm text-sky">{seoTitleValue || titleValue || "Artikelns titel"}</p>
                 <p className="truncate text-xs text-emerald/80">
                   lindqvistholmgren.se/artiklar/{slugValue || "url-slug"}
@@ -262,21 +303,22 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
             </div>
 
             <Field label="SEO-titel (valfritt)" hint="Standard: artikelns titel">
-              <input
+              <AutoGrowTextarea
                 name="seoTitle"
                 value={seoTitleValue}
-                onChange={(event) => setSeoTitleValue(event.target.value)}
+                onChange={setSeoTitleValue}
                 placeholder={titleValue}
+                maxHeight={90}
                 className={inputClasses}
               />
             </Field>
             <Field label="Metabeskrivning (valfritt)" hint="Standard: ingressen">
-              <textarea
+              <AutoGrowTextarea
                 name="metaDescription"
                 value={metaDescriptionValue}
-                onChange={(event) => setMetaDescriptionValue(event.target.value)}
+                onChange={setMetaDescriptionValue}
                 placeholder={excerptValue}
-                rows={2}
+                maxHeight={140}
                 className={inputClasses}
               />
             </Field>
@@ -305,6 +347,28 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           </div>
         )}
       </div>
+
+      {structureOpen && (
+        <div role="dialog" aria-label="Artikelstruktur" className="fixed inset-0 z-40 lg:hidden">
+          <div className="absolute inset-0 bg-charcoal/80" onClick={() => setStructureOpen(false)} />
+          <div className="absolute inset-x-0 bottom-0 max-h-[70vh] overflow-y-auto rounded-t-2xl border-t border-bone/10 bg-forest p-5 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-label text-stone/50">Artikelstruktur</span>
+              <button
+                type="button"
+                onClick={() => setStructureOpen(false)}
+                aria-label="Stäng"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-stone hover:text-bone"
+              >
+                <X size={16} strokeWidth={2.25} />
+              </button>
+            </div>
+            <div className="mt-3">
+              <ArticleOutline headings={outline} onNavigate={() => setStructureOpen(false)} />
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

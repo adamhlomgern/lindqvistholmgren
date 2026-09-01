@@ -24,7 +24,9 @@ export default async function EditArticlePage({ params }: Props) {
 
   return (
     <div>
-      <BackLink href="/admin/artiklar" label="Artiklar" />
+      <div className="hidden md:block">
+        <BackLink href="/admin/artiklar" label="Artiklar" />
+      </div>
       <ArticleForm article={article} availableTags={availableTags} categories={categories} />
     </div>
   );

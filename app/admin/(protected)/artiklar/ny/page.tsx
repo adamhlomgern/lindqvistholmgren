@@ -9,7 +9,9 @@ export default async function NewArticlePage() {
 
   return (
     <div>
-      <BackLink href="/admin/artiklar" label="Artiklar" />
+      <div className="hidden md:block">
+        <BackLink href="/admin/artiklar" label="Artiklar" />
+      </div>
       <ArticleForm availableTags={availableTags} categories={categories} />
     </div>
   );

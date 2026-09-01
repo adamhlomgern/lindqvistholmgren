@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import type { OutlineHeading } from "@/lib/articles/outline";
 
-export function ArticleOutline({ headings }: { headings: OutlineHeading[] }) {
+export function ArticleOutline({
+  headings,
+  onNavigate,
+}: {
+  headings: OutlineHeading[];
+  onNavigate?: () => void;
+}) {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -44,6 +50,7 @@ export function ArticleOutline({ headings }: { headings: OutlineHeading[] }) {
           onClick={(event) => {
             event.preventDefault();
             document.getElementById(heading.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            onNavigate?.();
           }}
           style={{ paddingLeft: `${(heading.level - minLevel) * 12}px` }}
           className={`flex items-center gap-1.5 truncate rounded-lg px-2 py-1.5 text-xs transition-colors ${
