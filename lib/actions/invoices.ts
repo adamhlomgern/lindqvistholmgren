@@ -56,6 +56,7 @@ export async function createInvoice(
   let bankAccountId = String(formData.get("bankAccountId") ?? "").trim();
   const paymentLink = String(formData.get("paymentLink") ?? "").trim() || null;
   const momsRate = Number(formData.get("momsRate") ?? 25);
+  const issuedDate = String(formData.get("issuedDate") ?? "").trim() || null;
   const dueDate = String(formData.get("dueDate") ?? "").trim() || null;
   const notes = String(formData.get("notes") ?? "").trim() || null;
   const items = parseItems(String(formData.get("items") ?? "[]"));
@@ -79,9 +80,21 @@ export async function createInvoice(
   const { subtotal, vatAmount, total } = computeTotals(items, momsRate);
   const supabase = createServiceRoleClient();
 
+  // Each firma keeps its own unbroken invoice-number sequence (both can
+  // have a #2601), tracked via billing_entities.next_invoice_number and
+  // incremented atomically by this RPC — not a shared/global identity.
+  const { data: invoiceNumber, error: numberError } = await supabase.rpc("next_invoice_number", {
+    entity_id: billingEntityId,
+  });
+
+  if (numberError) {
+    return { error: `Kunde inte hämta nästa fakturanummer: ${numberError.message}` };
+  }
+
   const { data: invoice, error: invoiceError } = await supabase
     .from("invoices")
     .insert({
+      invoice_number: invoiceNumber,
       customer_id: customerId,
       billing_entity_id: billingEntityId,
       bank_account_id: bankAccountId,
@@ -90,6 +103,7 @@ export async function createInvoice(
       subtotal,
       vat_amount: vatAmount,
       total,
+      issued_date: issuedDate,
       due_date: dueDate,
       notes,
     })
@@ -142,6 +156,7 @@ export async function updateInvoice(
   const bankAccountId = String(formData.get("bankAccountId") ?? current.bankAccountId).trim();
   const paymentLink = String(formData.get("paymentLink") ?? "").trim() || null;
   const momsRate = Number(formData.get("momsRate") ?? 25);
+  const issuedDate = String(formData.get("issuedDate") ?? "").trim() || null;
   const dueDate = String(formData.get("dueDate") ?? "").trim() || null;
   const notes = String(formData.get("notes") ?? "").trim() || null;
   const items = parseItems(String(formData.get("items") ?? "[]"));
@@ -163,6 +178,7 @@ export async function updateInvoice(
       subtotal,
       vat_amount: vatAmount,
       total,
+      issued_date: issuedDate,
       due_date: dueDate,
       notes,
       updated_at: new Date().toISOString(),
@@ -197,9 +213,8 @@ export async function deleteInvoice(id: string) {
   await verifySession();
 
   const current = await getInvoiceById(id);
-  if (!current || current.status !== "utkast") {
-    // Not deletable — bounce back without touching anything.
-    redirect(`/admin/fakturor/${id}`);
+  if (!current) {
+    redirect("/admin/fakturor");
   }
 
   const supabase = createServiceRoleClient();

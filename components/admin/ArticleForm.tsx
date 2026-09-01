@@ -7,15 +7,12 @@ import type { ArticleCategory } from "@/lib/data/categories";
 import { articleIcons, resolveCategoryVisual } from "@/lib/articles/visuals";
 import { createArticle, updateArticle, type ArticleFormState } from "@/lib/actions/articles";
 import { AccentBadge } from "@/components/ui/AccentBadge";
+import { Select } from "@/components/ui/Select";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { TagPicker } from "@/components/admin/TagPicker";
 
 const inputClasses =
   "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
-
-// Windows renders <option> against the OS theme, not the page's CSS, unless
-// each option carries its own explicit colors.
-const optionStyle = { backgroundColor: "var(--color-forest)", color: "var(--color-bone)" };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   // A <label> here would be nice for a11y, but native label-click-delegation
@@ -87,19 +84,13 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
 
       <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-end">
         <Field label="Kategori">
-          <select
+          <Select
             name="category"
             value={category}
-            onChange={(event) => setCategory(event.target.value)}
-            className={`${inputClasses} cursor-pointer`}
-            style={optionStyle}
-          >
-            {categories.map((value) => (
-              <option key={value.name} value={value.name} style={optionStyle}>
-                {value.name}
-              </option>
-            ))}
-          </select>
+            onValueChange={setCategory}
+            className="w-full rounded-lg px-4 py-3 text-sm"
+            options={categories.map((value) => ({ value: value.name, label: value.name }))}
+          />
         </Field>
         <div className="flex items-center gap-2 pb-1">
           <AccentBadge icon={Icon} accent={accent} />

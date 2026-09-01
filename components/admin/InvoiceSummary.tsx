@@ -58,7 +58,7 @@ export function InvoiceSummary({ invoice, billingEntity, bankAccount }: InvoiceS
         </div>
       </div>
 
-      <div className="ml-auto flex w-full max-w-xs flex-col gap-1.5 text-sm sm:w-auto">
+      <div className="ml-auto flex w-full max-w-xs flex-col gap-1.5 text-sm">
         <div className="flex justify-between text-stone">
           <span>Summa</span>
           <span>{formatCurrencySek(invoice.subtotal)}</span>

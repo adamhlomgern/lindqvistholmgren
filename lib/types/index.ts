@@ -170,6 +170,10 @@ export type BillingEntity = {
   orgNumber?: string;
   email?: string;
   phone?: string;
+  website?: string;
+  vatNumber?: string;
+  fSkatt: boolean;
+  paymentTerms?: string;
   isDefault: boolean;
   createdAt: string;
   updatedAt: string;
@@ -217,6 +221,12 @@ export type Invoice = {
 
 export type InvoiceWithCustomer = Invoice & { customer: Customer };
 export type InvoiceWithItems = InvoiceWithCustomer & { items: InvoiceItem[] };
+
+export type BlockedSender = {
+  id: string;
+  email: string;
+  createdAt: string;
+};
 
 export type Email = {
   id: string;

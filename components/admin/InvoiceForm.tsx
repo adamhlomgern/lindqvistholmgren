@@ -5,13 +5,12 @@ import { Plus, X } from "lucide-react";
 import type { BankAccount, BillingEntity, Customer, InvoiceWithItems } from "@/lib/types";
 import { createInvoice, updateInvoice, type InvoiceFormState } from "@/lib/actions/invoices";
 import { formatCurrencySek } from "@/lib/format";
+import { Select } from "@/components/ui/Select";
 
 const inputClasses =
   "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
 
-// Windows renders <option> against the OS theme, not the page's CSS, unless
-// each option carries its own explicit colors.
-const optionStyle = { backgroundColor: "var(--color-forest)", color: "var(--color-bone)" };
+const selectClasses = "w-full rounded-lg px-4 py-3 text-sm";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -167,58 +166,42 @@ export function InvoiceForm({
     <form action={formAction} className="flex flex-col gap-6">
       <Section title="Kund">
         <Field label="Kund">
-          <select
+          <Select
             name="customerId"
-            defaultValue={invoice?.customerId ?? defaultCustomerId ?? ""}
+            defaultValue={invoice?.customerId ?? defaultCustomerId}
             required
             disabled={isEditing}
-            className={inputClasses}
-            style={optionStyle}
-          >
-            <option value="" disabled style={optionStyle}>
-              Välj kund
-            </option>
-            {customers.map((customer) => (
-              <option key={customer.id} value={customer.id} style={optionStyle}>
-                {customer.name}
-                {customer.company ? ` (${customer.company})` : ""}
-              </option>
-            ))}
-          </select>
+            placeholder="Välj kund"
+            className={selectClasses}
+            options={customers.map((customer) => ({
+              value: customer.id,
+              label: customer.company ? `${customer.name} (${customer.company})` : customer.name,
+            }))}
+          />
         </Field>
       </Section>
 
       <Section title="Fakturera från">
         <div className="grid gap-5 sm:grid-cols-2">
           <Field label="Firma">
-            <select
+            <Select
               name="billingEntityId"
-              defaultValue={invoice?.billingEntityId ?? defaultBillingEntityId ?? ""}
+              defaultValue={invoice?.billingEntityId ?? defaultBillingEntityId}
               required
-              className={inputClasses}
-              style={optionStyle}
-            >
-              {billingEntities.map((entity) => (
-                <option key={entity.id} value={entity.id} style={optionStyle}>
-                  {entity.name}
-                </option>
-              ))}
-            </select>
+              placeholder="Välj firma"
+              className={selectClasses}
+              options={billingEntities.map((entity) => ({ value: entity.id, label: entity.name }))}
+            />
           </Field>
           <Field label="Bankkonto">
-            <select
+            <Select
               name="bankAccountId"
-              defaultValue={invoice?.bankAccountId ?? defaultBankAccountId ?? ""}
+              defaultValue={invoice?.bankAccountId ?? defaultBankAccountId}
               required
-              className={inputClasses}
-              style={optionStyle}
-            >
-              {bankAccounts.map((account) => (
-                <option key={account.id} value={account.id} style={optionStyle}>
-                  {account.label}
-                </option>
-              ))}
-            </select>
+              placeholder="Välj bankkonto"
+              className={selectClasses}
+              options={bankAccounts.map((account) => ({ value: account.id, label: account.label }))}
+            />
           </Field>
         </div>
         <Field label="Betalningslänk (valfritt, t.ex. Revolut Pro)">
@@ -271,6 +254,14 @@ export function InvoiceForm({
                 ))}
               </div>
             </div>
+          </Field>
+          <Field label="Fakturadatum (valfritt, för att bakdatera)">
+            <input
+              name="issuedDate"
+              type="date"
+              defaultValue={invoice?.issuedDate}
+              className={inputClasses}
+            />
           </Field>
           <Field label="Förfallodatum">
             <input

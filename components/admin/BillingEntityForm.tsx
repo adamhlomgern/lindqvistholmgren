@@ -49,19 +49,57 @@ export function BillingEntityForm({ entity }: { entity?: BillingEntity }) {
           <input name="city" defaultValue={entity?.city} className={inputClasses} />
         </Field>
       </div>
-      <Field label="Organisationsnummer">
-        <input name="orgNumber" defaultValue={entity?.orgNumber} className={inputClasses} />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field label="Organisationsnummer">
+          <input name="orgNumber" defaultValue={entity?.orgNumber} className={inputClasses} />
+        </Field>
+        <Field label="Webbsida">
+          <input
+            name="website"
+            defaultValue={entity?.website}
+            placeholder="dindomän.se"
+            className={inputClasses}
+          />
+        </Field>
+      </div>
+      <Field label="Momsregistreringsnummer">
+        <input
+          name="vatNumber"
+          defaultValue={entity?.vatNumber}
+          placeholder="SE..."
+          className={inputClasses}
+        />
+      </Field>
+      <Field label="Betalningsvillkor (visas längst ner på fakturan)">
+        <textarea
+          name="paymentTerms"
+          defaultValue={entity?.paymentTerms}
+          rows={3}
+          placeholder="Betalningsvillkor 10 dagar netto. Vid försenad betalning debiteras dröjsmålsränta enligt räntelagen (referensränta + 8 procentenheter) samt påminnelseavgift 60 kr."
+          className={inputClasses}
+        />
       </Field>
 
-      <label className="flex items-center gap-2 text-sm text-bone">
-        <input
-          type="checkbox"
-          name="isDefault"
-          defaultChecked={entity?.isDefault ?? false}
-          className="h-4 w-4 rounded border-bone/20 bg-bone/5 accent-emerald"
-        />
-        Förvald firma vid ny faktura
-      </label>
+      <div className="flex flex-col gap-2">
+        <label className="flex items-center gap-2 text-sm text-bone">
+          <input
+            type="checkbox"
+            name="fSkatt"
+            defaultChecked={entity?.fSkatt ?? false}
+            className="h-4 w-4 rounded border-bone/20 bg-bone/5 accent-emerald"
+          />
+          Godkänd för F-skatt (visas på fakturan)
+        </label>
+        <label className="flex items-center gap-2 text-sm text-bone">
+          <input
+            type="checkbox"
+            name="isDefault"
+            defaultChecked={entity?.isDefault ?? false}
+            className="h-4 w-4 rounded border-bone/20 bg-bone/5 accent-emerald"
+          />
+          Förvald firma vid ny faktura
+        </label>
+      </div>
 
       <div className="flex flex-col gap-3 border-t border-bone/10 pt-6">
         {state?.error && <p className="text-sm text-coral">{state.error}</p>}

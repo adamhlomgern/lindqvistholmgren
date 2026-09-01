@@ -2,8 +2,9 @@ import { ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { getCustomerByEmail } from "@/lib/data/customers";
+import { getBlockedSenders } from "@/lib/data/blocked-senders";
 
-type SyncResult = { fetched: number; matched: number };
+type SyncResult = { fetched: number; matched: number; blocked: number };
 
 type SyncState = { last_uid: number; uid_validity: string | null };
 
@@ -19,6 +20,10 @@ export async function syncInbox(): Promise<SyncResult> {
   let lastUid = state?.last_uid ?? 0;
   const storedUidValidity = state?.uid_validity ?? null;
 
+  const blockedSenders = new Set(
+    (await getBlockedSenders()).map((sender) => sender.email.toLowerCase()),
+  );
+
   const client = new ImapFlow({
     host: process.env.IMAP_HOST!,
     port: Number(process.env.IMAP_PORT ?? 993),
@@ -29,6 +34,7 @@ export async function syncInbox(): Promise<SyncResult> {
 
   let fetched = 0;
   let matched = 0;
+  let blocked = 0;
 
   await client.connect();
   try {
@@ -47,7 +53,7 @@ export async function syncInbox(): Promise<SyncResult> {
       }
 
       if (lastUid + 1 >= uidNext) {
-        return { fetched: 0, matched: 0 };
+        return { fetched: 0, matched: 0, blocked: 0 };
       }
 
       let maxUidSeen = lastUid;
@@ -61,6 +67,13 @@ export async function syncInbox(): Promise<SyncResult> {
         const parsed = await simpleParser(message.source);
         const fromAddress = parsed.from?.value[0]?.address ?? message.envelope?.from?.[0]?.address;
         if (!fromAddress) continue;
+
+        maxUidSeen = Math.max(maxUidSeen, message.uid);
+
+        if (blockedSenders.has(fromAddress.toLowerCase())) {
+          blocked += 1;
+          continue;
+        }
 
         const customer = await getCustomerByEmail(fromAddress);
         if (customer) matched += 1;
@@ -78,7 +91,6 @@ export async function syncInbox(): Promise<SyncResult> {
           received_at: (parsed.date ?? new Date()).toISOString(),
         });
 
-        maxUidSeen = Math.max(maxUidSeen, message.uid);
         fetched += 1;
       }
 
@@ -104,5 +116,5 @@ export async function syncInbox(): Promise<SyncResult> {
     await client.logout();
   }
 
-  return { fetched, matched };
+  return { fetched, matched, blocked };
 }

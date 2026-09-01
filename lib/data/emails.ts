@@ -49,6 +49,18 @@ export async function getRecentEmails(limit: number): Promise<Email[]> {
   return (data ?? []).map(toEmail);
 }
 
+export async function getEmailById(id: string): Promise<Email | null> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase.from("emails").select("*").eq("id", id).maybeSingle();
+
+  if (error) {
+    console.error("[getEmailById] Supabase-fråga misslyckades", error);
+    return null;
+  }
+
+  return data ? toEmail(data) : null;
+}
+
 export async function getEmailsForCustomer(customerId: string): Promise<Email[]> {
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase

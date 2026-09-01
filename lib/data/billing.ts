@@ -10,6 +10,10 @@ type BillingEntityRow = {
   org_number: string | null;
   email: string | null;
   phone: string | null;
+  website: string | null;
+  vat_number: string | null;
+  f_skatt: boolean;
+  payment_terms: string | null;
   is_default: boolean;
   created_at: string;
   updated_at: string;
@@ -35,6 +39,10 @@ function toBillingEntity(row: BillingEntityRow): BillingEntity {
     orgNumber: row.org_number ?? undefined,
     email: row.email ?? undefined,
     phone: row.phone ?? undefined,
+    website: row.website ?? undefined,
+    vatNumber: row.vat_number ?? undefined,
+    fSkatt: row.f_skatt,
+    paymentTerms: row.payment_terms ?? undefined,
     isDefault: row.is_default,
     createdAt: row.created_at,
     updatedAt: row.updated_at,

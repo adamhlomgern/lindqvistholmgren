@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Download } from "lucide-react";
+import { Download, Eye } from "lucide-react";
 import { getInvoiceById } from "@/lib/data/invoices";
 import { getCustomers } from "@/lib/data/customers";
 import { getBillingEntities, getBankAccounts, getBillingEntityById, getBankAccountById } from "@/lib/data/billing";
@@ -53,17 +53,24 @@ export default async function InvoiceDetailPage({ params }: Props) {
             {invoice.customer.name}
           </Link>
         </div>
-        {isDraft && (
-          <DeleteInvoiceButton
-            action={deleteInvoice.bind(null, invoice.id)}
-            invoiceNumber={invoice.invoiceNumber}
-          />
-        )}
+        <DeleteInvoiceButton
+          action={deleteInvoice.bind(null, invoice.id)}
+          invoiceNumber={invoice.invoiceNumber}
+        />
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <a
           href={`/api/admin/fakturor/${invoice.id}/pdf`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1.5 rounded-full border border-bone/15 px-3.5 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/10"
+        >
+          <Eye size={14} strokeWidth={2.25} />
+          Förhandsgranska
+        </a>
+        <a
+          href={`/api/admin/fakturor/${invoice.id}/pdf?download=1`}
           className="flex items-center gap-1.5 rounded-full border border-bone/15 px-3.5 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/10"
         >
           <Download size={14} strokeWidth={2.25} />

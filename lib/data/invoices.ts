@@ -64,12 +64,21 @@ function toInvoiceItem(row: InvoiceItemRow): InvoiceItem {
 
 // Deliberately uncached: this is a live internal tool, not cached public
 // content — status/edits should show up immediately.
-export async function getInvoices(): Promise<InvoiceWithCustomer[]> {
+export async function getInvoices(billingEntityId?: string): Promise<InvoiceWithCustomer[]> {
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
+  // Sorted by creation time, not invoice_number — each firma now has its
+  // own independent number sequence, so #2601 isn't a meaningful sort key
+  // across firms once more than one exists.
+  let query = supabase
     .from("invoices")
     .select("*, customer:customers(*)")
-    .order("invoice_number", { ascending: false });
+    .order("created_at", { ascending: false });
+
+  if (billingEntityId) {
+    query = query.eq("billing_entity_id", billingEntityId);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("[getInvoices] Supabase-fråga misslyckades", error);
@@ -88,7 +97,7 @@ export async function getInvoicesForCustomer(customerId: string): Promise<Invoic
     .from("invoices")
     .select("*")
     .eq("customer_id", customerId)
-    .order("invoice_number", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("[getInvoicesForCustomer] Supabase-fråga misslyckades", error);
@@ -136,4 +145,131 @@ export async function getInvoicesCount(): Promise<number> {
   }
 
   return count ?? 0;
+}
+
+export type InvoiceStats = {
+  outstandingAmount: number;
+  outstandingCount: number;
+  overdueAmount: number;
+  overdueCount: number;
+  paidThisYear: number;
+  invoicedThisYear: number;
+};
+
+const emptyStats: InvoiceStats = {
+  outstandingAmount: 0,
+  outstandingCount: 0,
+  overdueAmount: 0,
+  overdueCount: 0,
+  paidThisYear: 0,
+  invoicedThisYear: 0,
+};
+
+// Aggregated in JS rather than via SQL grouping — at the scale of a
+// one/two-person consultancy's invoice volume this is a handful of rows,
+// not worth a database function for.
+export async function getInvoiceStats(): Promise<InvoiceStats> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase.from("invoices").select("status, total, issued_date, due_date");
+
+  if (error) {
+    console.error("[getInvoiceStats] Supabase-fråga misslyckades", error);
+    return emptyStats;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const currentYear = new Date().getFullYear();
+  const stats = { ...emptyStats };
+
+  for (const row of data ?? []) {
+    const issuedYear = row.issued_date ? Number(row.issued_date.slice(0, 4)) : null;
+
+    if (row.status === "skickad") {
+      stats.outstandingAmount += row.total;
+      stats.outstandingCount += 1;
+      if (row.due_date && row.due_date < today) {
+        stats.overdueAmount += row.total;
+        stats.overdueCount += 1;
+      }
+    }
+    if (row.status === "betald" && issuedYear === currentYear) {
+      stats.paidThisYear += row.total;
+    }
+    if (row.status !== "utkast" && issuedYear === currentYear) {
+      stats.invoicedThisYear += row.total;
+    }
+  }
+
+  return stats;
+}
+
+export type EntityRevenue = { entityId: string; entityName: string; total: number };
+
+export async function getRevenueByEntity(): Promise<EntityRevenue[]> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("invoices")
+    .select("billing_entity_id, total, billing_entity:billing_entities(name)")
+    .neq("status", "utkast");
+
+  if (error) {
+    console.error("[getRevenueByEntity] Supabase-fråga misslyckades", error);
+    return [];
+  }
+
+  const totals = new Map<string, EntityRevenue>();
+  for (const row of data ?? []) {
+    const entityName =
+      (row as unknown as { billing_entity: { name: string } | null }).billing_entity?.name ?? "Okänd firma";
+    const current = totals.get(row.billing_entity_id) ?? {
+      entityId: row.billing_entity_id,
+      entityName,
+      total: 0,
+    };
+    current.total += row.total;
+    totals.set(row.billing_entity_id, current);
+  }
+
+  return Array.from(totals.values()).sort((a, b) => b.total - a.total);
+}
+
+export type MonthlyRevenue = { month: string; label: string; total: number };
+
+export async function getMonthlyRevenue(months = 6): Promise<MonthlyRevenue[]> {
+  const supabase = createServiceRoleClient();
+  const start = new Date();
+  start.setDate(1);
+  start.setMonth(start.getMonth() - (months - 1));
+  const startIso = start.toISOString().slice(0, 10);
+
+  const { data, error } = await supabase
+    .from("invoices")
+    .select("total, issued_date")
+    .neq("status", "utkast")
+    .gte("issued_date", startIso);
+
+  if (error) {
+    console.error("[getMonthlyRevenue] Supabase-fråga misslyckades", error);
+    return [];
+  }
+
+  const buckets = new Map<string, number>();
+  for (let i = 0; i < months; i++) {
+    const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
+    buckets.set(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`, 0);
+  }
+
+  for (const row of data ?? []) {
+    if (!row.issued_date) continue;
+    const key = row.issued_date.slice(0, 7);
+    if (buckets.has(key)) {
+      buckets.set(key, (buckets.get(key) ?? 0) + row.total);
+    }
+  }
+
+  return Array.from(buckets.entries()).map(([key, total]) => {
+    const [year, month] = key.split("-").map(Number);
+    const label = new Intl.DateTimeFormat("sv-SE", { month: "short" }).format(new Date(year, month - 1, 1));
+    return { month: key, label, total };
+  });
 }

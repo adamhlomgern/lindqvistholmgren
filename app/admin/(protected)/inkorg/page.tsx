@@ -4,15 +4,19 @@ import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { getRecentEmails } from "@/lib/data/emails";
 import { getCustomers } from "@/lib/data/customers";
-import { matchEmailToCustomer } from "@/lib/actions/emails";
+import { getBlockedSenders } from "@/lib/data/blocked-senders";
+import { matchEmailToCustomer, deleteEmail, unblockSender } from "@/lib/actions/emails";
+import { DeleteEmailButton } from "@/components/admin/DeleteEmailButton";
+import { BlockSenderButton } from "@/components/admin/BlockSenderButton";
 import { formatDateSv } from "@/lib/format";
-
-// Windows renders <option> against the OS theme, not the page's CSS, unless
-// each option carries its own explicit colors.
-const optionStyle = { backgroundColor: "var(--color-forest)", color: "var(--color-bone)" };
+import { Select } from "@/components/ui/Select";
 
 export default async function AdminInboxPage() {
-  const [emails, customers] = await Promise.all([getRecentEmails(100), getCustomers()]);
+  const [emails, customers, blockedSenders] = await Promise.all([
+    getRecentEmails(100),
+    getCustomers(),
+    getBlockedSenders(),
+  ]);
 
   return (
     <div>
@@ -31,21 +35,25 @@ export default async function AdminInboxPage() {
           {emails.map((email) => (
             <Card key={email.id}>
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="font-display text-base font-bold text-bone">
+                <Link href={`/admin/inkorg/${email.id}`} className="min-w-0">
+                  <p className="font-display text-base font-bold text-bone hover:underline">
                     {email.fromName || email.fromAddress}
                   </p>
                   <p className="text-sm text-stone">{email.fromAddress}</p>
-                </div>
+                </Link>
                 <span className="shrink-0 text-xs text-stone">{formatDateSv(email.receivedAt)}</span>
               </div>
 
-              {email.subject && <p className="mt-3 text-sm font-medium text-bone">{email.subject}</p>}
-              {email.bodyText && (
-                <p className="mt-1 line-clamp-2 text-sm text-stone">{email.bodyText}</p>
-              )}
+              <Link href={`/admin/inkorg/${email.id}`} className="block">
+                {email.subject && (
+                  <p className="mt-3 text-sm font-medium text-bone hover:underline">{email.subject}</p>
+                )}
+                {email.bodyText && (
+                  <p className="mt-1 line-clamp-2 text-sm text-stone">{email.bodyText}</p>
+                )}
+              </Link>
 
-              <div className="mt-4 flex items-center justify-between gap-3 border-t border-bone/10 pt-4">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-bone/10 pt-4">
                 {email.customerId ? (
                   <Link href={`/admin/kunder/${email.customerId}`}>
                     <Tag className="bg-emerald/15 text-emerald">Matchad kund</Tag>
@@ -59,22 +67,13 @@ export default async function AdminInboxPage() {
                     }}
                     className="flex items-center gap-2"
                   >
-                    <Tag>Ej matchad</Tag>
-                    <select
+                    <Tag className="shrink-0">Ej matchad</Tag>
+                    <Select
                       name="customerId"
-                      defaultValue=""
-                      className="rounded-lg border border-bone/10 bg-bone/5 px-2 py-1 text-xs text-bone"
-                      style={optionStyle}
-                    >
-                      <option value="" disabled style={optionStyle}>
-                        Koppla till kund…
-                      </option>
-                      {customers.map((customer) => (
-                        <option key={customer.id} value={customer.id} style={optionStyle}>
-                          {customer.name}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Koppla till kund…"
+                      className="w-44 rounded-full px-2.5 py-1 text-xs"
+                      options={customers.map((customer) => ({ value: customer.id, label: customer.name }))}
+                    />
                     <button
                       type="submit"
                       className="rounded-full border border-bone/15 px-2.5 py-1 text-xs font-medium text-bone transition-colors hover:bg-bone/10"
@@ -83,9 +82,40 @@ export default async function AdminInboxPage() {
                     </button>
                   </form>
                 )}
+                <div className="flex items-center gap-2">
+                  <BlockSenderButton email={email.fromAddress} />
+                  <DeleteEmailButton
+                    action={deleteEmail.bind(null, email.id)}
+                    subject={email.subject || "(Inget ämne)"}
+                  />
+                </div>
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {blockedSenders.length > 0 && (
+        <div className="mt-10">
+          <h2 className="font-display text-lg font-bold text-bone">Blockerade avsändare</h2>
+          <div className="mt-4 flex flex-col gap-2">
+            {blockedSenders.map((sender) => (
+              <div
+                key={sender.id}
+                className="flex items-center justify-between rounded-2xl bg-bone/5 px-5 py-3"
+              >
+                <span className="text-sm text-bone">{sender.email}</span>
+                <form action={unblockSender.bind(null, sender.id)}>
+                  <button
+                    type="submit"
+                    className="text-xs font-medium text-stone transition-colors hover:text-emerald"
+                  >
+                    Avblockera
+                  </button>
+                </form>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

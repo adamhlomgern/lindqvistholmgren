@@ -16,6 +16,10 @@ function parseBillingEntityForm(formData: FormData) {
     org_number: String(formData.get("orgNumber") ?? "").trim() || null,
     email: String(formData.get("email") ?? "").trim() || null,
     phone: String(formData.get("phone") ?? "").trim() || null,
+    website: String(formData.get("website") ?? "").trim() || null,
+    vat_number: String(formData.get("vatNumber") ?? "").trim() || null,
+    f_skatt: formData.get("fSkatt") === "on",
+    payment_terms: String(formData.get("paymentTerms") ?? "").trim() || null,
     is_default: formData.get("isDefault") === "on",
   };
 }

@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { getInvoices } from "@/lib/data/invoices";
 import { formatCurrencySek, formatDateSv } from "@/lib/format";
-import { getBillingEntities, getDefaultBillingEntity } from "@/lib/data/billing";
+import { getBillingEntities } from "@/lib/data/billing";
 import type { InvoiceStatus } from "@/lib/types";
 
 const statusLabels: Record<InvoiceStatus, string> = {
@@ -19,13 +19,12 @@ const statusClasses: Record<InvoiceStatus, string> = {
   betald: "bg-emerald/15 text-emerald",
 };
 
-export default async function AdminInvoicesPage() {
-  const [invoices, billingEntities, defaultBillingEntity] = await Promise.all([
-    getInvoices(),
-    getBillingEntities(),
-    getDefaultBillingEntity(),
-  ]);
-  const billingEntityById = new Map(billingEntities.map((entity) => [entity.id, entity]));
+type Props = { searchParams: Promise<{ entity?: string }> };
+
+export default async function AdminInvoicesPage({ searchParams }: Props) {
+  const { entity } = await searchParams;
+  const [billingEntities, invoices] = await Promise.all([getBillingEntities(), getInvoices(entity)]);
+  const billingEntityById = new Map(billingEntities.map((e) => [e.id, e]));
 
   return (
     <div>
@@ -42,6 +41,30 @@ export default async function AdminInvoicesPage() {
           Ny faktura
         </Link>
       </div>
+
+      {billingEntities.length > 1 && (
+        <div className="mt-6 flex flex-wrap gap-2">
+          <Link
+            href="/admin/fakturor"
+            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+              !entity ? "bg-emerald text-charcoal" : "bg-bone/5 text-stone hover:bg-bone/10"
+            }`}
+          >
+            Alla
+          </Link>
+          {billingEntities.map((e) => (
+            <Link
+              key={e.id}
+              href={`/admin/fakturor?entity=${e.id}`}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                entity === e.id ? "bg-emerald text-charcoal" : "bg-bone/5 text-stone hover:bg-bone/10"
+              }`}
+            >
+              {e.name}
+            </Link>
+          ))}
+        </div>
+      )}
 
       {invoices.length === 0 ? (
         <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
@@ -67,9 +90,7 @@ export default async function AdminInvoicesPage() {
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    {invoice.billingEntityId !== defaultBillingEntity?.id && (
-                      <Tag>{billingEntityById.get(invoice.billingEntityId)?.name ?? "Okänd firma"}</Tag>
-                    )}
+                    <Tag>{billingEntityById.get(invoice.billingEntityId)?.name ?? "Okänd firma"}</Tag>
                     <Tag className={statusClasses[invoice.status]}>{statusLabels[invoice.status]}</Tag>
                     <span className="text-sm font-medium text-bone">{formatCurrencySek(invoice.total)}</span>
                     <span className="hidden text-xs text-stone sm:inline">

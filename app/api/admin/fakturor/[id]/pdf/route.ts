@@ -5,7 +5,7 @@ import { renderInvoicePdf } from "@/lib/pdf/render";
 
 type Props = { params: Promise<{ id: string }> };
 
-export async function GET(_request: NextRequest, { params }: Props) {
+export async function GET(request: NextRequest, { params }: Props) {
   await verifySession();
   const { id } = await params;
 
@@ -15,11 +15,12 @@ export async function GET(_request: NextRequest, { params }: Props) {
   }
 
   const pdf = await renderInvoicePdf(id);
+  const download = request.nextUrl.searchParams.get("download") === "1";
 
   return new NextResponse(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="faktura-${invoice.invoiceNumber}.pdf"`,
+      "Content-Disposition": `${download ? "attachment" : "inline"}; filename="faktura-${invoice.invoiceNumber}.pdf"`,
     },
   });
 }
