@@ -10,29 +10,26 @@ export type ProjectFileFormState = { error?: string } | undefined;
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
-export async function uploadProjectFile(
+// Shared by the standalone upload form (existing project) and project
+// creation (files attached before the project row even had a page of its
+// own) — kept as one function so the storage-path scheme and cleanup-on-
+// failed-insert behavior can't drift between the two call sites.
+export async function storeProjectFile(
+  supabase: ReturnType<typeof createServiceRoleClient>,
   projectId: string,
-  _prevState: ProjectFileFormState,
-  formData: FormData,
-): Promise<ProjectFileFormState> {
-  await verifySession();
-  const file = formData.get("file");
-
-  if (!(file instanceof File) || file.size === 0) {
-    return { error: "Ingen fil vald." };
-  }
+  file: File,
+): Promise<{ error?: string }> {
   if (file.size > MAX_FILE_SIZE) {
-    return { error: "Filen är för stor (max 20 MB)." };
+    return { error: `${file.name} är för stor (max 20 MB).` };
   }
 
-  const supabase = createServiceRoleClient();
   const storagePath = `project/${projectId}/${crypto.randomUUID()}-${file.name}`;
 
   const { error: uploadError } = await supabase.storage.from("attachments").upload(storagePath, file, {
     contentType: file.type || undefined,
   });
   if (uploadError) {
-    return { error: `Kunde inte ladda upp filen: ${uploadError.message}` };
+    return { error: `Kunde inte ladda upp ${file.name}: ${uploadError.message}` };
   }
 
   const { error: insertError } = await supabase.from("project_files").insert({
@@ -44,8 +41,27 @@ export async function uploadProjectFile(
   });
   if (insertError) {
     await deleteStoredFiles([storagePath]);
-    return { error: `Kunde inte spara filen: ${insertError.message}` };
+    return { error: `Kunde inte spara ${file.name}: ${insertError.message}` };
   }
+
+  return {};
+}
+
+export async function uploadProjectFile(
+  projectId: string,
+  _prevState: ProjectFileFormState,
+  formData: FormData,
+): Promise<ProjectFileFormState> {
+  await verifySession();
+  const file = formData.get("file");
+
+  if (!(file instanceof File) || file.size === 0) {
+    return { error: "Ingen fil vald." };
+  }
+
+  const supabase = createServiceRoleClient();
+  const result = await storeProjectFile(supabase, projectId, file);
+  if (result.error) return result;
 
   await logProjectActivity(projectId, `Laddade upp filen "${file.name}"`);
 

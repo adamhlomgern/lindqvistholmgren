@@ -86,14 +86,23 @@ function ProjectRow({
           </span>
         </div>
 
+        {project.overview && <p className="mt-2 line-clamp-2 text-sm text-stone">{project.overview}</p>}
+
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-bone/10 pt-3 text-xs">
-          {project.nextStep ? (
+          {project.nextTask ? (
             <span className="flex min-w-0 items-center gap-1.5 text-bone">
               <ArrowRight size={12} strokeWidth={2.25} className="shrink-0 text-peach" />
-              <span className="truncate">{project.nextStep}</span>
+              <span className="truncate">{project.nextTask}</span>
             </span>
+          ) : project.checklistTotal > 0 ? (
+            <span className="text-stone">Allt avklarat</span>
           ) : (
-            <span className="text-stone">Inget nästa steg satt</span>
+            <span className="text-stone">Ingen att göra-lista ännu</span>
+          )}
+          {project.checklistTotal > 0 && (
+            <span className="shrink-0 text-stone">
+              {project.checklistDone} av {project.checklistTotal} klara
+            </span>
           )}
           {project.deadline && (
             <span className={`shrink-0 ${isOverdue ? "font-medium text-coral" : "text-stone"}`}>

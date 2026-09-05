@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { deleteStoredFiles } from "@/lib/data/files";
+import { storeProjectFile } from "@/lib/actions/project-files";
 import { logProjectActivity } from "@/lib/data/client-projects";
 import type { ClientProjectStatus } from "@/lib/types";
 
@@ -18,14 +19,37 @@ const statusLabels: Record<ClientProjectStatus, string> = {
   klar: "Klart",
 };
 
+const VALID_STATUSES = Object.keys(statusLabels) as ClientProjectStatus[];
+
 function parseClientProjectForm(formData: FormData) {
+  const statusRaw = String(formData.get("status") ?? "");
+  const status = VALID_STATUSES.includes(statusRaw as ClientProjectStatus)
+    ? (statusRaw as ClientProjectStatus)
+    : undefined;
+
   return {
     title: String(formData.get("title") ?? "").trim(),
     customer_id: String(formData.get("customerId") ?? "").trim() || null,
     assignee_entity_id: String(formData.get("assigneeEntityId") ?? "").trim() || null,
     deadline: String(formData.get("deadline") ?? "").trim() || null,
+    overview: String(formData.get("overview") ?? "").trim() || null,
     notes: String(formData.get("notes") ?? "").trim() || null,
+    ...(status ? { status } : {}),
   };
+}
+
+// The "Att göra" list at creation is posted as a JSON array of plain labels
+// in a hidden field — the project doesn't have an id yet, so items can't be
+// inserted one at a time the way the checklist widget does post-creation.
+function parseTasksField(raw: FormDataEntryValue | null): string[] {
+  if (typeof raw !== "string" || !raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((item) => String(item).trim()).filter(Boolean);
+  } catch {
+    return [];
+  }
 }
 
 export async function createClientProject(
@@ -38,6 +62,9 @@ export async function createClientProject(
   if (!row.title) {
     return { error: "Titel krävs." };
   }
+  if (!row.customer_id) {
+    return { error: "Kund krävs." };
+  }
 
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase.from("client_projects").insert(row).select("id").single();
@@ -46,10 +73,27 @@ export async function createClientProject(
     return { error: `Kunde inte skapa projektet: ${error.message}` };
   }
 
-  await logProjectActivity(data.id, "Projektet skapades");
+  const projectId = data.id as string;
+
+  const tasks = parseTasksField(formData.get("tasks"));
+  const files = formData.getAll("files").filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+  await Promise.all([
+    tasks.length > 0
+      ? supabase
+          .from("project_checklist_items")
+          .insert(tasks.map((label, position) => ({ project_id: projectId, label, position })))
+      : Promise.resolve(),
+    ...files.map(async (file) => {
+      const result = await storeProjectFile(supabase, projectId, file);
+      if (result.error) console.error("[createClientProject] Kunde inte spara bifogad fil", result.error);
+    }),
+  ]);
+
+  await logProjectActivity(projectId, "Projektet skapades");
 
   revalidatePath("/admin/projekt");
-  redirect(`/admin/projekt/${data.id}`);
+  redirect(`/admin/projekt/${projectId}`);
 }
 
 export async function updateClientProject(
@@ -92,20 +136,6 @@ export async function setClientProjectStatus(id: string, status: ClientProjectSt
   await logProjectActivity(id, `Status ändrades till ${statusLabels[status]}`);
 
   revalidatePath("/admin/projekt");
-  revalidatePath(`/admin/projekt/${id}`);
-}
-
-export async function setProjectNextStep(id: string, nextStep: string) {
-  await verifySession();
-  const supabase = createServiceRoleClient();
-  const trimmed = nextStep.trim() || null;
-  await supabase
-    .from("client_projects")
-    .update({ next_step: trimmed, updated_at: new Date().toISOString() })
-    .eq("id", id);
-
-  await logProjectActivity(id, trimmed ? "Nästa steg uppdaterades" : "Nästa steg togs bort");
-
   revalidatePath(`/admin/projekt/${id}`);
 }
 

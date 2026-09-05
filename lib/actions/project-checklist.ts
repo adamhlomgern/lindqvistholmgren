@@ -5,22 +5,16 @@ import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { logProjectActivity } from "@/lib/data/client-projects";
 
-export async function addChecklistItem(projectId: string, label: string) {
+export async function addChecklistItem(projectId: string, label: string, position: number) {
   await verifySession();
   const trimmed = label.trim();
   if (!trimmed) return;
 
   const supabase = createServiceRoleClient();
-  const { count } = await supabase
-    .from("project_checklist_items")
-    .select("*", { count: "exact", head: true })
-    .eq("project_id", projectId);
-
-  await supabase
-    .from("project_checklist_items")
-    .insert({ project_id: projectId, label: trimmed, position: count ?? 0 });
-
-  await logProjectActivity(projectId, `Lade till "${trimmed}" i att göra`);
+  await Promise.all([
+    supabase.from("project_checklist_items").insert({ project_id: projectId, label: trimmed, position }),
+    logProjectActivity(projectId, `Lade till "${trimmed}" i att göra`),
+  ]);
 
   revalidatePath(`/admin/projekt/${projectId}`);
 }

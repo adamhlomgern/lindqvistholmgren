@@ -235,9 +235,9 @@ export type ClientProject = {
   title: string;
   customerId?: string;
   status: ClientProjectStatus;
+  overview?: string;
   notes?: string;
   deadline?: string;
-  nextStep?: string;
   assigneeEntityId?: string;
   createdAt: string;
   updatedAt: string;
@@ -246,6 +246,12 @@ export type ClientProject = {
 export type ClientProjectWithCustomer = ClientProject & {
   customer?: Customer;
   assignee?: BillingEntity;
+};
+
+export type ClientProjectListItem = ClientProjectWithCustomer & {
+  checklistDone: number;
+  checklistTotal: number;
+  nextTask?: string;
 };
 
 export type ProjectChecklistItem = {

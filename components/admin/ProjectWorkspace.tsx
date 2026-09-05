@@ -7,7 +7,7 @@ import { BackLink } from "@/components/admin/BackLink";
 import { ClientProjectForm } from "@/components/admin/ClientProjectForm";
 import { ProjectStatusSelect } from "@/components/admin/ProjectStatusSelect";
 import { DeleteClientProjectButton } from "@/components/admin/DeleteClientProjectButton";
-import { NextStepCard } from "@/components/admin/NextStepCard";
+import { OverviewCard } from "@/components/admin/OverviewCard";
 import { ProjectFilesSection } from "@/components/admin/ProjectFilesSection";
 import { ProjectChecklist } from "@/components/admin/ProjectChecklist";
 import { NotesCard } from "@/components/admin/NotesCard";
@@ -118,9 +118,9 @@ export function ProjectWorkspace({ project, customers, billingEntities, files, c
       ) : (
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <div className="flex flex-col gap-6 lg:col-span-2">
-            <NextStepCard projectId={project.id} nextStep={project.nextStep} />
-            <ProjectFilesSection projectId={project.id} files={files} />
+            <OverviewCard overview={project.overview} onEdit={() => setEditing(true)} />
             <ProjectChecklist projectId={project.id} items={checklist} />
+            <ProjectFilesSection projectId={project.id} files={files} />
             <NotesCard notes={project.notes} onEdit={() => setEditing(true)} />
           </div>
           <div className="flex flex-col gap-6">

@@ -1,4 +1,10 @@
-import type { ClientProject, ClientProjectWithCustomer, ProjectActivityEntry, ProjectChecklistItem } from "@/lib/types";
+import type {
+  ClientProject,
+  ClientProjectListItem,
+  ClientProjectWithCustomer,
+  ProjectActivityEntry,
+  ProjectChecklistItem,
+} from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { toCustomer, type CustomerRow } from "@/lib/data/customers";
 import { toBillingEntity, type BillingEntityRow } from "@/lib/data/billing";
@@ -8,9 +14,9 @@ type ClientProjectRow = {
   title: string;
   customer_id: string | null;
   status: ClientProject["status"];
+  overview: string | null;
   notes: string | null;
   deadline: string | null;
-  next_step: string | null;
   assignee_entity_id: string | null;
   created_at: string;
   updated_at: string;
@@ -22,9 +28,9 @@ function toClientProject(row: ClientProjectRow): ClientProject {
     title: row.title,
     customerId: row.customer_id ?? undefined,
     status: row.status,
+    overview: row.overview ?? undefined,
     notes: row.notes ?? undefined,
     deadline: row.deadline ?? undefined,
-    nextStep: row.next_step ?? undefined,
     assigneeEntityId: row.assignee_entity_id ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -42,14 +48,33 @@ function withRelations(
 }
 
 const withRelationsSelect = "*, customer:customers(*), assignee:billing_entities(*)";
+const withListSelect = `${withRelationsSelect}, checklist:project_checklist_items(label, done, position)`;
+
+type ChecklistSummaryRow = { label: string; done: boolean; position: number };
+
+function withChecklistSummary(
+  row: ClientProjectRow & {
+    customer: CustomerRow | null;
+    assignee: BillingEntityRow | null;
+    checklist: ChecklistSummaryRow[] | null;
+  },
+): ClientProjectListItem {
+  const checklist = [...(row.checklist ?? [])].sort((a, b) => a.position - b.position);
+  return {
+    ...withRelations(row),
+    checklistDone: checklist.filter((item) => item.done).length,
+    checklistTotal: checklist.length,
+    nextTask: checklist.find((item) => !item.done)?.label,
+  };
+}
 
 // Deliberately uncached: this is a live internal work tracker, not cached
 // public content — status changes should show up immediately.
-export async function getClientProjects(): Promise<ClientProjectWithCustomer[]> {
+export async function getClientProjects(): Promise<ClientProjectListItem[]> {
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase
     .from("client_projects")
-    .select(withRelationsSelect)
+    .select(withListSelect)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -58,7 +83,13 @@ export async function getClientProjects(): Promise<ClientProjectWithCustomer[]> 
   }
 
   return (data ?? []).map((row) =>
-    withRelations(row as unknown as ClientProjectRow & { customer: CustomerRow | null; assignee: BillingEntityRow | null }),
+    withChecklistSummary(
+      row as unknown as ClientProjectRow & {
+        customer: CustomerRow | null;
+        assignee: BillingEntityRow | null;
+        checklist: ChecklistSummaryRow[] | null;
+      },
+    ),
   );
 }
 
