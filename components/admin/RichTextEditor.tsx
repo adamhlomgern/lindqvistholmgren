@@ -95,11 +95,9 @@ export function RichTextEditor({
   onWordCountChange,
   onOpenStructure,
 }: RichTextEditorProps) {
-  const hiddenInputRef = useRef<HTMLInputElement>(null);
+  const [content, setContent] = useState(defaultValue);
   const imageInputRef = useRef<HTMLInputElement>(null);
-  // Bumped on update/selection change purely to re-render the toolbar's
-  // active-state highlighting — the editor content itself never touches
-  // React state (see onUpdate below), so typing can't disturb it.
+  // Selection changes also need to refresh the toolbar's active states.
   const [, bumpToolbar] = useState(0);
   const [linkPopoverOpen, setLinkPopoverOpen] = useState(false);
   const [linkDraft, setLinkDraft] = useState("");
@@ -121,15 +119,14 @@ export function RichTextEditor({
       Image,
     ],
     content: defaultValue,
-    // Writes straight to the hidden input's DOM node instead of React state,
-    // so typing doesn't re-render (and steal focus/selection from) the
-    // editor on every keystroke.
+    // Keep the submitted HTML in React state. Imperative writes to a hidden
+    // input are overwritten by its defaultValue on the next render.
+    // Tiptap still owns the editable document and its selection.
     onUpdate: ({ editor }) => {
-      if (hiddenInputRef.current) {
-        hiddenInputRef.current.value = editor.getHTML();
-      }
+      const html = editor.getHTML();
+      setContent(html);
       onOutlineChange?.(extractOutline(editor.state.doc));
-      onWordCountChange?.(countWords(editor.getHTML()));
+      onWordCountChange?.(countWords(html));
       bumpToolbar((n) => n + 1);
     },
     onSelectionUpdate: () => bumpToolbar((n) => n + 1),
@@ -147,6 +144,7 @@ export function RichTextEditor({
   if (!editor) {
     return (
       <div className="flex min-h-64 items-center justify-center rounded-lg border border-bone/10 bg-bone/5 text-sm text-stone">
+        <input type="hidden" name={name} value={content} />
         Laddar redigerare…
       </div>
     );
@@ -336,7 +334,7 @@ export function RichTextEditor({
       <div className="px-3 py-2 sm:px-4 sm:py-3">
         <EditorContent editor={editor} />
       </div>
-      <input type="hidden" name={name} ref={hiddenInputRef} defaultValue={defaultValue} />
+      <input type="hidden" name={name} value={content} />
     </div>
   );
 }
