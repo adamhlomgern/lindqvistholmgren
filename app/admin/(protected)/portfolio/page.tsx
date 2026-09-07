@@ -13,7 +13,7 @@ export default async function AdminPortfolioPage() {
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-bone">Portfolio</h1>
+          <h1 className="font-display text-2xl font-bold text-bone">Kundcase</h1>
           <p className="mt-1 text-sm text-stone">{projects.length} case i portföljen.</p>
         </div>
         <Link
