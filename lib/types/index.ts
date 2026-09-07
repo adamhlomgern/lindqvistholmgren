@@ -302,6 +302,16 @@ export type Email = {
   createdAt: string;
 };
 
+export type CustomerMember = {
+  id: string;
+  userId: string;
+  customerId: string;
+  invitedAt: string;
+  acceptedAt?: string;
+  revokedAt?: string;
+  createdAt: string;
+};
+
 export type ProjectInquiry = {
   categories: ProjectCategory[];
   budget: ProjectBudget;
