@@ -40,6 +40,7 @@ type RichTextEditorProps = {
   onOutlineChange?: (headings: OutlineHeading[]) => void;
   onWordCountChange?: (count: number) => void;
   onOpenStructure?: () => void;
+  onContentChange?: () => void;
 };
 
 function ToolbarButton({
@@ -94,6 +95,7 @@ export function RichTextEditor({
   onOutlineChange,
   onWordCountChange,
   onOpenStructure,
+  onContentChange,
 }: RichTextEditorProps) {
   const [content, setContent] = useState(defaultValue);
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -125,6 +127,7 @@ export function RichTextEditor({
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
       setContent(html);
+      onContentChange?.();
       onOutlineChange?.(extractOutline(editor.state.doc));
       onWordCountChange?.(countWords(html));
       bumpToolbar((n) => n + 1);

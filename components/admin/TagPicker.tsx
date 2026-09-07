@@ -7,9 +7,10 @@ type TagPickerProps = {
   name: string;
   availableTags: string[];
   defaultValue?: string[];
+  onChange?: () => void;
 };
 
-export function TagPicker({ name, availableTags, defaultValue = [] }: TagPickerProps) {
+export function TagPicker({ name, availableTags, defaultValue = [], onChange }: TagPickerProps) {
   const [selected, setSelected] = useState<string[]>(defaultValue);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -26,12 +27,14 @@ export function TagPicker({ name, availableTags, defaultValue = [] }: TagPickerP
 
   function toggle(tag: string) {
     setSelected((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+    onChange?.();
   }
 
   function addNew() {
     const tag = query.trim().toLowerCase();
     if (tag && !selected.includes(tag)) {
       setSelected((prev) => [...prev, tag]);
+      onChange?.();
     }
     setQuery("");
   }

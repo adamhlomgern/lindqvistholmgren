@@ -8,7 +8,7 @@ import { getArticleBySlug } from "@/lib/data/articles";
 import { estimateReadTime } from "@/lib/articles/reading-time";
 import type { ArticleStatus } from "@/lib/types";
 
-export type ArticleFormState = { error?: string } | undefined;
+export type ArticleFormState = { error?: string; savedAt?: string } | undefined;
 
 const articleStatuses: ArticleStatus[] = ["publicerad", "utkast", "schemalagd", "avpublicerad"];
 
@@ -77,10 +77,13 @@ export async function updateArticle(
 
   const { slug: _slug, ...updates } = row;
   const supabase = createServiceRoleClient();
+  const savedAt = new Date().toISOString();
   const { error } = await supabase
     .from("articles")
-    .update({ ...updates, updated_at: new Date().toISOString() })
-    .eq("slug", slug);
+    .update({ ...updates, updated_at: savedAt })
+    .eq("slug", slug)
+    .select("slug")
+    .single();
 
   if (error) {
     return { error: `Kunde inte spara ändringarna: ${error.message}` };
@@ -89,7 +92,9 @@ export async function updateArticle(
   updateTag("articles");
   revalidatePath("/artiklar");
   revalidatePath(`/artiklar/${slug}`);
-  redirect("/admin/artiklar");
+  revalidatePath("/admin/artiklar");
+  revalidatePath(`/admin/artiklar/${slug}`);
+  return { savedAt };
 }
 
 export async function setArticleStatus(slug: string, status: ArticleStatus) {

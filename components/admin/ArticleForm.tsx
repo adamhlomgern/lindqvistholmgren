@@ -2,7 +2,8 @@
 
 import { useActionState, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, MoreHorizontal, Trash2, X } from "lucide-react";
+import { unstable_rethrow } from "next/navigation";
+import { ArrowLeft, ArrowUpRight, Check, LoaderCircle, MoreHorizontal, Trash2, X } from "lucide-react";
 import type { Article, ArticleStatus } from "@/lib/types";
 import type { ArticleCategory } from "@/lib/data/categories";
 import { articleIcons, resolveCategoryVisual } from "@/lib/articles/visuals";
@@ -55,14 +56,39 @@ type ArticleFormProps = {
   categories: ArticleCategory[];
 };
 
+type SaveState = (NonNullable<ArticleFormState> & { submittedVersion: number }) | undefined;
+
 export function ArticleForm({ article, availableTags, categories }: ArticleFormProps) {
   const isEditing = Boolean(article);
-  const action = isEditing ? updateArticle.bind(null, article!.slug) : createArticle;
-  const [state, formAction, pending] = useActionState<ArticleFormState, FormData>(action, undefined);
+  const editVersionRef = useRef(0);
+  const [editVersion, setEditVersion] = useState(0);
+  const [state, formAction, pending] = useActionState<SaveState, FormData>(async (previous, formData) => {
+    const submittedVersion = editVersionRef.current;
+    if (!article) {
+      const result = await createArticle(previous, formData);
+      return { ...result, submittedVersion };
+    }
+    try {
+      const result = await updateArticle(article.slug, previous, formData);
+      return { ...result, submittedVersion };
+    } catch (error) {
+      unstable_rethrow(error);
+      return { error: "Kunde inte bekräfta sparningen. Dina ändringar finns kvar här. Försök igen.", submittedVersion };
+    }
+  }, undefined);
+
+  function markChanged() {
+    editVersionRef.current += 1;
+    setEditVersion(editVersionRef.current);
+  }
+
+  const hasUnsavedChanges = editVersion > (state?.savedAt ? state.submittedVersion : 0);
+  const saved = Boolean(state?.savedAt) && !hasUnsavedChanges;
 
   const [tab, setTab] = useState<Tab>("innehall");
   const [category, setCategory] = useState(article?.category ?? categories[0]?.name ?? "");
   const [status, setStatus] = useState<ArticleStatus>(article?.status ?? "publicerad");
+  const [dateValue, setDateValue] = useState(article?.date ?? "");
   const [outline, setOutline] = useState<OutlineHeading[]>([]);
   const [wordCount, setWordCount] = useState(0);
   const [titleValue, setTitleValue] = useState(article?.title ?? "");
@@ -110,7 +136,14 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form
+      action={formAction}
+      onChange={(event) => {
+        const target = event.target as unknown as { name?: string };
+        if (target.name) markChanged();
+      }}
+      className="flex flex-col gap-6"
+    >
       <div ref={sentinelRef} aria-hidden className="h-px" />
 
       <div className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-bone/10 bg-charcoal/95 px-4 py-2 backdrop-blur sm:px-6">
@@ -147,8 +180,9 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60 sm:px-5"
+            className="inline-flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60 sm:px-5"
           >
+            {pending && <LoaderCircle size={14} aria-hidden className="animate-spin motion-reduce:animate-none" />}
             {pending ? "Sparar…" : isEditing ? "Spara" : "Skapa"}
           </button>
           {isEditing && (
@@ -190,6 +224,10 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
             </div>
           )}
         </div>
+        <div role="status" aria-live="polite" aria-atomic="true" className={`flex w-full items-center justify-end gap-1.5 text-xs ${state?.error && !pending ? "text-coral" : saved && !pending ? "text-emerald" : "text-stone"}`}>
+          {saved && !pending && <Check size={14} aria-hidden />}
+          {pending ? "Sparar ändringarna…" : state?.error ? state.error : hasUnsavedChanges ? "Du har osparade ändringar" : saved ? "Ändringarna är sparade" : null}
+        </div>
       </div>
 
       <div className="flex items-center gap-1 self-start rounded-full bg-bone/5 p-1">
@@ -206,8 +244,6 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           </button>
         ))}
       </div>
-
-      {state?.error && <p className="text-sm text-coral">{state.error}</p>}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_260px] lg:items-start">
         <div className="min-w-0">
@@ -243,6 +279,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
               defaultValue={article?.content ?? ""}
               onOutlineChange={setOutline}
               onWordCountChange={setWordCount}
+              onContentChange={markChanged}
               onOpenStructure={() => setStructureOpen(true)}
             />
           </div>
@@ -253,7 +290,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
                 <Select
                   name="status"
                   value={status}
-                  onValueChange={(value) => setStatus(value as ArticleStatus)}
+                  onValueChange={(value) => { setStatus(value as ArticleStatus); markChanged(); }}
                   className="w-full rounded-lg px-4 py-3 text-sm"
                   options={statusOptions}
                 />
@@ -262,7 +299,8 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
                 <input
                   name="date"
                   type="date"
-                  defaultValue={article?.date}
+                  value={dateValue}
+                  onChange={(event) => setDateValue(event.target.value)}
                   required
                   className={`${inputClasses} min-w-[9.5rem]`}
                 />
@@ -275,7 +313,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
                 <Select
                   name="category"
                   value={category}
-                  onValueChange={setCategory}
+                  onValueChange={(value) => { setCategory(value); markChanged(); }}
                   className="w-full min-w-0 rounded-lg px-4 py-3 text-sm"
                   options={categories.map((value) => ({ value: value.name, label: value.name }))}
                 />
@@ -284,7 +322,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
             <input type="hidden" name="icon" value={icon} />
 
             <Field label="Taggar">
-              <TagPicker name="tags" availableTags={availableTags} defaultValue={article?.tags ?? []} />
+              <TagPicker name="tags" availableTags={availableTags} defaultValue={article?.tags ?? []} onChange={markChanged} />
             </Field>
           </Card>
 
