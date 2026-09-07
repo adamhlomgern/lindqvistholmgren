@@ -243,6 +243,71 @@ Klart när första användarflödet och dess data-/behörighetsbehov är tydligt
 
 Klart när kunden själv kan hitta sitt projekt, lämna material, ge feedback och godkänna rätt version.
 
+#### Etapp 1: teknisk nedbrytning
+
+Skisser för kundöversikt, projektvy och godkännandeflöde (desktop + mobil) finns framtagna som referens för layout och innehåll. Nedan är byggordningen med konkreta filer, i linje med hur adminytan redan är strukturerad (`app/admin/(protected)/...`, `lib/data/*`, `lib/actions/*`).
+
+##### 1.1 Roller och sessionshantering
+
+Måste göras först, allt annat bygger på den.
+
+- Engångsjobb: sätt `app_metadata.role = "admin"` på alla befintliga Supabase auth-users (service-role-anrop, görs en gång innan rollkontroll slås på).
+- Migration: ny tabell `customer_members` (`user_id`, `customer_id`, `invited_at`, `accepted_at`, `revoked_at`).
+- `lib/auth/customer.ts`: `verifyCustomerSession()` (samma mönster som `verifySession()` i `lib/auth/dal.ts`, men slår upp `customer_members`-raden för den inloggade användaren) och `requireCustomerAccess(customerId)` — anropas överst i varje ny kundvänd data-/action-funktion.
+- Uppdatera `lib/auth/dal.ts`/adminroutes att kräva `app_metadata.role === "admin"`, inte bara inloggning.
+
+##### 1.2 Inbjudan, inloggning, utloggning, återkallelse
+
+- `lib/actions/customer-invites.ts`: `inviteCustomerContact(customerId, email)` (admin-action, `supabase.auth.admin.inviteUserByEmail` + insert i `customer_members`).
+- `app/kund/login/page.tsx`, `lib/actions/customer-auth.ts` (separat från `lib/actions/auth.ts` — admin och kund ska inte dela inloggningsflöde även om båda går mot samma Supabase-auth).
+- `app/kund/(protected)/layout.tsx` byggt på `verifyCustomerSession()`, mönster som `app/admin/(protected)/layout.tsx`.
+- Admin-UI: "Bjud in kontaktperson" + "Återkalla åtkomst" på `app/admin/(protected)/kunder/[id]/page.tsx` (sätter/nollställer `revoked_at`).
+
+##### 1.3 Kundöversikt
+
+- Migration: `client_projects` får `customer_update`, `customer_update_at`, `next_milestone_label`, `next_milestone_date` (separata kundvända fält, `overview`/`notes` förblir interna).
+- `lib/data/customer/overview.ts` + `app/kund/(protected)/page.tsx` + `components/customer/OverviewPage.tsx`.
+
+##### 1.4 Projektvy
+
+- `lib/data/customer/projects.ts` (anropar `requireCustomerAccess` internt) + `app/kund/(protected)/projekt/[id]/page.tsx` + `components/customer/ProjectView.tsx`.
+
+##### 1.5 Filer: kundsynlighet, skydd, uppladdning
+
+- Migration: `project_files` får `visible_to_customer boolean not null default false`.
+- Admin: lägg till en "Visa för kund"-växel i `components/admin/ProjectFilesSection.tsx`.
+- `lib/data/customer/files.ts`: samma signerade-URL-mönster som `lib/data/files.ts`, filtrerat på `visible_to_customer = true`.
+- `lib/actions/customer/files.ts`: kunduppladdning till samma `attachments`-bucket, markerad `visible_to_customer = true` per default (kunden laddade själv upp den).
+
+##### 1.6 Godkännanden
+
+- Migration: ny tabell `project_approvals` (`project_id`, `file_id`, `title`, `version_label`, `requested_at`, `due_at`, `status`, `decided_at`, `decided_by`, `decision_note`).
+- Admin: `lib/actions/approvals.ts` (`createApprovalRequest`) + UI i `ProjectWorkspace`.
+- Kund: `lib/actions/customer/approvals.ts` (`decideApproval`, enforcar ett beslut per version — ny version = ny rad, aldrig uppdatering av en gammal) + `app/kund/(protected)/projekt/[id]/godkannande/[approvalId]/page.tsx` + `components/customer/ApprovalView.tsx`.
+
+##### 1.7 Projektanknutna meddelanden
+
+- Migration: ny tabell `project_messages` (`project_id`, `author_user_id`, `author_role`, `body`, `created_at`).
+- `lib/data/customer/messages.ts` + `lib/actions/customer/messages.ts`, tråd per projekt, synlig både i `app/kund/(protected)/projekt/[id]/page.tsx` och admin-sidans `ProjectWorkspace`.
+
+##### 1.8 Adminförhandsgranskning av kundvyn
+
+- `app/admin/(protected)/projekt/[id]/kundvy/page.tsx`: återanvänder `components/customer/*` server-renderat med exakt samma frågor som kundens egen sida (fångar läckage genom att admin ser precis det kunden skulle se, inte en genväg via servicerollen).
+
+##### 1.9 Mejlnotiser
+
+- Utgående mejl finns redan (`lib/email/client.ts`, nodemailer/SMTP, används idag för fakturor i `lib/actions/invoices.ts`) — återanvänd samma transport, inte ett nytt system.
+- Trigga vid: ny inbjudan, ny granskningsbegäran, nytt meddelande från admin. Varje mejl länkar direkt till rätt sida (`/kund/projekt/[id]/godkannande/[id]` etc.), inte bara till startsidan.
+
+##### 1.10 Tomma lägen, fel, utgångna länkar
+
+- `loading.tsx`/tomma-listor för varje ny kundroute; hantera utgången eller redan använd inbjudningslänk explicit i `app/kund/login`.
+- Kontrollera aktuell Next.js-konvention för loading/error-boundaries i `node_modules/next/dist/docs/` innan implementation (se AGENTS.md).
+
+##### 1.11 Mobil-QA med pilotkunden
+
+Manuell genomgång av hela flödet på faktisk mobil, inte kod.
+
 ### Etapp 2 — publik demo som visar samarbetet
 
 - [ ] Skapa fiktivt företag, projekt och material.
