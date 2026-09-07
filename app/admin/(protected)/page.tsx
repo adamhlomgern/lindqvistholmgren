@@ -228,7 +228,7 @@ export default async function AdminDashboardPage() {
               href="/admin/portfolio"
               icon={GalleryHorizontalEnd}
               accent="moss"
-              label="Portfolio"
+              label="Kundcase"
               count={portfolioCount}
             />
           </div>

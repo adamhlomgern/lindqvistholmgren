@@ -220,19 +220,43 @@ body {
 
   /* A thin, theme-colored scrollbar for the few places that genuinely
      scroll internally (a Kanban column past a few orders) — the default
-     OS scrollbar reads as browser chrome and fights the rest of the UI. */
-  .scroll-area {
+     OS scrollbar reads as browser chrome and fights the rest of the UI.
+     Chromium on Windows still draws native up/down arrow buttons unless
+     ::-webkit-scrollbar-button is explicitly zeroed out. */
+  .scroll-area,
+  .scroll-area-dark {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-demo-border) transparent;
   }
-  .scroll-area::-webkit-scrollbar {
+  .scroll-area::-webkit-scrollbar,
+  .scroll-area-dark::-webkit-scrollbar {
     width: 6px;
   }
-  .scroll-area::-webkit-scrollbar-track {
+  .scroll-area::-webkit-scrollbar-track,
+  .scroll-area-dark::-webkit-scrollbar-track {
     background: transparent;
+  }
+  .scroll-area::-webkit-scrollbar-button,
+  .scroll-area-dark::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  .scroll-area {
+    scrollbar-color: var(--color-demo-border) transparent;
   }
   .scroll-area::-webkit-scrollbar-thumb {
     background-color: var(--color-demo-border);
+    border-radius: 9999px;
+  }
+
+  /* Same idea, but for the admin shell's dark surfaces (charcoal/forest) —
+     .scroll-area's demo-palette thumb is near-white and reads as a bright
+     smear against a dark sidebar. */
+  .scroll-area-dark {
+    scrollbar-color: color-mix(in srgb, var(--color-bone) 20%, transparent) transparent;
+  }
+  .scroll-area-dark::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--color-bone) 20%, transparent);
     border-radius: 9999px;
   }
 
