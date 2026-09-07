@@ -185,13 +185,43 @@ Alla rutor nedan avser kommande arbete. Markera klart först när resultatet är
 
 ### Etapp 0 — kartläggning och avgränsning
 
-- [ ] Läs aktuell kod, AGENTS.md och databasstruktur.
-- [ ] Inventera vad som redan finns för kund, projekt, filer, inkorg och fakturor.
-- [ ] Bestäm första pilotkund och konkret projektflöde.
-- [ ] Bestäm roller och vilka personer som får granska/godkänna.
-- [ ] Bestäm vilka uppgifter och filer som får delas med kund.
+- [x] Läs aktuell kod, AGENTS.md och databasstruktur.
+- [x] Inventera vad som redan finns för kund, projekt, filer, inkorg och fakturor.
+- [x] Bestäm första pilotkund och konkret projektflöde.
+- [x] Bestäm roller och vilka personer som får granska/godkänna.
+- [x] Bestäm vilka uppgifter och filer som får delas med kund.
 - [ ] Skissa mobil och desktop för kundöversikt, projekt och granskning.
-- [ ] Dokumentera schemaändringar och migrationsordning.
+- [x] Dokumentera schemaändringar och migrationsordning.
+
+#### Kartläggning: befintlig kod (2026-09-07)
+
+- Fungerande admin-kärna finns redan: `Customer`, `ClientProject` (status planerat/pågående/väntar_på_kund/pausat/klar), `ProjectChecklistItem`, `ProjectActivityEntry`, `ProjectFile`, `Email`/inkorg, `Invoice`+rader, `BillingEntity` (`lib/types/index.ts`, `lib/data/*`, `lib/actions/*`).
+- Tabeller (via `lib/data/*`): `customers`, `client_projects`, `project_checklist_items`, `project_activity`, `project_files`, `email_attachments`, `emails`, `blocked_senders`, `billing_entities`, `invoices`, `invoice_items`.
+- Filer ligger i en privat Supabase-storage-bucket (`attachments`) med signerade URL:er (1 timmes TTL) — bra grund, men `project_files` saknar helt en synlighetsflagga.
+- `client_projects.overview`/`notes` är odifferentierat internt fält, ingen kundvänd statusmotsvarighet finns.
+- Bekräftat säkerhetsgap: `verifySession()` (`lib/auth/dal.ts`) kontrollerar bara att någon är inloggad, ingen rollkontroll. `createServiceRoleClient()` (`lib/supabase/server.ts`) används i 35 filer och kringgår RLS helt. `lib/actions/auth.ts` har ingen självregistrering — alla nuvarande Supabase-auth-users är i praktiken personal, tillsatta manuellt.
+- Stack: Next 16.3.0 (den icke-standardversion AGENTS.md pekar på), `@supabase/supabase-js` 2.112, `@supabase/ssr` 0.12.
+
+#### Beslut
+
+- **Pilotkund:** en ny/kommande kund, inte en befintlig migrerad kund. Portalen designas kring ett nytt projekt från start snarare än att retroaktivt anpassas efter ett pågående arbetssätt.
+- **Roller:** endast två roller i v1 — admin (Ada/Malin, ser allt) och kund (en kontaktperson per företag ser sitt eget företags projekt). Flera kundkontakter med olika behörighet skjuts till en senare etapp.
+- **Delning:** opt-in per objekt. Allt är internt som standard; admin måste aktivt markera en fil eller statusuppdatering som synlig för kund. Gäller både `project_files` och statusytan i portalen (ingen automatisk exponering av `overview`/`notes`).
+
+#### Schemaändringar och migrationsordning (Etapp 1)
+
+Roller hålls utanför databasschemat: befintliga adminkonton får `app_metadata.role = "admin"` satt via service-role (kräver ingen DDL, men måste göras innan rollkontroll slås på, annars låses personalen ute). `app_metadata` är inte redigerbart av användaren själv, till skillnad från `user_metadata`.
+
+Ordning för migrationerna:
+
+1. Sätt `app_metadata.role = "admin"` på alla befintliga Supabase auth-users (engångsjobb, inte en tabellmigration).
+2. Ny tabell `customer_members`: `id`, `user_id` (FK `auth.users`), `customer_id` (FK `customers`), `invited_at`, `accepted_at`, `revoked_at`, `created_at`. Kopplar en inloggad kundkontakt till exakt ett kundföretag.
+3. `alter table project_files add column visible_to_customer boolean not null default false`.
+4. `alter table client_projects add column customer_update text, add column customer_update_at timestamptz, add column next_milestone_label text, add column next_milestone_date date` — separata kundvända fält, skilda från interna `overview`/`notes`.
+5. Ny tabell `project_approvals`: `id`, `project_id`, `file_id` (nullable), `title`, `version_label`, `requested_at`, `due_at`, `status` (`pending`/`approved`/`changes_requested`), `decided_at`, `decided_by` (FK `auth.users`), `decision_note`.
+6. Ny tabell `project_messages`: `id`, `project_id`, `author_user_id`, `author_role` (`admin`/`kund`), `body`, `created_at`.
+
+Behörighetsmodell: koden använder `createServiceRoleClient()` överallt idag och har ingen RLS-vana att bygga vidare på. Istället för att införa ett andra klientmönster (RLS + kundscopead klient) parallellt med det befintliga, byggs en enda ny central kontrollpunkt: `requireCustomerAccess(userId, customerId)` i `lib/auth/`, som varje ny kundvänd data-/action-funktion måste anropa först. Det håller mönstret konsekvent med resten av kodbasen och gör det enkelt att grep-verifiera mot checklistan i avsnitt 11 (att inget kundvänt anrop saknar kontrollen).
 
 Klart när första användarflödet och dess data-/behörighetsbehov är tydligt avgränsade.
 
