@@ -27,15 +27,34 @@ export default async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isLoginRoute = request.nextUrl.pathname === "/admin/login";
+  const path = request.nextUrl.pathname;
+  const isKundRoute = path.startsWith("/kund");
+  // Public within /kund — the invite-acceptance page needs the session from
+  // the invite email link, not an existing logged-in session.
+  const isKundPublicRoute = path === "/kund/login" || path === "/kund/valkommen";
+  const isAdminLoginRoute = path === "/admin/login";
 
-  if (!user && !isLoginRoute) {
+  if (isKundRoute) {
+    if (!user && !isKundPublicRoute) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = "/kund/login";
+      return NextResponse.redirect(loginUrl);
+    }
+    if (user && path === "/kund/login") {
+      const kundUrl = request.nextUrl.clone();
+      kundUrl.pathname = "/kund";
+      return NextResponse.redirect(kundUrl);
+    }
+    return response;
+  }
+
+  if (!user && !isAdminLoginRoute) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
     return NextResponse.redirect(loginUrl);
   }
 
-  if (user && isLoginRoute) {
+  if (user && isAdminLoginRoute) {
     const adminUrl = request.nextUrl.clone();
     adminUrl.pathname = "/admin";
     return NextResponse.redirect(adminUrl);
@@ -45,5 +64,5 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/kund/:path*"],
 };

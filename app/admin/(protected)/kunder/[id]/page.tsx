@@ -4,7 +4,9 @@ import { Plus } from "lucide-react";
 import { getCustomerById } from "@/lib/data/customers";
 import { getInvoicesForCustomer } from "@/lib/data/invoices";
 import { getEmailsForCustomer } from "@/lib/data/emails";
+import { getCustomerMembers } from "@/lib/data/customer-members";
 import { CustomerForm } from "@/components/admin/CustomerForm";
+import { CustomerPortalAccess } from "@/components/admin/CustomerPortalAccess";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { BackLink } from "@/components/admin/BackLink";
@@ -38,9 +40,10 @@ export default async function EditCustomerPage({ params, searchParams }: Props) 
     notFound();
   }
 
-  const [invoices, emails] = await Promise.all([
+  const [invoices, emails, members] = await Promise.all([
     getInvoicesForCustomer(id),
     getEmailsForCustomer(id),
+    getCustomerMembers(id),
   ]);
 
   return (
@@ -69,7 +72,9 @@ export default async function EditCustomerPage({ params, searchParams }: Props) 
         </Card>
 
         <div className="w-full lg:max-w-sm">
-          <div className="flex items-center justify-between">
+          <CustomerPortalAccess customerId={customer.id} members={members} />
+
+          <div className="mt-8 flex items-center justify-between">
             <h2 className="font-display text-sm font-bold text-bone">Fakturor</h2>
             <Link
               href={`/admin/fakturor/ny?customer=${customer.id}`}
