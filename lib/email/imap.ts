@@ -3,8 +3,9 @@ import { simpleParser } from "mailparser";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { getCustomerByEmail } from "@/lib/data/customers";
 import { getBlockedSenders } from "@/lib/data/blocked-senders";
+import { getDeletedMessageIds } from "@/lib/data/deleted-email-ids";
 
-type SyncResult = { fetched: number; matched: number; blocked: number };
+type SyncResult = { fetched: number; matched: number; blocked: number; skippedDeleted: number };
 
 type SyncState = { last_uid: number; uid_validity: string | null };
 
@@ -20,9 +21,11 @@ export async function syncInbox(): Promise<SyncResult> {
   let lastUid = state?.last_uid ?? 0;
   const storedUidValidity = state?.uid_validity ?? null;
 
-  const blockedSenders = new Set(
-    (await getBlockedSenders()).map((sender) => sender.email.toLowerCase()),
-  );
+  const [blockedSendersList, deletedMessageIds] = await Promise.all([
+    getBlockedSenders(),
+    getDeletedMessageIds(),
+  ]);
+  const blockedSenders = new Set(blockedSendersList.map((sender) => sender.email.toLowerCase()));
 
   const client = new ImapFlow({
     host: process.env.IMAP_HOST!,
@@ -35,6 +38,7 @@ export async function syncInbox(): Promise<SyncResult> {
   let fetched = 0;
   let matched = 0;
   let blocked = 0;
+  let skippedDeleted = 0;
 
   await client.connect();
   try {
@@ -53,7 +57,7 @@ export async function syncInbox(): Promise<SyncResult> {
       }
 
       if (lastUid + 1 >= uidNext) {
-        return { fetched: 0, matched: 0, blocked: 0 };
+        return { fetched: 0, matched: 0, blocked: 0, skippedDeleted: 0 };
       }
 
       let maxUidSeen = lastUid;
@@ -78,6 +82,13 @@ export async function syncInbox(): Promise<SyncResult> {
 
         maxUidSeen = Math.max(maxUidSeen, message.uid);
 
+        const messageId = parsed.messageId ?? `<no-id-${message.uid}@local>`;
+
+        if (deletedMessageIds.has(messageId)) {
+          skippedDeleted += 1;
+          continue;
+        }
+
         if (blockedSenders.has(fromAddress.toLowerCase())) {
           blocked += 1;
           continue;
@@ -85,8 +96,6 @@ export async function syncInbox(): Promise<SyncResult> {
 
         const customer = await getCustomerByEmail(fromAddress);
         if (customer) matched += 1;
-
-        const messageId = parsed.messageId ?? `<no-id-${message.uid}@local>`;
 
         const realAttachments = parsed.attachments.filter(
           (attachment) => attachment.contentDisposition === "attachment",
@@ -171,5 +180,5 @@ export async function syncInbox(): Promise<SyncResult> {
     await client.logout();
   }
 
-  return { fetched, matched, blocked };
+  return { fetched, matched, blocked, skippedDeleted };
 }
