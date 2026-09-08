@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
-import { UserPlus, UserX, UserCheck } from "lucide-react";
+import { useActionState, useTransition } from "react";
+import { UserPlus, UserX, UserCheck, RotateCw } from "lucide-react";
 import {
   inviteCustomerContact,
+  resendCustomerInvite,
   revokeCustomerAccess,
   restoreCustomerAccess,
 } from "@/lib/actions/customer-invites";
@@ -32,6 +33,7 @@ export function CustomerPortalAccess({
     inviteCustomerContact.bind(null, customerId),
     undefined,
   );
+  const [, startResend] = useTransition();
 
   return (
     <div>
@@ -52,41 +54,57 @@ export function CustomerPortalAccess({
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <Tag className={status.tone}>{status.label}</Tag>
-                {member.revokedAt ? (
-                  <ConfirmDialog
-                    trigger={
-                      <button
-                        type="button"
-                        aria-label="Återställ åtkomst"
-                        title="Återställ åtkomst"
-                        className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
-                      >
-                        <UserCheck size={14} strokeWidth={2.25} />
-                      </button>
-                    }
-                    title="Återställ kundens åtkomst?"
-                    description="Kontaktpersonen kan logga in i portalen igen."
-                    confirmLabel="Återställ"
-                    onConfirm={restoreCustomerAccess.bind(null, customerId, member.id)}
-                  />
+                {member.acceptedAt ? (
+                  member.revokedAt ? (
+                    <ConfirmDialog
+                      trigger={
+                        <button
+                          type="button"
+                          aria-label="Återställ åtkomst"
+                          title="Återställ åtkomst"
+                          className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+                        >
+                          <UserCheck size={14} strokeWidth={2.25} />
+                        </button>
+                      }
+                      title="Återställ kundens åtkomst?"
+                      description="Kontaktpersonen kan logga in i portalen igen med sitt befintliga lösenord."
+                      confirmLabel="Återställ"
+                      onConfirm={restoreCustomerAccess.bind(null, customerId, member.id)}
+                    />
+                  ) : (
+                    <ConfirmDialog
+                      trigger={
+                        <button
+                          type="button"
+                          aria-label="Återkalla åtkomst"
+                          title="Återkalla åtkomst"
+                          className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
+                        >
+                          <UserX size={14} strokeWidth={2.25} />
+                        </button>
+                      }
+                      title="Återkalla kundens åtkomst?"
+                      description="Kontaktpersonen kan inte längre logga in i portalen förrän åtkomsten återställs."
+                      confirmLabel="Återkalla"
+                      destructive
+                      onConfirm={revokeCustomerAccess.bind(null, customerId, member.id)}
+                    />
+                  )
                 ) : (
-                  <ConfirmDialog
-                    trigger={
-                      <button
-                        type="button"
-                        aria-label="Återkalla åtkomst"
-                        title="Återkalla åtkomst"
-                        className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
-                      >
-                        <UserX size={14} strokeWidth={2.25} />
-                      </button>
-                    }
-                    title="Återkalla kundens åtkomst?"
-                    description="Kontaktpersonen kan inte längre logga in i portalen förrän åtkomsten återställs."
-                    confirmLabel="Återkalla"
-                    destructive
-                    onConfirm={revokeCustomerAccess.bind(null, customerId, member.id)}
-                  />
+                  // Kontaktpersonen har aldrig satt ett lösenord — "Återställ"
+                  // ensamt vore ett dödläge (ingen giltig länk, inget
+                  // lösenord). En ny inbjudan löser både återkallelse och
+                  // saknad länk i ett klick.
+                  <button
+                    type="button"
+                    onClick={() => startResend(() => resendCustomerInvite(customerId, member.email))}
+                    aria-label="Skicka inbjudan igen"
+                    title="Skicka inbjudan igen"
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+                  >
+                    <RotateCw size={13} strokeWidth={2.25} />
+                  </button>
                 )}
               </div>
             </div>

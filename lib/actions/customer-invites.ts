@@ -10,18 +10,7 @@ const FALLBACK_SITE_URL = "https://lindqvistholmgren.se";
 
 export type InviteCustomerState = { error?: string; success?: boolean } | undefined;
 
-export async function inviteCustomerContact(
-  customerId: string,
-  _prevState: InviteCustomerState,
-  formData: FormData,
-): Promise<InviteCustomerState> {
-  await verifySession();
-
-  const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  if (!email) {
-    return { error: "E-post krävs." };
-  }
-
+async function sendCustomerInvite(customerId: string, email: string): Promise<{ error?: string }> {
   const origin = (await headers()).get("origin") ?? FALLBACK_SITE_URL;
   const supabase = createServiceRoleClient();
 
@@ -51,8 +40,37 @@ export async function inviteCustomerContact(
     return { error: `Inbjudan skickades men kunde inte kopplas till kunden: ${memberError.message}` };
   }
 
+  return {};
+}
+
+export async function inviteCustomerContact(
+  customerId: string,
+  _prevState: InviteCustomerState,
+  formData: FormData,
+): Promise<InviteCustomerState> {
+  await verifySession();
+
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!email) {
+    return { error: "E-post krävs." };
+  }
+
+  const result = await sendCustomerInvite(customerId, email);
+  if (result.error) {
+    return { error: result.error };
+  }
+
   revalidatePath(`/admin/kunder/${customerId}`);
   return { success: true };
+}
+
+// Same underlying invite, called directly (no form/prevState) for the
+// "skicka igen" row action on a contact who never set a password —
+// restoring access alone would be a dead end without a fresh link.
+export async function resendCustomerInvite(customerId: string, email: string) {
+  await verifySession();
+  await sendCustomerInvite(customerId, email);
+  revalidatePath(`/admin/kunder/${customerId}`);
 }
 
 export async function revokeCustomerAccess(customerId: string, membershipId: string) {
