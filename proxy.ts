@@ -31,7 +31,8 @@ export default async function proxy(request: NextRequest) {
   const isKundRoute = path.startsWith("/kund");
   // Public within /kund — the invite-acceptance page needs the session from
   // the invite email link, not an existing logged-in session.
-  const isKundPublicRoute = path === "/kund/login" || path === "/kund/valkommen";
+  const isKundPublicRoute =
+    path === "/kund/login" || path === "/kund/valkommen" || path === "/kund/glomt-losenord";
   const isAdminLoginRoute = path === "/admin/login";
 
   if (isKundRoute) {

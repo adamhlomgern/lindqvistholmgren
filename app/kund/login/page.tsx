@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import { loginCustomer } from "@/lib/actions/customer-auth";
 
 const inputClasses =
@@ -56,6 +57,12 @@ export default function CustomerLoginPage() {
             {pending ? "Loggar in…" : "Logga in"}
           </button>
         </form>
+        <Link
+          href="/kund/glomt-losenord"
+          className="mt-4 block text-sm text-stone underline underline-offset-2 hover:text-bone"
+        >
+          Glömt lösenord?
+        </Link>
       </div>
     </div>
   );

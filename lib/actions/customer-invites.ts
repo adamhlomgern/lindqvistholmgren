@@ -5,8 +5,7 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { getSmtpTransport } from "@/lib/email/client";
-import { renderBrandedEmailHtml } from "@/lib/email/template";
+import { sendBrandedEmail } from "@/lib/email/send";
 
 const FALLBACK_SITE_URL = "https://lindqvistholmgren.se";
 
@@ -41,18 +40,14 @@ async function sendCustomerInvite(customerId: string, email: string): Promise<{ 
   }
 
   try {
-    const transport = getSmtpTransport();
-    await transport.sendMail({
-      from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+    await sendBrandedEmail({
       to: email,
       subject: "Ni är inbjudna till er kundportal – Lindqvist / Holmgren",
-      html: renderBrandedEmailHtml({
-        heading: "Välkommen till kundportalen",
-        bodyHtml:
-          "Ni har bjudits in till vår kundportal, där ni kan följa ert projekt, dela filer och godkänna leveranser tillsammans med oss. Klicka nedan för att skapa ett lösenord och komma igång.",
-        ctaLabel: "Skapa lösenord och logga in",
-        ctaUrl: actionLink,
-      }),
+      heading: "Välkommen till kundportalen",
+      bodyHtml:
+        "Ni har bjudits in till vår kundportal, där ni kan följa ert projekt, dela filer och godkänna leveranser tillsammans med oss. Klicka nedan för att skapa ett lösenord och komma igång.",
+      ctaLabel: "Skapa lösenord och logga in",
+      ctaUrl: actionLink,
     });
   } catch (err) {
     return { error: `Länken skapades men mejlet kunde inte skickas: ${err instanceof Error ? err.message : String(err)}` };
