@@ -33,9 +33,19 @@ export async function inviteCustomerContact(
     return { error: `Kunde inte skicka inbjudan: ${inviteError.message}` };
   }
 
-  const { error: memberError } = await supabase
-    .from("customer_members")
-    .insert({ user_id: invited.user.id, customer_id: customerId });
+  // Re-inviting a previously revoked (or re-invited before accepting)
+  // contact hits the (user_id, customer_id) unique constraint on a plain
+  // insert — upsert so it resets to a fresh, non-revoked invite instead.
+  const { error: memberError } = await supabase.from("customer_members").upsert(
+    {
+      user_id: invited.user.id,
+      customer_id: customerId,
+      invited_at: new Date().toISOString(),
+      accepted_at: null,
+      revoked_at: null,
+    },
+    { onConflict: "user_id,customer_id" },
+  );
 
   if (memberError) {
     return { error: `Inbjudan skickades men kunde inte kopplas till kunden: ${memberError.message}` };
