@@ -25,7 +25,7 @@ function isAlreadyRegisteredError(error: { code?: string; message: string } | nu
 // an existing user instead, so it works for the resend case too.
 async function sendCustomerInvite(customerId: string, email: string): Promise<{ error?: string }> {
   const origin = (await headers()).get("origin") ?? FALLBACK_SITE_URL;
-  const redirectTo = `${origin}/auth/confirm?next=/kund/valkommen`;
+  const redirectTo = `${origin}/kund/valkommen`;
   const supabase = createServiceRoleClient();
 
   let link = await supabase.auth.admin.generateLink({ type: "invite", email, options: { redirectTo } });

@@ -70,7 +70,7 @@ export async function requestCustomerPasswordReset(
   const { data, error } = await supabase.auth.admin.generateLink({
     type: "recovery",
     email,
-    options: { redirectTo: `${origin}/auth/confirm?next=/kund/valkommen` },
+    options: { redirectTo: `${origin}/kund/valkommen` },
   });
 
   const actionLink = data?.properties?.action_link;

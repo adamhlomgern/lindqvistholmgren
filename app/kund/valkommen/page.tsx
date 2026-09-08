@@ -19,9 +19,38 @@ export default function CustomerWelcomePage() {
 
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setStatus(session ? "ready" : "expired");
-    });
+
+    async function establishSession() {
+      // Older-style links land with the session already recoverable from
+      // the URL hash — the client library picks that up on its own.
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session) {
+        setStatus("ready");
+        return;
+      }
+
+      // Newer GoTrue /verify redirects land with token_hash+type as query
+      // params instead of a ready-made session — exchange those explicitly.
+      const params = new URLSearchParams(window.location.search);
+      const tokenHash = params.get("token_hash");
+      const type = params.get("type");
+      if (tokenHash && type) {
+        const { error: verifyError } = await supabase.auth.verifyOtp({
+          type: type as "invite" | "recovery" | "magiclink" | "signup" | "email_change" | "email",
+          token_hash: tokenHash,
+        });
+        if (!verifyError) {
+          setStatus("ready");
+          return;
+        }
+      }
+
+      setStatus("expired");
+    }
+
+    establishSession();
   }, []);
 
   async function handleSubmit(event: React.FormEvent) {
