@@ -227,8 +227,8 @@ Klart när första användarflödet och dess data-/behörighetsbehov är tydligt
 
 ### Etapp 1 — kundportalens kärna
 
-- [ ] Implementera och verifiera adminroll, kundmedlemskap och projektåtkomst.
-- [ ] Bygg inbjudan, inloggning, utloggning och återkallad åtkomst.
+- [ ] Implementera och verifiera adminroll, kundmedlemskap och projektåtkomst. Adminroll och kundmedlemskap är verifierat (se nedan); `requireCustomerAccess` är byggd men ännu inte använd av en riktig projektsida.
+- [x] Bygg inbjudan, inloggning, utloggning och återkallad åtkomst. Verifierat 8 sep 2026: hela kedjan inbjudan → mejl → sätt lösenord → inloggad som rätt kund fungerar i praktiken (testkund "tesfirma"). Inkluderar även självbetjänad återställning av glömt lösenord.
 - [ ] Bygg kundöversikt med nästa steg, aktuell status och milstolpe.
 - [ ] Visa kundens projekt med utvalt kundsynligt innehåll.
 - [ ] Lägg till kundsynlighet och skyddad åtkomst för filer.
