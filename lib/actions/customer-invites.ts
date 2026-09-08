@@ -5,21 +5,57 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createAuthClient } from "@/lib/supabase/auth";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { getSmtpTransport } from "@/lib/email/client";
+import { renderBrandedEmailHtml } from "@/lib/email/template";
 
 const FALLBACK_SITE_URL = "https://lindqvistholmgren.se";
 
 export type InviteCustomerState = { error?: string; success?: boolean } | undefined;
 
+function isAlreadyRegisteredError(error: { code?: string; message: string } | null): boolean {
+  if (!error) return false;
+  return error.code === "email_exists" || error.code === "user_already_exists" || /already.*registered/i.test(error.message);
+}
+
+// Generates the action link ourselves and sends it through our own SMTP with
+// our branded Swedish template, instead of Supabase's built-in invite email
+// (which is English by default, needs its own dashboard template edit, and
+// — the real reason — inviteUserByEmail/generateLink(type: "invite") both
+// always try to CREATE a user, so they hard-fail with "already registered"
+// on every resend to a contact who hasn't accepted yet. "recovery" acts on
+// an existing user instead, so it works for the resend case too.
 async function sendCustomerInvite(customerId: string, email: string): Promise<{ error?: string }> {
   const origin = (await headers()).get("origin") ?? FALLBACK_SITE_URL;
+  const redirectTo = `${origin}/kund/valkommen`;
   const supabase = createServiceRoleClient();
 
-  const { data: invited, error: inviteError } = await supabase.auth.admin.inviteUserByEmail(email, {
-    redirectTo: `${origin}/kund/valkommen`,
-  });
+  let link = await supabase.auth.admin.generateLink({ type: "invite", email, options: { redirectTo } });
 
-  if (inviteError) {
-    return { error: `Kunde inte skicka inbjudan: ${inviteError.message}` };
+  if (link.error && isAlreadyRegisteredError(link.error)) {
+    link = await supabase.auth.admin.generateLink({ type: "recovery", email, options: { redirectTo } });
+  }
+
+  const actionLink = link.data?.properties?.action_link;
+  if (link.error || !actionLink || !link.data?.user) {
+    return { error: `Kunde inte skapa inbjudningslänk: ${link.error?.message ?? "okänt fel"}` };
+  }
+
+  try {
+    const transport = getSmtpTransport();
+    await transport.sendMail({
+      from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+      to: email,
+      subject: "Ni är inbjudna till er kundportal – Lindqvist / Holmgren",
+      html: renderBrandedEmailHtml({
+        heading: "Välkommen till kundportalen",
+        bodyHtml:
+          "Ni har bjudits in till vår kundportal, där ni kan följa ert projekt, dela filer och godkänna leveranser tillsammans med oss. Klicka nedan för att skapa ett lösenord och komma igång.",
+        ctaLabel: "Skapa lösenord och logga in",
+        ctaUrl: actionLink,
+      }),
+    });
+  } catch (err) {
+    return { error: `Länken skapades men mejlet kunde inte skickas: ${err instanceof Error ? err.message : String(err)}` };
   }
 
   // Re-inviting a previously revoked (or re-invited before accepting)
@@ -27,7 +63,7 @@ async function sendCustomerInvite(customerId: string, email: string): Promise<{ 
   // insert — upsert so it resets to a fresh, non-revoked invite instead.
   const { error: memberError } = await supabase.from("customer_members").upsert(
     {
-      user_id: invited.user.id,
+      user_id: link.data.user.id,
       customer_id: customerId,
       invited_at: new Date().toISOString(),
       accepted_at: null,
@@ -37,7 +73,7 @@ async function sendCustomerInvite(customerId: string, email: string): Promise<{ 
   );
 
   if (memberError) {
-    return { error: `Inbjudan skickades men kunde inte kopplas till kunden: ${memberError.message}` };
+    return { error: `Mejlet skickades men kunde inte kopplas till kunden: ${memberError.message}` };
   }
 
   return {};
