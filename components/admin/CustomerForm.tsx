@@ -34,7 +34,7 @@ export function CustomerForm({ customer }: CustomerFormProps) {
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
-      <div className="divide-y divide-bone/10 [&>*+*]:pt-6">
+      <div className="divide-y divide-bone/10 [&>*+*]:pt-6 [&>*:not(:last-child)]:pb-6">
         <Section title="Kontaktuppgifter">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Namn">
