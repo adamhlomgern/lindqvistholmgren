@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useTransition } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { UserPlus, UserX, UserCheck, RotateCw } from "lucide-react";
 import {
   inviteCustomerContact,
@@ -22,6 +22,92 @@ function memberStatus(member: CustomerMemberWithEmail) {
   return { label: "Inbjuden", tone: "text-peach" };
 }
 
+function MemberRow({ customerId, member }: { customerId: string; member: CustomerMemberWithEmail }) {
+  const status = memberStatus(member);
+  const [pending, startTransition] = useTransition();
+  const [resendResult, setResendResult] = useState<{ error?: string } | null>(null);
+
+  function handleResend() {
+    setResendResult(null);
+    startTransition(async () => {
+      const result = await resendCustomerInvite(customerId, member.email);
+      setResendResult(result.error ? result : {});
+    });
+  }
+
+  return (
+    <div className="rounded-xl bg-bone/5 px-4 py-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-sm text-bone">{member.email}</p>
+          <p className="mt-0.5 text-xs text-stone">Inbjuden {formatDateSv(member.invitedAt)}</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <Tag className={status.tone}>{status.label}</Tag>
+          {member.acceptedAt ? (
+            member.revokedAt ? (
+              <ConfirmDialog
+                trigger={
+                  <button
+                    type="button"
+                    aria-label="Återställ åtkomst"
+                    title="Återställ åtkomst"
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+                  >
+                    <UserCheck size={14} strokeWidth={2.25} />
+                  </button>
+                }
+                title="Återställ kundens åtkomst?"
+                description="Kontaktpersonen kan logga in i portalen igen med sitt befintliga lösenord."
+                confirmLabel="Återställ"
+                onConfirm={restoreCustomerAccess.bind(null, customerId, member.id)}
+              />
+            ) : (
+              <ConfirmDialog
+                trigger={
+                  <button
+                    type="button"
+                    aria-label="Återkalla åtkomst"
+                    title="Återkalla åtkomst"
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
+                  >
+                    <UserX size={14} strokeWidth={2.25} />
+                  </button>
+                }
+                title="Återkalla kundens åtkomst?"
+                description="Kontaktpersonen kan inte längre logga in i portalen förrän åtkomsten återställs."
+                confirmLabel="Återkalla"
+                destructive
+                onConfirm={revokeCustomerAccess.bind(null, customerId, member.id)}
+              />
+            )
+          ) : (
+            // Kontaktpersonen har aldrig satt ett lösenord — "Återställ"
+            // ensamt vore ett dödläge (ingen giltig länk, inget lösenord).
+            // En ny inbjudan löser både återkallelse och saknad länk i ett
+            // klick.
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={pending}
+              aria-label="Skicka inbjudan igen"
+              title="Skicka inbjudan igen"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone disabled:opacity-60"
+            >
+              <RotateCw size={13} strokeWidth={2.25} className={pending ? "animate-spin" : undefined} />
+            </button>
+          )}
+        </div>
+      </div>
+      {pending && <p className="mt-2 text-xs text-stone">Skickar…</p>}
+      {!pending && resendResult?.error && <p className="mt-2 text-xs text-coral">{resendResult.error}</p>}
+      {!pending && resendResult && !resendResult.error && (
+        <p className="mt-2 text-xs text-emerald">Ny inbjudan skickad.</p>
+      )}
+    </div>
+  );
+}
+
 export function CustomerPortalAccess({
   customerId,
   members,
@@ -33,7 +119,6 @@ export function CustomerPortalAccess({
     inviteCustomerContact.bind(null, customerId),
     undefined,
   );
-  const [, startResend] = useTransition();
 
   return (
     <div>
@@ -41,75 +126,9 @@ export function CustomerPortalAccess({
 
       <div className="mt-3 flex flex-col gap-2">
         {members.length === 0 && <p className="text-sm text-stone">Ingen kontaktperson inbjuden ännu.</p>}
-        {members.map((member) => {
-          const status = memberStatus(member);
-          return (
-            <div
-              key={member.id}
-              className="flex items-center justify-between gap-3 rounded-xl bg-bone/5 px-4 py-3"
-            >
-              <div className="min-w-0">
-                <p className="truncate text-sm text-bone">{member.email}</p>
-                <p className="mt-0.5 text-xs text-stone">Inbjuden {formatDateSv(member.invitedAt)}</p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <Tag className={status.tone}>{status.label}</Tag>
-                {member.acceptedAt ? (
-                  member.revokedAt ? (
-                    <ConfirmDialog
-                      trigger={
-                        <button
-                          type="button"
-                          aria-label="Återställ åtkomst"
-                          title="Återställ åtkomst"
-                          className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
-                        >
-                          <UserCheck size={14} strokeWidth={2.25} />
-                        </button>
-                      }
-                      title="Återställ kundens åtkomst?"
-                      description="Kontaktpersonen kan logga in i portalen igen med sitt befintliga lösenord."
-                      confirmLabel="Återställ"
-                      onConfirm={restoreCustomerAccess.bind(null, customerId, member.id)}
-                    />
-                  ) : (
-                    <ConfirmDialog
-                      trigger={
-                        <button
-                          type="button"
-                          aria-label="Återkalla åtkomst"
-                          title="Återkalla åtkomst"
-                          className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
-                        >
-                          <UserX size={14} strokeWidth={2.25} />
-                        </button>
-                      }
-                      title="Återkalla kundens åtkomst?"
-                      description="Kontaktpersonen kan inte längre logga in i portalen förrän åtkomsten återställs."
-                      confirmLabel="Återkalla"
-                      destructive
-                      onConfirm={revokeCustomerAccess.bind(null, customerId, member.id)}
-                    />
-                  )
-                ) : (
-                  // Kontaktpersonen har aldrig satt ett lösenord — "Återställ"
-                  // ensamt vore ett dödläge (ingen giltig länk, inget
-                  // lösenord). En ny inbjudan löser både återkallelse och
-                  // saknad länk i ett klick.
-                  <button
-                    type="button"
-                    onClick={() => startResend(() => resendCustomerInvite(customerId, member.email))}
-                    aria-label="Skicka inbjudan igen"
-                    title="Skicka inbjudan igen"
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
-                  >
-                    <RotateCw size={13} strokeWidth={2.25} />
-                  </button>
-                )}
-              </div>
-            </div>
-          );
-        })}
+        {members.map((member) => (
+          <MemberRow key={member.id} customerId={customerId} member={member} />
+        ))}
       </div>
 
       <form action={formAction} className="mt-4 flex items-center gap-2">

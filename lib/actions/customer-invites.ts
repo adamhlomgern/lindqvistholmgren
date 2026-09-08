@@ -67,10 +67,11 @@ export async function inviteCustomerContact(
 // Same underlying invite, called directly (no form/prevState) for the
 // "skicka igen" row action on a contact who never set a password —
 // restoring access alone would be a dead end without a fresh link.
-export async function resendCustomerInvite(customerId: string, email: string) {
+export async function resendCustomerInvite(customerId: string, email: string): Promise<{ error?: string }> {
   await verifySession();
-  await sendCustomerInvite(customerId, email);
+  const result = await sendCustomerInvite(customerId, email);
   revalidatePath(`/admin/kunder/${customerId}`);
+  return result;
 }
 
 export async function revokeCustomerAccess(customerId: string, membershipId: string) {
