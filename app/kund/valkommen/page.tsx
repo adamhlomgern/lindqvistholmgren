@@ -21,21 +21,33 @@ export default function CustomerWelcomePage() {
     const supabase = createBrowserSupabaseClient();
 
     async function establishSession() {
-      // Older-style links land with the session already recoverable from
-      // the URL hash — the client library picks that up on its own.
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) {
-        setStatus("ready");
-        return;
+      // Links land with the session in the URL hash (#access_token=...).
+      // Parsed and set explicitly rather than relying on the client
+      // library's automatic detectSessionInUrl: that consumes the hash
+      // once and strips it from the URL, which races badly with React
+      // Strict Mode's double effect invocation in dev — the second run
+      // sees an already-cleared hash and reports "expired" even though
+      // the link was perfectly valid. setSession() is idempotent, so
+      // running this twice is harmless.
+      const hashParams = new URLSearchParams(window.location.hash.slice(1));
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (!sessionError) {
+          setStatus("ready");
+          return;
+        }
       }
 
-      // Newer GoTrue /verify redirects land with token_hash+type as query
-      // params instead of a ready-made session — exchange those explicitly.
-      const params = new URLSearchParams(window.location.search);
-      const tokenHash = params.get("token_hash");
-      const type = params.get("type");
+      // Newer GoTrue /verify redirects can land with token_hash+type as
+      // query params instead of a hash fragment — exchange those explicitly.
+      const queryParams = new URLSearchParams(window.location.search);
+      const tokenHash = queryParams.get("token_hash");
+      const type = queryParams.get("type");
       if (tokenHash && type) {
         const { error: verifyError } = await supabase.auth.verifyOtp({
           type: type as "invite" | "recovery" | "magiclink" | "signup" | "email_change" | "email",
@@ -47,7 +59,12 @@ export default function CustomerWelcomePage() {
         }
       }
 
-      setStatus("expired");
+      // Fall back to whatever the client's own automatic detection may
+      // already have picked up (e.g. outside Strict Mode, in production).
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      setStatus(session ? "ready" : "expired");
     }
 
     establishSession();
