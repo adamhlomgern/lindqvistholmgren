@@ -363,16 +363,18 @@ Klart när kunden kan fortsätta använda portalen för material, hjälp och nya
 
 ## 11. Verifiering inför kundåtkomst
 
-- [ ] Kund A kan inte läsa eller ändra kund B:s projekt, filer, meddelanden eller fakturor, även via direktlänkar/API.
-- [ ] Kundanvändare kan inte nå adminfunktioner eller anropa adminåtgärder.
-- [ ] Återkallad åtkomst upphör att fungera.
-- [ ] Interna anteckningar och arbetsfiler exponeras inte i kundsvar eller filåtkomst.
-- [ ] Ett godkännande av version 1 godkänner aldrig version 2.
-- [ ] Upprepade klick skapar inte dubbla beslut, projekt eller notifieringar.
-- [ ] Misslyckad uppladdning eller notifiering visas och kan hanteras.
-- [ ] Publik demo kan inte påverka riktiga kunddata.
-- [ ] Kritiska kundflöden fungerar på mobil och med tangentbord.
-- [ ] Pilotkundens återkoppling är åtgärdad innan bredare utrullning.
+Kodgranskning genomförd 9 sep 2026 (statisk genomgång av varje kundvänd route, data- och actionfunktion — inga automatiska tester skrivna, se anmärkning nedan).
+
+- [x] Kund A kan inte läsa eller ändra kund B:s projekt, filer, meddelanden eller fakturor, även via direktlänkar/API. Varje route med ett kunds-styrt id (`projekt/[id]`, `material/[folderId]`, `godkannande/[approvalId]`) jämför resultatet mot sessionens `customerId` innan något renderas (`notFound()` vid mismatch, aldrig ett tyst tomt läge). Meddelanden och översikt tar `customerId` enbart från sessionen, aldrig från ett URL-param. Fakturor har ingen kundroute alls än (inte byggt).
+- [x] Kundanvändare kan inte nå adminfunktioner eller anropa adminåtgärder. Varje admin-route går genom `app/admin/(protected)/layout.tsx` (`verifySession()`, kräver `app_metadata.role==="admin"`); varje admin-`lib/actions/*`-funktion och admin-API-route (`/api/admin/*`) anropar samma `verifySession()` individuellt också. Kundactions (`customer-messages.ts`, `approvals.ts`s `decideApproval`) använder uteslutande `verifyCustomerSession`/`requireCustomerAccess`.
+- [x] Återkallad åtkomst upphör att fungera. `verifyCustomerSession()` filtrerar på `revoked_at is null` vid varje anrop (inte cachead över requests).
+- [x] Interna anteckningar och arbetsfiler exponeras inte i kundsvar eller filåtkomst. Inget kundkomponent-fil refererar `project.overview`/`project.notes`. Material: `getSharedMaterialFolderContents` döljer rekursivt varje mapp utan delat innehåll; ett godkännande flippar sitt materialobjekt till delat *innan* raden skapas, aldrig efter.
+- [x] Ett godkännande av version 1 godkänner aldrig version 2. Strukturellt sant, inte bara konvention: en ny granskningsomgång kräver ett nytt materialobjekt och skapar en ny `project_approvals`-rad — det finns ingen kodväg som uppdaterar en gammal rads `material_item_id`.
+- [x] Upprepade klick skapar inte dubbla beslut. `decideApproval` gör ett villkorat `update(...).eq("status","pending")`; ett redan besvarat försök får ett explicit felmeddelande istället för att skriva över beslutet. (Dubbla *begäranden*/projekt vid snabb dubbelklick på ett skapa-formulär skyddas bara av att knappen inaktiveras under `pending`, samma nivå som resten av appens formulär — inget databasnivå-skydd där, men inget nytt läckage.)
+- [x] Misslyckad uppladdning eller notifiering visas och kan hanteras. Materialuppladdningen rapporterar per fil; ett misslyckat godkännandemejl returnerar ett synligt adminfel (raden är redan sparad, mejlet kan inte tystas bort).
+- [ ] Publik demo kan inte påverka riktiga kunddata. Inte tillämpligt än — den publika kundportaldemo som beskrivs i avsnitt 4/Etapp 2 är inte byggd. (De befintliga `/demo/*`-sidorna är obesläktade marknadsföringsdemos för andra branscher, inte kundhubbens demo.)
+- [ ] Kritiska kundflöden fungerar på mobil och med tangentbord. Kräver manuell genomgång på enhet, inte verifierbart genom kodgranskning.
+- [ ] Pilotkundens återkoppling är åtgärdad innan bredare utrullning. Kräver faktisk pilotanvändning och återkoppling.
 
 Skriv meningsfulla tester för behörighet, versionsbundna beslut och kritiska flöden. Följ repots bygg- och verifieringskrav.
 
