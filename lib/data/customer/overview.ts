@@ -1,12 +1,20 @@
 import { requireCustomerAccess } from "@/lib/auth/customer";
 import { getClientProjectsByCustomerId } from "@/lib/data/client-projects";
 import { activeStatusOrder } from "@/lib/project-status";
+import { getAwaitingCustomerCta } from "@/lib/project-phase";
 import type { ClientProjectWithCustomer } from "@/lib/types";
+
+export type CustomerActionItem = {
+  project: ClientProjectWithCustomer;
+  label: string;
+  ctaLabel: string;
+  href: string;
+  due?: string;
+};
 
 export type CustomerOverview = {
   activeProjects: ClientProjectWithCustomer[];
-  latestUpdate: ClientProjectWithCustomer | undefined;
-  nextMilestone: ClientProjectWithCustomer | undefined;
+  actionItems: CustomerActionItem[];
 };
 
 // Pulled out from getCustomerOverview so the admin-side "Kundvy" preview
@@ -19,15 +27,21 @@ export function computeCustomerOverview(projects: ClientProjectWithCustomer[]): 
     .filter((project) => project.status !== "klar")
     .sort((a, b) => activeStatusOrder.indexOf(a.status) - activeStatusOrder.indexOf(b.status));
 
-  const latestUpdate = [...projects]
-    .filter((project) => project.customerUpdateAt)
-    .sort((a, b) => (b.customerUpdateAt ?? "").localeCompare(a.customerUpdateAt ?? ""))[0];
+  const actionItems: CustomerActionItem[] = activeProjects
+    .filter((project) => project.awaitingCustomerLabel)
+    .map((project) => {
+      const cta = getAwaitingCustomerCta(project.awaitingCustomerType);
+      return {
+        project,
+        label: project.awaitingCustomerLabel!,
+        ctaLabel: cta.ctaLabel,
+        href: cta.href(project.id),
+        due: project.awaitingCustomerDue,
+      };
+    })
+    .sort((a, b) => (a.due ?? "9999").localeCompare(b.due ?? "9999"));
 
-  const nextMilestone = [...activeProjects]
-    .filter((project) => project.nextMilestoneDate)
-    .sort((a, b) => (a.nextMilestoneDate ?? "").localeCompare(b.nextMilestoneDate ?? ""))[0];
-
-  return { activeProjects, latestUpdate, nextMilestone };
+  return { activeProjects, actionItems };
 }
 
 export async function getCustomerOverview(customerId: string): Promise<CustomerOverview> {

@@ -7,7 +7,7 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { deleteStoredFiles } from "@/lib/data/files";
 import { storeProjectFile } from "@/lib/actions/project-files";
 import { logProjectActivity } from "@/lib/data/client-projects";
-import type { ClientProjectStatus } from "@/lib/types";
+import type { AwaitingCustomerType, ClientProjectStatus } from "@/lib/types";
 
 export type ClientProjectFormState = { error?: string } | undefined;
 
@@ -20,12 +20,36 @@ const statusLabels: Record<ClientProjectStatus, string> = {
 };
 
 const VALID_STATUSES = Object.keys(statusLabels) as ClientProjectStatus[];
+const VALID_AWAITING_TYPES: AwaitingCustomerType[] = ["material", "message", "project"];
+
+// "Uppstart, Designarbete, Din återkoppling" -> ["Uppstart", "Designarbete", "Din återkoppling"].
+// Empty input means no phase indicator for this project.
+function parsePhaseLabels(raw: FormDataEntryValue | null): string[] | null {
+  if (typeof raw !== "string") return null;
+  const labels = raw
+    .split(",")
+    .map((label) => label.trim())
+    .filter(Boolean);
+  return labels.length > 0 ? labels : null;
+}
 
 function parseClientProjectForm(formData: FormData) {
   const statusRaw = String(formData.get("status") ?? "");
   const status = VALID_STATUSES.includes(statusRaw as ClientProjectStatus)
     ? (statusRaw as ClientProjectStatus)
     : undefined;
+
+  const phaseLabels = parsePhaseLabels(formData.get("phaseLabels"));
+  const phaseCurrentRaw = Number(formData.get("phaseCurrent"));
+  const phaseCurrent = phaseLabels && Number.isInteger(phaseCurrentRaw) ? Math.min(Math.max(phaseCurrentRaw, 0), phaseLabels.length - 1) : null;
+
+  const awaitingCustomerLabel = String(formData.get("awaitingCustomerLabel") ?? "").trim() || null;
+  const awaitingTypeRaw = String(formData.get("awaitingCustomerType") ?? "");
+  const awaitingCustomerType = awaitingCustomerLabel
+    ? VALID_AWAITING_TYPES.includes(awaitingTypeRaw as AwaitingCustomerType)
+      ? awaitingTypeRaw
+      : "project"
+    : null;
 
   return {
     title: String(formData.get("title") ?? "").trim(),
@@ -37,6 +61,12 @@ function parseClientProjectForm(formData: FormData) {
     customer_update: String(formData.get("customerUpdate") ?? "").trim() || null,
     next_milestone_label: String(formData.get("nextMilestoneLabel") ?? "").trim() || null,
     next_milestone_date: String(formData.get("nextMilestoneDate") ?? "").trim() || null,
+    next_milestone_delivered: formData.get("nextMilestoneDelivered") === "on",
+    phase_labels: phaseLabels,
+    phase_current: phaseCurrent,
+    awaiting_customer_label: awaitingCustomerLabel,
+    awaiting_customer_type: awaitingCustomerType,
+    awaiting_customer_due: String(formData.get("awaitingCustomerDue") ?? "").trim() || null,
     ...(status ? { status } : {}),
   };
 }

@@ -1,4 +1,5 @@
 import type {
+  AwaitingCustomerType,
   ClientProject,
   ClientProjectListItem,
   ClientProjectWithCustomer,
@@ -22,6 +23,12 @@ type ClientProjectRow = {
   customer_update_at: string | null;
   next_milestone_label: string | null;
   next_milestone_date: string | null;
+  next_milestone_delivered: boolean | null;
+  phase_labels: string[] | null;
+  phase_current: number | null;
+  awaiting_customer_label: string | null;
+  awaiting_customer_type: string | null;
+  awaiting_customer_due: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -40,6 +47,12 @@ function toClientProject(row: ClientProjectRow): ClientProject {
     customerUpdateAt: row.customer_update_at ?? undefined,
     nextMilestoneLabel: row.next_milestone_label ?? undefined,
     nextMilestoneDate: row.next_milestone_date ?? undefined,
+    nextMilestoneDelivered: row.next_milestone_delivered ?? false,
+    phaseLabels: row.phase_labels && row.phase_labels.length > 0 ? row.phase_labels : undefined,
+    phaseCurrent: row.phase_current ?? undefined,
+    awaitingCustomerLabel: row.awaiting_customer_label ?? undefined,
+    awaitingCustomerType: (row.awaiting_customer_type as AwaitingCustomerType | null) ?? undefined,
+    awaitingCustomerDue: row.awaiting_customer_due ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
