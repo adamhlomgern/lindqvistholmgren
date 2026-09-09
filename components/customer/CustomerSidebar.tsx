@@ -3,25 +3,24 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FolderOpen, LayoutDashboard, LogOut, Menu, MessageSquareText, X } from "lucide-react";
+import { BriefcaseBusiness, FolderOpen, LayoutDashboard, LogOut, Menu, MessageSquareText, X } from "lucide-react";
 import { logoutCustomer } from "@/lib/actions/customer-auth";
 
-// "Projekt" isn't here yet — that route doesn't exist until Etapp 1.4.
-// Structured the same way as AdminSidebar so adding it later is a one-line
-// change, not a rewrite.
 const navItems = [
   { href: "/kund", label: "Översikt", icon: LayoutDashboard },
+  { href: "/kund/projekt", label: "Projekt", icon: BriefcaseBusiness },
   { href: "/kund/meddelanden", label: "Meddelanden", icon: MessageSquareText },
   { href: "/kund/material", label: "Material", icon: FolderOpen },
 ];
 
 function isActive(pathname: string, href: string) {
+  if (href === "/kund") return pathname === "/kund";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-type SidebarProps = { companyName: string; hasUnreadMessages: boolean };
+type SidebarProps = { companyName: string; unreadMessageCount: number };
 
-export function CustomerSidebar({ companyName, hasUnreadMessages }: SidebarProps) {
+export function CustomerSidebar({ companyName, unreadMessageCount }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -52,7 +51,7 @@ export function CustomerSidebar({ companyName, hasUnreadMessages }: SidebarProps
           <p className="mt-0.5 truncate text-xs text-stone/70">{companyName}</p>
         </div>
         <nav className="flex flex-1 flex-col px-3 py-5">
-          <NavLinks pathname={pathname} size="sm" hasUnreadMessages={hasUnreadMessages} />
+          <NavLinks pathname={pathname} size="sm" unreadMessageCount={unreadMessageCount} />
         </nav>
         <div className="shrink-0 border-t border-bone/10 px-3 py-3">
           <form action={logoutCustomer}>
@@ -76,8 +75,10 @@ export function CustomerSidebar({ companyName, hasUnreadMessages }: SidebarProps
         >
           <span className="relative">
             <Menu size={20} strokeWidth={2} />
-            {hasUnreadMessages && (
-              <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-coral" aria-hidden />
+            {unreadMessageCount > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[10px] font-semibold text-charcoal">
+                {unreadMessageCount}
+              </span>
             )}
           </span>
           <span className="font-display text-sm font-bold">{currentLabel}</span>
@@ -115,7 +116,7 @@ export function CustomerSidebar({ companyName, hasUnreadMessages }: SidebarProps
         </div>
 
         <nav className="flex flex-1 flex-col px-4 py-5">
-          <NavLinks pathname={pathname} size="lg" onNavigate={() => setOpen(false)} hasUnreadMessages={hasUnreadMessages} />
+          <NavLinks pathname={pathname} size="lg" onNavigate={() => setOpen(false)} unreadMessageCount={unreadMessageCount} />
         </nav>
 
         <div className="shrink-0 border-t border-bone/10 px-4 py-4">
@@ -138,12 +139,12 @@ function NavLinks({
   pathname,
   size,
   onNavigate,
-  hasUnreadMessages,
+  unreadMessageCount,
 }: {
   pathname: string;
   size: "sm" | "lg";
   onNavigate?: () => void;
-  hasUnreadMessages: boolean;
+  unreadMessageCount: number;
 }) {
   const sizeClasses = size === "sm" ? "h-11 px-3 text-sm gap-3" : "px-4 py-3.5 text-base gap-3";
 
@@ -152,7 +153,7 @@ function NavLinks({
       {navItems.map((item) => {
         const active = isActive(pathname, item.href);
         const Icon = item.icon;
-        const showUnreadDot = hasUnreadMessages && item.href === "/kund/meddelanden";
+        const unreadBadge = item.href === "/kund/meddelanden" ? unreadMessageCount : 0;
         return (
           <Link
             key={item.href}
@@ -166,7 +167,11 @@ function NavLinks({
               <Icon size={size === "sm" ? 18 : 20} strokeWidth={2} />
               {item.label}
             </span>
-            {showUnreadDot && <span className="h-2 w-2 shrink-0 rounded-full bg-coral" aria-hidden />}
+            {unreadBadge > 0 && (
+              <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[11px] font-semibold text-coral">
+                {unreadBadge}
+              </span>
+            )}
           </Link>
         );
       })}

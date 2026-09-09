@@ -230,6 +230,11 @@ export type InvoiceWithItems = InvoiceWithCustomer & { items: InvoiceItem[] };
 
 export type ClientProjectStatus = "planerat" | "pagaende" | "vantar_pa_kund" | "pausat" | "klar";
 
+// What kind of action the customer needs to take, if any — decides the
+// call-to-action label and link on the portal overview (see
+// lib/project-phase.ts's awaitingCustomerCta).
+export type AwaitingCustomerType = "material" | "message" | "project";
+
 export type ClientProject = {
   id: string;
   title: string;
@@ -243,6 +248,20 @@ export type ClientProject = {
   customerUpdateAt?: string;
   nextMilestoneLabel?: string;
   nextMilestoneDate?: string;
+  nextMilestoneDelivered: boolean;
+  // Ordered phase names for the project's own progress indicator (e.g.
+  // ["Uppstart", "Designarbete", "Din återkoppling", "Slutleverans"]) and the
+  // 0-based index of the current one. Both unset means no phase indicator is
+  // shown — opt-in per project so it can be skipped for engagement types it
+  // doesn't fit.
+  phaseLabels?: string[];
+  phaseCurrent?: number;
+  // A specific, concrete thing the customer needs to do right now — distinct
+  // from customerUpdate, which is a general status blurb. Unset means
+  // nothing is currently awaiting the customer on this project.
+  awaitingCustomerLabel?: string;
+  awaitingCustomerType?: AwaitingCustomerType;
+  awaitingCustomerDue?: string;
   createdAt: string;
   updatedAt: string;
 };

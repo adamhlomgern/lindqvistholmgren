@@ -38,27 +38,47 @@ export async function getCustomerMessages(customerId: string): Promise<CustomerM
   return (data ?? []).map(toCustomerMessage);
 }
 
-// Used for the customer sidebar's unread badge — cheapest possible query,
-// just the one timestamp, compared against customer_members.last_read_at
-// (see markMessagesRead in lib/actions/customer-messages.ts).
-export async function getLatestAdminMessageAt(customerId: string): Promise<string | undefined> {
+// Latest N messages, newest first — for the compact preview on the
+// portal overview (getCustomerMessages is oldest-first, meant for the full
+// chat thread instead).
+export async function getLatestCustomerMessages(customerId: string, limit: number): Promise<CustomerMessage[]> {
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase
     .from("customer_messages")
-    .select("created_at")
+    .select("*")
     .eq("customer_id", customerId)
-    .eq("author_role", "admin")
     .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle();
+    .limit(limit);
 
   if (error) {
-    console.error("[getLatestAdminMessageAt] Supabase-fråga misslyckades", error);
-    return undefined;
+    console.error("[getLatestCustomerMessages] Supabase-fråga misslyckades", error);
+    return [];
   }
 
-  return data?.created_at ?? undefined;
+  return (data ?? []).map(toCustomerMessage);
 }
+
+// Actual unread count for the sidebar badge — every admin message newer
+// than the customer's last_read_at (or all of them, if they've never read
+// any yet).
+export async function getUnreadMessageCount(customerId: string, lastReadAt: string | null): Promise<number> {
+  const supabase = createServiceRoleClient();
+  let query = supabase
+    .from("customer_messages")
+    .select("*", { count: "exact", head: true })
+    .eq("customer_id", customerId)
+    .eq("author_role", "admin");
+  if (lastReadAt) query = query.gt("created_at", lastReadAt);
+  const { count, error } = await query;
+
+  if (error) {
+    console.error("[getUnreadMessageCount] Supabase-fråga misslyckades", error);
+    return 0;
+  }
+
+  return count ?? 0;
+}
+
 
 export type CustomerMessageThread = {
   customerId: string;

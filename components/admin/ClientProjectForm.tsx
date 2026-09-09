@@ -2,7 +2,7 @@
 
 import { useActionState, useRef, useState, type ReactNode } from "react";
 import { Plus, Upload, X } from "lucide-react";
-import type { BillingEntity, ClientProjectStatus, ClientProjectWithCustomer, Customer } from "@/lib/types";
+import type { AwaitingCustomerType, BillingEntity, ClientProjectStatus, ClientProjectWithCustomer, Customer } from "@/lib/types";
 import { Select } from "@/components/ui/Select";
 import {
   createClientProject,
@@ -19,6 +19,12 @@ const statusOptions: { value: ClientProjectStatus; label: string }[] = [
   { value: "pagaende", label: "Pågående" },
   { value: "vantar_pa_kund", label: "Väntar på kund" },
   { value: "pausat", label: "Pausat" },
+];
+
+const awaitingTypeOptions: { value: AwaitingCustomerType; label: string }[] = [
+  { value: "project", label: "Visa projekt" },
+  { value: "material", label: "Ladda upp material" },
+  { value: "message", label: "Öppna meddelande" },
 ];
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -69,6 +75,15 @@ export function ClientProjectForm({
 
   const [tasks, setTasks] = useState<string[]>([]);
   const [taskInput, setTaskInput] = useState("");
+
+  const [phaseLabelsInput, setPhaseLabelsInput] = useState(project?.phaseLabels?.join(", ") ?? "");
+  const phaseOptions = phaseLabelsInput
+    .split(",")
+    .map((label) => label.trim())
+    .filter(Boolean);
+  const [phaseCurrent, setPhaseCurrent] = useState(String(project?.phaseCurrent ?? 0));
+
+  const [awaitingCustomerLabel, setAwaitingCustomerLabel] = useState(project?.awaitingCustomerLabel ?? "");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -277,6 +292,30 @@ export function ClientProjectForm({
 
       {isEditing && (
         <Section title="Kundvy">
+          <Field label="Faser (kommaseparerat, valfritt)">
+            <input
+              name="phaseLabels"
+              value={phaseLabelsInput}
+              onChange={(event) => setPhaseLabelsInput(event.target.value)}
+              placeholder="T.ex. Uppstart, Designarbete, Din återkoppling, Slutleverans"
+              className={inputClasses}
+            />
+            <p className="mt-1.5 text-xs text-stone">
+              Lämna tomt för inget faseindikator. Anpassa listan efter det här projektet.
+            </p>
+          </Field>
+          {phaseOptions.length > 0 && (
+            <Field label="Aktuell fas">
+              <Select
+                name="phaseCurrent"
+                value={phaseCurrent}
+                onValueChange={setPhaseCurrent}
+                className={selectClasses}
+                options={phaseOptions.map((label, index) => ({ value: String(index), label }))}
+              />
+            </Field>
+          )}
+
           <Field label="Statusuppdatering till kunden">
             <textarea
               name="customerUpdate"
@@ -286,16 +325,17 @@ export function ClientProjectForm({
               className={inputClasses}
             />
           </Field>
+
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Nästa milstolpe">
               <input
                 name="nextMilestoneLabel"
                 defaultValue={project?.nextMilestoneLabel}
-                placeholder="T.ex. Första utkast klart"
+                placeholder="T.ex. Första designförslaget"
                 className={inputClasses}
               />
             </Field>
-            <Field label="Datum">
+            <Field label="Planerat datum">
               <input
                 type="date"
                 name="nextMilestoneDate"
@@ -304,6 +344,46 @@ export function ClientProjectForm({
               />
             </Field>
           </div>
+          <label className="flex items-center gap-2.5 text-sm text-bone">
+            <input
+              type="checkbox"
+              name="nextMilestoneDelivered"
+              defaultChecked={project?.nextMilestoneDelivered}
+              className="h-4 w-4 rounded border-bone/20 bg-bone/5 accent-emerald"
+            />
+            Milstolpen är levererad — kunden kan granska den
+          </label>
+
+          <Field label="Behöver kunden göra något just nu? (valfritt)">
+            <input
+              name="awaitingCustomerLabel"
+              value={awaitingCustomerLabel}
+              onChange={(event) => setAwaitingCustomerLabel(event.target.value)}
+              placeholder="T.ex. Granska logotypförslaget"
+              className={inputClasses}
+            />
+            <p className="mt-1.5 text-xs text-stone">Lämna tomt om inget väntar på kunden på det här projektet.</p>
+          </Field>
+          {awaitingCustomerLabel.trim() && (
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Field label="Typ av handling">
+                <Select
+                  name="awaitingCustomerType"
+                  defaultValue={project?.awaitingCustomerType ?? "project"}
+                  className={selectClasses}
+                  options={awaitingTypeOptions}
+                />
+              </Field>
+              <Field label="Sista svarsdatum (valfritt)">
+                <input
+                  type="date"
+                  name="awaitingCustomerDue"
+                  defaultValue={project?.awaitingCustomerDue}
+                  className={inputClasses}
+                />
+              </Field>
+            </div>
+          )}
         </Section>
       )}
 
