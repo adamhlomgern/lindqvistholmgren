@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
@@ -41,6 +40,13 @@ export async function matchEmailToCustomer(emailId: string, customerId: string) 
   revalidatePath(`/admin/kunder/${customerId}`);
 }
 
+// No redirect here: this is called both from the inbox list (which just
+// needs the removed row to disappear in place via revalidatePath) and from
+// an email's detail page. Redirecting unconditionally used to force a full
+// navigation back to /admin/inkorg even from the list — the exact page
+// you're already on — which is a slow no-op round trip through the whole
+// route tree for no benefit. The detail page now navigates away itself,
+// client-side, once this resolves (see DeleteEmailButton's redirectTo prop).
 export async function deleteEmail(id: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
@@ -49,9 +55,10 @@ export async function deleteEmail(id: string) {
   await supabase.from("emails").delete().eq("id", id);
 
   revalidatePath("/admin/inkorg");
-  redirect("/admin/inkorg");
 }
 
+// Same reasoning as deleteEmail above — no redirect here, see
+// BlockSenderButton's redirectTo prop for the detail-page navigation.
 export async function blockSender(email: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
@@ -66,7 +73,6 @@ export async function blockSender(email: string) {
   await supabase.from("emails").delete().ilike("from_address", email);
 
   revalidatePath("/admin/inkorg");
-  redirect("/admin/inkorg");
 }
 
 export async function unblockSender(id: string) {

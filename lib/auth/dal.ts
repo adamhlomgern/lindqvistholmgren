@@ -8,7 +8,7 @@ export const verifySession = cache(async () => {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user || user.app_metadata?.role !== "admin") {
     redirect("/admin/login");
   }
 

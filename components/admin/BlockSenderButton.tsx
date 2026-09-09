@@ -1,10 +1,27 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Ban } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { blockSender } from "@/lib/actions/emails";
 
-export function BlockSenderButton({ email }: { email: string }) {
+type BlockSenderButtonProps = {
+  email: string;
+  // Only needed on an email's own detail page — blocking its sender deletes
+  // that email too, leaving you on a page for something that no longer
+  // exists, so navigate away once it resolves. Omit on the list page: the
+  // row(s) just disappear in place via the action's revalidatePath.
+  redirectTo?: string;
+};
+
+export function BlockSenderButton({ email, redirectTo }: BlockSenderButtonProps) {
+  const router = useRouter();
+
+  async function handleConfirm() {
+    await blockSender(email);
+    if (redirectTo) router.push(redirectTo);
+  }
+
   return (
     <ConfirmDialog
       trigger={
@@ -20,7 +37,7 @@ export function BlockSenderButton({ email }: { email: string }) {
       description="Alla mejl från adressen försvinner från dashboarden, och framtida mejl synkas inte längre in."
       confirmLabel="Blockera"
       destructive
-      onConfirm={() => blockSender(email)}
+      onConfirm={handleConfirm}
     />
   );
 }

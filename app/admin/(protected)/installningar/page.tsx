@@ -2,8 +2,11 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Tag } from "@/components/ui/Tag";
 import { DeleteBillingItemButton } from "@/components/admin/DeleteBillingItemButton";
+import { AccountSettingsForm } from "@/components/admin/AccountSettingsForm";
 import { getBillingEntities, getBankAccounts } from "@/lib/data/billing";
 import { deleteBillingEntity, deleteBankAccount } from "@/lib/actions/billing";
+import { verifySession } from "@/lib/auth/dal";
+import { nameFromEmail } from "@/lib/format";
 
 type Props = { searchParams: Promise<{ error?: string }> };
 
@@ -15,13 +18,19 @@ const errorMessages: Record<string, string> = {
 
 export default async function AdminSettingsPage({ searchParams }: Props) {
   const { error } = await searchParams;
-  const [billingEntities, bankAccounts] = await Promise.all([getBillingEntities(), getBankAccounts()]);
+  const [{ user }, billingEntities, bankAccounts] = await Promise.all([
+    verifySession(),
+    getBillingEntities(),
+    getBankAccounts(),
+  ]);
+  const email = user.email ?? "";
+  const displayName = typeof user.user_metadata?.display_name === "string" ? user.user_metadata.display_name : "";
 
   return (
     <div>
       <h1 className="font-display text-2xl font-bold text-bone">Inställningar</h1>
       <p className="mt-1 text-sm text-stone">
-        Firmor och bankkonton som går att välja mellan när du skapar en faktura.
+        Ditt konto, samt firmor och bankkonton som går att välja mellan när du skapar en faktura.
       </p>
 
       {error && (
@@ -30,7 +39,10 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
         </p>
       )}
 
-      <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <h2 className="mt-8 font-display text-lg font-bold text-bone">Ditt konto</h2>
+      <AccountSettingsForm email={email} displayName={displayName} fallbackName={nameFromEmail(email)} />
+
+      <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="font-display text-lg font-bold text-bone">Firmor</h2>
         <Link
           href="/admin/installningar/firmor/ny"

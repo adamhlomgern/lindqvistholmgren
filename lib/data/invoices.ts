@@ -133,6 +133,29 @@ export async function getInvoiceById(id: string): Promise<InvoiceWithItems | nul
   };
 }
 
+// One query for every customer's overdue-invoice count, for the Kunder list
+// page's attention badges — avoids an N+1 of getInvoicesForCustomer per row.
+export async function getOverdueInvoiceCountsByCustomer(): Promise<Map<string, number>> {
+  const counts = new Map<string, number>();
+  const supabase = createServiceRoleClient();
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("invoices")
+    .select("customer_id")
+    .eq("status", "skickad")
+    .lt("due_date", today);
+
+  if (error) {
+    console.error("[getOverdueInvoiceCountsByCustomer] Supabase-fråga misslyckades", error);
+    return counts;
+  }
+
+  for (const row of data ?? []) {
+    counts.set(row.customer_id, (counts.get(row.customer_id) ?? 0) + 1);
+  }
+  return counts;
+}
+
 export async function getInvoicesCount(): Promise<number> {
   const supabase = createServiceRoleClient();
   const { count, error } = await supabase

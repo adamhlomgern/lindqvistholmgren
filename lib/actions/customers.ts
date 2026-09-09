@@ -5,8 +5,11 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
-export type CustomerFormState = { error?: string } | undefined;
+export type CustomerFormState = { error?: string; success?: boolean } | undefined;
 
+// Deliberately excludes "notes" — that field is edited separately via
+// setCustomerNotes (see CustomerNotesCard), so this form can never
+// accidentally wipe it by submitting without a notes input.
 function parseCustomerForm(formData: FormData) {
   return {
     name: String(formData.get("name") ?? "").trim(),
@@ -17,7 +20,6 @@ function parseCustomerForm(formData: FormData) {
     postal_code: String(formData.get("postalCode") ?? "").trim() || null,
     city: String(formData.get("city") ?? "").trim() || null,
     org_number: String(formData.get("orgNumber") ?? "").trim() || null,
-    notes: String(formData.get("notes") ?? "").trim() || null,
   };
 }
 
@@ -43,6 +45,11 @@ export async function createCustomer(
   redirect(`/admin/kunder/${data.id}`);
 }
 
+// No redirect: this now runs inside a slide-over panel that can be opened
+// from any of the customer's tabs, not just the overview — redirecting to
+// the overview on every save would yank you off whichever tab you were
+// actually looking at. The panel closes itself client-side when it sees
+// `success` (see CustomerForm's onSaved).
 export async function updateCustomer(
   id: string,
   _prevState: CustomerFormState,
@@ -66,8 +73,19 @@ export async function updateCustomer(
   }
 
   revalidatePath("/admin/kunder");
-  revalidatePath(`/admin/kunder/${id}`);
-  redirect(`/admin/kunder/${id}`);
+  revalidatePath("/admin/kunder/[id]", "layout");
+  return { success: true };
+}
+
+export async function setCustomerNotes(id: string, notes: string) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await supabase
+    .from("customers")
+    .update({ notes: notes.trim() || null, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  revalidatePath("/admin/kunder/[id]", "layout");
 }
 
 export async function deleteCustomer(id: string) {
