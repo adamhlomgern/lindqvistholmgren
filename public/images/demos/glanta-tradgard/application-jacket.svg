@@ -1,0 +1,20 @@
+<svg width="420" height="420" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
+  <title>Glänta Trädgård — tillämpning: mörk arbetsjacka (placeholder)</title>
+  <rect width="420" height="420" fill="#EFE9DA"/>
+
+  <!-- simplified jacket silhouette -->
+  <path
+    d="M150 60 L170 40 L250 40 L270 60 L340 100 L320 150 L290 135 L290 380 L130 380 L130 135 L100 150 L80 100 Z"
+    fill="#1C1F1D"
+  />
+  <path d="M170 40 L210 90 L250 40" fill="none" stroke="#33362f" stroke-width="4"/>
+
+  <!-- logo on the chest, light-on-dark for contrast -->
+  <g transform="translate(178,150) scale(0.42)">
+    <path d="M151.4 161.3 A80 80 0 1 1 151.4 38.7" fill="none" stroke="#F3ECD9" stroke-width="26" stroke-linecap="round"/>
+    <circle cx="173" cy="100" r="12" fill="#D3A24B"/>
+  </g>
+  <text x="152" y="235" font-family="Georgia, 'Times New Roman', serif" font-size="17" fill="#F3ECD9">Glänta Trädgård</text>
+
+  <text x="24" y="404" font-family="Arial, sans-serif" font-size="13" fill="#6B7A6D">Tillämpning — arbetsjacka (placeholder)</text>
+</svg>

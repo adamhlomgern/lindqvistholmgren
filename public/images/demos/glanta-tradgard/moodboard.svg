@@ -1,0 +1,29 @@
+<svg width="600" height="360" viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg">
+  <title>Glänta Trädgård — moodboard: färg, typografi, referenser (placeholder)</title>
+  <rect width="600" height="360" fill="#F3ECD9"/>
+
+  <rect x="24" y="24" width="160" height="150" fill="#2F4A38"/>
+  <text x="34" y="160" font-family="Arial, sans-serif" font-size="13" fill="#F3ECD9">Skogsgrönt</text>
+
+  <rect x="196" y="24" width="160" height="70" fill="#D3A24B"/>
+  <text x="206" y="60" font-family="Arial, sans-serif" font-size="13" fill="#2F4A38">Dämpad gul</text>
+
+  <rect x="196" y="104" width="160" height="70" fill="#F8F3E6" stroke="#D8CBA8" stroke-width="1"/>
+  <text x="206" y="140" font-family="Arial, sans-serif" font-size="13" fill="#2F4A38">Varm benvit</text>
+
+  <rect x="368" y="24" width="208" height="150" fill="#FFFFFF" stroke="#D8CBA8" stroke-width="1"/>
+  <text x="384" y="70" font-family="Georgia, 'Times New Roman', serif" font-size="30" fill="#2F4A38">Aa Gg</text>
+  <text x="384" y="110" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#2F4A38">Glänta Trädgård</text>
+  <text x="384" y="140" font-family="Arial, sans-serif" font-size="12" letter-spacing="1" fill="#6B7A6D">RUBRIK / BRÖDTEXT</text>
+
+  <rect x="24" y="196" width="552" height="140" fill="#EAE1C7" stroke="#D8CBA8" stroke-width="1"/>
+  <g transform="translate(60,230)" stroke="#4C6355" stroke-width="3" fill="none" opacity="0.7">
+    <path d="M0 60 Q 20 0 40 60" />
+    <path d="M50 60 Q 70 10 90 60" />
+    <path d="M100 60 Q 120 -5 140 60" />
+  </g>
+  <text x="240" y="270" font-family="Arial, sans-serif" font-size="13" fill="#4C6355">
+    Varmt, kunnigt, genomarbetat — som en trädgård man tagit sig tid för.
+  </text>
+  <text x="240" y="295" font-family="Arial, sans-serif" font-size="13" fill="#4C6355">Referenser: naturmaterial, handskrivna etiketter, tidig morgondagg.</text>
+</svg>

@@ -4,17 +4,22 @@ import { Card } from "@/components/ui/Card";
 import { formatRelativeSv } from "@/lib/format";
 import type { CustomerMessage } from "@/lib/types";
 
-type Props = { messages: CustomerMessage[] };
+// hrefBase defaults to the real portal's own prefix — the public demo
+// passes its own subtree so "Öppna meddelande" stays inside the demo.
+type Props = { messages: CustomerMessage[]; hrefBase?: string };
 
 // A compact preview, not the full thread — "Öppna meddelande" always goes
 // to the real chat. An unread message here doesn't imply the customer must
 // act (that's what ActionItemsSection is for); it's just new information.
-export function MessagesPreviewCard({ messages }: Props) {
+export function MessagesPreviewCard({ messages, hrefBase = "/kund" }: Props) {
   return (
     <Card>
       <div className="flex items-center justify-between">
         <h3 className="font-display text-sm font-bold text-bone">Senaste meddelanden</h3>
-        <Link href="/kund/meddelanden" className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline">
+        <Link
+          href={`${hrefBase}/meddelanden`}
+          className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline"
+        >
           Öppna meddelande
           <ArrowRight size={12} strokeWidth={2.5} />
         </Link>
