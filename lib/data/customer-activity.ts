@@ -1,4 +1,4 @@
-import type { CustomerMaterial, CustomerMessage } from "@/lib/types";
+import type { CustomerMessage, MaterialItem } from "@/lib/types";
 
 export type CustomerActivityEntry = {
   id: string;
@@ -13,7 +13,7 @@ export type CustomerActivityEntry = {
 export function buildCustomerActivity(
   customerId: string,
   messages: CustomerMessage[],
-  materials: CustomerMaterial[],
+  materials: MaterialItem[],
   limit = 6,
 ): CustomerActivityEntry[] {
   const messageEntries: CustomerActivityEntry[] = messages.map((message) => ({

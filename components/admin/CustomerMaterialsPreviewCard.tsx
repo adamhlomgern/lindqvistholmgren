@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { ArrowUpRight, File as FileIcon } from "lucide-react";
 import { Card } from "@/components/ui/Card";
-import type { CustomerMaterial } from "@/lib/types";
+import type { MaterialItem } from "@/lib/types";
 
 export function CustomerMaterialsPreviewCard({
   customerId,
   materials,
 }: {
   customerId: string;
-  materials: CustomerMaterial[];
+  materials: MaterialItem[];
 }) {
   const recent = materials.slice(0, 3);
 

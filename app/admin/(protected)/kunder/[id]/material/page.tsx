@@ -1,15 +1,24 @@
-import { getCustomerMaterials } from "@/lib/data/customer-materials";
-import { CustomerMaterialsCard } from "@/components/admin/CustomerMaterialsCard";
+import { getMaterialFolderContents, getMaterialFolderTree } from "@/lib/data/material";
+import { MaterialWorkspace } from "@/components/admin/MaterialWorkspace";
 
 type Props = { params: Promise<{ id: string }> };
 
-export default async function CustomerMaterialTab({ params }: Props) {
+export default async function CustomerMaterialRoute({ params }: Props) {
   const { id } = await params;
-  const materials = await getCustomerMaterials(id);
+  const [{ folders, items }, folderTree] = await Promise.all([
+    getMaterialFolderContents(id, null),
+    getMaterialFolderTree(id),
+  ]);
 
   return (
-    <div className="max-w-2xl">
-      <CustomerMaterialsCard customerId={id} materials={materials} />
-    </div>
+    <MaterialWorkspace
+      customerId={id}
+      basePath={`/admin/kunder/${id}/material`}
+      currentFolderId={null}
+      breadcrumb={[]}
+      folders={folders}
+      items={items}
+      folderTree={folderTree}
+    />
   );
 }

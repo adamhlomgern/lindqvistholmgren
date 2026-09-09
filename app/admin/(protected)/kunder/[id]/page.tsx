@@ -1,7 +1,7 @@
 import { getCustomerById } from "@/lib/data/customers";
 import { getClientProjectsByCustomerId } from "@/lib/data/client-projects";
 import { getCustomerMessages } from "@/lib/data/customer-messages";
-import { getCustomerMaterials } from "@/lib/data/customer-materials";
+import { getRecentMaterialItems } from "@/lib/data/material";
 import { getCustomerMemberStatusCounts } from "@/lib/data/customer-members";
 import { buildCustomerActivity } from "@/lib/data/customer-activity";
 import { activeStatusOrder } from "@/lib/project-status";
@@ -32,7 +32,7 @@ export default async function CustomerOverviewTab({ params, searchParams }: Prop
     getCustomerById(id),
     getClientProjectsByCustomerId(id),
     getCustomerMessages(id),
-    getCustomerMaterials(id),
+    getRecentMaterialItems(id, 20),
     getCustomerMemberStatusCounts(id),
   ]);
 

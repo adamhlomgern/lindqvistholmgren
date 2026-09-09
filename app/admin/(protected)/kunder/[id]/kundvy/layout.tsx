@@ -8,7 +8,7 @@ import { getCustomerById } from "@/lib/data/customers";
 type Props = { children: ReactNode; params: Promise<{ id: string }> };
 
 // Renders the actual components/customer/* views with admin-fetched data —
-// not a separate mockup — so if OverviewPage/MessagesPanel/MaterialsPanel
+// not a separate mockup — so if OverviewPage/MessagesPanel/MaterialLibrary
 // ever leak something they shouldn't, this preview shows it too instead of
 // silently diverging from what customers really see.
 export default async function CustomerKundvyLayout({ children, params }: Props) {
