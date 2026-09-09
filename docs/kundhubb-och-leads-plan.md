@@ -233,12 +233,12 @@ Klart när första användarflödet och dess data-/behörighetsbehov är tydligt
 - [x] Visa kundens projekt med utvalt kundsynligt innehåll. `/kund/projekt` + `/kund/projekt/[id]`.
 - [x] Lägg till kundsynlighet och skyddad åtkomst för filer. Löst via materialbiblioteket (`material_items.visibility`) istället för den ursprungligen planerade `project_files.visible_to_customer`-flaggan — samma syfte, större lösning; se separat plan nedan.
 - [x] Stöd uppladdning, förhandsvisning och nedladdning. Byggt som del av materialbiblioteket — admin laddar upp/organiserar, kunden förhandsgranskar och laddar ner. Kunden kan inte själv ladda upp material (medvetet, biblioteket är admin-kurerat).
-- [ ] Skapa versionsbundna granskningsbegäranden.
-- [ ] Implementera godkänn eller begär ändringar med sparad beslutshistorik.
+- [x] Skapa versionsbundna granskningsbegäranden. Godkännanden byggt 9 sep 2026: `project_approvals` kopplat till ett specifikt materialobjekt — en ny granskningsomgång är alltid ett nytt objekt + en ny rad, aldrig en uppdatering av en gammal.
+- [x] Implementera godkänn eller begär ändringar med sparad beslutshistorik. Skyddat mot dubbla beslut via ett villkorat `status='pending'`-villkor på uppdateringen, inte bara en avstängd knapp.
 - [x] Lägg till projektanknutna meddelanden. Beslut 9 sep 2026: en tråd per kundföretag (befintlig `customer_messages`) räcker för v1 med pilotkunden snarare än en tråd per projekt — omvärderas om/när flera parallella projekt blir vanligt.
 - [x] Lägg till adminförhandsgranskning av kundvyn. Byggt för Material och Meddelanden (`kundvy/material`, `kundvy/meddelanden`); Översikt/Projekt saknar ännu en motsvarande förhandsgranskning.
-- [ ] Bygg mejlnotiser med direktlänk till rätt uppgift. Endast inbjudningsmejlet finns idag.
-- [ ] Hantera tomma lägen, laddning, fel och utgångna länkar.
+- [x] Bygg mejlnotiser med direktlänk till rätt uppgift. Inbjudningsmejl + nytt godkännandemejl (direktlänk till `/kund/projekt/[id]/godkannande/[id]`), båda genom samma varumärkesmall. Inga andra händelser mejlar ännu (t.ex. nytt meddelande) — inte efterfrågat.
+- [x] Hantera tomma lägen, laddning, fel och utgångna länkar. Tomma lägen och laddning (`loading.tsx`) fanns redan i varje kundvy; utgångna inbjudnings-/återställningslänkar hanteras sedan tidigare i `/kund/valkommen`. Det som saknades var en riktig felgräns: la till `app/kund/(protected)/error.tsx` (branded, med `retry()` — inte `reset()`, som är den stabila återhämtningsprop:en i denna Next-version) och `not-found.tsx` för trasiga/gamla länkar, istället för Next:s vita standardsida.
 - [ ] Prova hela flödet på mobil med pilotkunden.
 
 Klart när kunden själv kan hitta sitt projekt, lämna material, ge feedback och godkänna rätt version.
