@@ -90,10 +90,11 @@ export async function createApprovalRequest(
       recipients.map((to) =>
         sendBrandedEmail({
           to,
-          subject: `Ny leverans att granska – ${project?.title ?? "ert projekt"}`,
-          heading: "Ny leverans redo för granskning",
-          bodyHtml: `"${title}" är redo att granskas${message ? `: ${message}` : "."} Klicka nedan för att titta och godkänna eller begära ändringar.`,
-          ctaLabel: "Granska och godkänn",
+          subject: `"${title}" är redo att granska – ${project?.title ?? "ert projekt"}`,
+          heading: `${title} är redo`,
+          bodyHtml:
+            "Nu finns ett nytt förslag att titta på i kundhubben. Ta en titt och godkänn förslaget eller lämna feedback om du vill att vi ändrar något.",
+          ctaLabel: "Visa förslaget",
           ctaUrl,
         }),
       ),
