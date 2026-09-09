@@ -14,6 +14,23 @@ async function deleteAttachmentFilesForEmails(supabase: ReturnType<typeof create
   await deleteStoredFiles((data ?? []).map((row) => row.storage_path));
 }
 
+// Remembers the message_id of every email deleted from the admin, so the
+// next IMAP sync (lib/email/imap.ts) never pulls it back in — including
+// after a full resync triggered by an IMAP uidValidity reset, which would
+// otherwise reimport everything from scratch.
+async function tombstoneEmails(supabase: ReturnType<typeof createServiceRoleClient>, emailIds: string[]) {
+  if (emailIds.length === 0) return;
+  const { data } = await supabase.from("emails").select("message_id").in("id", emailIds);
+  const rows = (data ?? [])
+    .map((row) => row.message_id)
+    .filter((messageId): messageId is string => !!messageId)
+    .map((message_id) => ({ message_id }));
+  if (rows.length === 0) return;
+  await supabase
+    .from("deleted_email_message_ids")
+    .upsert(rows, { onConflict: "message_id", ignoreDuplicates: true });
+}
+
 export async function matchEmailToCustomer(emailId: string, customerId: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
@@ -33,6 +50,7 @@ export async function matchEmailToCustomer(emailId: string, customerId: string) 
 export async function deleteEmail(id: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
+  await tombstoneEmails(supabase, [id]);
   await deleteAttachmentFilesForEmails(supabase, [id]);
   await supabase.from("emails").delete().eq("id", id);
 
@@ -49,10 +67,9 @@ export async function blockSender(email: string) {
   // Also clear out anything already synced from this sender — blocking
   // implies "I don't want to see their mail", not just "stop future mail".
   const { data: existing } = await supabase.from("emails").select("id").ilike("from_address", email);
-  await deleteAttachmentFilesForEmails(
-    supabase,
-    (existing ?? []).map((row) => row.id),
-  );
+  const existingIds = (existing ?? []).map((row) => row.id);
+  await tombstoneEmails(supabase, existingIds);
+  await deleteAttachmentFilesForEmails(supabase, existingIds);
   await supabase.from("emails").delete().ilike("from_address", email);
 
   revalidatePath("/admin/inkorg");

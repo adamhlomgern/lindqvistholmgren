@@ -10,6 +10,7 @@ import { getMessageThreadsForAdmin } from "@/lib/data/customer-messages";
 import { matchEmailToCustomer, deleteEmail, unblockSender } from "@/lib/actions/emails";
 import { DeleteEmailButton } from "@/components/admin/DeleteEmailButton";
 import { BlockSenderButton } from "@/components/admin/BlockSenderButton";
+import { CollapsibleSection } from "@/components/admin/CollapsibleSection";
 import { formatDateSv, formatRelativeSv } from "@/lib/format";
 import { Select } from "@/components/ui/Select";
 
@@ -172,8 +173,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
 
       {activeTab === "mejl" && blockedSenders.length > 0 && (
         <div className="mt-10">
-          <h2 className="font-display text-lg font-bold text-bone">Blockerade avsändare</h2>
-          <div className="mt-4 flex flex-col gap-2">
+          <CollapsibleSection label="Blockerade avsändare" count={blockedSenders.length}>
             {blockedSenders.map((sender) => (
               <div
                 key={sender.id}
@@ -190,7 +190,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                 </form>
               </div>
             ))}
-          </div>
+          </CollapsibleSection>
         </div>
       )}
     </div>
