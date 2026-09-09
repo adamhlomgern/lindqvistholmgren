@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { MaterialDeliveryStatus, MaterialFolder, MaterialItem, MaterialItemType, MaterialVisibility } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { tryDecryptText } from "@/lib/crypto/secrets";
@@ -95,7 +96,11 @@ async function withFileSignedUrls(
   );
 }
 
-async function getAllFolders(customerId: string): Promise<MaterialFolder[]> {
+// cache()-wrapped so the handful of customer-facing pages that each need
+// "every folder this customer has" (breadcrumb, shared-content check, tree)
+// share one query per request instead of one each — same pattern as
+// verifyCustomerSession in lib/auth/customer.ts.
+const getAllFolders = cache(async (customerId: string): Promise<MaterialFolder[]> => {
   const supabase = createServiceRoleClient();
   const { data, error } = await supabase
     .from("material_folders")
@@ -109,7 +114,7 @@ async function getAllFolders(customerId: string): Promise<MaterialFolder[]> {
   }
 
   return (data ?? []).map(toMaterialFolder);
-}
+});
 
 export type MaterialFolderTreeNode = MaterialFolder & { children: MaterialFolderTreeNode[] };
 
@@ -187,7 +192,12 @@ export async function getMaterialFolderContents(customerId: string, folderId: st
 // internal-only folder — even one with internal-only descendants — never
 // shows up or resolves for a customer, whether via navigation or a guessed
 // URL.
-async function computeFoldersWithSharedContent(customerId: string) {
+// cache()-wrapped for the same reason as getAllFolders above — this is
+// called separately by isFolderSharedWithCustomer and
+// getSharedMaterialFolderContents on every folder navigation, and would
+// otherwise re-fetch every folder plus every shared item for the customer
+// twice per click.
+const computeFoldersWithSharedContent = cache(async (customerId: string) => {
   const supabase = createServiceRoleClient();
   const [allFolders, { data: sharedItemRows, error: itemError }] = await Promise.all([
     getAllFolders(customerId),
@@ -215,7 +225,7 @@ async function computeFoldersWithSharedContent(customerId: string) {
   allFolders.forEach(computeHasSharedContent);
 
   return { supabase, childrenOf, hasSharedContent, sharedItems };
-}
+});
 
 // The one function customer-facing pages call — folders that contain no
 // shared item anywhere in their subtree never show up, so the customer
@@ -241,48 +251,28 @@ export async function isFolderSharedWithCustomer(customerId: string, folderId: s
   return hasSharedContent.get(folderId) ?? false;
 }
 
-// One query, grouped in JS — the customer folder cards' "N objekt" count,
-// without an N+1 per folder shown.
+// Derived from the same cached shared-items fetch computeFoldersWithSharedContent
+// already did — the customer folder cards' "N objekt" count, without its own
+// round trip to Supabase.
 export async function getSharedItemCountsByFolder(customerId: string): Promise<Map<string, number>> {
-  const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("material_items")
-    .select("folder_id")
-    .eq("customer_id", customerId)
-    .eq("visibility", "shared")
-    .not("folder_id", "is", null);
+  const { sharedItems } = await computeFoldersWithSharedContent(customerId);
 
   const counts = new Map<string, number>();
-  if (error) {
-    console.error("[getSharedItemCountsByFolder] Supabase-fråga misslyckades", error);
-    return counts;
-  }
-
-  for (const row of data ?? []) {
-    const folderId = row.folder_id as string;
-    counts.set(folderId, (counts.get(folderId) ?? 0) + 1);
+  for (const item of sharedItems) {
+    if (!item.folderId) continue;
+    counts.set(item.folderId, (counts.get(item.folderId) ?? 0) + 1);
   }
   return counts;
 }
 
 // Pinned + shared items across every folder, for the customer library's
-// home-page "fästa guider/leveranser" section.
+// home-page "fästa guider/leveranser" section — derived from the same
+// cached shared-items fetch as getSharedMaterialFolderContents, rather than
+// a separate query.
 export async function getPinnedSharedMaterial(customerId: string): Promise<(MaterialItem & { downloadUrl: string | null })[]> {
-  const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("material_items")
-    .select("*")
-    .eq("customer_id", customerId)
-    .eq("visibility", "shared")
-    .eq("pinned", true)
-    .order("position");
-
-  if (error) {
-    console.error("[getPinnedSharedMaterial] Supabase-fråga misslyckades", error);
-    return [];
-  }
-
-  return withFileSignedUrls(supabase, (data ?? []).map(toMaterialItem));
+  const { supabase, sharedItems } = await computeFoldersWithSharedContent(customerId);
+  const pinned = sharedItems.filter((item) => item.pinned).sort((a, b) => a.position - b.position);
+  return withFileSignedUrls(supabase, pinned);
 }
 
 // Flat, newest-first — used by the admin customer overview's preview card
