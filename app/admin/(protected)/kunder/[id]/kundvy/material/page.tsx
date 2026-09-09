@@ -1,11 +1,24 @@
-import { getCustomerMaterials } from "@/lib/data/customer-materials";
-import { MaterialsPanel } from "@/components/customer/MaterialsPanel";
+import { getPinnedSharedMaterial, getSharedItemCountsByFolder, getSharedMaterialFolderContents } from "@/lib/data/material";
+import { MaterialLibrary } from "@/components/customer/MaterialLibrary";
 
 type Props = { params: Promise<{ id: string }> };
 
 export default async function CustomerKundvyMaterialTab({ params }: Props) {
   const { id } = await params;
-  const materials = await getCustomerMaterials(id);
+  const [{ folders, items }, folderItemCounts, pinnedItems] = await Promise.all([
+    getSharedMaterialFolderContents(id, null),
+    getSharedItemCountsByFolder(id),
+    getPinnedSharedMaterial(id),
+  ]);
 
-  return <MaterialsPanel materials={materials} />;
+  return (
+    <MaterialLibrary
+      basePath={`/admin/kunder/${id}/kundvy/material`}
+      breadcrumb={[]}
+      folders={folders}
+      folderItemCounts={folderItemCounts}
+      items={items}
+      pinnedItems={pinnedItems}
+    />
+  );
 }

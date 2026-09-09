@@ -1,10 +1,23 @@
 import { verifyCustomerSession } from "@/lib/auth/customer";
-import { getCustomerMaterials } from "@/lib/data/customer-materials";
-import { MaterialsPanel } from "@/components/customer/MaterialsPanel";
+import { getPinnedSharedMaterial, getSharedItemCountsByFolder, getSharedMaterialFolderContents } from "@/lib/data/material";
+import { MaterialLibrary } from "@/components/customer/MaterialLibrary";
 
-export default async function CustomerMaterialsRoute() {
+export default async function CustomerMaterialRoute() {
   const { customerId } = await verifyCustomerSession();
-  const materials = await getCustomerMaterials(customerId);
+  const [{ folders, items }, folderItemCounts, pinnedItems] = await Promise.all([
+    getSharedMaterialFolderContents(customerId, null),
+    getSharedItemCountsByFolder(customerId),
+    getPinnedSharedMaterial(customerId),
+  ]);
 
-  return <MaterialsPanel materials={materials} />;
+  return (
+    <MaterialLibrary
+      basePath="/kund/material"
+      breadcrumb={[]}
+      folders={folders}
+      folderItemCounts={folderItemCounts}
+      items={items}
+      pinnedItems={pinnedItems}
+    />
+  );
 }

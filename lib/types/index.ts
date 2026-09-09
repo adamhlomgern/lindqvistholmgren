@@ -314,19 +314,51 @@ export type CustomerMessage = {
   createdAt: string;
 };
 
-// A file, a text note, or both — covers logos (file), site login details
-// (note), and anything else a customer might need to reach for later,
-// without a separate "type" field to keep in sync.
-export type CustomerMaterial = {
+export type MaterialItemType = "file" | "instruction" | "link";
+export type MaterialVisibility = "internal" | "shared";
+export type MaterialDeliveryStatus = "draft" | "review" | "final";
+
+export type MaterialFolder = {
   id: string;
   customerId: string;
+  projectId?: string;
+  parentFolderId?: string;
+  name: string;
+  description?: string;
+  position: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+// One row covers all three types — file, instruction and link — so a
+// folder listing is a single query instead of a union of three. Only the
+// fields relevant to `type` are ever populated (see lib/data/material.ts).
+export type MaterialItem = {
+  id: string;
+  customerId: string;
+  projectId?: string;
+  folderId?: string;
+  type: MaterialItemType;
   title: string;
-  note?: string;
+  // Short caption — a file's "usage" note, or a folder-intro-style blurb.
+  // Encrypted at rest like the old CustomerMaterial.note (may carry
+  // credentials/API keys an admin pastes in).
+  description?: string;
+  // 'instruction' only — full rich-text HTML, same shape as Article.content.
+  bodyHtml?: string;
+  // 'link' only.
+  url?: string;
+  // 'file' only.
   filename?: string;
   contentType?: string;
   size?: number;
   storagePath?: string;
+  visibility: MaterialVisibility;
+  deliveryStatus: MaterialDeliveryStatus;
+  pinned: boolean;
+  position: number;
   createdAt: string;
+  updatedAt: string;
 };
 
 export type BlockedSender = {
