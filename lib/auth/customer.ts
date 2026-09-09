@@ -22,7 +22,7 @@ export const verifyCustomerSession = cache(async () => {
   const serviceClient = createServiceRoleClient();
   const { data, error } = await serviceClient
     .from("customer_members")
-    .select("id, customer_id")
+    .select("id, customer_id, last_read_at")
     .eq("user_id", user.id)
     .is("revoked_at", null)
     .maybeSingle();
@@ -36,7 +36,12 @@ export const verifyCustomerSession = cache(async () => {
     redirect("/kund/login");
   }
 
-  return { user, membershipId: data.id, customerId: data.customer_id as string };
+  return {
+    user,
+    membershipId: data.id,
+    customerId: data.customer_id as string,
+    lastReadAt: data.last_read_at as string | null,
+  };
 });
 
 // Every customer-facing data/action function calls this first with the

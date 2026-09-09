@@ -50,14 +50,21 @@ type ClientProjectFormProps = {
   customers: Customer[];
   billingEntities: BillingEntity[];
   onCancel?: () => void;
+  initialCustomerId?: string;
 };
 
-export function ClientProjectForm({ project, customers, billingEntities, onCancel }: ClientProjectFormProps) {
+export function ClientProjectForm({
+  project,
+  customers,
+  billingEntities,
+  onCancel,
+  initialCustomerId,
+}: ClientProjectFormProps) {
   const isEditing = Boolean(project);
   const action = isEditing ? updateClientProject.bind(null, project!.id) : createClientProject;
   const [state, formAction, pending] = useActionState<ClientProjectFormState, FormData>(action, undefined);
 
-  const [customerId, setCustomerId] = useState(project?.customerId ?? "");
+  const [customerId, setCustomerId] = useState(project?.customerId ?? initialCustomerId ?? "");
   const selectedCustomer = customers.find((customer) => customer.id === customerId);
 
   const [tasks, setTasks] = useState<string[]>([]);
@@ -267,6 +274,38 @@ export function ClientProjectForm({ project, customers, billingEntities, onCance
           className={inputClasses}
         />
       </Section>
+
+      {isEditing && (
+        <Section title="Kundvy">
+          <Field label="Statusuppdatering till kunden">
+            <textarea
+              name="customerUpdate"
+              defaultValue={project?.customerUpdate}
+              rows={3}
+              placeholder="Vad ser kunden på sin startsida? T.ex. 'Vi jobbar just nu på den nya startsidan och siktar på ett första utkast till fredag.'"
+              className={inputClasses}
+            />
+          </Field>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="Nästa milstolpe">
+              <input
+                name="nextMilestoneLabel"
+                defaultValue={project?.nextMilestoneLabel}
+                placeholder="T.ex. Första utkast klart"
+                className={inputClasses}
+              />
+            </Field>
+            <Field label="Datum">
+              <input
+                type="date"
+                name="nextMilestoneDate"
+                defaultValue={project?.nextMilestoneDate}
+                className={inputClasses}
+              />
+            </Field>
+          </div>
+        </Section>
+      )}
 
       <div className="flex items-center gap-3 border-t border-bone/10 pt-6">
         <button

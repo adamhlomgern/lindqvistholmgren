@@ -1,24 +1,27 @@
 import { verifyCustomerSession } from "@/lib/auth/customer";
 import { getCustomerById } from "@/lib/data/customers";
-import { logoutCustomer } from "@/lib/actions/customer-auth";
+import { getCustomerOverview } from "@/lib/data/customer/overview";
+import { getDefaultBillingEntity } from "@/lib/data/billing";
+import { OverviewPage } from "@/components/customer/OverviewPage";
 
-// Platshållare för kundöversikten — ersätts i Etapp 1.3 ("Vad händer nu?")
-// med behöver-återkoppling/status/milstolpe/senaste uppdatering/snabbåtkomst.
-export default async function CustomerOverviewPage() {
+export default async function CustomerOverviewRoute() {
   const { customerId } = await verifyCustomerSession();
-  const customer = await getCustomerById(customerId);
+  const [customer, overview, defaultContact] = await Promise.all([
+    getCustomerById(customerId),
+    getCustomerOverview(customerId),
+    getDefaultBillingEntity(),
+  ]);
+
+  if (!customer) {
+    return <p className="text-sm text-stone">Kunde inte hitta kunduppgifterna.</p>;
+  }
 
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="font-display text-2xl font-bold text-bone">Vad händer nu?</h1>
-      <p className="text-sm text-stone">
-        Inloggad som {customer?.company ?? customer?.name ?? "kund"}. Den fullständiga översikten byggs i nästa steg.
-      </p>
-      <form action={logoutCustomer} className="mt-4">
-        <button type="submit" className="text-sm text-stone underline underline-offset-2 hover:text-bone">
-          Logga ut
-        </button>
-      </form>
-    </div>
+    <OverviewPage
+      activeProjects={overview.activeProjects}
+      latestUpdate={overview.latestUpdate}
+      nextMilestone={overview.nextMilestone}
+      contact={overview.activeProjects[0]?.assignee ?? defaultContact ?? undefined}
+    />
   );
 }

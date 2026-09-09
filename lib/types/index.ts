@@ -239,6 +239,10 @@ export type ClientProject = {
   notes?: string;
   deadline?: string;
   assigneeEntityId?: string;
+  customerUpdate?: string;
+  customerUpdateAt?: string;
+  nextMilestoneLabel?: string;
+  nextMilestoneDate?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -281,6 +285,30 @@ type StoredFile = {
 
 export type EmailAttachment = StoredFile & { emailId: string };
 export type ProjectFile = StoredFile & { projectId: string };
+
+export type CustomerMessage = {
+  id: string;
+  customerId: string;
+  authorRole: "admin" | "customer";
+  authorLabel: string;
+  body: string;
+  createdAt: string;
+};
+
+// A file, a text note, or both — covers logos (file), site login details
+// (note), and anything else a customer might need to reach for later,
+// without a separate "type" field to keep in sync.
+export type CustomerMaterial = {
+  id: string;
+  customerId: string;
+  title: string;
+  note?: string;
+  filename?: string;
+  contentType?: string;
+  size?: number;
+  storagePath?: string;
+  createdAt: string;
+};
 
 export type BlockedSender = {
   id: string;

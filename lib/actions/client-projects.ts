@@ -34,6 +34,9 @@ function parseClientProjectForm(formData: FormData) {
     deadline: String(formData.get("deadline") ?? "").trim() || null,
     overview: String(formData.get("overview") ?? "").trim() || null,
     notes: String(formData.get("notes") ?? "").trim() || null,
+    customer_update: String(formData.get("customerUpdate") ?? "").trim() || null,
+    next_milestone_label: String(formData.get("nextMilestoneLabel") ?? "").trim() || null,
+    next_milestone_date: String(formData.get("nextMilestoneDate") ?? "").trim() || null,
     ...(status ? { status } : {}),
   };
 }
@@ -67,7 +70,11 @@ export async function createClientProject(
   }
 
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase.from("client_projects").insert(row).select("id").single();
+  const { data, error } = await supabase
+    .from("client_projects")
+    .insert({ ...row, customer_update_at: row.customer_update ? new Date().toISOString() : null })
+    .select("id")
+    .single();
 
   if (error) {
     return { error: `Kunde inte skapa projektet: ${error.message}` };
@@ -109,9 +116,28 @@ export async function updateClientProject(
   }
 
   const supabase = createServiceRoleClient();
+
+  // customer_update_at should only move when the customer-facing text
+  // actually changes, not on every save of the project (deadline, notes,
+  // ...) — otherwise "senast uppdaterat" in the kundportal would be
+  // meaningless. Cheapest way to know that without threading extra state
+  // through the form is to read the current value back first.
+  const { data: existing } = await supabase
+    .from("client_projects")
+    .select("customer_update")
+    .eq("id", id)
+    .maybeSingle();
+  const customerUpdateChanged = (existing?.customer_update ?? null) !== row.customer_update;
+
   const { error } = await supabase
     .from("client_projects")
-    .update({ ...row, updated_at: new Date().toISOString() })
+    .update({
+      ...row,
+      ...(customerUpdateChanged
+        ? { customer_update_at: row.customer_update ? new Date().toISOString() : null }
+        : {}),
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", id);
 
   if (error) {

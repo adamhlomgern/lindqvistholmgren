@@ -41,11 +41,16 @@ export default async function proxy(request: NextRequest) {
       loginUrl.pathname = "/kund/login";
       return NextResponse.redirect(loginUrl);
     }
-    if (user && path === "/kund/login") {
-      const kundUrl = request.nextUrl.clone();
-      kundUrl.pathname = "/kund";
-      return NextResponse.redirect(kundUrl);
-    }
+    // No eager "already logged in, skip the login page" redirect here: unlike
+    // admin's role check below, there's no free signal on the JWT for "is an
+    // active (non-revoked) customer_members row" — only a DB lookup would
+    // tell us that, and verifyCustomerSession() already does it once you
+    // land on a protected page. Redirecting any authenticated user away from
+    // /kund/login caused a redirect loop for anyone logged in as something
+    // other than an active customer (an admin testing the flow, or a
+    // revoked contact): /kund/login -> /kund -> verifyCustomerSession fails
+    // -> /kund/login -> ... A valid customer manually revisiting /kund/login
+    // just sees the form, which is harmless.
     return response;
   }
 
@@ -55,7 +60,7 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (user && isAdminLoginRoute) {
+  if (user && isAdminLoginRoute && user.app_metadata?.role === "admin") {
     const adminUrl = request.nextUrl.clone();
     adminUrl.pathname = "/admin";
     return NextResponse.redirect(adminUrl);
