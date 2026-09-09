@@ -42,8 +42,12 @@ export default async function EmailDetailPage({ params }: Props) {
           <p className="mt-0.5 text-xs text-stone">{formatDateSv(email.receivedAt)}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <BlockSenderButton email={email.fromAddress} />
-          <DeleteEmailButton action={deleteEmail.bind(null, email.id)} subject={email.subject || "(Inget ämne)"} />
+          <BlockSenderButton email={email.fromAddress} redirectTo="/admin/inkorg" />
+          <DeleteEmailButton
+            action={deleteEmail.bind(null, email.id)}
+            subject={email.subject || "(Inget ämne)"}
+            redirectTo="/admin/inkorg"
+          />
         </div>
       </div>
 
