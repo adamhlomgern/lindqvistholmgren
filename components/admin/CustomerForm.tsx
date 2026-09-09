@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, type ReactNode } from "react";
+import { useActionState, useEffect, type ReactNode } from "react";
 import type { Customer } from "@/lib/types";
 import { createCustomer, updateCustomer, type CustomerFormState } from "@/lib/actions/customers";
 
@@ -25,12 +25,24 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-type CustomerFormProps = { customer?: Customer };
+type CustomerFormProps = { customer?: Customer; onSaved?: () => void; onCancel?: () => void };
 
-export function CustomerForm({ customer }: CustomerFormProps) {
+// Notes live on the same "customers" row but are edited separately (see
+// CustomerNotesCard) — keeping them out of this form means the contact/
+// address side panel can never accidentally wipe them by submitting an
+// empty notes field.
+export function CustomerForm({ customer, onSaved, onCancel }: CustomerFormProps) {
   const isEditing = Boolean(customer);
   const action = isEditing ? updateCustomer.bind(null, customer!.id) : createCustomer;
   const [state, formAction, pending] = useActionState<CustomerFormState, FormData>(action, undefined);
+
+  useEffect(() => {
+    if (state?.success) onSaved?.();
+    // onSaved is expected to be a stable callback (or the caller accepts a
+    // re-run on identity change) — omitting it from deps avoids re-firing
+    // this effect on every parent re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
@@ -75,21 +87,29 @@ export function CustomerForm({ customer }: CustomerFormProps) {
           <Field label="Organisationsnummer (valfritt)">
             <input name="orgNumber" defaultValue={customer?.orgNumber} className={inputClasses} />
           </Field>
-          <Field label="Anteckningar">
-            <textarea name="notes" defaultValue={customer?.notes} rows={3} className={inputClasses} />
-          </Field>
         </Section>
       </div>
 
       <div className="flex flex-col gap-3 border-t border-bone/10 pt-6">
         {state?.error && <p className="text-sm text-coral">{state.error}</p>}
-        <button
-          type="submit"
-          disabled={pending}
-          className="self-start rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
-        >
-          {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa kund"}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+          >
+            {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa kund"}
+          </button>
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="text-sm font-medium text-stone transition-colors hover:text-bone"
+            >
+              Avbryt
+            </button>
+          )}
+        </div>
       </div>
     </form>
   );

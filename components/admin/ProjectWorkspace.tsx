@@ -8,6 +8,7 @@ import { ClientProjectForm } from "@/components/admin/ClientProjectForm";
 import { ProjectStatusSelect } from "@/components/admin/ProjectStatusSelect";
 import { DeleteClientProjectButton } from "@/components/admin/DeleteClientProjectButton";
 import { OverviewCard } from "@/components/admin/OverviewCard";
+import { CustomerViewCard } from "@/components/admin/CustomerViewCard";
 import { ProjectFilesSection } from "@/components/admin/ProjectFilesSection";
 import { ProjectChecklist } from "@/components/admin/ProjectChecklist";
 import { NotesCard } from "@/components/admin/NotesCard";
@@ -119,6 +120,7 @@ export function ProjectWorkspace({ project, customers, billingEntities, files, c
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <div className="flex flex-col gap-6 lg:col-span-2">
             <OverviewCard overview={project.overview} onEdit={() => setEditing(true)} />
+            <CustomerViewCard project={project} onEdit={() => setEditing(true)} />
             <ProjectChecklist projectId={project.id} items={checklist} />
             <ProjectFilesSection projectId={project.id} files={files} />
             <NotesCard notes={project.notes} onEdit={() => setEditing(true)} />

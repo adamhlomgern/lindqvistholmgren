@@ -51,24 +51,23 @@ function initialOf(email: string) {
   return email.trim().charAt(0).toUpperCase() || "?";
 }
 
-// There's no separate display-name field on the admin user — derive
-// something readable from the email's local part instead of showing
-// the raw address as the primary line.
-function nameFromEmail(email: string) {
-  const local = email.split("@")[0] ?? "";
-  const words = local.split(/[._-]+/).filter(Boolean);
-  if (words.length === 0) return "Admin";
-  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-}
-
 type SidebarProps = {
   email: string;
+  displayName: string;
   newInquiriesCount: number;
   overdueInvoicesCount: number;
   activeProjectsCount: number;
+  waitingChatCount: number;
 };
 
-export function AdminSidebar({ email, newInquiriesCount, overdueInvoicesCount, activeProjectsCount }: SidebarProps) {
+export function AdminSidebar({
+  email,
+  displayName,
+  newInquiriesCount,
+  overdueInvoicesCount,
+  activeProjectsCount,
+  waitingChatCount,
+}: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   // Starts expanded only when you're already looking at Artiklar/Kategorier/Taggar,
@@ -98,7 +97,13 @@ export function AdminSidebar({ email, newInquiriesCount, overdueInvoicesCount, a
           badgeAccent: "emerald",
         },
         { href: "/admin/kunder", label: "Kunder", icon: Users },
-        { href: "/admin/inkorg", label: "Inkorg", icon: Inbox },
+        {
+          href: "/admin/inkorg",
+          label: "Inkorg",
+          icon: Inbox,
+          badge: waitingChatCount || undefined,
+          badgeAccent: "coral",
+        },
       ],
     },
     {
@@ -158,7 +163,7 @@ export function AdminSidebar({ email, newInquiriesCount, overdueInvoicesCount, a
             onToggleArticles={() => setArticlesExpanded((v) => !v)}
           />
         </nav>
-        <SidebarFooter email={email} size="sm" />
+        <SidebarFooter email={email} displayName={displayName} size="sm" />
       </aside>
 
       <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-bone/10 bg-charcoal/95 px-4 py-3 md:hidden">
@@ -214,7 +219,7 @@ export function AdminSidebar({ email, newInquiriesCount, overdueInvoicesCount, a
           />
         </nav>
 
-        <SidebarFooter email={email} size="lg" onNavigate={() => setOpen(false)} />
+        <SidebarFooter email={email} displayName={displayName} size="lg" onNavigate={() => setOpen(false)} />
       </div>
     </>
   );
@@ -375,10 +380,12 @@ function SubNavLink({
 // part that actually grows — scrolls.
 function SidebarFooter({
   email,
+  displayName,
   size,
   onNavigate,
 }: {
   email: string;
+  displayName: string;
   size: "sm" | "lg";
   onNavigate?: () => void;
 }) {
@@ -387,16 +394,15 @@ function SidebarFooter({
     <div className={`shrink-0 border-t border-bone/10 ${size === "sm" ? "px-3 py-3" : "px-4 py-4"}`}>
       <NavLink item={settingsItem} pathname={pathname} size={size} onNavigate={onNavigate} />
       <div className="mt-2 border-t border-bone/10 pt-2">
-        <AccountMenu email={email} size={size} />
+        <AccountMenu email={email} displayName={displayName} size={size} />
       </div>
     </div>
   );
 }
 
-function AccountMenu({ email, size }: { email: string; size: "sm" | "lg" }) {
+function AccountMenu({ email, displayName, size }: { email: string; displayName: string; size: "sm" | "lg" }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const name = nameFromEmail(email);
 
   useEffect(() => {
     if (!open) return;
@@ -427,10 +433,10 @@ function AccountMenu({ email, size }: { email: string; size: "sm" | "lg" }) {
         }`}
       >
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald/15 text-xs font-bold text-emerald">
-          {initialOf(email)}
+          {initialOf(displayName)}
         </span>
         <span className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-bone">{name}</p>
+          <p className="truncate text-sm font-medium text-bone">{displayName}</p>
           <p className="truncate text-xs text-stone/60">{email}</p>
         </span>
         <ChevronDown

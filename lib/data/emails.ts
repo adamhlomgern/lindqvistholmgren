@@ -77,6 +77,31 @@ export async function getEmailsForCustomer(customerId: string): Promise<Email[]>
   return (data ?? []).map(toEmail);
 }
 
+// One query for every customer's most recent matched email — the Kunder
+// list page's "Senaste kontakt" column folds this together with the latest
+// chat message (see getMessageThreadsForAdmin) to find the true latest
+// contact, whichever channel it came through.
+export async function getLastEmailContactByCustomer(): Promise<Map<string, string>> {
+  const lastContact = new Map<string, string>();
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("emails")
+    .select("customer_id, received_at")
+    .not("customer_id", "is", null)
+    .order("received_at", { ascending: false });
+
+  if (error) {
+    console.error("[getLastEmailContactByCustomer] Supabase-fråga misslyckades", error);
+    return lastContact;
+  }
+
+  for (const row of data ?? []) {
+    const customerId = row.customer_id as string;
+    if (!lastContact.has(customerId)) lastContact.set(customerId, row.received_at);
+  }
+  return lastContact;
+}
+
 export async function getEmailsCount(): Promise<number> {
   const supabase = createServiceRoleClient();
   const { count, error } = await supabase.from("emails").select("*", { count: "exact", head: true });

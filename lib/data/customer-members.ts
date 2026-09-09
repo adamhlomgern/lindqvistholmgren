@@ -50,3 +50,66 @@ export async function getCustomerMembers(customerId: string): Promise<CustomerMe
     }),
   );
 }
+
+export type CustomerMemberStatusCounts = { active: number; invited: number; revoked: number };
+
+// Cheap alternative to getCustomerMembers for callers that only need the
+// active/invited/revoked counts (the workspace header's status pill, the
+// overview's portal summary card) — skips the per-member Admin API email
+// lookup entirely, since none of those call sites ever display an email.
+// This runs in the customer workspace's shared layout, so it fires on every
+// single tab click; the N+1 version was adding a real Admin API round trip
+// per contact to every navigation for no visible benefit there.
+export async function getCustomerMemberStatusCounts(customerId: string): Promise<CustomerMemberStatusCounts> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("customer_members")
+    .select("accepted_at, revoked_at")
+    .eq("customer_id", customerId);
+
+  if (error) {
+    console.error("[getCustomerMemberStatusCounts] Supabase-fråga misslyckades", error);
+    return { active: 0, invited: 0, revoked: 0 };
+  }
+
+  let active = 0;
+  let invited = 0;
+  let revoked = 0;
+  for (const row of data ?? []) {
+    if (row.revoked_at) revoked += 1;
+    else if (row.accepted_at) active += 1;
+    else invited += 1;
+  }
+  return { active, invited, revoked };
+}
+
+export type PortalStatus = "none" | "invited" | "active";
+
+// One query for every customer's portal status — the Kunder list page's
+// "Kundportal" column and its filter, computed for every row at once.
+// Revoked-with-no-other-membership reads as "none" here (matches "Inte
+// inbjuden" in the list — the nuance of a past revocation only matters on
+// the customer's own Åtkomst tab).
+export async function getPortalStatusByCustomerBulk(): Promise<Map<string, PortalStatus>> {
+  const statusByCustomer = new Map<string, PortalStatus>();
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase.from("customer_members").select("customer_id, accepted_at, revoked_at");
+
+  if (error) {
+    console.error("[getPortalStatusByCustomerBulk] Supabase-fråga misslyckades", error);
+    return statusByCustomer;
+  }
+
+  for (const row of data ?? []) {
+    const customerId = row.customer_id as string;
+    const current = statusByCustomer.get(customerId);
+    if (current === "active") continue;
+
+    const rowStatus: PortalStatus = row.revoked_at ? "none" : row.accepted_at ? "active" : "invited";
+    if (rowStatus === "active" || current === undefined || (current === "none" && rowStatus === "invited")) {
+      statusByCustomer.set(customerId, rowStatus);
+    }
+  }
+
+  return statusByCustomer;
+}
