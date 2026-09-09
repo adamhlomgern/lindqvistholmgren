@@ -1,12 +1,15 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { verifyCustomerSession } from "@/lib/auth/customer";
 import { getClientProjectById } from "@/lib/data/client-projects";
+import { getProjectApprovals } from "@/lib/data/approvals";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { BackLink } from "@/components/admin/BackLink";
 import { ProjectPhaseIndicator } from "@/components/customer/ProjectPhaseIndicator";
 import { MilestoneStatus } from "@/components/customer/MilestoneStatus";
 import { statusClasses, statusIcons, statusLabels } from "@/lib/project-status";
+import { approvalStatusClasses, approvalStatusIcons, approvalStatusLabels } from "@/lib/approval-status";
 import { getNextStepOwnerLabel } from "@/lib/project-phase";
 import { formatRelativeSv } from "@/lib/format";
 
@@ -15,7 +18,7 @@ type Props = { params: Promise<{ id: string }> };
 export default async function CustomerProjectDetailRoute({ params }: Props) {
   const { id } = await params;
   const { customerId } = await verifyCustomerSession();
-  const project = await getClientProjectById(id);
+  const [project, approvals] = await Promise.all([getClientProjectById(id), getProjectApprovals(id)]);
 
   // A project id alone isn't enough — it must also belong to the logged-in
   // customer, same pattern as requireCustomerAccess elsewhere.
@@ -69,6 +72,30 @@ export default async function CustomerProjectDetailRoute({ params }: Props) {
           )}
         </div>
       </Card>
+
+      {approvals.length > 0 && (
+        <div className="mt-4 flex flex-col gap-2">
+          <h2 className="font-display text-sm font-bold text-bone">Godkännanden</h2>
+          {approvals.map((approval) => {
+            const ApprovalIcon = approvalStatusIcons[approval.status];
+            return (
+              <Link
+                key={approval.id}
+                href={`/kund/projekt/${project.id}/godkannande/${approval.id}`}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-bone/10 px-4 py-3 transition-colors hover:bg-bone/5"
+              >
+                <span className="text-sm font-medium text-bone">{approval.title}</span>
+                <span
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${approvalStatusClasses[approval.status]}`}
+                >
+                  <ApprovalIcon size={12} strokeWidth={2.25} />
+                  {approvalStatusLabels[approval.status]}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

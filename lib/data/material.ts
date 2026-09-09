@@ -294,3 +294,49 @@ export async function getRecentMaterialItems(customerId: string, limit: number):
 
   return (data ?? []).map(toMaterialItem);
 }
+
+// Deliberately not filtered by visibility — a caller reaching this by id
+// has already been authorized at a higher level (e.g. an approval gated by
+// requireCustomerAccess on its own customer_id). This function's item-level
+// visibility only governs the general library nav, not per-id access.
+export async function getMaterialItemById(itemId: string): Promise<(MaterialItem & { downloadUrl: string | null }) | null> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase.from("material_items").select("*").eq("id", itemId).maybeSingle();
+
+  if (error) {
+    console.error("[getMaterialItemById] Supabase-fråga misslyckades", error);
+    return null;
+  }
+  if (!data) return null;
+
+  const [item] = await withFileSignedUrls(supabase, [toMaterialItem(data)]);
+  return item;
+}
+
+// Flat list of every item across every folder, with a readable folder-path
+// label — for the approval-request dialog's item picker. No signed URLs:
+// this is only for picking an item, not previewing it.
+export async function getAllMaterialItemsFlat(customerId: string): Promise<(MaterialItem & { folderPath: string })[]> {
+  const [folders, { data: itemRows, error }] = await Promise.all([
+    getAllFolders(customerId),
+    createServiceRoleClient().from("material_items").select("*").eq("customer_id", customerId).order("title"),
+  ]);
+
+  if (error) {
+    console.error("[getAllMaterialItemsFlat] Supabase-fråga misslyckades", error);
+    return [];
+  }
+
+  const folderById = new Map(folders.map((folder) => [folder.id, folder]));
+  function folderPath(folderId: string | undefined): string {
+    if (!folderId) return "Materialbibliotek";
+    const folder = folderById.get(folderId);
+    if (!folder) return "Materialbibliotek";
+    return `${folderPath(folder.parentFolderId)} / ${folder.name}`;
+  }
+
+  return (itemRows ?? []).map((row) => {
+    const item = toMaterialItem(row);
+    return { ...item, folderPath: folderPath(item.folderId) };
+  });
+}
