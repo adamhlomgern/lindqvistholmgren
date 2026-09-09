@@ -1,9 +1,27 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
-export function DeleteEmailButton({ action, subject }: { action: () => void; subject: string }) {
+type DeleteEmailButtonProps = {
+  action: () => void | Promise<void>;
+  subject: string;
+  // Only needed on the email's own detail page — deleting it there leaves
+  // you on a page for an email that no longer exists, so navigate away once
+  // the action resolves. Omit on the list page: the row just disappears in
+  // place via the action's revalidatePath, no navigation needed.
+  redirectTo?: string;
+};
+
+export function DeleteEmailButton({ action, subject, redirectTo }: DeleteEmailButtonProps) {
+  const router = useRouter();
+
+  async function handleConfirm() {
+    await action();
+    if (redirectTo) router.push(redirectTo);
+  }
+
   return (
     <ConfirmDialog
       trigger={
@@ -19,7 +37,7 @@ export function DeleteEmailButton({ action, subject }: { action: () => void; sub
       description="Det finns kvar i den riktiga inkorgen."
       confirmLabel="Radera"
       destructive
-      onConfirm={action}
+      onConfirm={handleConfirm}
     />
   );
 }
