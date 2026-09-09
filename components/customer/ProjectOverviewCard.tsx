@@ -9,12 +9,14 @@ import { getNextStepOwnerLabel } from "@/lib/project-phase";
 import { formatRelativeSv } from "@/lib/format";
 import type { ClientProjectWithCustomer } from "@/lib/types";
 
-type Props = { project: ClientProjectWithCustomer };
+// hrefBase defaults to the real portal's own prefix — the public demo
+// passes its own subtree so "Visa projekt" stays inside the demo.
+type Props = { project: ClientProjectWithCustomer; hrefBase?: string };
 
 // Everything about one active project lives in a single card — phase,
 // status, the latest word from us, and what happens next — so nothing about
 // the same piece of work ends up scattered across separate cards.
-export function ProjectOverviewCard({ project }: Props) {
+export function ProjectOverviewCard({ project, hrefBase = "/kund" }: Props) {
   const StatusIcon = statusIcons[project.status];
 
   return (
@@ -32,7 +34,7 @@ export function ProjectOverviewCard({ project }: Props) {
             {statusLabels[project.status]}
           </span>
           <Link
-            href={`/kund/projekt/${project.id}`}
+            href={`${hrefBase}/projekt/${project.id}`}
             className="flex items-center gap-1 text-sm font-medium text-emerald hover:underline"
           >
             Visa projekt
@@ -55,7 +57,7 @@ export function ProjectOverviewCard({ project }: Props) {
         <div>
           <p className="text-xs font-semibold uppercase tracking-label text-stone/65">Nästa steg</p>
           <div className="mt-1.5">
-            <MilestoneStatus project={project} />
+            <MilestoneStatus project={project} hrefBase={hrefBase} />
           </div>
         </div>
       </div>

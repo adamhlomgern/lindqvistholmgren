@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { BackLink } from "@/components/admin/BackLink";
 import { Card } from "@/components/ui/Card";
 import { MaterialItemRow } from "@/components/customer/MaterialItemRow";
@@ -6,14 +7,28 @@ import { approvalStatusClasses, approvalStatusLabels, approvalStatusIcons } from
 import { formatDateSv, formatRelativeSv } from "@/lib/format";
 import type { ProjectApprovalWithItem } from "@/lib/data/approvals";
 
-type Props = { approval: ProjectApprovalWithItem; projectTitle: string };
+type Props = {
+  approval: ProjectApprovalWithItem;
+  projectTitle: string;
+  // Both default to the real portal's own paths/form — the public demo
+  // overrides them so a visitor's "Godkänn" click can never reach the real
+  // decideApproval Server Action, and so the back link stays inside the
+  // demo route tree.
+  backHref?: string;
+  DecisionForm?: ComponentType<{ approvalId: string }>;
+};
 
-export function ApprovalView({ approval, projectTitle }: Props) {
+export function ApprovalView({
+  approval,
+  projectTitle,
+  backHref = `/kund/projekt/${approval.projectId}`,
+  DecisionForm = ApprovalDecisionForm,
+}: Props) {
   const StatusIcon = approvalStatusIcons[approval.status];
 
   return (
     <div>
-      <BackLink href={`/kund/projekt/${approval.projectId}`} label={projectTitle} />
+      <BackLink href={backHref} label={projectTitle} />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -39,7 +54,7 @@ export function ApprovalView({ approval, projectTitle }: Props) {
 
       <Card className="mt-6">
         {approval.status === "pending" ? (
-          <ApprovalDecisionForm approvalId={approval.id} />
+          <DecisionForm approvalId={approval.id} />
         ) : (
           <div>
             <p className="text-sm font-medium text-bone">

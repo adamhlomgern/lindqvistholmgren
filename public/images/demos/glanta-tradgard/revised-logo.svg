@@ -1,0 +1,8 @@
+<svg width="480" height="140" viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg">
+  <title>Glänta Trädgård — bearbetad logotyp, justerade proportioner (placeholder)</title>
+  <g transform="translate(10,10) scale(0.68)">
+    <path d="M151.4 161.3 A80 80 0 1 1 151.4 38.7" fill="none" stroke="#2F4A38" stroke-width="22" stroke-linecap="round"/>
+    <circle cx="173" cy="100" r="9" fill="#D3A24B"/>
+  </g>
+  <text x="130" y="80" font-family="Georgia, 'Times New Roman', serif" font-size="34" letter-spacing="0.5" fill="#2F4A38">Glänta Trädgård</text>
+</svg>

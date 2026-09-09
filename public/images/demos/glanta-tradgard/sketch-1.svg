@@ -1,0 +1,10 @@
+<svg width="480" height="180" viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg">
+  <title>Glänta Trädgård — skissförslag 1, ej vald riktning (placeholder)</title>
+  <g transform="translate(30,50)" stroke="#5C6B5F" stroke-width="3" fill="#5C6B5F" opacity="0.85">
+    <ellipse cx="30" cy="20" rx="14" ry="28" transform="rotate(-25 30 20)"/>
+    <ellipse cx="55" cy="20" rx="14" ry="28" transform="rotate(25 55 20)"/>
+    <line x1="42" y1="40" x2="42" y2="75" stroke-width="4"/>
+  </g>
+  <text x="150" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="32" fill="#5C6B5F">Glänta Trädgård</text>
+  <text x="30" y="160" font-family="Arial, sans-serif" font-size="14" letter-spacing="1" fill="#9AA69C">SKISSFÖRSLAG 1</text>
+</svg>

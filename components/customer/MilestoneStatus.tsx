@@ -5,11 +5,12 @@ import type { ClientProject } from "@/lib/types";
 
 type Props = {
   project: Pick<ClientProject, "id" | "nextMilestoneLabel" | "nextMilestoneDate" | "nextMilestoneDelivered">;
+  hrefBase?: string;
 };
 
 // Never call a passed date "done" on its own — only nextMilestoneDelivered
 // (set explicitly by an admin) does that. See lib/project-phase.ts.
-export function MilestoneStatus({ project }: Props) {
+export function MilestoneStatus({ project, hrefBase = "/kund" }: Props) {
   const state = getMilestoneState(project);
 
   if (state === "none") {
@@ -22,7 +23,7 @@ export function MilestoneStatus({ project }: Props) {
         <p className="text-sm text-bone">
           <span className="font-medium">{project.nextMilestoneLabel}</span> finns att granska
         </p>
-        <Link href={`/kund/projekt/${project.id}`} className="mt-1 inline-block text-sm text-emerald hover:underline">
+        <Link href={`${hrefBase}/projekt/${project.id}`} className="mt-1 inline-block text-sm text-emerald hover:underline">
           Visa förslag
         </Link>
       </div>

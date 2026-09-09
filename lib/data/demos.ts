@@ -1,4 +1,4 @@
-import { CalendarCheck, Home, Pizza, Wrench, type LucideIcon } from "lucide-react";
+import { CalendarCheck, Home, Palette, Pizza, Wrench, type LucideIcon } from "lucide-react";
 
 export type DemoStatus = "live" | "kommer-snart";
 
@@ -53,5 +53,14 @@ export const demos: DemoListing[] = [
       "Bygg ditt eget attefallshus steg för steg — se priset uppdateras live, upplev en regelmotor som hanterar tillval och krav, och skicka en kvalificerad offertförfrågan.",
     icon: Home,
     status: "live",
+  },
+  {
+    slug: "kundportal",
+    title: "Kundportal",
+    tagline: "Kundhubb för byråer och konsulter",
+    description:
+      "Vår egen kundportal — granska ett designförslag, godkänn en leverans och hitta rätt fil i ett organiserat materialbibliotek, precis som en riktig kund hos oss.",
+    icon: Palette,
+    status: "kommer-snart",
   },
 ];
