@@ -10,6 +10,7 @@ import { DeleteClientProjectButton } from "@/components/admin/DeleteClientProjec
 import { OverviewCard } from "@/components/admin/OverviewCard";
 import { CustomerViewCard } from "@/components/admin/CustomerViewCard";
 import { ProjectFilesSection } from "@/components/admin/ProjectFilesSection";
+import { ApprovalsSection } from "@/components/admin/ApprovalsSection";
 import { ProjectChecklist } from "@/components/admin/ProjectChecklist";
 import { NotesCard } from "@/components/admin/NotesCard";
 import { ProjectInfoPanel } from "@/components/admin/ProjectInfoPanel";
@@ -19,7 +20,9 @@ import type {
   BillingEntity,
   ClientProjectWithCustomer,
   Customer,
+  MaterialItem,
   ProjectActivityEntry,
+  ProjectApproval,
   ProjectChecklistItem,
   ProjectFile,
 } from "@/lib/types";
@@ -31,9 +34,20 @@ type Props = {
   files: (ProjectFile & { url: string | null })[];
   checklist: ProjectChecklistItem[];
   activity: ProjectActivityEntry[];
+  approvals: ProjectApproval[];
+  materialItems: (MaterialItem & { folderPath: string })[];
 };
 
-export function ProjectWorkspace({ project, customers, billingEntities, files, checklist, activity }: Props) {
+export function ProjectWorkspace({
+  project,
+  customers,
+  billingEntities,
+  files,
+  checklist,
+  activity,
+  approvals,
+  materialItems,
+}: Props) {
   const [editing, setEditing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -123,6 +137,12 @@ export function ProjectWorkspace({ project, customers, billingEntities, files, c
             <CustomerViewCard project={project} onEdit={() => setEditing(true)} />
             <ProjectChecklist projectId={project.id} items={checklist} />
             <ProjectFilesSection projectId={project.id} files={files} />
+            <ApprovalsSection
+              projectId={project.id}
+              customerId={project.customerId}
+              approvals={approvals}
+              materialItems={materialItems}
+            />
             <NotesCard notes={project.notes} onEdit={() => setEditing(true)} />
           </div>
           <div className="flex flex-col gap-6">

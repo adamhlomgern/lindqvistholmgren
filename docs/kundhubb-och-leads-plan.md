@@ -227,17 +227,17 @@ Klart när första användarflödet och dess data-/behörighetsbehov är tydligt
 
 ### Etapp 1 — kundportalens kärna
 
-- [ ] Implementera och verifiera adminroll, kundmedlemskap och projektåtkomst. Adminroll och kundmedlemskap är verifierat (se nedan); `requireCustomerAccess` är byggd men ännu inte använd av en riktig projektsida.
+- [x] Implementera och verifiera adminroll, kundmedlemskap och projektåtkomst. `requireCustomerAccess` är nu använd av kundens projektsida, översikt och inbjudningsflödet.
 - [x] Bygg inbjudan, inloggning, utloggning och återkallad åtkomst. Verifierat 8 sep 2026: hela kedjan inbjudan → mejl → sätt lösenord → inloggad som rätt kund fungerar i praktiken (testkund "tesfirma"). Inkluderar även självbetjänad återställning av glömt lösenord.
-- [ ] Bygg kundöversikt med nästa steg, aktuell status och milstolpe.
-- [ ] Visa kundens projekt med utvalt kundsynligt innehåll.
-- [ ] Lägg till kundsynlighet och skyddad åtkomst för filer.
-- [ ] Stöd uppladdning, förhandsvisning och nedladdning.
+- [x] Bygg kundöversikt med nästa steg, aktuell status och milstolpe. Ombyggd 9 sep 2026 efter genomgripande revidering (fasindikator, per-projekt-kort, konkret återkopplingsyta, tydlig nästa-milstolpe-status).
+- [x] Visa kundens projekt med utvalt kundsynligt innehåll. `/kund/projekt` + `/kund/projekt/[id]`.
+- [x] Lägg till kundsynlighet och skyddad åtkomst för filer. Löst via materialbiblioteket (`material_items.visibility`) istället för den ursprungligen planerade `project_files.visible_to_customer`-flaggan — samma syfte, större lösning; se separat plan nedan.
+- [x] Stöd uppladdning, förhandsvisning och nedladdning. Byggt som del av materialbiblioteket — admin laddar upp/organiserar, kunden förhandsgranskar och laddar ner. Kunden kan inte själv ladda upp material (medvetet, biblioteket är admin-kurerat).
 - [ ] Skapa versionsbundna granskningsbegäranden.
 - [ ] Implementera godkänn eller begär ändringar med sparad beslutshistorik.
-- [ ] Lägg till projektanknutna meddelanden.
-- [ ] Lägg till adminförhandsgranskning av kundvyn.
-- [ ] Bygg mejlnotiser med direktlänk till rätt uppgift.
+- [x] Lägg till projektanknutna meddelanden. Beslut 9 sep 2026: en tråd per kundföretag (befintlig `customer_messages`) räcker för v1 med pilotkunden snarare än en tråd per projekt — omvärderas om/när flera parallella projekt blir vanligt.
+- [x] Lägg till adminförhandsgranskning av kundvyn. Byggt för Material och Meddelanden (`kundvy/material`, `kundvy/meddelanden`); Översikt/Projekt saknar ännu en motsvarande förhandsgranskning.
+- [ ] Bygg mejlnotiser med direktlänk till rätt uppgift. Endast inbjudningsmejlet finns idag.
 - [ ] Hantera tomma lägen, laddning, fel och utgångna länkar.
 - [ ] Prova hela flödet på mobil med pilotkunden.
 

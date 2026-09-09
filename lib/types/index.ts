@@ -361,6 +361,26 @@ export type MaterialItem = {
   updatedAt: string;
 };
 
+export type ApprovalStatus = "pending" | "approved" | "changes_requested";
+
+export type ProjectApproval = {
+  id: string;
+  customerId: string;
+  projectId: string;
+  materialItemId: string;
+  title: string;
+  versionLabel?: string;
+  message?: string;
+  status: ApprovalStatus;
+  dueAt?: string;
+  requestedAt: string;
+  decidedAt?: string;
+  decidedByLabel?: string;
+  decisionNote?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BlockedSender = {
   id: string;
   email: string;

@@ -51,6 +51,16 @@ export async function getCustomerMembers(customerId: string): Promise<CustomerMe
   );
 }
 
+// Recipient list for notification emails (e.g. new approval requests) — a
+// member is reachable once they've accepted their invite and access hasn't
+// been revoked since.
+export async function getActiveCustomerMemberEmails(customerId: string): Promise<string[]> {
+  const members = await getCustomerMembers(customerId);
+  return members
+    .filter((member) => member.acceptedAt && !member.revokedAt && member.email.includes("@"))
+    .map((member) => member.email);
+}
+
 export type CustomerMemberStatusCounts = { active: number; invited: number; revoked: number };
 
 // Cheap alternative to getCustomerMembers for callers that only need the
