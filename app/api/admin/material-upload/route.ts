@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { deleteStoredFiles } from "@/lib/data/files";
+import { deleteStoredFiles, sanitizeStorageFilename } from "@/lib/data/files";
 import type { MaterialDeliveryStatus, MaterialVisibility } from "@/lib/types";
 
 // A Route Handler, not a Server Action — Server Actions in this app default
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       continue;
     }
 
-    const storagePath = `material/${customerId}/${folderId ?? "root"}/${crypto.randomUUID()}-${file.name}`;
+    const storagePath = `material/${customerId}/${folderId ?? "root"}/${crypto.randomUUID()}-${sanitizeStorageFilename(file.name)}`;
     const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, file, {
       contentType: file.type || undefined,
     });

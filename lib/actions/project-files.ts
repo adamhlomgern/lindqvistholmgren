@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { deleteStoredFiles } from "@/lib/data/files";
+import { deleteStoredFiles, sanitizeStorageFilename } from "@/lib/data/files";
 import { logProjectActivity } from "@/lib/data/client-projects";
 
 export type ProjectFileFormState = { error?: string } | undefined;
@@ -23,7 +23,7 @@ export async function storeProjectFile(
     return { error: `${file.name} är för stor (max 20 MB).` };
   }
 
-  const storagePath = `project/${projectId}/${crypto.randomUUID()}-${file.name}`;
+  const storagePath = `project/${projectId}/${crypto.randomUUID()}-${sanitizeStorageFilename(file.name)}`;
 
   const { error: uploadError } = await supabase.storage.from("attachments").upload(storagePath, file, {
     contentType: file.type || undefined,

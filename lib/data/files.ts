@@ -108,6 +108,18 @@ export async function getEmailAttachmentCounts(emailIds: string[]): Promise<Map<
   return counts;
 }
 
+// Supabase Storage keys only accept a narrow character set — spaces,
+// diacritics (å/ä/ö), and symbols like () or – all make `upload()` fail with
+// "Invalid key". The original filename is kept as-is in the DB row (and
+// still offered as the download filename); only the storage key is sanitized.
+const COMBINING_DIACRITICS = /[̀-ͯ]/g;
+
+export function sanitizeStorageFilename(filename: string): string {
+  const stripped = filename.normalize("NFKD").replace(COMBINING_DIACRITICS, "");
+  const safe = stripped.replace(/[^a-zA-Z0-9._-]+/g, "_");
+  return safe || "fil";
+}
+
 // Storage objects aren't cleaned up by Postgres FK cascades — callers that
 // delete an email or a project must remove the underlying files themselves,
 // before the DB rows disappear, or the paths are lost for good.

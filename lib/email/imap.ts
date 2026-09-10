@@ -1,6 +1,7 @@
 import { ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import { sanitizeStorageFilename } from "@/lib/data/files";
 import { getCustomerByEmail } from "@/lib/data/customers";
 import { getBlockedSenders } from "@/lib/data/blocked-senders";
 import { getDeletedMessageIds } from "@/lib/data/deleted-email-ids";
@@ -144,7 +145,7 @@ export async function syncInbox(): Promise<SyncResult> {
           if (!attachments) continue;
 
           for (const attachment of attachments) {
-            const storagePath = `email/${saved.id}/${crypto.randomUUID()}-${attachment.filename}`;
+            const storagePath = `email/${saved.id}/${crypto.randomUUID()}-${sanitizeStorageFilename(attachment.filename)}`;
             const { error: uploadError } = await supabase.storage
               .from("attachments")
               .upload(storagePath, attachment.content, { contentType: attachment.contentType });
