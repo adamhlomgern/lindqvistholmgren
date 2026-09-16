@@ -9,6 +9,7 @@ export function CustomerKundvyTabs({ customerId }: { customerId: string }) {
 
   const tabs = [
     { href: base, label: "Översikt" },
+    { href: `${base}/projekt`, label: "Projekt" },
     { href: `${base}/meddelanden`, label: "Meddelanden" },
     { href: `${base}/material`, label: "Material" },
   ];
