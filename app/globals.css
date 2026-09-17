@@ -165,6 +165,20 @@ body {
   }
 }
 
+/* iOS Safari auto-zooms the whole page in on focus of any text input,
+   textarea or select whose computed font-size is under 16px — and never
+   zooms back out on blur, which is exactly the "page stays zoomed in after
+   I tap out of a field" bug. Most form fields in this app use text-sm
+   (14px). Bumping to 16px only below the sm breakpoint fixes the zoom
+   without changing desktop's intentional smaller form-field type. */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -269,6 +283,27 @@ body {
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* A neutral checkerboard, not a flat white/dark fill — a solid background
+     is exactly wrong half the time for a logo file, since white logos
+     disappear on white and dark logos disappear on dark. Same pattern
+     components/customer/MaterialItemRow.tsx's full-size ImagePreview
+     already uses for this reason, shared here for every small thumbnail
+     that doesn't have room for that component's light/dark/checkered
+     toggle. */
+  .bg-checkered {
+    background-image:
+      linear-gradient(45deg, #88888833 25%, transparent 25%),
+      linear-gradient(-45deg, #88888833 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #88888833 75%),
+      linear-gradient(-45deg, transparent 75%, #88888833 75%);
+    background-size: 16px 16px;
+    background-position:
+      0 0,
+      0 8px,
+      8px -8px,
+      -8px 0;
   }
 
   .bg-grain {

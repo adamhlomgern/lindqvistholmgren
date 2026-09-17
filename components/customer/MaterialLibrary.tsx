@@ -166,7 +166,7 @@ function MaterialItemGridCard({ item }: { item: MaterialItemWithUrl }) {
   const content = (
     <>
       {isImage && item.downloadUrl ? (
-        <div className="absolute inset-0 bg-white">
+        <div className="absolute inset-0 bg-checkered">
           {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset */}
           <img src={item.downloadUrl} alt={item.title} className="h-full w-full object-contain p-3" />
         </div>

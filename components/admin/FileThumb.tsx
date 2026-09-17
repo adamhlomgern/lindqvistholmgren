@@ -27,10 +27,10 @@ export function FileThumb({
         {isImage && url ? (
           // A transparent-background logo rendered edge-to-edge with
           // object-cover gets cropped and sits on whatever the card's own
-          // background is — often the wrong contrast for a logo made for a
-          // light background. object-contain on a white backing, with a
-          // little breathing room, shows the whole image predictably instead.
-          <div className="absolute inset-0 bg-white">
+          // background is. object-contain on a neutral checkerboard (not a
+          // flat white/dark fill — white logos disappear on white, dark ones
+          // on dark) shows the whole image predictably instead.
+          <div className="absolute inset-0 bg-checkered">
             {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset */}
             <img src={url} alt={filename} className="h-full w-full object-contain p-3" />
           </div>

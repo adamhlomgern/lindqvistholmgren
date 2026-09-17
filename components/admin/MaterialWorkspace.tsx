@@ -609,7 +609,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
         {isImage && item.downloadUrl ? (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-bone/10 bg-white p-1">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-bone/10 bg-checkered p-1">
             {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URL, not a static/optimizable asset */}
             <img src={item.downloadUrl} alt="" className="h-full w-full object-contain" />
           </div>
@@ -684,7 +684,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
         className="relative flex aspect-square flex-col items-center justify-center gap-2 p-3 text-center"
       >
         {isImage && item.downloadUrl ? (
-          <div className="absolute inset-0 bg-white">
+          <div className="absolute inset-0 bg-checkered">
             {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset */}
             <img src={item.downloadUrl} alt={item.title} className="h-full w-full object-contain p-3" />
           </div>
