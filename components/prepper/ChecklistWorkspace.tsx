@@ -174,40 +174,44 @@ export function ChecklistWorkspace({
       />
 
       <div className="min-w-0 flex-1">
-        <div className="sticky top-0 z-20 border-b border-prepper-border bg-prepper-inverse-bg px-4 py-4 text-prepper-inverse-text sm:px-8">
+        <div className="sticky top-0 z-20 border-b border-prepper-border bg-prepper-surface px-4 py-4 sm:px-8">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setSwitcherOpen(true)}
               aria-label="Byt checklista"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-prepper-inverse-text/10 text-prepper-inverse-text md:hidden"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-prepper-surface-soft text-prepper-primary md:hidden"
             >
               <Menu size={17} strokeWidth={2} />
             </button>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium uppercase tracking-[0.12em] text-prepper-inverse-text-muted">
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-prepper-primary/70">
                 {notebookName}
               </p>
-              <h1 className="truncate font-prepper-display text-xl text-prepper-inverse-text sm:text-2xl">
+              <h1 className="truncate font-prepper-display text-xl text-prepper-text sm:text-2xl">
                 {checklist.title}
               </h1>
             </div>
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <p className="shrink-0 text-xs text-prepper-inverse-text-muted">
+            <p className="shrink-0 text-xs text-prepper-text-muted">
               {doneItems} av {totalItems} klart
             </p>
             <div className="flex-1">
-              <ProgressBar done={doneItems} total={totalItems} inverse />
+              <ProgressBar done={doneItems} total={totalItems} />
             </div>
           </div>
         </div>
 
         <div className="mx-auto flex max-w-2xl flex-col gap-4 px-4 py-6 sm:px-8">
           {sections.length === 0 && (
-            <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-prepper-border px-6 py-16 text-center">
-              <p className="text-sm text-prepper-text-muted">Här är det tomt än så länge.</p>
-              <p className="text-sm text-prepper-text-muted">Lägg till första sektionen ni vill få ordning på.</p>
+            <div className="rounded-2xl border border-prepper-border bg-prepper-surface-soft px-6 py-14 text-center">
+              <div className="mx-auto max-w-xs border-y border-prepper-border/70 py-5">
+                <p className="font-prepper-display text-lg text-prepper-text">Här är det tomt än så länge</p>
+                <p className="mt-1.5 text-sm text-prepper-text-muted">
+                  Lägg till första sektionen ni vill få ordning på.
+                </p>
+              </div>
             </div>
           )}
 
@@ -233,12 +237,12 @@ export function ChecklistWorkspace({
               value={newSectionTitle}
               onChange={(e) => setNewSectionTitle(e.target.value)}
               placeholder="Ny sektion, t.ex. Sömn"
-              className="min-h-11 flex-1 rounded-full border border-prepper-border bg-prepper-surface px-4 text-sm text-prepper-text placeholder:text-prepper-text-muted focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+              className="min-h-11 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-4 py-2.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
             />
             <button
               type="submit"
               disabled={!newSectionTitle.trim()}
-              className="flex h-11 items-center gap-1.5 rounded-full bg-prepper-primary px-4 text-sm font-semibold text-prepper-lavender-50 transition-colors hover:bg-prepper-primary-hover disabled:opacity-50"
+              className="flex h-11 items-center gap-1.5 rounded-xl bg-prepper-primary px-4 text-sm font-semibold text-prepper-on-primary transition-colors hover:bg-prepper-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2 disabled:opacity-50"
             >
               <Plus size={16} strokeWidth={2.25} />
               <span className="hidden sm:inline">Sektion</span>

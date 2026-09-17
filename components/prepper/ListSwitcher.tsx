@@ -34,7 +34,7 @@ function ChecklistLink({
       href={`/admin/appar/prepper/${notebookId}?checklist=${checklist.id}`}
       onClick={onNavigate}
       className={`flex flex-col gap-1.5 rounded-xl px-4 py-3 transition-colors ${
-        active ? "bg-prepper-primary/10 text-prepper-text" : "text-prepper-text hover:bg-prepper-surface-soft"
+        active ? "bg-prepper-primary/10 text-prepper-text" : "text-prepper-text-muted hover:bg-prepper-surface-soft"
       }`}
     >
       <div className="flex items-center justify-between gap-2">
@@ -71,13 +71,13 @@ function CreateChecklistForm({ notebookId, onCreated }: { notebookId: string; on
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Ny checklista…"
-        className="min-h-10 flex-1 rounded-full border border-prepper-border bg-prepper-surface px-3.5 text-sm text-prepper-text placeholder:text-prepper-text-muted focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+        className="min-h-10 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-3.5 py-2 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
       />
       <button
         type="submit"
         disabled={pending || !title.trim()}
         aria-label="Skapa checklista"
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-prepper-primary text-prepper-lavender-50 transition-colors hover:bg-prepper-primary-hover disabled:opacity-50"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-prepper-primary text-prepper-on-primary transition-colors hover:bg-prepper-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2 disabled:opacity-50"
       >
         <Plus size={16} strokeWidth={2.25} />
       </button>
@@ -89,8 +89,8 @@ function SwitcherBody({ notebookId, notebookName, checklists, activeChecklistId,
   return (
     <>
       <div className="flex items-center gap-2 px-1 pb-3">
-        <ListChecks size={16} strokeWidth={2} className="text-prepper-accent" />
-        <p className="text-xs font-medium uppercase tracking-[0.12em] text-prepper-text-muted">{notebookName}</p>
+        <ListChecks size={14} strokeWidth={2} className="text-prepper-primary/70" />
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-prepper-primary/70">{notebookName}</p>
       </div>
       <div className="flex flex-col gap-1">
         {checklists.map((checklist) => (

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Backpack } from "lucide-react";
+import { ArrowLeft, Backpack, LogOut } from "lucide-react";
+import { logout } from "@/lib/actions/auth";
 
 const apps = [
   {
@@ -13,6 +14,24 @@ const apps = [
 export default function ApparPage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+      <div className="mb-6 flex items-center justify-between">
+        <Link
+          href="/admin"
+          className="flex items-center gap-1.5 text-sm font-medium text-stone transition-colors hover:text-bone"
+        >
+          <ArrowLeft size={15} strokeWidth={2} />
+          Admin
+        </Link>
+        <form action={logout}>
+          <button
+            type="submit"
+            aria-label="Logga ut"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/5 hover:text-coral"
+          >
+            <LogOut size={15} strokeWidth={2} />
+          </button>
+        </form>
+      </div>
       <h1 className="font-display text-2xl font-bold text-bone">Appar</h1>
       <p className="mt-1 text-sm text-stone">Interna verktyg, separata från resten av adminpanelen.</p>
 

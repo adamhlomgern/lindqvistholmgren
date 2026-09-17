@@ -25,7 +25,7 @@ function Checkbox({ checked, onChange, size = 22 }: { checked: boolean; onChange
       style={{ width: size, height: size }}
       className={`flex shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-150 ${
         checked
-          ? "border-prepper-primary bg-prepper-primary text-prepper-lavender-50"
+          ? "border-prepper-primary bg-prepper-primary text-prepper-on-primary"
           : "border-prepper-border bg-prepper-surface"
       } focus:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2`}
     >
@@ -238,7 +238,7 @@ export function ItemRow({
             onBlur={saveNote}
             placeholder="Kort anteckning…"
             rows={1}
-            className="resize-none rounded-lg border border-prepper-border bg-prepper-surface px-3 py-2 text-sm text-prepper-text placeholder:text-prepper-text-muted focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+            className="resize-none rounded-xl border border-prepper-border bg-prepper-surface px-3 py-2 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
           />
 
           {subtasks.length > 0 && (
@@ -262,13 +262,13 @@ export function ItemRow({
               value={newSubtask}
               onChange={(e) => setNewSubtask(e.target.value)}
               placeholder="Lägg till underpunkt…"
-              className="min-h-8 flex-1 rounded-full border border-prepper-border bg-prepper-surface px-3 text-sm text-prepper-text placeholder:text-prepper-text-muted focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+              className="min-h-8 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-3 py-1.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
             />
             <button
               type="submit"
               disabled={!newSubtask.trim()}
               aria-label="Lägg till underpunkt"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-prepper-surface-soft text-prepper-primary transition-colors hover:bg-prepper-lavender-200 disabled:opacity-50"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-prepper-surface-soft text-prepper-primary transition-colors hover:bg-prepper-accent/30 disabled:opacity-50"
             >
               <Plus size={14} strokeWidth={2.25} />
             </button>

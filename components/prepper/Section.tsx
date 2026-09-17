@@ -143,13 +143,13 @@ export function Section({
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="Lägg till…"
-              className="min-h-9 flex-1 rounded-full border border-dashed border-prepper-border bg-transparent px-3.5 text-sm text-prepper-text placeholder:text-prepper-text-muted focus:border-solid focus:border-prepper-primary focus:outline-none"
+              className="min-h-9 flex-1 rounded-xl border border-dashed border-prepper-border bg-transparent px-3.5 py-1.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-solid focus:border-prepper-primary focus:outline-none"
             />
             <button
               type="submit"
               disabled={!newTitle.trim()}
               aria-label="Lägg till moment"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-prepper-surface-soft text-prepper-primary transition-colors hover:bg-prepper-lavender-200 disabled:opacity-50"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-prepper-surface-soft text-prepper-primary transition-colors hover:bg-prepper-accent/30 disabled:opacity-50"
             >
               <Plus size={15} strokeWidth={2.25} />
             </button>
