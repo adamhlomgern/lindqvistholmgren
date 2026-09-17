@@ -193,7 +193,7 @@ export function ItemRow({
         >
           <span className="min-w-0">
             <span
-              className={`block truncate text-[15px] transition-colors duration-150 ${
+              className={`block break-words text-[15px] leading-snug transition-colors duration-150 ${
                 item.completed ? "text-prepper-text-muted line-through" : "text-prepper-text"
               }`}
             >
