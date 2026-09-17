@@ -42,9 +42,9 @@ export function MilestoneStatus({ project, hrefBase = "/kund" }: Props) {
   return (
     <div>
       <p className="text-sm font-medium text-bone">{project.nextMilestoneLabel}</p>
-      <p className="mt-0.5 text-sm text-stone">
-        Planerad leverans {project.nextMilestoneDate && formatDateSv(project.nextMilestoneDate)}
-      </p>
+      {project.nextMilestoneDate && (
+        <p className="mt-0.5 text-sm text-stone">Planerad leverans {formatDateSv(project.nextMilestoneDate)}</p>
+      )}
     </div>
   );
 }
