@@ -1,15 +1,39 @@
 "use client";
 
-import { useActionState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
-import { uploadProjectFile, type ProjectFileFormState } from "@/lib/actions/project-files";
 
 export function ProjectFileUploadForm({ projectId }: { projectId: string }) {
-  const action = uploadProjectFile.bind(null, projectId);
-  const [state, formAction, pending] = useActionState<ProjectFileFormState, FormData>(action, undefined);
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | undefined>();
+
+  async function handleUpload(file: File) {
+    setPending(true);
+    setError(undefined);
+
+    const formData = new FormData();
+    formData.set("projectId", projectId);
+    formData.set("file", file);
+
+    try {
+      const response = await fetch("/api/admin/project-upload", { method: "POST", body: formData });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data?.error ?? "Kunde inte ladda upp filen.");
+        return;
+      }
+      router.refresh();
+    } catch {
+      setError("Kunde inte ladda upp filen.");
+    } finally {
+      setPending(false);
+    }
+  }
 
   return (
-    <form action={formAction} className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-bone/20 px-4 py-4 text-sm text-stone transition-colors hover:border-emerald/40 hover:text-bone">
         <Upload size={16} strokeWidth={2.25} />
         {pending ? "Laddar upp…" : "Bifoga fil"}
@@ -18,10 +42,14 @@ export function ProjectFileUploadForm({ projectId }: { projectId: string }) {
           name="file"
           className="hidden"
           disabled={pending}
-          onChange={(event) => event.currentTarget.form?.requestSubmit()}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            event.currentTarget.value = "";
+            if (file) void handleUpload(file);
+          }}
         />
       </label>
-      {state?.error && <p className="text-sm text-coral">{state.error}</p>}
-    </form>
+      {error && <p className="text-sm text-coral">{error}</p>}
+    </div>
   );
 }

@@ -6,8 +6,6 @@ import { createServiceRoleClient } from "@/lib/supabase/server";
 import { deleteStoredFiles, sanitizeStorageFilename } from "@/lib/data/files";
 import { logProjectActivity } from "@/lib/data/client-projects";
 
-export type ProjectFileFormState = { error?: string } | undefined;
-
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
 // Shared by the standalone upload form (existing project) and project
@@ -45,27 +43,6 @@ export async function storeProjectFile(
   }
 
   return {};
-}
-
-export async function uploadProjectFile(
-  projectId: string,
-  _prevState: ProjectFileFormState,
-  formData: FormData,
-): Promise<ProjectFileFormState> {
-  await verifySession();
-  const file = formData.get("file");
-
-  if (!(file instanceof File) || file.size === 0) {
-    return { error: "Ingen fil vald." };
-  }
-
-  const supabase = createServiceRoleClient();
-  const result = await storeProjectFile(supabase, projectId, file);
-  if (result.error) return result;
-
-  await logProjectActivity(projectId, `Laddade upp filen "${file.name}"`);
-
-  revalidatePath(`/admin/projekt/${projectId}`);
 }
 
 export async function deleteProjectFile(projectId: string, fileId: string, storagePath: string, filename: string) {
