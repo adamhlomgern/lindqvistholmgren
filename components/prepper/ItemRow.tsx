@@ -95,7 +95,7 @@ function SubtaskRow({
         onClick={remove}
         disabled={pending}
         aria-label="Ta bort underpunkt"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-prepper-text-muted opacity-0 transition-opacity hover:text-prepper-primary focus-visible:opacity-100 group-hover/subtask:opacity-100"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-prepper-text-muted transition-opacity hover:text-prepper-primary sm:opacity-0 sm:focus-visible:opacity-100 sm:group-hover/subtask:opacity-100"
       >
         <Trash2 size={13} strokeWidth={2} />
       </button>
