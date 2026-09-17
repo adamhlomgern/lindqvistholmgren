@@ -5,13 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
-import { Menu, Plus } from "lucide-react";
+import { ArrowUpDown, Check, Menu, Plus } from "lucide-react";
 import type { PrepperChecklistDetail, PrepperItem, PrepperSection as PrepperSectionType } from "@/lib/types";
 import type { PrepperChecklistSummary } from "@/lib/data/prepper";
 import { createSection, deleteSection, reorderSections, toggleItem, deleteItem, reorderItems } from "@/lib/actions/prepper";
 import { ListSwitcher } from "@/components/prepper/ListSwitcher";
 import { Section } from "@/components/prepper/Section";
 import { ProgressBar } from "@/components/prepper/ProgressBar";
+import { ActionMenu } from "@/components/prepper/ActionMenu";
+import { ItemDetailSheet } from "@/components/prepper/ItemDetailSheet";
 import { usePrepperToast, pickDefaultToastMessage } from "@/components/prepper/Toast";
 
 const CHECKLIST_CELEBRATIONS = ["Hela listan är klar! 🎉", "Klart, allihopa.", "Ni ligger steget före."];
@@ -30,6 +32,9 @@ export function ChecklistWorkspace({
   const [sections, setSections] = useState<PrepperSectionType[]>(checklist.sections);
   const [syncedChecklist, setSyncedChecklist] = useState(checklist);
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [reorderMode, setReorderMode] = useState(false);
+  const [openItem, setOpenItem] = useState<{ sectionId: string; itemId: string } | null>(null);
+  const [addingSection, setAddingSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [, startTransition] = useTransition();
   const router = useRouter();
@@ -58,6 +63,9 @@ export function ChecklistWorkspace({
 
   const totalItems = sections.reduce((sum, s) => sum + s.items.length, 0);
   const doneItems = sections.reduce((sum, s) => sum + s.items.filter((i) => i.completed).length, 0);
+  const openItemData = openItem
+    ? (sections.find((s) => s.id === openItem.sectionId)?.items.find((i) => i.id === openItem.itemId) ?? null)
+    : null;
 
   useEffect(() => {
     const complete = totalItems > 0 && doneItems === totalItems;
@@ -141,7 +149,10 @@ export function ChecklistWorkspace({
   function handleAddSection(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = newSectionTitle.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      setAddingSection(false);
+      return;
+    }
     setNewSectionTitle("");
     startTransition(async () => {
       const created = await createSection(checklist.id, notebookId, trimmed);
@@ -196,6 +207,16 @@ export function ChecklistWorkspace({
                 {checklist.title}
               </h1>
             </div>
+            <ActionMenu
+              ariaLabel="Fler alternativ för checklistan"
+              items={[
+                {
+                  label: reorderMode ? "Klar" : "Sortera",
+                  icon: reorderMode ? Check : ArrowUpDown,
+                  onSelect: () => setReorderMode((v) => !v),
+                },
+              ]}
+            />
           </div>
           <div className="mt-3 flex items-center gap-3">
             <p className="shrink-0 text-xs text-prepper-text-muted">
@@ -226,8 +247,9 @@ export function ChecklistWorkspace({
                   key={section.id}
                   section={section}
                   notebookId={notebookId}
+                  reorderMode={reorderMode}
                   onToggleItem={(itemId, completed) => handleToggleItem(section.id, itemId, completed)}
-                  onDeleteItem={(itemId) => handleDeleteItem(section.id, itemId)}
+                  onOpenItem={(item) => setOpenItem({ sectionId: section.id, itemId: item.id })}
                   onReorderItems={(itemIds) => handleReorderItems(section.id, itemIds)}
                   onAddItem={(item) => handleAddItem(section.id, item)}
                   onDeleteSection={() => handleDeleteSection(section.id)}
@@ -236,24 +258,54 @@ export function ChecklistWorkspace({
             </SortableContext>
           </DndContext>
 
-          <form onSubmit={handleAddSection} className="flex items-center gap-2">
-            <input
-              value={newSectionTitle}
-              onChange={(e) => setNewSectionTitle(e.target.value)}
-              placeholder="Ny sektion, t.ex. Sömn"
-              className="min-h-11 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-4 py-2.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
-            />
-            <button
-              type="submit"
-              disabled={!newSectionTitle.trim()}
-              className="flex h-11 items-center gap-1.5 rounded-xl bg-prepper-primary px-4 text-sm font-semibold text-prepper-on-primary transition-colors hover:bg-prepper-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2 disabled:opacity-50"
-            >
-              <Plus size={16} strokeWidth={2.25} />
-              <span className="hidden sm:inline">Sektion</span>
-            </button>
-          </form>
+          {!reorderMode &&
+            (addingSection ? (
+              <form onSubmit={handleAddSection} className="flex items-center gap-2">
+                <input
+                  value={newSectionTitle}
+                  onChange={(e) => setNewSectionTitle(e.target.value)}
+                  onBlur={() => {
+                    if (!newSectionTitle.trim()) setAddingSection(false);
+                  }}
+                  placeholder="Ny sektion, t.ex. Sömn"
+                  autoFocus
+                  className="min-h-11 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-4 py-2.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+                />
+                <button
+                  type="submit"
+                  disabled={!newSectionTitle.trim()}
+                  className="flex h-11 items-center gap-1.5 rounded-xl bg-prepper-primary px-4 text-sm font-semibold text-prepper-on-primary transition-colors hover:bg-prepper-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2 disabled:opacity-50"
+                >
+                  <Plus size={16} strokeWidth={2.25} />
+                  <span className="hidden sm:inline">Sektion</span>
+                </button>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAddingSection(true)}
+                className="flex min-h-11 items-center gap-1.5 self-start rounded-xl px-2 text-sm font-medium text-prepper-primary transition-colors hover:bg-prepper-surface-soft"
+              >
+                <Plus size={16} strokeWidth={2.25} />
+                Lägg till
+              </button>
+            ))}
         </div>
       </div>
+
+      {openItemData && (
+        <ItemDetailSheet
+          key={openItemData.id}
+          item={openItemData}
+          notebookId={notebookId}
+          onClose={() => setOpenItem(null)}
+          onToggleCompleted={(completed) => handleToggleItem(openItem!.sectionId, openItemData.id, completed)}
+          onDeleted={() => {
+            handleDeleteItem(openItem!.sectionId, openItemData.id);
+            setOpenItem(null);
+          }}
+        />
+      )}
     </div>
   );
 }
