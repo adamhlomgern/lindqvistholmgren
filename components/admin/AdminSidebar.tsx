@@ -10,6 +10,7 @@ import {
   GalleryHorizontalEnd,
   Inbox,
   LayoutDashboard,
+  LayoutGrid,
   LogOut,
   Menu,
   MessageSquareText,
@@ -126,6 +127,10 @@ export function AdminSidebar({
           badgeAccent: "coral",
         },
       ],
+    },
+    {
+      label: "Appar",
+      items: [{ href: "/admin/appar", label: "Appar", icon: LayoutGrid }],
     },
   ];
 
