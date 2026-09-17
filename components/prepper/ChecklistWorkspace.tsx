@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
@@ -185,9 +186,12 @@ export function ChecklistWorkspace({
               <Menu size={17} strokeWidth={2} />
             </button>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-prepper-primary/70">
+              <Link
+                href="/admin/appar/prepper"
+                className="inline-block text-xs font-medium uppercase tracking-[0.14em] text-prepper-primary/70 transition-colors hover:text-prepper-primary"
+              >
                 {notebookName}
-              </p>
+              </Link>
               <h1 className="truncate font-prepper-display text-xl text-prepper-text sm:text-2xl">
                 {checklist.title}
               </h1>

@@ -4,9 +4,9 @@ import { useState, useTransition } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, GripVertical, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, GripVertical, PenLine, Plus, Trash2 } from "lucide-react";
 import type { PrepperItem, PrepperSection as PrepperSectionType } from "@/lib/types";
-import { createItem } from "@/lib/actions/prepper";
+import { createItem, renameSection } from "@/lib/actions/prepper";
 import { ItemRow } from "@/components/prepper/ItemRow";
 import { ProgressBar } from "@/components/prepper/ProgressBar";
 
@@ -31,12 +31,26 @@ export function Section({
     id: section.id,
   });
   const [collapsed, setCollapsed] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [title, setTitle] = useState(section.title);
   const [newTitle, setNewTitle] = useState("");
   const [, startTransition] = useTransition();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   const done = section.items.filter((i) => i.completed).length;
   const total = section.items.length;
+
+  function saveTitle() {
+    const trimmed = title.trim();
+    setEditingTitle(false);
+    if (!trimmed || trimmed === section.title) {
+      setTitle(section.title);
+      return;
+    }
+    startTransition(async () => {
+      await renameSection(section.id, notebookId, trimmed);
+    });
+  }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -87,22 +101,47 @@ export function Section({
         >
           <GripVertical size={15} strokeWidth={2} />
         </button>
+        {editingTitle ? (
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            onBlur={saveTitle}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") e.currentTarget.blur();
+              if (e.key === "Escape") {
+                setTitle(section.title);
+                setEditingTitle(false);
+              }
+            }}
+            autoFocus
+            className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 font-prepper-display text-lg text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={() => setCollapsed((v) => !v)}
+            className="flex min-w-0 flex-1 items-center justify-between gap-3"
+          >
+            <span className="min-w-0">
+              <span className="block truncate font-prepper-display text-lg text-prepper-text">{title}</span>
+              <span className="mt-0.5 block text-xs text-prepper-text-muted">
+                {done}/{total} klara
+              </span>
+            </span>
+            <ChevronDown
+              size={16}
+              strokeWidth={2}
+              className={`shrink-0 text-prepper-text-muted transition-transform ${collapsed ? "-rotate-90" : ""}`}
+            />
+          </button>
+        )}
         <button
           type="button"
-          onClick={() => setCollapsed((v) => !v)}
-          className="flex min-w-0 flex-1 items-center justify-between gap-3"
+          onClick={() => setEditingTitle(true)}
+          aria-label="Byt namn på sektion"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-prepper-text-muted opacity-0 transition-opacity hover:text-prepper-primary focus-visible:opacity-100 sm:group-hover:opacity-100"
         >
-          <span className="min-w-0">
-            <span className="block truncate font-prepper-display text-lg text-prepper-text">{section.title}</span>
-            <span className="mt-0.5 block text-xs text-prepper-text-muted">
-              {done}/{total} klara
-            </span>
-          </span>
-          <ChevronDown
-            size={16}
-            strokeWidth={2}
-            className={`shrink-0 text-prepper-text-muted transition-transform ${collapsed ? "-rotate-90" : ""}`}
-          />
+          <PenLine size={13} strokeWidth={2} />
         </button>
         <button
           type="button"
