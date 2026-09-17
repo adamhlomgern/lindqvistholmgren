@@ -44,6 +44,7 @@ import {
   getMaterialViewModeSnapshot,
   setMaterialSortMode,
   setMaterialViewMode,
+  subscribeMaterialSort,
   subscribeMaterialView,
   sortFolders,
   sortItems,
@@ -86,7 +87,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
   // so hydration never mismatches; the real value (from localStorage) kicks
   // in on the client's next render via useSyncExternalStore, not an effect.
   const viewMode = useSyncExternalStore(subscribeMaterialView, getMaterialViewModeSnapshot, getMaterialViewModeServerSnapshot);
-  const sortMode = useSyncExternalStore(subscribeMaterialView, getMaterialSortModeSnapshot, getMaterialSortModeServerSnapshot);
+  const sortMode = useSyncExternalStore(subscribeMaterialSort, getMaterialSortModeSnapshot, getMaterialSortModeServerSnapshot);
 
   const sortedFolders = sortFolders(folders, sortMode);
   const sortedItems = sortItems(items, sortMode);

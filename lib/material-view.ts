@@ -3,8 +3,6 @@ import type { MaterialFolder, MaterialItem } from "@/lib/types";
 export type MaterialSortMode = "custom" | "name" | "created" | "updated" | "type";
 export type MaterialViewMode = "list" | "grid-sm" | "grid-lg";
 
-const VIEW_MODE_KEY = "material-view-mode";
-const SORT_MODE_KEY = "material-sort-mode";
 const VIEW_MODES: MaterialViewMode[] = ["list", "grid-sm", "grid-lg"];
 const SORT_MODES: MaterialSortMode[] = ["custom", "name", "created", "updated", "type"];
 
@@ -26,57 +24,64 @@ function writeStorage(key: string, value: string) {
   }
 }
 
-// Per-viewer convenience, not shared state — two admins can browse the same
-// customer's library in different view/sort modes without stepping on each
-// other, same reasoning as any other browser-storage UI preference in this
-// app.
+// Per-viewer convenience, not shared state — two admins (or an admin and
+// the customer, via separate keys below) can browse the same library in
+// different view/sort modes without stepping on each other, same reasoning
+// as any other browser-storage UI preference in this app.
 //
-// Exposed as a useSyncExternalStore-shaped module store (cache + subscribe),
-// not read-in-an-effect-then-setState — that pattern causes an extra
-// render and is flagged by this project's lint config. getServerSnapshot
-// returns the same default the server rendered, so hydration never mismatches.
-let viewModeCache: MaterialViewMode | null = null;
-let sortModeCache: MaterialSortMode | null = null;
-const listeners = new Set<() => void>();
+// Each mode is a useSyncExternalStore-shaped module store (cache +
+// subscribe), not read-in-an-effect-then-setState — that pattern causes an
+// extra render and is flagged by this project's lint config.
+// getServerSnapshot returns the same default the server rendered, so
+// hydration never mismatches.
+function createModeStore<T extends string>(key: string, allowed: T[], fallback: T) {
+  let cache: T | null = null;
+  const listeners = new Set<() => void>();
 
-function notify() {
-  listeners.forEach((listener) => listener());
+  return {
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    getSnapshot(): T {
+      if (cache === null) cache = readStorage(key, allowed, fallback);
+      return cache;
+    },
+    getServerSnapshot(): T {
+      return fallback;
+    },
+    set(value: T) {
+      cache = value;
+      writeStorage(key, value);
+      listeners.forEach((listener) => listener());
+    },
+  };
 }
 
-export function subscribeMaterialView(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
+const adminView = createModeStore<MaterialViewMode>("material-view-mode", VIEW_MODES, "list");
+const adminSort = createModeStore<MaterialSortMode>("material-sort-mode", SORT_MODES, "custom");
+const customerView = createModeStore<MaterialViewMode>("customer-material-view-mode", VIEW_MODES, "list");
+const customerSort = createModeStore<MaterialSortMode>("customer-material-sort-mode", SORT_MODES, "custom");
 
-export function getMaterialViewModeSnapshot(): MaterialViewMode {
-  if (viewModeCache === null) viewModeCache = readStorage(VIEW_MODE_KEY, VIEW_MODES, "list");
-  return viewModeCache;
-}
+export const subscribeMaterialView = adminView.subscribe;
+export const getMaterialViewModeSnapshot = adminView.getSnapshot;
+export const getMaterialViewModeServerSnapshot = adminView.getServerSnapshot;
+export const setMaterialViewMode = adminView.set;
 
-export function getMaterialViewModeServerSnapshot(): MaterialViewMode {
-  return "list";
-}
+export const subscribeMaterialSort = adminSort.subscribe;
+export const getMaterialSortModeSnapshot = adminSort.getSnapshot;
+export const getMaterialSortModeServerSnapshot = adminSort.getServerSnapshot;
+export const setMaterialSortMode = adminSort.set;
 
-export function setMaterialViewMode(mode: MaterialViewMode) {
-  viewModeCache = mode;
-  writeStorage(VIEW_MODE_KEY, mode);
-  notify();
-}
+export const subscribeCustomerMaterialView = customerView.subscribe;
+export const getCustomerMaterialViewModeSnapshot = customerView.getSnapshot;
+export const getCustomerMaterialViewModeServerSnapshot = customerView.getServerSnapshot;
+export const setCustomerMaterialViewMode = customerView.set;
 
-export function getMaterialSortModeSnapshot(): MaterialSortMode {
-  if (sortModeCache === null) sortModeCache = readStorage(SORT_MODE_KEY, SORT_MODES, "custom");
-  return sortModeCache;
-}
-
-export function getMaterialSortModeServerSnapshot(): MaterialSortMode {
-  return "custom";
-}
-
-export function setMaterialSortMode(mode: MaterialSortMode) {
-  sortModeCache = mode;
-  writeStorage(SORT_MODE_KEY, mode);
-  notify();
-}
+export const subscribeCustomerMaterialSort = customerSort.subscribe;
+export const getCustomerMaterialSortModeSnapshot = customerSort.getSnapshot;
+export const getCustomerMaterialSortModeServerSnapshot = customerSort.getServerSnapshot;
+export const setCustomerMaterialSortMode = customerSort.set;
 
 export function sortFolders<T extends MaterialFolder>(folders: T[], mode: MaterialSortMode): T[] {
   const sorted = [...folders];
