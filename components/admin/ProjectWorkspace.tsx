@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { MoreHorizontal, Pencil } from "lucide-react";
+import Link from "next/link";
+import { Eye, MoreHorizontal, Pencil } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { BackLink } from "@/components/admin/BackLink";
 import { ClientProjectForm } from "@/components/admin/ClientProjectForm";
@@ -80,6 +81,15 @@ export function ProjectWorkspace({
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
+          {project.customerId && (
+            <Link
+              href={`/admin/kunder/${project.customerId}/kundvy/projekt/${project.id}`}
+              className="flex items-center gap-1.5 rounded-full bg-lavender/10 px-3.5 py-1.5 text-xs font-medium text-lavender transition-colors hover:bg-lavender/20"
+            >
+              <Eye size={13} strokeWidth={2.25} />
+              Visa som kund
+            </Link>
+          )}
           <ProjectStatusSelect projectId={project.id} status={project.status} />
           <div className="relative" ref={menuRef}>
             <button
@@ -133,7 +143,7 @@ export function ProjectWorkspace({
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <div className="flex flex-col gap-6 lg:col-span-2">
             <OverviewCard overview={project.overview} onEdit={() => setEditing(true)} />
-            <CustomerViewCard project={project} onEdit={() => setEditing(true)} />
+            <CustomerViewCard project={project} />
             <ProjectChecklist projectId={project.id} items={checklist} />
             <ProjectFilesSection projectId={project.id} customerId={project.customerId} files={files} />
             <ApprovalsSection

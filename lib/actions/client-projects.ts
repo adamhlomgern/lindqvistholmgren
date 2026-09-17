@@ -33,12 +33,29 @@ function parsePhaseLabels(raw: FormDataEntryValue | null): string[] | null {
   return labels.length > 0 ? labels : null;
 }
 
+// Grunduppgifter only — title, customer, assignee, deadline, the internal
+// overview/notes. The customer-facing fields (status update, phase, next
+// milestone, what's awaiting the customer) are a separate concern, edited
+// inline on the project page via updateCustomerView/parseCustomerViewForm
+// below, not through this form — see CustomerViewCard.
 function parseClientProjectForm(formData: FormData) {
   const statusRaw = String(formData.get("status") ?? "");
   const status = VALID_STATUSES.includes(statusRaw as ClientProjectStatus)
     ? (statusRaw as ClientProjectStatus)
     : undefined;
 
+  return {
+    title: String(formData.get("title") ?? "").trim(),
+    customer_id: String(formData.get("customerId") ?? "").trim() || null,
+    assignee_entity_id: String(formData.get("assigneeEntityId") ?? "").trim() || null,
+    deadline: String(formData.get("deadline") ?? "").trim() || null,
+    overview: String(formData.get("overview") ?? "").trim() || null,
+    notes: String(formData.get("notes") ?? "").trim() || null,
+    ...(status ? { status } : {}),
+  };
+}
+
+function parseCustomerViewForm(formData: FormData) {
   const phaseLabels = parsePhaseLabels(formData.get("phaseLabels"));
   const phaseCurrentRaw = Number(formData.get("phaseCurrent"));
   const phaseCurrent = phaseLabels && Number.isInteger(phaseCurrentRaw) ? Math.min(Math.max(phaseCurrentRaw, 0), phaseLabels.length - 1) : null;
@@ -52,12 +69,6 @@ function parseClientProjectForm(formData: FormData) {
     : null;
 
   return {
-    title: String(formData.get("title") ?? "").trim(),
-    customer_id: String(formData.get("customerId") ?? "").trim() || null,
-    assignee_entity_id: String(formData.get("assigneeEntityId") ?? "").trim() || null,
-    deadline: String(formData.get("deadline") ?? "").trim() || null,
-    overview: String(formData.get("overview") ?? "").trim() || null,
-    notes: String(formData.get("notes") ?? "").trim() || null,
     customer_update: String(formData.get("customerUpdate") ?? "").trim() || null,
     next_milestone_label: String(formData.get("nextMilestoneLabel") ?? "").trim() || null,
     next_milestone_date: String(formData.get("nextMilestoneDate") ?? "").trim() || null,
@@ -67,7 +78,6 @@ function parseClientProjectForm(formData: FormData) {
     awaiting_customer_label: awaitingCustomerLabel,
     awaiting_customer_type: awaitingCustomerType,
     awaiting_customer_due: String(formData.get("awaitingCustomerDue") ?? "").trim() || null,
-    ...(status ? { status } : {}),
   };
 }
 
@@ -100,11 +110,7 @@ export async function createClientProject(
   }
 
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("client_projects")
-    .insert({ ...row, customer_update_at: row.customer_update ? new Date().toISOString() : null })
-    .select("id")
-    .single();
+  const { data, error } = await supabase.from("client_projects").insert(row).select("id").single();
 
   if (error) {
     return { error: `Kunde inte skapa projektet: ${error.message}` };
@@ -173,8 +179,38 @@ export async function updateClientProject(
 
   const supabase = createServiceRoleClient();
 
+  const { error } = await supabase
+    .from("client_projects")
+    .update({ ...row, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (error) {
+    return { error: `Kunde inte spara ändringarna: ${error.message}` };
+  }
+
+  await logProjectActivity(id, "Projektinfo uppdaterades");
+
+  revalidatePath("/admin/projekt");
+  revalidatePath(`/admin/projekt/${id}`);
+  redirect(`/admin/projekt/${id}`);
+}
+
+// Separate from updateClientProject — this is the inline "Kundvy" card on
+// the project page, edited without leaving the page (no redirect), so the
+// customer-facing fields don't have to live in the same big form as the
+// internal grunduppgifter. See parseCustomerViewForm's comment.
+export async function updateCustomerView(
+  id: string,
+  _prevState: ClientProjectFormState,
+  formData: FormData,
+): Promise<ClientProjectFormState> {
+  await verifySession();
+  const row = parseCustomerViewForm(formData);
+
+  const supabase = createServiceRoleClient();
+
   // customer_update_at should only move when the customer-facing text
-  // actually changes, not on every save of the project (deadline, notes,
+  // actually changes, not on every save of this card (phase, milestone,
   // ...) — otherwise "senast uppdaterat" in the kundportal would be
   // meaningless. Cheapest way to know that without threading extra state
   // through the form is to read the current value back first.
@@ -200,11 +236,11 @@ export async function updateClientProject(
     return { error: `Kunde inte spara ändringarna: ${error.message}` };
   }
 
-  await logProjectActivity(id, "Projektinfo uppdaterades");
+  await logProjectActivity(id, "Kundvyn uppdaterades");
 
   revalidatePath("/admin/projekt");
   revalidatePath(`/admin/projekt/${id}`);
-  redirect(`/admin/projekt/${id}`);
+  revalidatePath("/kund/projekt", "layout");
 }
 
 export async function setClientProjectStatus(id: string, status: ClientProjectStatus) {
