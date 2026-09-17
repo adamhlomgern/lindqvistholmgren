@@ -3,6 +3,7 @@
 import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
+  Check,
   ChevronDown,
   ChevronUp,
   File,
@@ -16,6 +17,7 @@ import {
   Star,
   Trash2,
   Upload,
+  X,
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
@@ -82,6 +84,38 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
   const [instructionOpen, setInstructionOpen] = useState(false);
   const [linkOpen, setLinkOpen] = useState(false);
   const [moveTarget, setMoveTarget] = useState<MoveTarget | null>(null);
+
+  const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const selectionCount = selectedFolders.size + selectedItems.size;
+
+  function toggleFolderSelected(id: string) {
+    setSelectedFolders((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function toggleItemSelected(id: string) {
+    setSelectedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+  function clearSelection() {
+    setSelectedFolders(new Set());
+    setSelectedItems(new Set());
+  }
+  function openBulkMove() {
+    setMoveTarget({
+      itemIds: [...selectedItems],
+      folderIds: [...selectedFolders],
+      label: selectionCount === 1 ? (folders.find((f) => selectedFolders.has(f.id))?.name ?? items.find((i) => selectedItems.has(i.id))?.title ?? "") : `${selectionCount} objekt`,
+    });
+  }
 
   // getServerSnapshot matches the server-rendered first paint (list/custom)
   // so hydration never mismatches; the real value (from localStorage) kicks
@@ -179,13 +213,34 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <MaterialViewControls
           sortMode={sortMode}
           onSortModeChange={setMaterialSortMode}
           viewMode={viewMode}
           onViewModeChange={setMaterialViewMode}
         />
+        {selectionCount > 0 && (
+          <div className="flex items-center gap-2 rounded-full bg-emerald/10 py-1.5 pl-4 pr-1.5">
+            <p className="text-sm font-medium text-bone">{selectionCount} valda</p>
+            <button
+              type="button"
+              onClick={openBulkMove}
+              className="flex items-center gap-1.5 rounded-full bg-emerald px-3.5 py-1.5 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+            >
+              <FolderInput size={13} strokeWidth={2.5} />
+              Flytta
+            </button>
+            <button
+              type="button"
+              onClick={clearSelection}
+              aria-label="Avmarkera allt"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+            >
+              <X size={14} strokeWidth={2.25} />
+            </button>
+          </div>
+        )}
       </div>
 
       {folders.length === 0 && items.length === 0 ? (
@@ -206,6 +261,8 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               onMove={(direction) => moveFolder(folder.id, direction)}
               onRename={() => setFolderDialog({ folder })}
               onMoveTo={() => setMoveTarget({ itemIds: [], folderIds: [folder.id], label: folder.name })}
+              selected={selectedFolders.has(folder.id)}
+              onToggleSelect={() => toggleFolderSelected(folder.id)}
             />
           ))}
           {sortedItems.map((item, index) => (
@@ -218,6 +275,8 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               isLast={index === sortedItems.length - 1}
               onMove={(direction) => moveItem(item.id, direction)}
               onMoveTo={() => setMoveTarget({ itemIds: [item.id], folderIds: [], label: item.title })}
+              selected={selectedItems.has(item.id)}
+              onToggleSelect={() => toggleItemSelected(item.id)}
             />
           ))}
         </div>
@@ -235,6 +294,8 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               onMove={(direction) => moveFolder(folder.id, direction)}
               onRename={() => setFolderDialog({ folder })}
               onMoveTo={() => setMoveTarget({ itemIds: [], folderIds: [folder.id], label: folder.name })}
+              selected={selectedFolders.has(folder.id)}
+              onToggleSelect={() => toggleFolderSelected(folder.id)}
             />
           ))}
           {sortedItems.map((item, index) => (
@@ -247,6 +308,8 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               isLast={index === sortedItems.length - 1}
               onMove={(direction) => moveItem(item.id, direction)}
               onMoveTo={() => setMoveTarget({ itemIds: [item.id], folderIds: [], label: item.title })}
+              selected={selectedItems.has(item.id)}
+              onToggleSelect={() => toggleItemSelected(item.id)}
             />
           ))}
         </div>
@@ -267,7 +330,10 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
       {moveTarget && (
         <MaterialMoveDialog
           open
-          onClose={() => setMoveTarget(null)}
+          onClose={() => {
+            setMoveTarget(null);
+            clearSelection();
+          }}
           customerId={customerId}
           folderTree={folderTree}
           itemIds={moveTarget.itemIds}
@@ -315,6 +381,29 @@ function ReorderButtons({
   );
 }
 
+// A plain <button type="button"> that calls preventDefault()/stopPropagation()
+// works nested inside a Link (folder cards are themselves links) — the click
+// never reaches the anchor's default navigation.
+function SelectCheckbox({ checked, onToggle, label }: { checked: boolean; onToggle: () => void; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onToggle();
+      }}
+      aria-pressed={checked}
+      aria-label={label}
+      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
+        checked ? "border-emerald bg-emerald text-charcoal" : "border-bone/30 text-transparent hover:border-bone/50"
+      }`}
+    >
+      <Check size={12} strokeWidth={3} />
+    </button>
+  );
+}
+
 type FolderRowProps = {
   folder: MaterialFolder;
   basePath: string;
@@ -325,18 +414,23 @@ type FolderRowProps = {
   onMove: (direction: -1 | 1) => void;
   onRename: () => void;
   onMoveTo: () => void;
+  selected: boolean;
+  onToggleSelect: () => void;
 };
 
-function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, onRename, onMoveTo, customerId }: FolderRowProps) {
+function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, onRename, onMoveTo, customerId, selected, onToggleSelect }: FolderRowProps) {
   return (
     <Card className="flex items-center justify-between gap-3">
-      <Link href={`${basePath}/${folder.id}`} className="flex min-w-0 flex-1 items-center gap-3">
-        <FolderIcon size={18} strokeWidth={2} className="shrink-0 text-peach" />
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-bone">{folder.name}</p>
-          {folder.description && <p className="truncate text-xs text-stone">{folder.description}</p>}
-        </div>
-      </Link>
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${folder.name}"`} />
+        <Link href={`${basePath}/${folder.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+          <FolderIcon size={18} strokeWidth={2} className="shrink-0 text-peach" />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-bone">{folder.name}</p>
+            {folder.description && <p className="truncate text-xs text-stone">{folder.description}</p>}
+          </div>
+        </Link>
+      </div>
       <div className="flex shrink-0 items-center gap-1">
         {canReorder && <ReorderButtons isFirst={isFirst} isLast={isLast} onMove={onMove} />}
         <button
@@ -376,9 +470,12 @@ function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, 
   );
 }
 
-function FolderGridCard({ folder, basePath, canReorder, isFirst, isLast, onMove, onRename, onMoveTo, customerId }: FolderRowProps) {
+function FolderGridCard({ folder, basePath, canReorder, isFirst, isLast, onMove, onRename, onMoveTo, customerId, selected, onToggleSelect }: FolderRowProps) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3">
+    <div className="relative flex flex-col items-center gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3">
+      <div className="absolute left-1.5 top-1.5">
+        <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${folder.name}"`} />
+      </div>
       <Link href={`${basePath}/${folder.id}`} className="flex w-full flex-1 flex-col items-center gap-2 text-center">
         <FolderIcon size={26} strokeWidth={1.75} className="text-peach" />
         <p className="line-clamp-2 text-xs font-medium text-bone">{folder.name}</p>
@@ -430,13 +527,16 @@ type ItemRowProps = {
   isLast: boolean;
   onMove: (direction: -1 | 1) => void;
   onMoveTo: () => void;
+  selected: boolean;
+  onToggleSelect: () => void;
 };
 
-function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo }: ItemRowProps) {
+function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, selected, onToggleSelect }: ItemRowProps) {
   const TypeIcon = typeIcons[item.type];
   return (
     <Card className="flex items-center justify-between gap-3">
       <div className="flex min-w-0 flex-1 items-center gap-3">
+        <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
         <TypeIcon size={18} strokeWidth={2} className="shrink-0 text-stone" />
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-bone">{item.title}</p>
@@ -490,12 +590,15 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
   );
 }
 
-function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo }: ItemRowProps) {
+function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, selected, onToggleSelect }: ItemRowProps) {
   const TypeIcon = typeIcons[item.type];
   const isImage = item.type === "file" && item.contentType?.startsWith("image/");
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl border border-bone/10 bg-bone/5">
+    <div className="relative flex flex-col overflow-hidden rounded-xl border border-bone/10 bg-bone/5">
+      <div className="absolute left-1.5 top-1.5 z-10">
+        <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
+      </div>
       <a
         href={item.downloadUrl ?? "#"}
         target="_blank"
