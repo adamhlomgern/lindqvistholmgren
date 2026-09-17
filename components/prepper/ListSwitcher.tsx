@@ -96,10 +96,13 @@ function SwitcherBody({ notebookId, notebookName, checklists, activeChecklistId,
         <ArrowLeft size={12} strokeWidth={2} />
         Arbetsböcker
       </Link>
-      <div className="flex items-center gap-2 px-1 pb-3">
+      <div className="flex items-center gap-2 px-1 pb-4">
         <ListChecks size={14} strokeWidth={2} className="text-prepper-primary/70" />
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-prepper-primary/70">{notebookName}</p>
       </div>
+      <p className="px-1 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-prepper-text-faint">
+        Listor
+      </p>
       <div className="flex flex-col gap-1">
         {checklists.map((checklist) => (
           <ChecklistLink
