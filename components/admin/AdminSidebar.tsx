@@ -131,6 +131,9 @@ export function AdminSidebar({
 
   const allRoutes = [primaryItem, ...groups.flatMap((g) => g.items), ...articleSubItems, settingsItem];
   const currentLabel = allRoutes.find((item) => isActive(pathname, item.href))?.label ?? "Admin";
+  // Same count as the Inkorg badge — lets the collapsed mobile bar hint at
+  // new mail/chat without the admin having to open the menu first.
+  const hasNewInboxActivity = waitingChatCount + newEmailsCount > 0;
 
   useEffect(() => {
     if (!open) return;
@@ -175,8 +178,17 @@ export function AdminSidebar({
           aria-label="Öppna meny"
           className="-ml-1.5 flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-3 text-bone active:bg-bone/5"
         >
-          <Menu size={20} strokeWidth={2} />
+          <span className="relative flex">
+            <Menu size={20} strokeWidth={2} />
+            {hasNewInboxActivity && (
+              <span
+                aria-hidden="true"
+                className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-coral"
+              />
+            )}
+          </span>
           <span className="font-display text-sm font-bold">{currentLabel}</span>
+          {hasNewInboxActivity && <span className="sr-only">Nya mejl eller meddelanden</span>}
         </button>
         <form action={logout}>
           <button
