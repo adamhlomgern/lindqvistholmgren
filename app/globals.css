@@ -156,6 +156,64 @@ body {
   --color-forma-danger-soft: #f6ddd8;
 }
 
+/* Prepper (private checklist app, app/admin/appar/prepper/*) — its own token
+   namespace, same reasoning as Forma above: Prepper is a deliberately
+   different product (warm, editorial, lavender/burgundy) nested inside the
+   admin area, never touching the forest/bone admin chrome or components/ui's
+   admin styling. Built as a reusable ramp (raw lavender/burgundy/neutral
+   scale) plus semantic tokens on top, so the same ramp can later be reused
+   for lindqvistholmgren.se's own palette without re-deriving it. */
+@theme {
+  --color-prepper-lavender-50: #f7f4fa;
+  --color-prepper-lavender-100: #eee8f3;
+  --color-prepper-lavender-200: #ddd3e8;
+  --color-prepper-lavender-300: #c9bcda;
+  --color-prepper-lavender-400: #b0a0c8;
+  --color-prepper-lavender-500: #9583b1;
+  --color-prepper-lavender-600: #78678f;
+
+  --color-prepper-burgundy-50: #f8f1ef;
+  --color-prepper-burgundy-100: #eedcd7;
+  --color-prepper-burgundy-200: #dab7ae;
+  --color-prepper-burgundy-300: #be8b7f;
+  --color-prepper-burgundy-400: #a26658;
+  --color-prepper-burgundy-500: #874938;
+  --color-prepper-burgundy-600: #70392d;
+  --color-prepper-burgundy-700: #572a24;
+  --color-prepper-burgundy-800: #401f1c;
+
+  --color-prepper-cream: #fbf8f3;
+  --color-prepper-paper: #fdfbf8;
+  --color-prepper-ink: #3a292d;
+  --color-prepper-muted-ink: #75666d;
+
+  --color-prepper-success-bg: #e7ece3;
+  --color-prepper-success-text: #46533f;
+
+  /* Semantic layer — components should reach for these, not the raw ramp
+     above, so a future re-theme only touches this block. */
+  --color-prepper-background: var(--color-prepper-lavender-100);
+  --color-prepper-surface: var(--color-prepper-paper);
+  --color-prepper-surface-soft: var(--color-prepper-lavender-50);
+  --color-prepper-text: var(--color-prepper-ink);
+  --color-prepper-text-muted: var(--color-prepper-muted-ink);
+  --color-prepper-primary: var(--color-prepper-burgundy-500);
+  --color-prepper-primary-hover: var(--color-prepper-burgundy-600);
+  --color-prepper-accent: var(--color-prepper-lavender-400);
+  --color-prepper-border: var(--color-prepper-lavender-200);
+  --color-prepper-completed: var(--color-prepper-success-bg);
+  --color-prepper-completed-text: var(--color-prepper-success-text);
+  --color-prepper-focus: var(--color-prepper-burgundy-500);
+
+  /* Inverted surfaces — nav sheet header, progress summary, welcome state,
+     milestone cards (per brief). */
+  --color-prepper-inverse-bg: var(--color-prepper-burgundy-700);
+  --color-prepper-inverse-text: var(--color-prepper-lavender-100);
+  --color-prepper-inverse-text-muted: var(--color-prepper-lavender-300);
+
+  --font-prepper-display: var(--font-prepper-serif), Georgia, serif;
+}
+
 @layer base {
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

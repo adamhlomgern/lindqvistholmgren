@@ -427,3 +427,71 @@ export type ProjectInquiry = {
   email: string;
   phone: string;
 };
+
+// Prepper (privat checklist-app, app/admin/appar/prepper/*) —
+// Notebook -> Checklist -> Section -> Item -> Subtask.
+export type PrepperNotebook = {
+  id: string;
+  name: string;
+  description?: string;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PrepperChecklist = {
+  id: string;
+  notebookId: string;
+  title: string;
+  description?: string;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PrepperSubtask = {
+  id: string;
+  itemId: string;
+  title: string;
+  completed: boolean;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  completedBy?: string;
+  completedAt?: string;
+};
+
+export type PrepperItem = {
+  id: string;
+  sectionId: string;
+  title: string;
+  note?: string;
+  completed: boolean;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  updatedBy?: string;
+  completedBy?: string;
+  completedAt?: string;
+  subtasks: PrepperSubtask[];
+};
+
+export type PrepperSection = {
+  id: string;
+  checklistId: string;
+  title: string;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  items: PrepperItem[];
+};
+
+// The full tree for one checklist — what the checklist screen renders from.
+export type PrepperChecklistDetail = PrepperChecklist & {
+  sections: PrepperSection[];
+};

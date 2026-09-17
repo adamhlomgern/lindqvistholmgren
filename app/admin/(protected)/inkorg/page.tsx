@@ -13,6 +13,7 @@ import { BlockSenderButton } from "@/components/admin/BlockSenderButton";
 import { CollapsibleSection } from "@/components/admin/CollapsibleSection";
 import { formatDateSv, formatRelativeSv } from "@/lib/format";
 import { Select } from "@/components/ui/Select";
+import { RECENT_EMAIL_WINDOW_DAYS } from "@/lib/constants";
 
 type Props = { searchParams: Promise<{ tab?: string }> };
 
@@ -28,6 +29,9 @@ export default async function AdminInboxPage({ searchParams }: Props) {
   ]);
   const attachmentCounts = await getEmailAttachmentCounts(emails.map((email) => email.id));
   const waitingThreadsCount = threads.filter((thread) => thread.latestMessage.authorRole === "customer").length;
+  const newEmailsCutoff = new Date();
+  newEmailsCutoff.setDate(newEmailsCutoff.getDate() - RECENT_EMAIL_WINDOW_DAYS);
+  const newEmailsCount = emails.filter((email) => new Date(email.receivedAt) >= newEmailsCutoff).length;
 
   return (
     <div>
@@ -47,6 +51,11 @@ export default async function AdminInboxPage({ searchParams }: Props) {
         >
           <Inbox size={15} strokeWidth={2.25} />
           Mejl
+          {newEmailsCount > 0 && (
+            <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[11px] font-semibold text-coral">
+              {newEmailsCount}
+            </span>
+          )}
         </Link>
         <Link
           href="/admin/inkorg?tab=chatt"
