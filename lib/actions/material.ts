@@ -281,6 +281,32 @@ export async function moveMaterialItems(
   revalidateMaterial(customerId);
 }
 
+// "Egen ordning" reordering (move up/down) — takes the whole sibling group
+// in its new order and writes positions 0..n from scratch, rather than
+// swapping two rows, so the client only has to know the order it wants, not
+// juggle position numbers itself.
+export async function setMaterialFolderOrder(customerId: string, orderedFolderIds: string[]) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await Promise.all(
+    orderedFolderIds.map((id, position) =>
+      supabase.from("material_folders").update({ position, updated_at: new Date().toISOString() }).eq("id", id),
+    ),
+  );
+  revalidateMaterial(customerId);
+}
+
+export async function setMaterialItemOrder(customerId: string, orderedItemIds: string[]) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await Promise.all(
+    orderedItemIds.map((id, position) =>
+      supabase.from("material_items").update({ position, updated_at: new Date().toISOString() }).eq("id", id),
+    ),
+  );
+  revalidateMaterial(customerId);
+}
+
 export async function setMaterialItemVisibility(customerId: string, itemId: string, visibility: MaterialVisibility) {
   await verifySession();
   const supabase = createServiceRoleClient();
