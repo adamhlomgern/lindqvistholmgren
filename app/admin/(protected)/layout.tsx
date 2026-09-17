@@ -10,11 +10,11 @@ import { getUnreadEmailCount } from "@/lib/data/emails";
 import { resolveAdminDisplayName } from "@/lib/format";
 import { RECENT_INQUIRY_WINDOW_DAYS } from "@/lib/constants";
 
-// This layout wraps every admin page, so these four queries used to run on
+// This layout wraps every admin page, so these five queries used to run on
 // every single navigation (auth alone can't be cached — it's checked fresh
 // below via verifySession — but these are just sidebar badge counts, not
 // the page content itself). Caching them briefly trades up to ~20s of badge
-// staleness for cutting four Supabase round trips off of every click. Pages
+// staleness for cutting five Supabase round trips off of every click. Pages
 // that actually show this data (dashboard, Fakturor, Projekt, Inkorg) call
 // the same underlying functions directly, uncached, so their own content is
 // always current — only the sidebar numbers lag.
