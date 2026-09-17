@@ -139,7 +139,7 @@ export function Section({
           type="button"
           onClick={() => setEditingTitle(true)}
           aria-label="Byt namn på sektion"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-prepper-text-muted opacity-0 transition-opacity hover:text-prepper-primary focus-visible:opacity-100 sm:group-hover:opacity-100"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-prepper-text-muted transition-opacity hover:text-prepper-primary sm:opacity-0 sm:focus-visible:opacity-100 sm:group-hover:opacity-100"
         >
           <PenLine size={13} strokeWidth={2} />
         </button>
@@ -147,7 +147,7 @@ export function Section({
           type="button"
           onClick={onDeleteSection}
           aria-label="Ta bort sektion"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-prepper-text-muted opacity-0 transition-opacity hover:text-prepper-primary focus-visible:opacity-100 sm:group-hover:opacity-100"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-prepper-text-muted transition-opacity hover:text-prepper-primary sm:opacity-0 sm:focus-visible:opacity-100 sm:group-hover:opacity-100"
         >
           <Trash2 size={13} strokeWidth={2} />
         </button>
