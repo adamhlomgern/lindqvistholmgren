@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ListChecks, Plus, X } from "lucide-react";
+import { ArrowLeft, ListChecks, Plus, X } from "lucide-react";
 import type { PrepperChecklistSummary } from "@/lib/data/prepper";
 import { createChecklist } from "@/lib/actions/prepper";
 import { ProgressBar } from "@/components/prepper/ProgressBar";
@@ -88,6 +88,14 @@ function CreateChecklistForm({ notebookId, onCreated }: { notebookId: string; on
 function SwitcherBody({ notebookId, notebookName, checklists, activeChecklistId, onNavigate }: Omit<Props, "open" | "onClose"> & { onNavigate: () => void }) {
   return (
     <>
+      <Link
+        href="/admin/appar/prepper"
+        onClick={onNavigate}
+        className="mb-3 inline-flex items-center gap-1.5 px-1 text-xs font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
+      >
+        <ArrowLeft size={12} strokeWidth={2} />
+        Arbetsböcker
+      </Link>
       <div className="flex items-center gap-2 px-1 pb-3">
         <ListChecks size={14} strokeWidth={2} className="text-prepper-primary/70" />
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-prepper-primary/70">{notebookName}</p>
