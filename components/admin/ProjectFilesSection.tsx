@@ -1,8 +1,12 @@
-import { Paperclip } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Paperclip, Pencil } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { ProjectFileUploadForm } from "@/components/admin/ProjectFileUploadForm";
 import { DeleteProjectFileButton } from "@/components/admin/DeleteProjectFileButton";
 import { MaterialVisibilityToggle } from "@/components/admin/MaterialVisibilityToggle";
+import { MaterialItemRenameDialog } from "@/components/admin/MaterialItemRenameDialog";
 import { FileThumb } from "@/components/admin/FileThumb";
 import { deleteMaterialItem } from "@/lib/actions/material";
 import type { MaterialItem } from "@/lib/types";
@@ -16,6 +20,8 @@ export function ProjectFilesSection({
   customerId?: string;
   files: (MaterialItem & { downloadUrl: string | null })[];
 }) {
+  const [renameTarget, setRenameTarget] = useState<{ id: string; title: string } | null>(null);
+
   return (
     <Card>
       <div className="flex items-center justify-between">
@@ -56,10 +62,20 @@ export function ProjectFilesSection({
                   />
                 }
                 action={
-                  <DeleteProjectFileButton
-                    action={deleteMaterialItem.bind(null, customerId, file.id, file.storagePath ?? null)}
-                    filename={file.filename ?? file.title}
-                  />
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setRenameTarget({ id: file.id, title: file.title })}
+                      aria-label={`Byt namn på "${file.title}"`}
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-stone/70 transition-colors hover:bg-bone/10 hover:text-bone"
+                    >
+                      <Pencil size={12} strokeWidth={2.25} />
+                    </button>
+                    <DeleteProjectFileButton
+                      action={deleteMaterialItem.bind(null, customerId, file.id, file.storagePath ?? null)}
+                      filename={file.filename ?? file.title}
+                    />
+                  </div>
                 }
               />
             ))}
@@ -67,6 +83,15 @@ export function ProjectFilesSection({
           <div className="mt-3">
             <ProjectFileUploadForm projectId={projectId} customerId={customerId} />
           </div>
+          {renameTarget && (
+            <MaterialItemRenameDialog
+              open
+              onClose={() => setRenameTarget(null)}
+              customerId={customerId}
+              itemId={renameTarget.id}
+              title={renameTarget.title}
+            />
+          )}
         </>
       ) : (
         // Files uploaded before the project's customer link was cleared —

@@ -29,6 +29,7 @@ import { MaterialVisibilityToggle } from "@/components/admin/MaterialVisibilityT
 import { MaterialViewControls } from "@/components/admin/MaterialViewControls";
 import { MaterialUploadDialog } from "@/components/admin/MaterialUploadDialog";
 import { MaterialFolderDialog } from "@/components/admin/MaterialFolderDialog";
+import { MaterialItemRenameDialog } from "@/components/admin/MaterialItemRenameDialog";
 import { MaterialInstructionDialog } from "@/components/admin/MaterialInstructionDialog";
 import { MaterialLinkDialog } from "@/components/admin/MaterialLinkDialog";
 import { MaterialMoveDialog } from "@/components/admin/MaterialMoveDialog";
@@ -89,6 +90,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
   const [instructionOpen, setInstructionOpen] = useState(false);
   const [linkOpen, setLinkOpen] = useState(false);
   const [moveTarget, setMoveTarget] = useState<MoveTarget | null>(null);
+  const [itemRenameTarget, setItemRenameTarget] = useState<{ id: string; title: string } | null>(null);
 
   const [search, setSearch] = useState("");
   const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
@@ -345,6 +347,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               isLast={index === sortedItems.length - 1}
               onMove={(direction) => moveItem(item.id, direction)}
               onMoveTo={() => setMoveTarget({ itemIds: [item.id], folderIds: [], label: item.title })}
+              onRename={() => setItemRenameTarget({ id: item.id, title: item.title })}
               selected={selectedItems.has(item.id)}
               onToggleSelect={() => toggleItemSelected(item.id)}
             />
@@ -378,6 +381,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               isLast={index === sortedItems.length - 1}
               onMove={(direction) => moveItem(item.id, direction)}
               onMoveTo={() => setMoveTarget({ itemIds: [item.id], folderIds: [], label: item.title })}
+              onRename={() => setItemRenameTarget({ id: item.id, title: item.title })}
               selected={selectedItems.has(item.id)}
               onToggleSelect={() => toggleItemSelected(item.id)}
             />
@@ -409,6 +413,15 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
           itemIds={moveTarget.itemIds}
           folderIds={moveTarget.folderIds}
           label={moveTarget.label}
+        />
+      )}
+      {itemRenameTarget && (
+        <MaterialItemRenameDialog
+          open
+          onClose={() => setItemRenameTarget(null)}
+          customerId={customerId}
+          itemId={itemRenameTarget.id}
+          title={itemRenameTarget.title}
         />
       )}
     </div>
@@ -597,11 +610,12 @@ type ItemRowProps = {
   isLast: boolean;
   onMove: (direction: -1 | 1) => void;
   onMoveTo: () => void;
+  onRename: () => void;
   selected: boolean;
   onToggleSelect: () => void;
 };
 
-function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, selected, onToggleSelect }: ItemRowProps) {
+function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, onRename, selected, onToggleSelect }: ItemRowProps) {
   const TypeIcon = typeIcons[item.type];
   const isImage = item.type === "file" && item.contentType?.startsWith("image/");
   return (
@@ -641,6 +655,14 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
         </button>
         <button
           type="button"
+          onClick={onRename}
+          aria-label="Byt namn"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+        >
+          <Pencil size={14} strokeWidth={2.25} />
+        </button>
+        <button
+          type="button"
           onClick={onMoveTo}
           aria-label="Flytta"
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
@@ -668,7 +690,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
   );
 }
 
-function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, selected, onToggleSelect }: ItemRowProps) {
+function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, onRename, selected, onToggleSelect }: ItemRowProps) {
   const TypeIcon = typeIcons[item.type];
   const isImage = item.type === "file" && item.contentType?.startsWith("image/");
 
@@ -716,6 +738,14 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             }`}
           >
             <Star size={12} strokeWidth={2.25} fill={item.pinned ? "currentColor" : "none"} />
+          </button>
+          <button
+            type="button"
+            onClick={onRename}
+            aria-label="Byt namn"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          >
+            <Pencil size={12} strokeWidth={2.25} />
           </button>
           <button
             type="button"

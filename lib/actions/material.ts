@@ -232,6 +232,24 @@ export async function insertMaterialFile(
   return {};
 }
 
+// Renames the display title only — for a file, `filename` (what a download
+// is actually saved as) and the storage path are left untouched, same as
+// renaming a file on a desktop doesn't change what's inside it.
+export async function renameMaterialItem(customerId: string, itemId: string, title: string) {
+  await verifySession();
+  const trimmedTitle = title.trim();
+  if (!trimmedTitle) return { error: "Namn krävs." };
+
+  const supabase = createServiceRoleClient();
+  const { error } = await supabase
+    .from("material_items")
+    .update({ title: trimmedTitle, updated_at: new Date().toISOString() })
+    .eq("id", itemId);
+
+  if (error) return { error: `Kunde inte spara: ${error.message}` };
+  revalidateMaterial(customerId);
+}
+
 export async function deleteMaterialItem(customerId: string, itemId: string, storagePath: string | null) {
   await verifySession();
   const supabase = createServiceRoleClient();
