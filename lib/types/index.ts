@@ -361,6 +361,12 @@ export type MaterialItem = {
 };
 
 export type ApprovalStatus = "pending" | "approved" | "changes_requested";
+// "feedback" is a lighter-weight ask (e.g. "which direction do you like?")
+// — same pending/approved/changes_requested mechanics underneath, but never
+// meant as a binding sign-off the way "approval" is. Distinct from each
+// other mainly in copy (request dialog, decision buttons) and the tag shown
+// on each row, not in workflow.
+export type ApprovalKind = "feedback" | "approval";
 
 export type ProjectApproval = {
   id: string;
@@ -368,6 +374,7 @@ export type ProjectApproval = {
   projectId: string;
   materialItemId: string;
   title: string;
+  kind: ApprovalKind;
   versionLabel?: string;
   message?: string;
   status: ApprovalStatus;

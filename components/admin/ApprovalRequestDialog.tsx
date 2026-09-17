@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { SlideOver } from "@/components/ui/SlideOver";
 import { Select } from "@/components/ui/Select";
 import { createApprovalRequest } from "@/lib/actions/approvals";
-import type { MaterialItem } from "@/lib/types";
+import type { ApprovalKind, MaterialItem } from "@/lib/types";
 
 const inputClasses =
   "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
@@ -18,12 +18,26 @@ type Props = {
   materialItems: (MaterialItem & { folderPath: string })[];
 };
 
+const kindOptions: { value: ApprovalKind; label: string; description: string }[] = [
+  {
+    value: "approval",
+    label: "Begär godkännande",
+    description: "Bindande sign-off, t.ex. en slutleverans kunden ska godkänna innan ni går vidare.",
+  },
+  {
+    value: "feedback",
+    label: "Be om återkoppling",
+    description: "Lättare fråga, t.ex. vilken riktning kunden gillar bäst — inte ett formellt godkännande.",
+  },
+];
+
 export function ApprovalRequestDialog({ open, onClose, projectId, customerId, materialItems }: Props) {
   const [state, formAction, pending] = useActionState(
     createApprovalRequest.bind(null, projectId, customerId),
     undefined,
   );
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const [kind, setKind] = useState<ApprovalKind>("approval");
 
   const wasPending = useRef(false);
   useEffect(() => {
@@ -32,8 +46,27 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
   }, [pending, state, onClose]);
 
   return (
-    <SlideOver open={open} onClose={onClose} title="Begär godkännande">
+    <SlideOver open={open} onClose={onClose} title="Be kunden titta på material">
       <form action={formAction} className="flex flex-col gap-5">
+        <div>
+          <span className="block text-xs font-medium uppercase tracking-label text-stone">Typ av begäran</span>
+          <input type="hidden" name="kind" value={kind} />
+          <div className="mt-2 flex flex-col gap-2">
+            {kindOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setKind(option.value)}
+                className={`rounded-lg border px-4 py-3 text-left transition-colors ${
+                  kind === option.value ? "border-emerald bg-emerald/10" : "border-bone/10 bg-bone/5 hover:bg-bone/[0.08]"
+                }`}
+              >
+                <span className="block text-sm font-medium text-bone">{option.label}</span>
+                <span className="mt-0.5 block text-xs text-stone">{option.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
         <div>
           <span className="block text-xs font-medium uppercase tracking-label text-stone">Material</span>
           <div className="mt-2">

@@ -32,6 +32,8 @@ export async function createApprovalRequest(
 
   const materialItemId = String(formData.get("materialItemId") ?? "").trim();
   const title = String(formData.get("title") ?? "").trim();
+  const kindRaw = String(formData.get("kind") ?? "");
+  const kind = kindRaw === "feedback" ? "feedback" : "approval";
   const versionLabel = String(formData.get("versionLabel") ?? "").trim() || null;
   const message = String(formData.get("message") ?? "").trim() || null;
   const dueAt = String(formData.get("dueAt") ?? "").trim() || null;
@@ -67,6 +69,7 @@ export async function createApprovalRequest(
       project_id: projectId,
       material_item_id: materialItemId,
       title,
+      kind,
       version_label: versionLabel,
       message,
       due_at: dueAt,

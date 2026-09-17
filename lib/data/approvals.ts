@@ -1,4 +1,4 @@
-import type { ApprovalStatus, MaterialItem, ProjectApproval } from "@/lib/types";
+import type { ApprovalKind, ApprovalStatus, MaterialItem, ProjectApproval } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { getMaterialItemById } from "@/lib/data/material";
 
@@ -8,6 +8,9 @@ type ProjectApprovalRow = {
   project_id: string;
   material_item_id: string;
   title: string;
+  // Nullable: rows created before the kind column existed. Treated as
+  // "approval" (the only kind that existed then), not left undefined.
+  kind: ApprovalKind | null;
   version_label: string | null;
   message: string | null;
   status: ApprovalStatus;
@@ -27,6 +30,7 @@ function toProjectApproval(row: ProjectApprovalRow): ProjectApproval {
     projectId: row.project_id,
     materialItemId: row.material_item_id,
     title: row.title,
+    kind: row.kind ?? "approval",
     versionLabel: row.version_label ?? undefined,
     message: row.message ?? undefined,
     status: row.status,

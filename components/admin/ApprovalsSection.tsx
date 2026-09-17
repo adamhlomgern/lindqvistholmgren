@@ -58,8 +58,11 @@ export function ApprovalsSection({ projectId, customerId, approvals, materialIte
                       {approval.title}
                       {approval.versionLabel && <span className="text-stone"> · {approval.versionLabel}</span>}
                     </p>
-                    <p className="mt-0.5 text-xs text-stone">
-                      Begärt {formatDateSv(approval.requestedAt)}
+                    <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs text-stone">
+                      <span className={approval.kind === "feedback" ? "text-lavender" : ""}>
+                        {approval.kind === "feedback" ? "Återkoppling" : "Godkännande"}
+                      </span>
+                      · Begärt {formatDateSv(approval.requestedAt)}
                       {approval.dueAt && ` · Svar önskas senast ${formatDateSv(approval.dueAt)}`}
                     </p>
                   </div>
