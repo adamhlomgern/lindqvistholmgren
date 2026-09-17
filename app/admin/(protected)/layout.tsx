@@ -6,6 +6,7 @@ import { getRecentInquiriesCount } from "@/lib/data/inquiries";
 import { getInvoiceStats } from "@/lib/data/invoices";
 import { getActiveClientProjectsCount } from "@/lib/data/client-projects";
 import { getWaitingChatThreadCount } from "@/lib/data/customer-messages";
+import { getUnreadEmailCount } from "@/lib/data/emails";
 import { resolveAdminDisplayName } from "@/lib/format";
 import { RECENT_INQUIRY_WINDOW_DAYS } from "@/lib/constants";
 
@@ -19,17 +20,19 @@ import { RECENT_INQUIRY_WINDOW_DAYS } from "@/lib/constants";
 // always current — only the sidebar numbers lag.
 const getCachedSidebarCounts = unstable_cache(
   async () => {
-    const [newInquiriesCount, invoiceStats, activeProjectsCount, waitingChatCount] = await Promise.all([
+    const [newInquiriesCount, invoiceStats, activeProjectsCount, waitingChatCount, unreadEmailCount] = await Promise.all([
       getRecentInquiriesCount(RECENT_INQUIRY_WINDOW_DAYS),
       getInvoiceStats(),
       getActiveClientProjectsCount(),
       getWaitingChatThreadCount(),
+      getUnreadEmailCount(),
     ]);
     return {
       newInquiriesCount,
       overdueInvoicesCount: invoiceStats.overdueCount,
       activeProjectsCount,
       waitingChatCount,
+      unreadEmailCount,
     };
   },
   ["admin-sidebar-counts"],
@@ -48,6 +51,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         overdueInvoicesCount={counts.overdueInvoicesCount}
         activeProjectsCount={counts.activeProjectsCount}
         waitingChatCount={counts.waitingChatCount}
+        unreadEmailCount={counts.unreadEmailCount}
       />
       <main className="w-full flex-1 px-4 py-6 sm:px-6 sm:py-10 md:overflow-y-auto md:px-10">
         <div className="mx-auto max-w-5xl">{children}</div>

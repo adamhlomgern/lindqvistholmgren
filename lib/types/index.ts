@@ -405,6 +405,9 @@ export type Email = {
   bodyHtml?: string;
   receivedAt: string;
   createdAt: string;
+  // Unset means never opened — set once, the first time an admin views the
+  // email's detail page, never cleared back to unset.
+  readAt?: string;
 };
 
 export type CustomerMember = {

@@ -58,6 +58,7 @@ type SidebarProps = {
   overdueInvoicesCount: number;
   activeProjectsCount: number;
   waitingChatCount: number;
+  unreadEmailCount: number;
 };
 
 export function AdminSidebar({
@@ -67,6 +68,7 @@ export function AdminSidebar({
   overdueInvoicesCount,
   activeProjectsCount,
   waitingChatCount,
+  unreadEmailCount,
 }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -101,7 +103,9 @@ export function AdminSidebar({
           href: "/admin/inkorg",
           label: "Inkorg",
           icon: Inbox,
-          badge: waitingChatCount || undefined,
+          // Mejl och kundchatt är olika system men delar en nav-post — badgen
+          // är summan, så "något väntar i Inkorg" alltid stämmer oavsett flik.
+          badge: waitingChatCount + unreadEmailCount || undefined,
           badgeAccent: "coral",
         },
       ],

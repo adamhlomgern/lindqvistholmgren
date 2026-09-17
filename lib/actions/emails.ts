@@ -31,6 +31,20 @@ async function tombstoneEmails(supabase: ReturnType<typeof createServiceRoleClie
     .upsert(rows, { onConflict: "message_id", ignoreDuplicates: true });
 }
 
+// Called directly from the detail page's Server Component render, not a
+// form/button — opening the email IS the read receipt. No-ops (skips the
+// write) once already set, so re-opening an already-read email doesn't
+// bump updated_at or fire a redundant revalidate on every view.
+export async function markEmailRead(emailId: string) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  const { data } = await supabase.from("emails").select("read_at").eq("id", emailId).maybeSingle();
+  if (data?.read_at) return;
+
+  await supabase.from("emails").update({ read_at: new Date().toISOString() }).eq("id", emailId);
+  revalidatePath("/admin/inkorg");
+}
+
 export async function matchEmailToCustomer(emailId: string, customerId: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
