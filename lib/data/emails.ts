@@ -102,6 +102,27 @@ export async function getLastEmailContactByCustomer(): Promise<Map<string, strin
   return lastContact;
 }
 
+// Count of mail synced within the last `days` days — powers the Inkorg
+// sidebar/tab notification badge, so the admin can see at a glance that new
+// mail arrived without opening the inbox.
+export async function getRecentEmailsCount(days: number): Promise<number> {
+  const supabase = createServiceRoleClient();
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+
+  const { count, error } = await supabase
+    .from("emails")
+    .select("*", { count: "exact", head: true })
+    .gte("received_at", cutoff.toISOString());
+
+  if (error) {
+    console.error("[getRecentEmailsCount] Supabase-fråga misslyckades", error);
+    return 0;
+  }
+
+  return count ?? 0;
+}
+
 export async function getEmailsCount(): Promise<number> {
   const supabase = createServiceRoleClient();
   const { count, error } = await supabase.from("emails").select("*", { count: "exact", head: true });

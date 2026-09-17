@@ -58,6 +58,7 @@ type SidebarProps = {
   overdueInvoicesCount: number;
   activeProjectsCount: number;
   waitingChatCount: number;
+  newEmailsCount: number;
 };
 
 export function AdminSidebar({
@@ -67,6 +68,7 @@ export function AdminSidebar({
   overdueInvoicesCount,
   activeProjectsCount,
   waitingChatCount,
+  newEmailsCount,
 }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -101,7 +103,7 @@ export function AdminSidebar({
           href: "/admin/inkorg",
           label: "Inkorg",
           icon: Inbox,
-          badge: waitingChatCount || undefined,
+          badge: waitingChatCount + newEmailsCount || undefined,
           badgeAccent: "coral",
         },
       ],

@@ -4,6 +4,11 @@ import type { ArticleIconKey, ProjectBudget, ProjectCategory, ProjectTimeline } 
 // Förfrågningar badge, so the two numbers never drift apart.
 export const RECENT_INQUIRY_WINDOW_DAYS = 7;
 
+// Mail syncs in every ~10 minutes (see app/api/cron/email-sync), so a much
+// shorter window than inquiries is enough to flag mail as "new" for the
+// Inkorg notification badge.
+export const RECENT_EMAIL_WINDOW_DAYS = 1;
+
 export const projectCategories: ProjectCategory[] = [
   "grafisk-design",
   "tryck",
