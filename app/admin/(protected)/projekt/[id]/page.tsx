@@ -8,6 +8,7 @@ import { getCustomers } from "@/lib/data/customers";
 import { getBillingEntities } from "@/lib/data/billing";
 import { getProjectApprovals } from "@/lib/data/approvals";
 import { getAllMaterialItemsFlat, getProjectMaterialItems } from "@/lib/data/material";
+import { getCustomerMemberStatusCounts } from "@/lib/data/customer-members";
 import { ProjectWorkspace } from "@/components/admin/ProjectWorkspace";
 
 type Props = { params: Promise<{ id: string }> };
@@ -30,7 +31,12 @@ export default async function ClientProjectPage({ params }: Props) {
 
   // No customer linked → nothing to pick a material item from and nobody to
   // notify, so the item picker is simply not fetched.
-  const materialItems = project.customerId ? await getAllMaterialItemsFlat(project.customerId) : [];
+  const [materialItems, activeMemberCount] = project.customerId
+    ? await Promise.all([
+        getAllMaterialItemsFlat(project.customerId),
+        getCustomerMemberStatusCounts(project.customerId).then((counts) => counts.active),
+      ])
+    : [[], 0];
 
   return (
     <ProjectWorkspace
@@ -42,6 +48,7 @@ export default async function ClientProjectPage({ params }: Props) {
       activity={activity}
       approvals={approvals}
       materialItems={materialItems}
+      activeMemberCount={activeMemberCount}
     />
   );
 }

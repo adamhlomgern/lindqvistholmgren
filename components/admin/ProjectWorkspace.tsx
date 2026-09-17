@@ -36,6 +36,7 @@ type Props = {
   activity: ProjectActivityEntry[];
   approvals: ProjectApproval[];
   materialItems: (MaterialItem & { folderPath: string })[];
+  activeMemberCount: number;
 };
 
 export function ProjectWorkspace({
@@ -47,6 +48,7 @@ export function ProjectWorkspace({
   activity,
   approvals,
   materialItems,
+  activeMemberCount,
 }: Props) {
   const [editing, setEditing] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -151,6 +153,7 @@ export function ProjectWorkspace({
               customerId={project.customerId}
               approvals={approvals}
               materialItems={materialItems}
+              activeMemberCount={activeMemberCount}
             />
             <NotesCard notes={project.notes} onEdit={() => setEditing(true)} />
           </div>

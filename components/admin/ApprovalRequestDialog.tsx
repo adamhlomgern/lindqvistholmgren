@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { TriangleAlert } from "lucide-react";
 import { SlideOver } from "@/components/ui/SlideOver";
 import { Select } from "@/components/ui/Select";
 import { createApprovalRequest } from "@/lib/actions/approvals";
@@ -16,6 +17,7 @@ type Props = {
   projectId: string;
   customerId: string;
   materialItems: (MaterialItem & { folderPath: string })[];
+  activeMemberCount: number;
 };
 
 const kindOptions: { value: ApprovalKind; label: string; description: string }[] = [
@@ -31,7 +33,7 @@ const kindOptions: { value: ApprovalKind; label: string; description: string }[]
   },
 ];
 
-export function ApprovalRequestDialog({ open, onClose, projectId, customerId, materialItems }: Props) {
+export function ApprovalRequestDialog({ open, onClose, projectId, customerId, materialItems, activeMemberCount }: Props) {
   const [state, formAction, pending] = useActionState(
     createApprovalRequest.bind(null, projectId, customerId),
     undefined,
@@ -121,6 +123,15 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
             className={`mt-2 ${inputClasses}`}
           />
         </div>
+        {activeMemberCount === 0 && (
+          <div className="flex items-start gap-2 rounded-xl bg-peach/10 px-3.5 py-2.5 text-xs text-peach">
+            <TriangleAlert size={14} strokeWidth={2.25} className="mt-0.5 shrink-0" />
+            <span>
+              Ingen kontaktperson hos kunden har loggat in i portalen ännu — begäran skapas, men inget mejl går
+              fram förrän någon gjort det.
+            </span>
+          </div>
+        )}
         <div className="flex items-center gap-3 pt-2">
           <button
             type="submit"
