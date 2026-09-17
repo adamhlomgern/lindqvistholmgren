@@ -14,6 +14,7 @@ import {
   Link2,
   MessageSquareText,
   Pencil,
+  Search,
   Star,
   Trash2,
   Upload,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
+import { Select } from "@/components/ui/Select";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { MaterialVisibilityToggle } from "@/components/admin/MaterialVisibilityToggle";
@@ -69,7 +71,10 @@ type Props = {
   folders: MaterialFolder[];
   items: MaterialItemWithUrl[];
   folderTree: MaterialFolderTreeNode[];
+  projects: { id: string; title: string }[];
 };
+
+type VisibilityFilter = "all" | "shared" | "internal";
 
 type MoveTarget = { itemIds: string[]; folderIds: string[]; label: string };
 
@@ -78,12 +83,16 @@ const gridClasses: Record<Exclude<MaterialViewMode, "list">, string> = {
   "grid-lg": "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4",
 };
 
-export function MaterialWorkspace({ customerId, basePath, currentFolderId, breadcrumb, folders, items, folderTree }: Props) {
+export function MaterialWorkspace({ customerId, basePath, currentFolderId, breadcrumb, folders, items, folderTree, projects }: Props) {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [folderDialog, setFolderDialog] = useState<{ folder?: MaterialFolder } | null>(null);
   const [instructionOpen, setInstructionOpen] = useState(false);
   const [linkOpen, setLinkOpen] = useState(false);
   const [moveTarget, setMoveTarget] = useState<MoveTarget | null>(null);
+
+  const [search, setSearch] = useState("");
+  const [visibilityFilter, setVisibilityFilter] = useState<VisibilityFilter>("all");
+  const [projectFilter, setProjectFilter] = useState<string>("all");
 
   const [selectedFolders, setSelectedFolders] = useState<Set<string>>(new Set());
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -123,8 +132,24 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
   const viewMode = useSyncExternalStore(subscribeMaterialView, getMaterialViewModeSnapshot, getMaterialViewModeServerSnapshot);
   const sortMode = useSyncExternalStore(subscribeMaterialSort, getMaterialSortModeSnapshot, getMaterialSortModeServerSnapshot);
 
-  const sortedFolders = sortFolders(folders, sortMode);
-  const sortedItems = sortItems(items, sortMode);
+  const filtersActive = search.trim() !== "" || visibilityFilter !== "all" || projectFilter !== "all";
+
+  const searchLower = search.trim().toLowerCase();
+  const visibleFolders = folders.filter((folder) => !searchLower || folder.name.toLowerCase().includes(searchLower));
+  const visibleItems = items.filter((item) => {
+    if (searchLower && !item.title.toLowerCase().includes(searchLower)) return false;
+    if (visibilityFilter !== "all" && item.visibility !== visibilityFilter) return false;
+    if (projectFilter !== "all" && item.projectId !== projectFilter) return false;
+    return true;
+  });
+
+  // Reordering ("Egen ordning") is disabled while a filter is active — a
+  // move-up/down click would only reorder within the filtered subset, which
+  // is confusing (and can't cleanly express "before an item that's hidden").
+  const canReorder = sortMode === "custom" && !filtersActive;
+
+  const sortedFolders = sortFolders(visibleFolders, sortMode);
+  const sortedItems = sortItems(visibleItems, sortMode);
 
   function moveFolder(folderId: string, direction: -1 | 1) {
     const order = sortedFolders.map((f) => f.id);
@@ -213,7 +238,48 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="relative min-w-[10rem] flex-1 sm:max-w-xs">
+          <Search size={14} strokeWidth={2.25} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone" />
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Sök material…"
+            className="w-full rounded-full border border-bone/10 bg-bone/5 py-2 pl-9 pr-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+          />
+        </div>
+        <div className="flex items-center gap-0.5 rounded-full bg-bone/5 p-0.5">
+          {(
+            [
+              { value: "all", label: "Allt" },
+              { value: "shared", label: "Delat" },
+              { value: "internal", label: "Internt" },
+            ] as const
+          ).map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setVisibilityFilter(option.value)}
+              aria-pressed={visibilityFilter === option.value}
+              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                visibilityFilter === option.value ? "bg-emerald text-charcoal" : "text-stone hover:text-bone"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        {projects.length > 0 && (
+          <Select
+            value={projectFilter}
+            onValueChange={setProjectFilter}
+            className="rounded-full px-3.5 py-2 text-xs"
+            options={[{ value: "all", label: "Alla projekt" }, ...projects.map((p) => ({ value: p.id, label: p.title }))]}
+          />
+        )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <MaterialViewControls
           sortMode={sortMode}
           onSortModeChange={setMaterialSortMode}
@@ -247,6 +313,10 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
         <Card className="mt-6">
           <p className="text-sm text-stone">Mappen är tom. Ladda upp filer, skapa en instruktion eller en ny undermapp.</p>
         </Card>
+      ) : sortedFolders.length === 0 && sortedItems.length === 0 ? (
+        <Card className="mt-6">
+          <p className="text-sm text-stone">Inget matchar sökningen eller filtret.</p>
+        </Card>
       ) : viewMode === "list" ? (
         <div className="mt-4 flex flex-col gap-2">
           {sortedFolders.map((folder, index) => (
@@ -255,7 +325,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               folder={folder}
               basePath={basePath}
               customerId={customerId}
-              canReorder={sortMode === "custom"}
+              canReorder={canReorder}
               isFirst={index === 0}
               isLast={index === sortedFolders.length - 1}
               onMove={(direction) => moveFolder(folder.id, direction)}
@@ -270,7 +340,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               key={item.id}
               item={item}
               customerId={customerId}
-              canReorder={sortMode === "custom"}
+              canReorder={canReorder}
               isFirst={index === 0}
               isLast={index === sortedItems.length - 1}
               onMove={(direction) => moveItem(item.id, direction)}
@@ -288,7 +358,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               folder={folder}
               basePath={basePath}
               customerId={customerId}
-              canReorder={sortMode === "custom"}
+              canReorder={canReorder}
               isFirst={index === 0}
               isLast={index === sortedFolders.length - 1}
               onMove={(direction) => moveFolder(folder.id, direction)}
@@ -303,7 +373,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               key={item.id}
               item={item}
               customerId={customerId}
-              canReorder={sortMode === "custom"}
+              canReorder={canReorder}
               isFirst={index === 0}
               isLast={index === sortedItems.length - 1}
               onMove={(direction) => moveItem(item.id, direction)}
@@ -539,12 +609,10 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
         {isImage && item.downloadUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URL, not a static/optimizable asset
-          <img
-            src={item.downloadUrl}
-            alt=""
-            className="h-9 w-9 shrink-0 rounded-md border border-bone/10 object-cover"
-          />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-bone/10 bg-white p-1">
+            {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URL, not a static/optimizable asset */}
+            <img src={item.downloadUrl} alt="" className="h-full w-full object-contain" />
+          </div>
         ) : (
           <TypeIcon size={18} strokeWidth={2} className="shrink-0 text-stone" />
         )}
@@ -616,8 +684,10 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
         className="relative flex aspect-square flex-col items-center justify-center gap-2 p-3 text-center"
       >
         {isImage && item.downloadUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset
-          <img src={item.downloadUrl} alt={item.title} className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-white">
+            {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset */}
+            <img src={item.downloadUrl} alt={item.title} className="h-full w-full object-contain p-3" />
+          </div>
         ) : (
           <>
             <TypeIcon size={22} strokeWidth={1.75} className="text-stone" />

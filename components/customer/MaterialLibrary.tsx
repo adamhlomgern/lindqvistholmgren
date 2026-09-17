@@ -166,8 +166,10 @@ function MaterialItemGridCard({ item }: { item: MaterialItemWithUrl }) {
   const content = (
     <>
       {isImage && item.downloadUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset
-        <img src={item.downloadUrl} alt={item.title} className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-white">
+          {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset */}
+          <img src={item.downloadUrl} alt={item.title} className="h-full w-full object-contain p-3" />
+        </div>
       ) : (
         <>
           <TypeIcon size={22} strokeWidth={1.75} className="text-stone" />
