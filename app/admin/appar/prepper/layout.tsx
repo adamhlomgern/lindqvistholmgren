@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Fraunces } from "next/font/google";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { PrepperToastProvider } from "@/components/prepper/Toast";
 
 // Prepper's own display serif — warm/editorial, deliberately distinct from
@@ -17,6 +19,15 @@ export default function PrepperLayout({ children }: { children: ReactNode }) {
     <div
       className={`${fraunces.variable} min-h-screen bg-prepper-background font-sans text-prepper-text`}
     >
+      <div className="px-4 pt-4 sm:px-8">
+        <Link
+          href="/admin"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
+        >
+          <ArrowLeft size={13} strokeWidth={2} />
+          Till admin
+        </Link>
+      </div>
       <PrepperToastProvider>{children}</PrepperToastProvider>
     </div>
   );
