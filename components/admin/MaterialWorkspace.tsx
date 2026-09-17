@@ -533,11 +533,21 @@ type ItemRowProps = {
 
 function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, onMoveTo, selected, onToggleSelect }: ItemRowProps) {
   const TypeIcon = typeIcons[item.type];
+  const isImage = item.type === "file" && item.contentType?.startsWith("image/");
   return (
     <Card className="flex items-center justify-between gap-3">
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
-        <TypeIcon size={18} strokeWidth={2} className="shrink-0 text-stone" />
+        {isImage && item.downloadUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URL, not a static/optimizable asset
+          <img
+            src={item.downloadUrl}
+            alt=""
+            className="h-9 w-9 shrink-0 rounded-md border border-bone/10 object-cover"
+          />
+        ) : (
+          <TypeIcon size={18} strokeWidth={2} className="shrink-0 text-stone" />
+        )}
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-bone">{item.title}</p>
           <p className="truncate text-xs text-stone">
