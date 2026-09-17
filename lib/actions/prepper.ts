@@ -49,6 +49,18 @@ export async function renameNotebook(id: string, name: string) {
   revalidatePath(notebookPath(id));
 }
 
+export async function updateNotebookAppearance(id: string, icon: string, color: string) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await supabase
+    .from("prepper_notebooks")
+    .update({ icon, color, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  revalidatePath("/admin/appar/prepper");
+  revalidatePath(notebookPath(id));
+}
+
 // --- Checklists ---
 
 export async function createChecklist(notebookId: string, title: string) {
@@ -74,6 +86,17 @@ export async function renameChecklist(id: string, notebookId: string, title: str
   revalidatePath(notebookPath(notebookId));
 }
 
+export async function updateChecklistAppearance(id: string, notebookId: string, icon: string, color: string) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await supabase
+    .from("prepper_checklists")
+    .update({ icon, color, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  revalidatePath(notebookPath(notebookId));
+}
+
 // --- Sections ---
 
 export async function createSection(checklistId: string, notebookId: string, title: string) {
@@ -95,6 +118,17 @@ export async function renameSection(id: string, notebookId: string, title: strin
   await verifySession();
   const supabase = createServiceRoleClient();
   await supabase.from("prepper_sections").update({ title, updated_at: new Date().toISOString() }).eq("id", id);
+
+  revalidatePath(notebookPath(notebookId));
+}
+
+export async function updateSectionAppearance(id: string, notebookId: string, icon: string, color: string) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await supabase
+    .from("prepper_sections")
+    .update({ icon, color, updated_at: new Date().toISOString() })
+    .eq("id", id);
 
   revalidatePath(notebookPath(notebookId));
 }

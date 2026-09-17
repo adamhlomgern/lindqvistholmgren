@@ -25,14 +25,14 @@ export function NewChecklistPrompt({ notebookId, notebookName }: { notebookId: s
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-20 text-center sm:px-6">
       <Link
         href="/admin/appar/prepper"
-        className="mb-2 flex items-center gap-1.5 self-start text-xs font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
+        className="mb-2 flex items-center gap-1.5 self-start text-[13px] font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
       >
         <ArrowLeft size={13} strokeWidth={2} />
         Arbetsböcker
       </Link>
       <BookOpen size={22} strokeWidth={1.5} className="text-prepper-text-faint" />
-      <h1 className="font-prepper-display text-3xl text-prepper-text">{notebookName}</h1>
-      <p className="max-w-xs text-[15px] leading-relaxed text-prepper-text-muted">
+      <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text">{notebookName}</h1>
+      <p className="max-w-xs text-[15px] leading-[1.55] text-prepper-text-muted">
         Här är det tomt än så länge. Lägg till första checklistan i den här arbetsboken.
       </p>
       <form onSubmit={handleSubmit} className="mt-2 flex w-full items-center gap-2">

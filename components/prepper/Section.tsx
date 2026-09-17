@@ -4,12 +4,14 @@ import { useState, useTransition } from "react";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronDown, GripVertical, PenLine, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, GripVertical, Palette, PenLine, Plus, Trash2 } from "lucide-react";
 import type { PrepperItem, PrepperSection as PrepperSectionType } from "@/lib/types";
-import { createItem, renameSection } from "@/lib/actions/prepper";
+import { createItem, renameSection, updateSectionAppearance } from "@/lib/actions/prepper";
 import { ItemRow } from "@/components/prepper/ItemRow";
 import { ProgressBar } from "@/components/prepper/ProgressBar";
 import { ActionMenu } from "@/components/prepper/ActionMenu";
+import { AccentIcon } from "@/components/prepper/AccentIcon";
+import { AppearancePicker } from "@/components/prepper/AppearancePicker";
 
 export function Section({
   section,
@@ -36,6 +38,8 @@ export function Section({
   const [collapsed, setCollapsed] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState(section.title);
+  const [appearance, setAppearance] = useState({ icon: section.icon, color: section.color });
+  const [pickingAppearance, setPickingAppearance] = useState(false);
   const [addingItem, setAddingItem] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [, startTransition] = useTransition();
@@ -53,6 +57,13 @@ export function Section({
     }
     startTransition(async () => {
       await renameSection(section.id, notebookId, trimmed);
+    });
+  }
+
+  function saveAppearance(icon: string, color: string) {
+    setAppearance({ icon, color });
+    startTransition(async () => {
+      await updateSectionAppearance(section.id, notebookId, icon, color);
     });
   }
 
@@ -110,6 +121,11 @@ export function Section({
             <GripVertical size={15} strokeWidth={2} />
           </button>
         )}
+        {!reorderMode && (
+          <button type="button" onClick={() => setPickingAppearance(true)} aria-label="Byt ikon och färg">
+            <AccentIcon icon={appearance.icon} color={appearance.color} size="sm" />
+          </button>
+        )}
         {editingTitle ? (
           <input
             value={title}
@@ -123,7 +139,7 @@ export function Section({
               }
             }}
             autoFocus
-            className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 font-prepper-display text-base text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+            className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 text-[21px] font-bold tracking-[-0.02em] text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
           />
         ) : (
           <button
@@ -132,8 +148,10 @@ export function Section({
             disabled={reorderMode}
             className="flex min-h-11 min-w-0 flex-1 items-center justify-between gap-3"
           >
-            <span className="min-w-0 truncate font-prepper-display text-base text-prepper-text">{title}</span>
-            <span className="flex shrink-0 items-center gap-2 text-xs text-prepper-text-muted">
+            <span className="min-w-0 truncate text-[21px] font-bold tracking-[-0.02em] text-prepper-text">
+              {title}
+            </span>
+            <span className="flex shrink-0 items-center gap-2 text-[13px] font-medium text-prepper-text-muted">
               {done}/{total}
               {!reorderMode && (
                 <ChevronDown
@@ -150,11 +168,21 @@ export function Section({
             ariaLabel="Fler alternativ för sektionen"
             items={[
               { label: "Byt namn", icon: PenLine, onSelect: () => setEditingTitle(true) },
+              { label: "Byt ikon & färg", icon: Palette, onSelect: () => setPickingAppearance(true) },
               { label: "Ta bort sektion", icon: Trash2, onSelect: onDeleteSection, destructive: true },
             ]}
           />
         )}
       </div>
+
+      {pickingAppearance && (
+        <AppearancePicker
+          icon={appearance.icon}
+          color={appearance.color}
+          onSave={saveAppearance}
+          onClose={() => setPickingAppearance(false)}
+        />
+      )}
 
       {!collapsed && !reorderMode && total > 0 && (
         <div className="pb-2">

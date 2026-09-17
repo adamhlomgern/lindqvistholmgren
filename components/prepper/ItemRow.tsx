@@ -55,7 +55,7 @@ export function ItemRow({
         className="flex min-h-11 min-w-0 flex-1 items-center justify-between gap-2 text-left"
       >
         <span
-          className={`block min-w-0 flex-1 break-words text-[15px] leading-snug transition-colors duration-150 ${
+          className={`block min-w-0 flex-1 break-words text-[16px] font-medium leading-[1.3] transition-colors duration-150 ${
             derivedCompleted ? "text-prepper-text-muted line-through" : "text-prepper-text"
           }`}
         >

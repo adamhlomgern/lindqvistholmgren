@@ -12,6 +12,8 @@ type NotebookRow = {
   id: string;
   name: string;
   description: string | null;
+  icon: string | null;
+  color: string | null;
   position: number;
   created_by: string;
   created_at: string;
@@ -23,6 +25,8 @@ function toNotebook(row: NotebookRow): PrepperNotebook {
     id: row.id,
     name: row.name,
     description: row.description ?? undefined,
+    icon: row.icon ?? undefined,
+    color: row.color ?? undefined,
     position: row.position,
     createdBy: row.created_by,
     createdAt: row.created_at,
@@ -35,6 +39,8 @@ type ChecklistRow = {
   notebook_id: string;
   title: string;
   description: string | null;
+  icon: string | null;
+  color: string | null;
   position: number;
   created_by: string;
   created_at: string;
@@ -47,6 +53,8 @@ function toChecklist(row: ChecklistRow): PrepperChecklist {
     notebookId: row.notebook_id,
     title: row.title,
     description: row.description ?? undefined,
+    icon: row.icon ?? undefined,
+    color: row.color ?? undefined,
     position: row.position,
     createdBy: row.created_by,
     createdAt: row.created_at,
@@ -245,6 +253,8 @@ export async function getChecklistDetail(checklistId: string): Promise<PrepperCh
     id: row.id,
     checklistId: row.checklist_id,
     title: row.title,
+    icon: row.icon ?? undefined,
+    color: row.color ?? undefined,
     position: row.position,
     createdBy: row.created_by,
     createdAt: row.created_at,

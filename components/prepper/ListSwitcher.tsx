@@ -4,10 +4,13 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, ListChecks, Plus, X } from "lucide-react";
+import { ArrowLeft, ListChecks, Palette, PenLine, Plus, X } from "lucide-react";
 import type { PrepperChecklistSummary } from "@/lib/data/prepper";
-import { createChecklist } from "@/lib/actions/prepper";
+import { createChecklist, renameChecklist, updateChecklistAppearance } from "@/lib/actions/prepper";
 import { ProgressBar } from "@/components/prepper/ProgressBar";
+import { AccentIcon } from "@/components/prepper/AccentIcon";
+import { AppearancePicker } from "@/components/prepper/AppearancePicker";
+import { ActionMenu } from "@/components/prepper/ActionMenu";
 
 type Props = {
   notebookId: string;
@@ -29,22 +32,91 @@ function ChecklistLink({
   active: boolean;
   onNavigate: () => void;
 }) {
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [title, setTitle] = useState(checklist.title);
+  const [appearance, setAppearance] = useState({ icon: checklist.icon, color: checklist.color });
+  const [pickingAppearance, setPickingAppearance] = useState(false);
+  const [, startTransition] = useTransition();
+
+  function saveTitle() {
+    const trimmed = title.trim();
+    setEditingTitle(false);
+    if (!trimmed || trimmed === checklist.title) {
+      setTitle(checklist.title);
+      return;
+    }
+    startTransition(async () => {
+      await renameChecklist(checklist.id, notebookId, trimmed);
+    });
+  }
+
+  function saveAppearance(icon: string, color: string) {
+    setAppearance({ icon, color });
+    startTransition(async () => {
+      await updateChecklistAppearance(checklist.id, notebookId, icon, color);
+    });
+  }
+
   return (
-    <Link
-      href={`/admin/appar/prepper/${notebookId}?checklist=${checklist.id}`}
-      onClick={onNavigate}
-      className={`flex flex-col gap-1.5 rounded-xl px-4 py-3 transition-colors ${
-        active ? "bg-prepper-primary/10 text-prepper-text" : "text-prepper-text-muted hover:bg-prepper-surface-soft"
+    <div
+      className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors ${
+        active ? "bg-prepper-primary/10" : "hover:bg-prepper-surface-soft"
       }`}
     >
-      <div className="flex items-center justify-between gap-2">
-        <span className="min-w-0 truncate text-sm font-medium">{checklist.title}</span>
-        <span className="shrink-0 text-xs text-prepper-text-muted">
-          {checklist.doneCount}/{checklist.totalCount}
-        </span>
-      </div>
-      <ProgressBar done={checklist.doneCount} total={checklist.totalCount} />
-    </Link>
+      <button type="button" onClick={() => setPickingAppearance(true)} aria-label="Byt ikon och färg">
+        <AccentIcon icon={appearance.icon} color={appearance.color} size="sm" />
+      </button>
+
+      {editingTitle ? (
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onBlur={saveTitle}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") e.currentTarget.blur();
+            if (e.key === "Escape") {
+              setTitle(checklist.title);
+              setEditingTitle(false);
+            }
+          }}
+          autoFocus
+          className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 text-sm font-medium text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+        />
+      ) : (
+        <Link
+          href={`/admin/appar/prepper/${notebookId}?checklist=${checklist.id}`}
+          onClick={onNavigate}
+          className={`min-w-0 flex-1 py-0.5 ${active ? "text-prepper-text" : "text-prepper-text-muted"}`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="min-w-0 truncate text-sm font-medium">{title}</span>
+            <span className="shrink-0 text-xs text-prepper-text-muted">
+              {checklist.doneCount}/{checklist.totalCount}
+            </span>
+          </div>
+          <div className="mt-1">
+            <ProgressBar done={checklist.doneCount} total={checklist.totalCount} />
+          </div>
+        </Link>
+      )}
+
+      <ActionMenu
+        ariaLabel="Fler alternativ för checklistan"
+        items={[
+          { label: "Byt namn", icon: PenLine, onSelect: () => setEditingTitle(true) },
+          { label: "Byt ikon & färg", icon: Palette, onSelect: () => setPickingAppearance(true) },
+        ]}
+      />
+
+      {pickingAppearance && (
+        <AppearancePicker
+          icon={appearance.icon}
+          color={appearance.color}
+          onSave={saveAppearance}
+          onClose={() => setPickingAppearance(false)}
+        />
+      )}
+    </div>
   );
 }
 
@@ -91,16 +163,16 @@ function SwitcherBody({ notebookId, notebookName, checklists, activeChecklistId,
       <Link
         href="/admin/appar/prepper"
         onClick={onNavigate}
-        className="mb-3 inline-flex items-center gap-1.5 px-1 text-xs font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
+        className="mb-3 inline-flex items-center gap-1.5 px-1 text-[13px] font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
       >
         <ArrowLeft size={12} strokeWidth={2} />
         Arbetsböcker
       </Link>
       <div className="flex items-center gap-2 px-1 pb-4">
         <ListChecks size={14} strokeWidth={2} className="text-prepper-primary/70" />
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-prepper-primary/70">{notebookName}</p>
+        <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-prepper-primary/70">{notebookName}</p>
       </div>
-      <p className="px-1 pb-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-prepper-text-faint">
+      <p className="px-1 pb-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-prepper-text-faint">
         Listor
       </p>
       <div className="flex flex-col gap-1">

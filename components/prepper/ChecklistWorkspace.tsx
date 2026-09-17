@@ -199,11 +199,11 @@ export function ChecklistWorkspace({
             <div className="min-w-0 flex-1">
               <Link
                 href="/admin/appar/prepper"
-                className="inline-block text-xs font-medium uppercase tracking-[0.14em] text-prepper-primary/70 transition-colors hover:text-prepper-primary"
+                className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] text-prepper-primary/70 transition-colors hover:text-prepper-primary"
               >
                 {notebookName}
               </Link>
-              <h1 className="truncate font-prepper-display text-xl text-prepper-text sm:text-2xl">
+              <h1 className="truncate text-[32px] font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text sm:text-[34px]">
                 {checklist.title}
               </h1>
             </div>
@@ -219,7 +219,7 @@ export function ChecklistWorkspace({
             />
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <p className="shrink-0 text-xs text-prepper-text-muted">
+            <p className="shrink-0 text-[13px] font-medium text-prepper-text-muted">
               {doneItems} av {totalItems} klart
             </p>
             <div className="flex-1">
@@ -232,8 +232,8 @@ export function ChecklistWorkspace({
           {sections.length === 0 && (
             <div className="rounded-2xl border border-prepper-border bg-prepper-surface-soft px-6 py-14 text-center">
               <div className="mx-auto max-w-xs border-y border-prepper-border/70 py-5">
-                <p className="font-prepper-display text-lg text-prepper-text">Här är det tomt än så länge</p>
-                <p className="mt-1.5 text-sm text-prepper-text-muted">
+                <p className="text-[21px] font-bold tracking-[-0.02em] text-prepper-text">Här är det tomt än så länge</p>
+                <p className="mt-1.5 text-[15px] leading-[1.55] text-prepper-text-muted">
                   Lägg till första sektionen ni vill få ordning på.
                 </p>
               </div>
