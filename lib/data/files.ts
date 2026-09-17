@@ -1,4 +1,4 @@
-import type { EmailAttachment, ProjectFile } from "@/lib/types";
+import type { EmailAttachment } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
 const BUCKET = "attachments";
@@ -16,24 +16,11 @@ type StoredFileRow = {
 };
 
 type EmailAttachmentRow = StoredFileRow & { email_id: string };
-type ProjectFileRow = StoredFileRow & { project_id: string };
 
 function toEmailAttachment(row: EmailAttachmentRow): EmailAttachment {
   return {
     id: row.id,
     emailId: row.email_id,
-    filename: row.filename,
-    contentType: row.content_type ?? undefined,
-    size: row.size ?? undefined,
-    storagePath: row.storage_path,
-    createdAt: row.created_at,
-  };
-}
-
-function toProjectFile(row: ProjectFileRow): ProjectFile {
-  return {
-    id: row.id,
-    projectId: row.project_id,
     filename: row.filename,
     contentType: row.content_type ?? undefined,
     size: row.size ?? undefined,
@@ -70,22 +57,6 @@ export async function getEmailAttachments(emailId: string): Promise<(EmailAttach
   }
 
   return withSignedUrls(supabase, (data ?? []).map(toEmailAttachment));
-}
-
-export async function getProjectFiles(projectId: string): Promise<(ProjectFile & { url: string | null })[]> {
-  const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("project_files")
-    .select("*")
-    .eq("project_id", projectId)
-    .order("created_at");
-
-  if (error) {
-    console.error("[getProjectFiles] Supabase-fråga misslyckades", error);
-    return [];
-  }
-
-  return withSignedUrls(supabase, (data ?? []).map(toProjectFile));
 }
 
 // Bulk count for list views — avoids an N+1 of one getEmailAttachments call

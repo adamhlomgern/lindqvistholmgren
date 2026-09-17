@@ -6,11 +6,13 @@ export function FileThumb({
   contentType,
   url,
   action,
+  badge,
 }: {
   filename: string;
   contentType?: string;
   url: string | null;
   action?: ReactNode;
+  badge?: ReactNode;
 }) {
   const isImage = contentType?.startsWith("image/");
 
@@ -38,6 +40,7 @@ export function FileThumb({
         </span>
       )}
       {action && <div className="absolute right-1 top-1">{action}</div>}
+      {badge && <div className="absolute left-1 top-1">{badge}</div>}
     </div>
   );
 }

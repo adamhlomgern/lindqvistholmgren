@@ -24,14 +24,13 @@ import type {
   ProjectActivityEntry,
   ProjectApproval,
   ProjectChecklistItem,
-  ProjectFile,
 } from "@/lib/types";
 
 type Props = {
   project: ClientProjectWithCustomer;
   customers: Customer[];
   billingEntities: BillingEntity[];
-  files: (ProjectFile & { url: string | null })[];
+  files: (MaterialItem & { downloadUrl: string | null })[];
   checklist: ProjectChecklistItem[];
   activity: ProjectActivityEntry[];
   approvals: ProjectApproval[];
@@ -136,7 +135,7 @@ export function ProjectWorkspace({
             <OverviewCard overview={project.overview} onEdit={() => setEditing(true)} />
             <CustomerViewCard project={project} onEdit={() => setEditing(true)} />
             <ProjectChecklist projectId={project.id} items={checklist} />
-            <ProjectFilesSection projectId={project.id} files={files} />
+            <ProjectFilesSection projectId={project.id} customerId={project.customerId} files={files} />
             <ApprovalsSection
               projectId={project.id}
               customerId={project.customerId}

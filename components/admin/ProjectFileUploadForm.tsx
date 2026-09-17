@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Upload } from "lucide-react";
 
-export function ProjectFileUploadForm({ projectId }: { projectId: string }) {
+// Uploads through /api/admin/material-upload (not a Server Action — see
+// that route's comment on the 1MB body cap this app never raised), tagged
+// with projectId so the file lands in material_items and shows up in the
+// customer's material library too, instead of a separate project-only copy.
+export function ProjectFileUploadForm({ projectId, customerId }: { projectId: string; customerId: string }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | undefined>();
@@ -14,14 +18,17 @@ export function ProjectFileUploadForm({ projectId }: { projectId: string }) {
     setError(undefined);
 
     const formData = new FormData();
+    formData.set("customerId", customerId);
     formData.set("projectId", projectId);
-    formData.set("file", file);
+    formData.set("visibility", "internal");
+    formData.append("files", file);
 
     try {
-      const response = await fetch("/api/admin/project-upload", { method: "POST", body: formData });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data?.error ?? "Kunde inte ladda upp filen.");
+      const response = await fetch("/api/admin/material-upload", { method: "POST", body: formData });
+      const data: { results?: { ok: boolean; error?: string }[]; error?: string } = await response.json();
+      const result = data.results?.[0];
+      if (!response.ok || !result || !result.ok) {
+        setError(result?.error ?? data.error ?? "Kunde inte ladda upp filen.");
         return;
       }
       router.refresh();

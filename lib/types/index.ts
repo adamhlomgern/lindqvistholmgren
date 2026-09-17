@@ -303,7 +303,6 @@ type StoredFile = {
 };
 
 export type EmailAttachment = StoredFile & { emailId: string };
-export type ProjectFile = StoredFile & { projectId: string };
 
 export type CustomerMessage = {
   id: string;

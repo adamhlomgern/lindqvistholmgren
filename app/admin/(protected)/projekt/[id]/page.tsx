@@ -6,9 +6,8 @@ import {
 } from "@/lib/data/client-projects";
 import { getCustomers } from "@/lib/data/customers";
 import { getBillingEntities } from "@/lib/data/billing";
-import { getProjectFiles } from "@/lib/data/files";
 import { getProjectApprovals } from "@/lib/data/approvals";
-import { getAllMaterialItemsFlat } from "@/lib/data/material";
+import { getAllMaterialItemsFlat, getProjectMaterialItems } from "@/lib/data/material";
 import { ProjectWorkspace } from "@/components/admin/ProjectWorkspace";
 
 type Props = { params: Promise<{ id: string }> };
@@ -19,7 +18,7 @@ export default async function ClientProjectPage({ params }: Props) {
     getClientProjectById(id),
     getCustomers(),
     getBillingEntities(),
-    getProjectFiles(id),
+    getProjectMaterialItems(id),
     getProjectChecklistItems(id),
     getProjectActivity(id),
     getProjectApprovals(id),

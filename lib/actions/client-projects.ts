@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { deleteStoredFiles } from "@/lib/data/files";
-import { storeProjectFile } from "@/lib/actions/project-files";
+import { insertMaterialFile } from "@/lib/actions/material";
 import { logProjectActivity } from "@/lib/data/client-projects";
 import type { AwaitingCustomerType, ClientProjectStatus } from "@/lib/types";
 
@@ -115,17 +115,43 @@ export async function createClientProject(
   const tasks = parseTasksField(formData.get("tasks"));
   const files = formData.getAll("files").filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
-  await Promise.all([
+  const tasksInsert =
     tasks.length > 0
       ? supabase
           .from("project_checklist_items")
           .insert(tasks.map((label, position) => ({ project_id: projectId, label, position })))
-      : Promise.resolve(),
-    ...files.map(async (file) => {
-      const result = await storeProjectFile(supabase, projectId, file);
+      : Promise.resolve();
+
+  // Sequential, not Promise.all — each insertMaterialFile computes its own
+  // storage path from a fresh crypto.randomUUID(), but position needs to
+  // increment locally to avoid every file in the batch racing to read the
+  // same "next position" and landing on the same number.
+  async function storeFiles() {
+    const { data: positionRow } = await supabase
+      .from("material_items")
+      .select("position")
+      .eq("customer_id", row.customer_id)
+      .is("folder_id", null)
+      .order("position", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    let position = (positionRow?.position ?? -1) + 1;
+
+    for (const file of files) {
+      const result = await insertMaterialFile(supabase, {
+        customerId: row.customer_id!,
+        projectId,
+        folderId: null,
+        file,
+        visibility: "internal",
+        deliveryStatus: "draft",
+        position: position++,
+      });
       if (result.error) console.error("[createClientProject] Kunde inte spara bifogad fil", result.error);
-    }),
-  ]);
+    }
+  }
+
+  await Promise.all([tasksInsert, storeFiles()]);
 
   await logProjectActivity(projectId, "Projektet skapades");
 
@@ -228,8 +254,13 @@ export async function deleteClientProject(id: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
 
-  const { data: files } = await supabase.from("project_files").select("storage_path").eq("project_id", id);
+  const { data: files } = await supabase
+    .from("material_items")
+    .select("storage_path")
+    .eq("project_id", id)
+    .not("storage_path", "is", null);
   await deleteStoredFiles((files ?? []).map((row) => row.storage_path));
+  await supabase.from("material_items").delete().eq("project_id", id);
 
   await supabase.from("client_projects").delete().eq("id", id);
 

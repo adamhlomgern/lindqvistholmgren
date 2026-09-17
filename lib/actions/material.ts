@@ -3,12 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { deleteStoredFiles } from "@/lib/data/files";
+import { deleteStoredFiles, sanitizeStorageFilename } from "@/lib/data/files";
 import { encryptText } from "@/lib/crypto/secrets";
 import { resolveAdminDisplayName } from "@/lib/format";
 import type { MaterialDeliveryStatus, MaterialVisibility } from "@/lib/types";
 
 export type MaterialFormState = { error?: string } | undefined;
+
+const MAX_MATERIAL_FILE_SIZE = 20 * 1024 * 1024;
 
 function revalidateMaterial(customerId: string) {
   revalidatePath(`/admin/kunder/${customerId}/material`, "layout");
@@ -175,6 +177,59 @@ export async function createLink(
 
   if (error) return { error: `Kunde inte spara länken: ${error.message}` };
   revalidateMaterial(customerId);
+}
+
+// Shared by the material-upload Route Handler and project creation (files
+// attached before the project row even had a page of its own) — kept as one
+// function so the storage-path scheme and cleanup-on-failed-insert behavior
+// can't drift between the two call sites, same reasoning as the old
+// storeProjectFile it replaces.
+export async function insertMaterialFile(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+  params: {
+    customerId: string;
+    projectId?: string | null;
+    folderId?: string | null;
+    file: File;
+    visibility: MaterialVisibility;
+    deliveryStatus: MaterialDeliveryStatus;
+    position: number;
+  },
+): Promise<{ error?: string }> {
+  const { customerId, projectId, folderId, file, visibility, deliveryStatus, position } = params;
+
+  if (file.size > MAX_MATERIAL_FILE_SIZE) {
+    return { error: `${file.name} är för stor (max 20 MB).` };
+  }
+
+  const storagePath = `material/${customerId}/${folderId ?? "root"}/${crypto.randomUUID()}-${sanitizeStorageFilename(file.name)}`;
+  const { error: uploadError } = await supabase.storage.from("attachments").upload(storagePath, file, {
+    contentType: file.type || undefined,
+  });
+  if (uploadError) {
+    return { error: `Kunde inte ladda upp ${file.name}: ${uploadError.message}` };
+  }
+
+  const { error: insertError } = await supabase.from("material_items").insert({
+    customer_id: customerId,
+    project_id: projectId ?? null,
+    folder_id: folderId ?? null,
+    type: "file",
+    title: file.name,
+    filename: file.name,
+    content_type: file.type || null,
+    size: file.size,
+    storage_path: storagePath,
+    visibility,
+    delivery_status: deliveryStatus,
+    position,
+  });
+  if (insertError) {
+    await deleteStoredFiles([storagePath]);
+    return { error: `Kunde inte spara ${file.name}: ${insertError.message}` };
+  }
+
+  return {};
 }
 
 export async function deleteMaterialItem(customerId: string, itemId: string, storagePath: string | null) {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { deleteStoredFiles, sanitizeStorageFilename } from "@/lib/data/files";
+import { insertMaterialFile } from "@/lib/actions/material";
 import type { MaterialDeliveryStatus, MaterialVisibility } from "@/lib/types";
 
 // A Route Handler, not a Server Action — Server Actions in this app default
@@ -10,9 +10,11 @@ import type { MaterialDeliveryStatus, MaterialVisibility } from "@/lib/types";
 // experimental.serverActions.bodySizeLimit), which would silently reject
 // most real material uploads. Route Handlers aren't subject to that cap,
 // same reason /api/admin/upload (the article image uploader) uses one.
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
-const BUCKET = "attachments";
-
+//
+// Also the upload endpoint for a project's own files (ProjectFileUploadForm)
+// — an optional projectId tags the inserted material_items row so it shows
+// up in both the project's file list and the customer's material library,
+// instead of the two living in separate tables.
 type UploadResult = { filename: string; ok: boolean; error?: string };
 
 export async function POST(request: NextRequest) {
@@ -20,6 +22,7 @@ export async function POST(request: NextRequest) {
 
   const formData = await request.formData();
   const customerId = String(formData.get("customerId") ?? "");
+  const projectId = String(formData.get("projectId") ?? "") || null;
   const folderId = String(formData.get("folderId") ?? "") || null;
   const visibility = (String(formData.get("visibility") ?? "internal") as MaterialVisibility) ?? "internal";
   const deliveryStatus = (String(formData.get("deliveryStatus") ?? "draft") as MaterialDeliveryStatus) ?? "draft";
@@ -42,37 +45,18 @@ export async function POST(request: NextRequest) {
   const results: UploadResult[] = [];
 
   for (const file of files) {
-    if (file.size > MAX_FILE_SIZE) {
-      results.push({ filename: file.name, ok: false, error: "För stor (max 20 MB)." });
-      continue;
-    }
-
-    const storagePath = `material/${customerId}/${folderId ?? "root"}/${crypto.randomUUID()}-${sanitizeStorageFilename(file.name)}`;
-    const { error: uploadError } = await supabase.storage.from(BUCKET).upload(storagePath, file, {
-      contentType: file.type || undefined,
-    });
-    if (uploadError) {
-      results.push({ filename: file.name, ok: false, error: uploadError.message });
-      continue;
-    }
-
-    const { error: insertError } = await supabase.from("material_items").insert({
-      customer_id: customerId,
-      folder_id: folderId,
-      type: "file",
-      title: file.name,
-      filename: file.name,
-      content_type: file.type || null,
-      size: file.size,
-      storage_path: storagePath,
+    const result = await insertMaterialFile(supabase, {
+      customerId,
+      projectId,
+      folderId,
+      file,
       visibility,
-      delivery_status: deliveryStatus,
+      deliveryStatus,
       position: nextPosition,
     });
 
-    if (insertError) {
-      await deleteStoredFiles([storagePath]);
-      results.push({ filename: file.name, ok: false, error: insertError.message });
+    if (result.error) {
+      results.push({ filename: file.name, ok: false, error: result.error });
       continue;
     }
 
@@ -83,6 +67,7 @@ export async function POST(request: NextRequest) {
   revalidatePath(`/admin/kunder/${customerId}/material`, "layout");
   revalidatePath(`/admin/kunder/${customerId}/kundvy/material`, "layout");
   revalidatePath("/kund/material", "layout");
+  if (projectId) revalidatePath(`/admin/projekt/${projectId}`);
 
   return NextResponse.json({ results });
 }

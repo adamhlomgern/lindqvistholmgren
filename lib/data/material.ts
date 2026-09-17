@@ -313,6 +313,27 @@ export async function getMaterialItemById(itemId: string): Promise<(MaterialItem
   return item;
 }
 
+// Flat list of a single project's own material — the project workspace's
+// "Filer" section. Independent of folderId: a project file usually sits at
+// the customer's material root (folder_id null) so it's reachable from both
+// the project page and the customer's general library without being a
+// separate copy, but nothing stops it from also being filed into a folder.
+export async function getProjectMaterialItems(projectId: string): Promise<(MaterialItem & { downloadUrl: string | null })[]> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("material_items")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[getProjectMaterialItems] Supabase-fråga misslyckades", error);
+    return [];
+  }
+
+  return withFileSignedUrls(supabase, (data ?? []).map(toMaterialItem));
+}
+
 // Flat list of every item across every folder, with a readable folder-path
 // label — for the approval-request dialog's item picker. No signed URLs:
 // this is only for picking an item, not previewing it.
