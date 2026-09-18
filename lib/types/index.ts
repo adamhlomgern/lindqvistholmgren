@@ -471,6 +471,10 @@ export type PrepperSubtask = {
   completedAt?: string;
 };
 
+export type PrepperItemType = "task" | "purchase" | "event" | "note";
+export type PrepperPurchaseStatus = "need" | "ordered" | "bought";
+export type PrepperAssignee = "ada" | "malin" | "both";
+
 export type PrepperItem = {
   id: string;
   sectionId: string;
@@ -485,6 +489,16 @@ export type PrepperItem = {
   completedBy?: string;
   completedAt?: string;
   subtasks: PrepperSubtask[];
+  type: PrepperItemType;
+  dueDate?: string;
+  priority: boolean;
+  purchaseStatus?: PrepperPurchaseStatus;
+  estimatedPrice?: number;
+  actualPrice?: number;
+  link?: string;
+  imageUrl?: string;
+  assignee?: PrepperAssignee;
+  tags?: string[];
 };
 
 export type PrepperSection = {

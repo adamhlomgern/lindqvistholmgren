@@ -243,6 +243,16 @@ export async function getChecklistDetail(checklistId: string): Promise<PrepperCh
       completedBy: row.completed_by ?? undefined,
       completedAt: row.completed_at ?? undefined,
       subtasks: subtasksByItem.get(row.id) ?? [],
+      type: (row.type ?? "task") as PrepperItem["type"],
+      dueDate: row.due_date ?? undefined,
+      priority: row.priority ?? false,
+      purchaseStatus: row.purchase_status ?? undefined,
+      estimatedPrice: row.estimated_price ?? undefined,
+      actualPrice: row.actual_price ?? undefined,
+      link: row.link ?? undefined,
+      imageUrl: row.image_url ?? undefined,
+      assignee: row.assignee ?? undefined,
+      tags: row.tags ?? undefined,
     };
     const list = itemsBySection.get(item.sectionId) ?? [];
     list.push(item);

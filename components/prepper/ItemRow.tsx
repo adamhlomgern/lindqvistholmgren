@@ -2,9 +2,18 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronRight, GripVertical } from "lucide-react";
-import type { PrepperItem } from "@/lib/types";
+import { Calendar, ChevronRight, Flag, GripVertical, ShoppingBag, StickyNote } from "lucide-react";
+import type { PrepperItem, PrepperItemType } from "@/lib/types";
+import { formatShortDateSv } from "@/lib/format";
 import { Checkbox } from "@/components/prepper/Checkbox";
+
+// "task" gets no icon — a plain checklist item shouldn't look any different
+// than it did before this metadata existed (progressive disclosure).
+const typeIcons: Partial<Record<PrepperItemType, typeof ShoppingBag>> = {
+  purchase: ShoppingBag,
+  event: Calendar,
+  note: StickyNote,
+};
 
 export function ItemRow({
   item,
@@ -24,6 +33,7 @@ export function ItemRow({
   // ItemDetailSheet) — the row's checkbox is read-only for those, so people
   // never have to separately check both a parent and every child.
   const derivedCompleted = hasSubtasks ? subtaskDone === item.subtasks.length : item.completed;
+  const TypeIcon = typeIcons[item.type];
 
   return (
     <div
@@ -54,14 +64,23 @@ export function ItemRow({
         disabled={reorderMode}
         className="flex min-h-11 min-w-0 flex-1 items-center justify-between gap-2 text-left"
       >
-        <span
-          className={`block min-w-0 flex-1 break-words text-[16px] font-medium leading-[1.3] transition-colors duration-150 ${
-            derivedCompleted ? "text-prepper-text-muted line-through" : "text-prepper-text"
-          }`}
-        >
-          {item.title}
+        <span className="flex min-w-0 flex-1 items-center gap-1.5">
+          {TypeIcon && <TypeIcon size={14} strokeWidth={2} className="shrink-0 text-prepper-text-faint" />}
+          {item.priority && <Flag size={13} strokeWidth={2} className="shrink-0 text-prepper-primary" />}
+          <span
+            className={`block min-w-0 flex-1 break-words text-[16px] font-medium leading-[1.3] transition-colors duration-150 ${
+              derivedCompleted ? "text-prepper-text-muted line-through" : "text-prepper-text"
+            }`}
+          >
+            {item.title}
+          </span>
         </span>
         <span className="flex shrink-0 items-center gap-1.5">
+          {item.dueDate && (
+            <span className="rounded-full bg-prepper-surface-soft px-2 py-0.5 text-[11px] font-medium text-prepper-text-muted">
+              {formatShortDateSv(item.dueDate)}
+            </span>
+          )}
           {hasSubtasks && (
             <span
               className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
