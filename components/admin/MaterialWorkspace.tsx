@@ -11,7 +11,9 @@ import {
   Folder as FolderIcon,
   FolderInput,
   FolderPlus,
+  Globe,
   Link2,
+  Lock,
   MessageSquareText,
   Pencil,
   Search,
@@ -73,6 +75,11 @@ type Props = {
   items: MaterialItemWithUrl[];
   folderTree: MaterialFolderTreeNode[];
   projects: { id: string; title: string }[];
+  // Folders have no visibility field of their own — this says whether a
+  // folder (recursively) contains at least one shared item, so the browser
+  // can show "delat med kund" / "helt internt" the way each item already
+  // shows its own visibility.
+  folderSharedStatus: Record<string, boolean>;
 };
 
 type VisibilityFilter = "all" | "shared" | "internal";
@@ -84,7 +91,17 @@ const gridClasses: Record<Exclude<MaterialViewMode, "list">, string> = {
   "grid-lg": "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4",
 };
 
-export function MaterialWorkspace({ customerId, basePath, currentFolderId, breadcrumb, folders, items, folderTree, projects }: Props) {
+export function MaterialWorkspace({
+  customerId,
+  basePath,
+  currentFolderId,
+  breadcrumb,
+  folders,
+  items,
+  folderTree,
+  projects,
+  folderSharedStatus,
+}: Props) {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [folderDialog, setFolderDialog] = useState<{ folder?: MaterialFolder } | null>(null);
   const [instructionOpen, setInstructionOpen] = useState(false);
@@ -137,7 +154,12 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
   const filtersActive = search.trim() !== "" || visibilityFilter !== "all" || projectFilter !== "all";
 
   const searchLower = search.trim().toLowerCase();
-  const visibleFolders = folders.filter((folder) => !searchLower || folder.name.toLowerCase().includes(searchLower));
+  const visibleFolders = folders.filter((folder) => {
+    if (searchLower && !folder.name.toLowerCase().includes(searchLower)) return false;
+    if (visibilityFilter === "shared" && !folderSharedStatus[folder.id]) return false;
+    if (visibilityFilter === "internal" && folderSharedStatus[folder.id]) return false;
+    return true;
+  });
   const visibleItems = items.filter((item) => {
     if (searchLower && !item.title.toLowerCase().includes(searchLower)) return false;
     if (visibilityFilter !== "all" && item.visibility !== visibilityFilter) return false;
@@ -303,6 +325,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               type="button"
               onClick={clearSelection}
               aria-label="Avmarkera allt"
+              title="Avmarkera allt"
               className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
             >
               <X size={14} strokeWidth={2.25} />
@@ -335,6 +358,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               onMoveTo={() => setMoveTarget({ itemIds: [], folderIds: [folder.id], label: folder.name })}
               selected={selectedFolders.has(folder.id)}
               onToggleSelect={() => toggleFolderSelected(folder.id)}
+              hasSharedContent={folderSharedStatus[folder.id] ?? false}
             />
           ))}
           {sortedItems.map((item, index) => (
@@ -369,6 +393,7 @@ export function MaterialWorkspace({ customerId, basePath, currentFolderId, bread
               onMoveTo={() => setMoveTarget({ itemIds: [], folderIds: [folder.id], label: folder.name })}
               selected={selectedFolders.has(folder.id)}
               onToggleSelect={() => toggleFolderSelected(folder.id)}
+              hasSharedContent={folderSharedStatus[folder.id] ?? false}
             />
           ))}
           {sortedItems.map((item, index) => (
@@ -447,6 +472,7 @@ function ReorderButtons({
         onClick={() => onMove(-1)}
         disabled={isFirst}
         aria-label="Flytta upp"
+        title="Flytta upp"
         className="flex h-8 w-8 items-center justify-center text-stone transition-colors hover:text-bone disabled:opacity-30"
       >
         <ChevronUp size={14} strokeWidth={2.25} />
@@ -456,6 +482,7 @@ function ReorderButtons({
         onClick={() => onMove(1)}
         disabled={isLast}
         aria-label="Flytta ner"
+        title="Flytta ner"
         className="flex h-8 w-8 items-center justify-center text-stone transition-colors hover:text-bone disabled:opacity-30"
       >
         <ChevronDown size={14} strokeWidth={2.25} />
@@ -499,9 +526,57 @@ type FolderRowProps = {
   onMoveTo: () => void;
   selected: boolean;
   onToggleSelect: () => void;
+  hasSharedContent: boolean;
 };
 
-function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, onRename, onMoveTo, customerId, selected, onToggleSelect }: FolderRowProps) {
+// Not clickable, unlike MaterialVisibilityToggle — a folder's status is
+// derived from what's inside it, there's no single flag to flip here.
+function FolderSharedBadge({ hasSharedContent, compact = false }: { hasSharedContent: boolean; compact?: boolean }) {
+  const title = hasSharedContent
+    ? "Innehåller minst en fil eller länk som är delad med kunden"
+    : "Helt internt — inget i mappen är delat med kunden än";
+  const Icon = hasSharedContent ? Globe : Lock;
+
+  if (compact) {
+    return (
+      <span
+        title={title}
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
+          hasSharedContent ? "bg-emerald/15 text-emerald" : "bg-bone/10 text-stone"
+        }`}
+      >
+        <Icon size={10} strokeWidth={2.5} />
+      </span>
+    );
+  }
+
+  return (
+    <span
+      title={title}
+      className={`flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+        hasSharedContent ? "bg-emerald/15 text-emerald" : "bg-bone/10 text-stone"
+      }`}
+    >
+      <Icon size={10} strokeWidth={2.5} />
+      {hasSharedContent ? "Delat" : "Internt"}
+    </span>
+  );
+}
+
+function FolderListRow({
+  folder,
+  basePath,
+  canReorder,
+  isFirst,
+  isLast,
+  onMove,
+  onRename,
+  onMoveTo,
+  customerId,
+  selected,
+  onToggleSelect,
+  hasSharedContent,
+}: FolderRowProps) {
   return (
     <Card className="flex items-center justify-between gap-3">
       <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -515,11 +590,13 @@ function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, 
         </Link>
       </div>
       <div className="flex shrink-0 items-center gap-1">
+        <FolderSharedBadge hasSharedContent={hasSharedContent} />
         {canReorder && <ReorderButtons isFirst={isFirst} isLast={isLast} onMove={onMove} />}
         <button
           type="button"
           onClick={onRename}
           aria-label="Byt namn"
+          title="Byt namn"
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
         >
           <Pencil size={14} strokeWidth={2.25} />
@@ -528,6 +605,7 @@ function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, 
           type="button"
           onClick={onMoveTo}
           aria-label="Flytta"
+          title="Flytta till en annan mapp"
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
         >
           <FolderInput size={14} strokeWidth={2.25} />
@@ -537,6 +615,7 @@ function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, 
             <button
               type="button"
               aria-label="Radera mapp"
+              title="Radera mappen"
               className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
             >
               <Trash2 size={14} strokeWidth={2.25} />
@@ -553,11 +632,27 @@ function FolderListRow({ folder, basePath, canReorder, isFirst, isLast, onMove, 
   );
 }
 
-function FolderGridCard({ folder, basePath, canReorder, isFirst, isLast, onMove, onRename, onMoveTo, customerId, selected, onToggleSelect }: FolderRowProps) {
+function FolderGridCard({
+  folder,
+  basePath,
+  canReorder,
+  isFirst,
+  isLast,
+  onMove,
+  onRename,
+  onMoveTo,
+  customerId,
+  selected,
+  onToggleSelect,
+  hasSharedContent,
+}: FolderRowProps) {
   return (
     <div className="relative flex flex-col items-center gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3">
       <div className="absolute left-1.5 top-1.5">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${folder.name}"`} />
+      </div>
+      <div className="absolute right-1.5 top-1.5">
+        <FolderSharedBadge hasSharedContent={hasSharedContent} compact />
       </div>
       <Link href={`${basePath}/${folder.id}`} className="flex w-full flex-1 flex-col items-center gap-2 text-center">
         <FolderIcon size={26} strokeWidth={1.75} className="text-peach" />
@@ -569,6 +664,7 @@ function FolderGridCard({ folder, basePath, canReorder, isFirst, isLast, onMove,
           type="button"
           onClick={onRename}
           aria-label="Byt namn"
+          title="Byt namn"
           className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
         >
           <Pencil size={12} strokeWidth={2.25} />
@@ -577,6 +673,7 @@ function FolderGridCard({ folder, basePath, canReorder, isFirst, isLast, onMove,
           type="button"
           onClick={onMoveTo}
           aria-label="Flytta"
+          title="Flytta till en annan mapp"
           className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
         >
           <FolderInput size={12} strokeWidth={2.25} />
@@ -586,6 +683,7 @@ function FolderGridCard({ folder, basePath, canReorder, isFirst, isLast, onMove,
             <button
               type="button"
               aria-label="Radera mapp"
+              title="Radera mappen"
               className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
             >
               <Trash2 size={12} strokeWidth={2.25} />
@@ -647,6 +745,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
           type="button"
           onClick={() => togglePinned(customerId, item.id, !item.pinned)}
           aria-label={item.pinned ? "Ta bort nål" : "Fäst överst"}
+          title={item.pinned ? "Ta bort från fästa objekt" : "Fäst överst i listan"}
           className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-bone/10 ${
             item.pinned ? "text-peach" : "text-stone hover:text-bone"
           }`}
@@ -657,6 +756,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
           type="button"
           onClick={onRename}
           aria-label="Byt namn"
+          title="Byt namn"
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
         >
           <Pencil size={14} strokeWidth={2.25} />
@@ -665,6 +765,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
           type="button"
           onClick={onMoveTo}
           aria-label="Flytta"
+          title="Flytta till en annan mapp"
           className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
         >
           <FolderInput size={14} strokeWidth={2.25} />
@@ -674,6 +775,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
             <button
               type="button"
               aria-label="Radera"
+              title="Radera"
               className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
             >
               <Trash2 size={14} strokeWidth={2.25} />
@@ -733,6 +835,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             type="button"
             onClick={() => togglePinned(customerId, item.id, !item.pinned)}
             aria-label={item.pinned ? "Ta bort nål" : "Fäst överst"}
+            title={item.pinned ? "Ta bort från fästa objekt" : "Fäst överst i listan"}
             className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors hover:bg-bone/10 ${
               item.pinned ? "text-peach" : "text-stone hover:text-bone"
             }`}
@@ -743,6 +846,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             type="button"
             onClick={onRename}
             aria-label="Byt namn"
+            title="Byt namn"
             className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
           >
             <Pencil size={12} strokeWidth={2.25} />
@@ -751,6 +855,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             type="button"
             onClick={onMoveTo}
             aria-label="Flytta"
+            title="Flytta till en annan mapp"
             className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
           >
             <FolderInput size={12} strokeWidth={2.25} />
@@ -760,6 +865,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
               <button
                 type="button"
                 aria-label="Radera"
+                title="Radera"
                 className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
               >
                 <Trash2 size={12} strokeWidth={2.25} />

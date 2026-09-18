@@ -251,6 +251,16 @@ export async function isFolderSharedWithCustomer(customerId: string, folderId: s
   return hasSharedContent.get(folderId) ?? false;
 }
 
+// Admin-facing counterpart to isFolderSharedWithCustomer — a folder itself
+// has no visibility field (only the items inside it do), so the admin
+// material browser has no way to show "does this folder contain anything
+// shared?" without this. Reuses the same cached computation the customer
+// portal already does, just returns the whole map instead of one lookup.
+export async function getFolderSharedStatusMap(customerId: string): Promise<Map<string, boolean>> {
+  const { hasSharedContent } = await computeFoldersWithSharedContent(customerId);
+  return hasSharedContent;
+}
+
 // Derived from the same cached shared-items fetch computeFoldersWithSharedContent
 // already did — the customer folder cards' "N objekt" count, without its own
 // round trip to Supabase.
