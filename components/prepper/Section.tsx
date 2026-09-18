@@ -98,6 +98,8 @@ export function Section({
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           subtasks: [],
+          type: "task",
+          priority: false,
         });
       }
     });

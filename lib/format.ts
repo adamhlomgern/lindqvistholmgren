@@ -7,6 +7,13 @@ export function formatDateSv(iso: string | null | undefined): string {
   return new Intl.DateTimeFormat("sv-SE", { dateStyle: "medium" }).format(new Date(iso));
 }
 
+// Compact "18 sep" form — used for Prepper's due-date chips, where the full
+// "medium" format (with weekday/year) is too wide for a small badge.
+export function formatShortDateSv(iso: string | null | undefined): string {
+  if (!iso) return "";
+  return new Intl.DateTimeFormat("sv-SE", { day: "numeric", month: "short" }).format(new Date(iso));
+}
+
 // There's no separate display-name field on the admin user — derive
 // something readable from the email's local part instead of showing the
 // raw address.
