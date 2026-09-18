@@ -437,6 +437,8 @@ export type PrepperNotebook = {
   id: string;
   name: string;
   description?: string;
+  icon?: string;
+  color?: string;
   position: number;
   createdBy: string;
   createdAt: string;
@@ -448,6 +450,8 @@ export type PrepperChecklist = {
   notebookId: string;
   title: string;
   description?: string;
+  icon?: string;
+  color?: string;
   position: number;
   createdBy: string;
   createdAt: string;
@@ -487,6 +491,8 @@ export type PrepperSection = {
   id: string;
   checklistId: string;
   title: string;
+  icon?: string;
+  color?: string;
   position: number;
   createdBy: string;
   createdAt: string;

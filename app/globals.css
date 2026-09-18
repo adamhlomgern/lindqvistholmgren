@@ -217,7 +217,21 @@ body {
   --color-prepper-inverse-text: var(--color-prepper-lavender-100);
   --color-prepper-inverse-text-muted: var(--color-prepper-lavender-300);
 
-  --font-prepper-display: var(--font-prepper-serif), Georgia, serif;
+  /* Curated accent swatches (Fas 2) — the only 8 colors a notebook,
+     checklist or section can be tagged with (see
+     lib/design/prepperAccents.ts). Muted/dusty on purpose, same family as
+     the rest of the palette — never a free color picker. */
+  --color-prepper-swatch-rose: #c08a94;
+  --color-prepper-swatch-clay: #c08553;
+  --color-prepper-swatch-sage: #7e9270;
+  --color-prepper-swatch-oat: #b49a66;
+  --color-prepper-swatch-lavender: var(--color-prepper-lavender-500);
+  --color-prepper-swatch-blue-grey: #6e7f8c;
+  --color-prepper-swatch-burgundy: var(--color-prepper-burgundy-500);
+  --color-prepper-swatch-graphite: #6b6560;
+
+  --font-prepper-display: var(--font-prepper-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-prepper-sans: var(--font-prepper-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {

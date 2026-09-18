@@ -40,7 +40,7 @@ function SubtaskRow({
     <div className="flex items-center gap-2.5 py-2">
       <Checkbox checked={subtask.completed} onChange={toggle} size={19} />
       <span
-        className={`flex-1 text-sm transition-colors duration-150 ${
+        className={`flex-1 text-[16px] font-medium leading-[1.3] transition-colors duration-150 ${
           subtask.completed ? "text-prepper-text-muted line-through" : "text-prepper-text"
         }`}
       >
@@ -197,7 +197,7 @@ export function ItemDetailSheet({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onBlur={saveTitle}
-              className={`min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-1 py-0.5 font-prepper-display text-xl text-prepper-text focus:border-prepper-border focus:bg-prepper-surface focus:outline-none ${
+              className={`min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-1 py-0.5 text-[28px] font-semibold leading-[1.12] tracking-[-0.03em] text-prepper-text focus:border-prepper-border focus:bg-prepper-surface focus:outline-none ${
                 derivedCompleted ? "text-prepper-text-muted line-through" : ""
               }`}
             />
@@ -212,7 +212,7 @@ export function ItemDetailSheet({
             className="mt-4 w-full resize-none rounded-xl border border-prepper-border bg-prepper-surface px-3 py-2 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
           />
 
-          <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-prepper-text-muted">
+          <p className="mt-5 text-[11px] font-bold uppercase tracking-[0.15em] text-prepper-text-muted">
             Deluppgifter{hasSubtasks ? ` · ${subtaskDone}/${subtasks.length}` : ""}
           </p>
           {hasSubtasks && (
