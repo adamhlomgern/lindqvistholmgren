@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
+import type { PrepperAssignee, PrepperItemType, PrepperPurchaseStatus } from "@/lib/types";
 
 function notebookPath(notebookId: string) {
   return `/admin/appar/prepper/${notebookId}`;
@@ -168,13 +169,42 @@ export async function createItem(sectionId: string, notebookId: string, title: s
   return data;
 }
 
-export async function updateItem(id: string, notebookId: string, fields: { title?: string; note?: string }) {
+export async function updateItem(
+  id: string,
+  notebookId: string,
+  fields: {
+    title?: string;
+    note?: string;
+    type?: PrepperItemType;
+    dueDate?: string | null;
+    priority?: boolean;
+    purchaseStatus?: PrepperPurchaseStatus | null;
+    estimatedPrice?: number | null;
+    actualPrice?: number | null;
+    link?: string | null;
+    imageUrl?: string | null;
+    assignee?: PrepperAssignee | null;
+    tags?: string[] | null;
+  },
+) {
   const { user } = await verifySession();
   const supabase = createServiceRoleClient();
-  await supabase
-    .from("prepper_items")
-    .update({ ...fields, updated_by: user.id, updated_at: new Date().toISOString() })
-    .eq("id", id);
+
+  const update: Record<string, unknown> = { updated_by: user.id, updated_at: new Date().toISOString() };
+  if (fields.title !== undefined) update.title = fields.title;
+  if (fields.note !== undefined) update.note = fields.note;
+  if (fields.type !== undefined) update.type = fields.type;
+  if (fields.dueDate !== undefined) update.due_date = fields.dueDate;
+  if (fields.priority !== undefined) update.priority = fields.priority;
+  if (fields.purchaseStatus !== undefined) update.purchase_status = fields.purchaseStatus;
+  if (fields.estimatedPrice !== undefined) update.estimated_price = fields.estimatedPrice;
+  if (fields.actualPrice !== undefined) update.actual_price = fields.actualPrice;
+  if (fields.link !== undefined) update.link = fields.link;
+  if (fields.imageUrl !== undefined) update.image_url = fields.imageUrl;
+  if (fields.assignee !== undefined) update.assignee = fields.assignee;
+  if (fields.tags !== undefined) update.tags = fields.tags;
+
+  await supabase.from("prepper_items").update(update).eq("id", id);
 
   revalidatePath(notebookPath(notebookId));
 }
