@@ -1,33 +1,24 @@
 import type { ReactNode } from "react";
-import { Fraunces } from "next/font/google";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { Manrope } from "next/font/google";
 import { PrepperToastProvider } from "@/components/prepper/Toast";
 
-// Prepper's own display serif — warm/editorial, deliberately distinct from
-// the marketing site's Space Grotesk. Loaded only here so the rest of the
-// app never pays for this font. Exposed as --font-prepper-serif, mapped to
-// --font-prepper-display in app/globals.css's .theme-prepper-scoped tokens.
-const fraunces = Fraunces({
+// Prepper's single typeface — crisp/compact/contemporary, replacing an
+// earlier serif per the design audit ("no serif fonts", hierarchy built
+// from weight/tracking/contrast, not a second typeface). Loaded only here
+// so the rest of the admin app never pays for it. Exposed as
+// --font-prepper-manrope, used for both display and body text via
+// --font-prepper-display/--font-prepper-sans in app/globals.css.
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-prepper-serif",
+  variable: "--font-prepper-manrope",
   display: "swap",
 });
 
 export default function PrepperLayout({ children }: { children: ReactNode }) {
   return (
     <div
-      className={`${fraunces.variable} min-h-screen bg-prepper-background font-sans text-prepper-text`}
+      className={`${manrope.variable} min-h-screen bg-prepper-background font-prepper-sans text-prepper-text`}
     >
-      <div className="px-4 pt-4 sm:px-8">
-        <Link
-          href="/admin"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-prepper-text-muted transition-colors hover:text-prepper-text"
-        >
-          <ArrowLeft size={13} strokeWidth={2} />
-          Till admin
-        </Link>
-      </div>
       <PrepperToastProvider>{children}</PrepperToastProvider>
     </div>
   );

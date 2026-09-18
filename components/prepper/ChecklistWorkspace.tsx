@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
-import { Menu, Plus } from "lucide-react";
+import { ArrowUpDown, Check, Menu, Plus } from "lucide-react";
 import type { PrepperChecklistDetail, PrepperItem, PrepperSection as PrepperSectionType } from "@/lib/types";
 import type { PrepperChecklistSummary } from "@/lib/data/prepper";
 import { createSection, deleteSection, reorderSections, toggleItem, deleteItem, reorderItems } from "@/lib/actions/prepper";
 import { ListSwitcher } from "@/components/prepper/ListSwitcher";
 import { Section } from "@/components/prepper/Section";
 import { ProgressBar } from "@/components/prepper/ProgressBar";
+import { ActionMenu } from "@/components/prepper/ActionMenu";
+import { ItemDetailSheet } from "@/components/prepper/ItemDetailSheet";
 import { usePrepperToast, pickDefaultToastMessage } from "@/components/prepper/Toast";
 
 const CHECKLIST_CELEBRATIONS = ["Hela listan är klar! 🎉", "Klart, allihopa.", "Ni ligger steget före."];
@@ -29,6 +32,9 @@ export function ChecklistWorkspace({
   const [sections, setSections] = useState<PrepperSectionType[]>(checklist.sections);
   const [syncedChecklist, setSyncedChecklist] = useState(checklist);
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [reorderMode, setReorderMode] = useState(false);
+  const [openItem, setOpenItem] = useState<{ sectionId: string; itemId: string } | null>(null);
+  const [addingSection, setAddingSection] = useState(false);
   const [newSectionTitle, setNewSectionTitle] = useState("");
   const [, startTransition] = useTransition();
   const router = useRouter();
@@ -57,6 +63,9 @@ export function ChecklistWorkspace({
 
   const totalItems = sections.reduce((sum, s) => sum + s.items.length, 0);
   const doneItems = sections.reduce((sum, s) => sum + s.items.filter((i) => i.completed).length, 0);
+  const openItemData = openItem
+    ? (sections.find((s) => s.id === openItem.sectionId)?.items.find((i) => i.id === openItem.itemId) ?? null)
+    : null;
 
   useEffect(() => {
     const complete = totalItems > 0 && doneItems === totalItems;
@@ -140,7 +149,10 @@ export function ChecklistWorkspace({
   function handleAddSection(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = newSectionTitle.trim();
-    if (!trimmed) return;
+    if (!trimmed) {
+      setAddingSection(false);
+      return;
+    }
     setNewSectionTitle("");
     startTransition(async () => {
       const created = await createSection(checklist.id, notebookId, trimmed);
@@ -185,16 +197,29 @@ export function ChecklistWorkspace({
               <Menu size={17} strokeWidth={2} />
             </button>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-prepper-primary/70">
+              <Link
+                href="/admin/appar/prepper"
+                className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] text-prepper-primary/70 transition-colors hover:text-prepper-primary"
+              >
                 {notebookName}
-              </p>
-              <h1 className="truncate font-prepper-display text-xl text-prepper-text sm:text-2xl">
+              </Link>
+              <h1 className="truncate text-[32px] font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text sm:text-[34px]">
                 {checklist.title}
               </h1>
             </div>
+            <ActionMenu
+              ariaLabel="Fler alternativ för checklistan"
+              items={[
+                {
+                  label: reorderMode ? "Klar" : "Sortera",
+                  icon: reorderMode ? Check : ArrowUpDown,
+                  onSelect: () => setReorderMode((v) => !v),
+                },
+              ]}
+            />
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <p className="shrink-0 text-xs text-prepper-text-muted">
+            <p className="shrink-0 text-[13px] font-medium text-prepper-text-muted">
               {doneItems} av {totalItems} klart
             </p>
             <div className="flex-1">
@@ -207,8 +232,8 @@ export function ChecklistWorkspace({
           {sections.length === 0 && (
             <div className="rounded-2xl border border-prepper-border bg-prepper-surface-soft px-6 py-14 text-center">
               <div className="mx-auto max-w-xs border-y border-prepper-border/70 py-5">
-                <p className="font-prepper-display text-lg text-prepper-text">Här är det tomt än så länge</p>
-                <p className="mt-1.5 text-sm text-prepper-text-muted">
+                <p className="text-[21px] font-bold tracking-[-0.02em] text-prepper-text">Här är det tomt än så länge</p>
+                <p className="mt-1.5 text-[15px] leading-[1.55] text-prepper-text-muted">
                   Lägg till första sektionen ni vill få ordning på.
                 </p>
               </div>
@@ -222,8 +247,9 @@ export function ChecklistWorkspace({
                   key={section.id}
                   section={section}
                   notebookId={notebookId}
+                  reorderMode={reorderMode}
                   onToggleItem={(itemId, completed) => handleToggleItem(section.id, itemId, completed)}
-                  onDeleteItem={(itemId) => handleDeleteItem(section.id, itemId)}
+                  onOpenItem={(item) => setOpenItem({ sectionId: section.id, itemId: item.id })}
                   onReorderItems={(itemIds) => handleReorderItems(section.id, itemIds)}
                   onAddItem={(item) => handleAddItem(section.id, item)}
                   onDeleteSection={() => handleDeleteSection(section.id)}
@@ -232,24 +258,54 @@ export function ChecklistWorkspace({
             </SortableContext>
           </DndContext>
 
-          <form onSubmit={handleAddSection} className="flex items-center gap-2">
-            <input
-              value={newSectionTitle}
-              onChange={(e) => setNewSectionTitle(e.target.value)}
-              placeholder="Ny sektion, t.ex. Sömn"
-              className="min-h-11 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-4 py-2.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
-            />
-            <button
-              type="submit"
-              disabled={!newSectionTitle.trim()}
-              className="flex h-11 items-center gap-1.5 rounded-xl bg-prepper-primary px-4 text-sm font-semibold text-prepper-on-primary transition-colors hover:bg-prepper-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2 disabled:opacity-50"
-            >
-              <Plus size={16} strokeWidth={2.25} />
-              <span className="hidden sm:inline">Sektion</span>
-            </button>
-          </form>
+          {!reorderMode &&
+            (addingSection ? (
+              <form onSubmit={handleAddSection} className="flex items-center gap-2">
+                <input
+                  value={newSectionTitle}
+                  onChange={(e) => setNewSectionTitle(e.target.value)}
+                  onBlur={() => {
+                    if (!newSectionTitle.trim()) setAddingSection(false);
+                  }}
+                  placeholder="Ny sektion, t.ex. Sömn"
+                  autoFocus
+                  className="min-h-11 flex-1 rounded-xl border border-prepper-border bg-prepper-surface px-4 py-2.5 text-sm text-prepper-text placeholder:text-prepper-text-faint focus:border-prepper-primary focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+                />
+                <button
+                  type="submit"
+                  disabled={!newSectionTitle.trim()}
+                  className="flex h-11 items-center gap-1.5 rounded-xl bg-prepper-primary px-4 text-sm font-semibold text-prepper-on-primary transition-colors hover:bg-prepper-primary-hover active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-prepper-focus focus-visible:ring-offset-2 disabled:opacity-50"
+                >
+                  <Plus size={16} strokeWidth={2.25} />
+                  <span className="hidden sm:inline">Sektion</span>
+                </button>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setAddingSection(true)}
+                className="flex min-h-11 items-center gap-1.5 self-start rounded-xl px-2 text-sm font-medium text-prepper-primary transition-colors hover:bg-prepper-surface-soft"
+              >
+                <Plus size={16} strokeWidth={2.25} />
+                Lägg till
+              </button>
+            ))}
         </div>
       </div>
+
+      {openItemData && (
+        <ItemDetailSheet
+          key={openItemData.id}
+          item={openItemData}
+          notebookId={notebookId}
+          onClose={() => setOpenItem(null)}
+          onToggleCompleted={(completed) => handleToggleItem(openItem!.sectionId, openItemData.id, completed)}
+          onDeleted={() => {
+            handleDeleteItem(openItem!.sectionId, openItemData.id);
+            setOpenItem(null);
+          }}
+        />
+      )}
     </div>
   );
 }
