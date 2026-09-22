@@ -88,7 +88,7 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
         <PendingImagePreview file={pendingImage} previewUrl={pendingImageUrl} onRemove={() => setPendingImage(null)} />
       )}
 
-      <form ref={formRef} action={formAction} className="mt-3 flex items-end gap-2">
+      <form ref={formRef} action={formAction} className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end">
         <textarea
           ref={textareaRef}
           name="body"
@@ -104,16 +104,20 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
             setPendingImage(file);
           }}
         />
-        <EmojiPickerButton textareaRef={textareaRef} />
-        <ChatImageUploadButton pending={imagePending} onPick={setPendingImage} />
-        <button
-          type={pendingImage ? "button" : "submit"}
-          disabled={pending || imagePending}
-          onClick={pendingImage ? () => void handleSendImage() : undefined}
-          className="shrink-0 rounded-full bg-emerald px-4 py-2.5 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
-        >
-          Skicka
-        </button>
+        <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-start">
+          <div className="flex items-center gap-2">
+            <EmojiPickerButton textareaRef={textareaRef} />
+            <ChatImageUploadButton pending={imagePending} onPick={setPendingImage} />
+          </div>
+          <button
+            type={pendingImage ? "button" : "submit"}
+            disabled={pending || imagePending}
+            onClick={pendingImage ? () => void handleSendImage() : undefined}
+            className="shrink-0 rounded-full bg-emerald px-4 py-2.5 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+          >
+            Skicka
+          </button>
+        </div>
       </form>
       {(state?.error || imageError) && <p className="mt-2 text-sm text-coral">{state?.error ?? imageError}</p>}
       {previewUrl && (
