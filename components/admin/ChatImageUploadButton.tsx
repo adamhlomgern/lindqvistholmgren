@@ -16,19 +16,20 @@ type UseChatImageUploadParams = {
   onError: (message: string | undefined) => void;
 };
 
-// Shared by the attach button below and the textarea's paste-to-upload
+// Shared by the attach button below and the textarea's paste-to-attach
 // handler in CustomerMessagesCard/MessagesPanel — one upload path so a
 // pasted screenshot and a picked file behave identically. Goes through a
 // Route Handler (uploadUrl), not the text form's Server Action — Server
 // Actions here are capped at a 1MB body, same reasoning as
 // ProjectFileUploadForm. router.refresh() re-runs the server-rendered
-// message list after a successful upload, since neither caller owns the
-// messages array itself.
+// message list after a successful send, since neither caller owns the
+// messages array itself. Returns whether it succeeded so the caller only
+// clears its staged-image preview once the message has actually gone out.
 export function useChatImageUpload({ uploadUrl, extraFields = {}, textareaRef, onError }: UseChatImageUploadParams) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
 
-  async function uploadFile(file: File) {
+  async function uploadFile(file: File): Promise<boolean> {
     setPending(true);
     onError(undefined);
 
@@ -42,12 +43,14 @@ export function useChatImageUpload({ uploadUrl, extraFields = {}, textareaRef, o
       const data: { error?: string } = await response.json();
       if (!response.ok) {
         onError(data.error ?? "Kunde inte skicka bilden.");
-        return;
+        return false;
       }
       if (textareaRef.current) textareaRef.current.value = "";
       router.refresh();
+      return true;
     } catch {
       onError("Kunde inte skicka bilden.");
+      return false;
     } finally {
       setPending(false);
     }
@@ -56,10 +59,14 @@ export function useChatImageUpload({ uploadUrl, extraFields = {}, textareaRef, o
   return { pending, uploadFile };
 }
 
+// Only stages a file (via onPick) — it isn't sent until "Skicka" is
+// pressed, same as the attach-a-file-to-an-email pattern, so a pasted
+// screenshot can be reviewed (and removed, if it caught something it
+// shouldn't have) before it ever reaches the other person.
 export function ChatImageUploadButton({ pending, onPick }: { pending: boolean; onPick: (file: File) => void }) {
   return (
     <label
-      aria-label="Skicka bild"
+      aria-label="Bifoga bild"
       className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone ${
         pending ? "opacity-60" : ""
       }`}
