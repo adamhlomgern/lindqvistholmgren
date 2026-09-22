@@ -1,6 +1,11 @@
 import type { CustomerMessage } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 
+const BUCKET = "attachments";
+// Regenerated on every request since this file is deliberately uncached —
+// same reasoning and TTL as lib/data/files.ts's withSignedUrls.
+const SIGNED_URL_TTL_SECONDS = 60 * 60;
+
 type CustomerMessageRow = {
   id: string;
   customer_id: string;
@@ -8,6 +13,10 @@ type CustomerMessageRow = {
   author_label: string;
   body: string;
   created_at: string;
+  attachment_storage_path: string | null;
+  attachment_filename: string | null;
+  attachment_content_type: string | null;
+  attachment_size: number | null;
 };
 
 function toCustomerMessage(row: CustomerMessageRow): CustomerMessage {
@@ -18,7 +27,29 @@ function toCustomerMessage(row: CustomerMessageRow): CustomerMessage {
     authorLabel: row.author_label,
     body: row.body,
     createdAt: row.created_at,
+    attachment: row.attachment_storage_path
+      ? {
+          storagePath: row.attachment_storage_path,
+          filename: row.attachment_filename ?? "bild",
+          contentType: row.attachment_content_type ?? undefined,
+          size: row.attachment_size ?? undefined,
+          url: null,
+        }
+      : undefined,
   };
+}
+
+async function withAttachmentUrls(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+  messages: CustomerMessage[],
+): Promise<CustomerMessage[]> {
+  return Promise.all(
+    messages.map(async (message) => {
+      if (!message.attachment) return message;
+      const { data } = await supabase.storage.from(BUCKET).createSignedUrl(message.attachment.storagePath, SIGNED_URL_TTL_SECONDS);
+      return { ...message, attachment: { ...message.attachment, url: data?.signedUrl ?? null } };
+    }),
+  );
 }
 
 // Deliberately uncached and ordered oldest-first — a chat thread, not a feed.
@@ -35,7 +66,7 @@ export async function getCustomerMessages(customerId: string): Promise<CustomerM
     return [];
   }
 
-  return (data ?? []).map(toCustomerMessage);
+  return withAttachmentUrls(supabase, (data ?? []).map(toCustomerMessage));
 }
 
 // Latest N messages, newest first — for the compact preview on the
@@ -55,7 +86,7 @@ export async function getLatestCustomerMessages(customerId: string, limit: numbe
     return [];
   }
 
-  return (data ?? []).map(toCustomerMessage);
+  return withAttachmentUrls(supabase, (data ?? []).map(toCustomerMessage));
 }
 
 // Actual unread count for the sidebar badge — every admin message newer
@@ -120,7 +151,11 @@ export async function getMessageThreadsForAdmin(): Promise<CustomerMessageThread
     });
   }
 
-  return Array.from(threads.values());
+  const withUrls = await withAttachmentUrls(
+    supabase,
+    Array.from(threads.values()).map((thread) => thread.latestMessage),
+  );
+  return Array.from(threads.values()).map((thread, i) => ({ ...thread, latestMessage: withUrls[i] }));
 }
 
 // Cheap version of the same "latest message per customer" logic, used for

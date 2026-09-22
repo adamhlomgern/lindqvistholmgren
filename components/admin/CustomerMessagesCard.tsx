@@ -1,9 +1,11 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { sendAdminMessage } from "@/lib/actions/customer-messages";
 import { EmojiPickerButton } from "@/components/admin/EmojiPickerButton";
+import { ChatImageUploadButton, useChatImageUpload } from "@/components/admin/ChatImageUploadButton";
+import { ImageLightbox } from "@/components/admin/ImageLightbox";
 import { formatRelativeSv } from "@/lib/format";
 import type { CustomerMessage } from "@/lib/types";
 
@@ -16,6 +18,15 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
   const formRef = useRef<HTMLFormElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [imageError, setImageError] = useState<string | undefined>();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { pending: imagePending, uploadFile } = useChatImageUpload({
+    uploadUrl: "/api/admin/chat-upload",
+    extraFields: { customerId },
+    textareaRef,
+    onError: setImageError,
+  });
 
   useEffect(() => {
     if (!pending && !state?.error) formRef.current?.reset();
@@ -38,7 +49,17 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
               message.authorRole === "admin" ? "self-end bg-emerald/15 text-bone" : "self-start bg-bone/10 text-bone"
             }`}
           >
-            <p className="whitespace-pre-wrap">{message.body}</p>
+            {message.attachment?.url && (
+              <button type="button" onClick={() => setPreviewUrl(message.attachment!.url)} className="block">
+                {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URL, not a static asset next/image can optimize */}
+                <img
+                  src={message.attachment.url}
+                  alt={message.attachment.filename}
+                  className="max-h-52 max-w-full cursor-zoom-in rounded-lg object-contain"
+                />
+              </button>
+            )}
+            {message.body && <p className={message.attachment ? "mt-2 whitespace-pre-wrap" : "whitespace-pre-wrap"}>{message.body}</p>}
             <p className="mt-1 text-[11px] text-stone/60">
               {message.authorLabel} · {formatRelativeSv(message.createdAt)}
             </p>
@@ -53,10 +74,18 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
           name="body"
           required
           rows={2}
-          placeholder="Skriv ett meddelande till kunden…"
+          placeholder="Skriv ett meddelande till kunden… (klistra in en bild med Ctrl+V)"
           className={textareaClasses}
+          onPaste={(event) => {
+            const item = Array.from(event.clipboardData.items).find((entry) => entry.type.startsWith("image/"));
+            const file = item?.getAsFile();
+            if (!file) return;
+            event.preventDefault();
+            void uploadFile(file);
+          }}
         />
         <EmojiPickerButton textareaRef={textareaRef} />
+        <ChatImageUploadButton pending={imagePending} onPick={(file) => void uploadFile(file)} />
         <button
           type="submit"
           disabled={pending}
@@ -65,7 +94,10 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
           Skicka
         </button>
       </form>
-      {state?.error && <p className="mt-2 text-sm text-coral">{state.error}</p>}
+      {(state?.error || imageError) && <p className="mt-2 text-sm text-coral">{state?.error ?? imageError}</p>}
+      {previewUrl && (
+        <ImageLightbox url={previewUrl} alt="Bild från chatten" onClose={() => setPreviewUrl(null)} />
+      )}
     </Card>
   );
 }

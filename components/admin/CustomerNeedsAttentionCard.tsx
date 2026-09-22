@@ -28,7 +28,9 @@ export function CustomerNeedsAttentionCard({
           <MessageSquareText size={16} className="mt-0.5 shrink-0 text-coral" />
           <div className="min-w-0">
             <p className="text-sm font-medium text-coral">Obesvarat meddelande från {latestMessage.authorLabel}</p>
-            <p className="mt-0.5 line-clamp-1 text-sm text-stone">{latestMessage.body}</p>
+            <p className="mt-0.5 line-clamp-1 text-sm text-stone">
+              {latestMessage.body || (latestMessage.attachment ? "📷 Bild" : "")}
+            </p>
             <p className="mt-0.5 text-xs text-stone/60">{formatRelativeSv(latestMessage.createdAt)}</p>
           </div>
         </Link>
