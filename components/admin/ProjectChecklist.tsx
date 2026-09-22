@@ -3,6 +3,7 @@
 import { useOptimistic, useState, useTransition } from "react";
 import { ArrowRight, Plus, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import { InternalOnlyBadge } from "@/components/admin/InternalOnlyBadge";
 import { addChecklistItem, deleteChecklistItem, toggleChecklistItem } from "@/lib/actions/project-checklist";
 import type { ProjectChecklistItem } from "@/lib/types";
 
@@ -29,13 +30,16 @@ export function ProjectChecklist({ projectId, items }: { projectId: string; item
 
   return (
     <Card>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h2 className="font-display text-sm font-bold text-bone">Att göra</h2>
-        {optimisticItems.length > 0 && (
-          <span className="text-xs text-stone">
-            {doneCount} av {optimisticItems.length} klara
-          </span>
-        )}
+        <div className="flex items-center gap-2">
+          {optimisticItems.length > 0 && (
+            <span className="text-xs text-stone">
+              {doneCount} av {optimisticItems.length} klara
+            </span>
+          )}
+          <InternalOnlyBadge />
+        </div>
       </div>
 
       <div className="mt-3 flex flex-col gap-1">

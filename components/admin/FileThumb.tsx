@@ -6,11 +6,13 @@ export function FileThumb({
   contentType,
   url,
   action,
+  badge,
 }: {
   filename: string;
   contentType?: string;
   url: string | null;
   action?: ReactNode;
+  badge?: ReactNode;
 }) {
   const isImage = contentType?.startsWith("image/");
 
@@ -23,8 +25,15 @@ export function FileThumb({
         className="flex h-full w-full flex-col items-center justify-center gap-2 p-3 text-center"
       >
         {isImage && url ? (
-          // eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset
-          <img src={url} alt={filename} className="absolute inset-0 h-full w-full object-cover" />
+          // A transparent-background logo rendered edge-to-edge with
+          // object-cover gets cropped and sits on whatever the card's own
+          // background is. object-contain on a neutral checkerboard (not a
+          // flat white/dark fill — white logos disappear on white, dark ones
+          // on dark) shows the whole image predictably instead.
+          <div className="absolute inset-0 bg-checkered">
+            {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URLs, not a static/optimizable asset */}
+            <img src={url} alt={filename} className="h-full w-full object-contain p-3" />
+          </div>
         ) : (
           <>
             <FileIcon size={22} strokeWidth={1.75} className="text-stone" />
@@ -38,6 +47,7 @@ export function FileThumb({
         </span>
       )}
       {action && <div className="absolute right-1 top-1">{action}</div>}
+      {badge && <div className="absolute left-1 top-1">{badge}</div>}
     </div>
   );
 }

@@ -303,7 +303,6 @@ type StoredFile = {
 };
 
 export type EmailAttachment = StoredFile & { emailId: string };
-export type ProjectFile = StoredFile & { projectId: string };
 
 export type CustomerMessage = {
   id: string;
@@ -362,6 +361,12 @@ export type MaterialItem = {
 };
 
 export type ApprovalStatus = "pending" | "approved" | "changes_requested";
+// "feedback" is a lighter-weight ask (e.g. "which direction do you like?")
+// — same pending/approved/changes_requested mechanics underneath, but never
+// meant as a binding sign-off the way "approval" is. Distinct from each
+// other mainly in copy (request dialog, decision buttons) and the tag shown
+// on each row, not in workflow.
+export type ApprovalKind = "feedback" | "approval";
 
 export type ProjectApproval = {
   id: string;
@@ -369,6 +374,7 @@ export type ProjectApproval = {
   projectId: string;
   materialItemId: string;
   title: string;
+  kind: ApprovalKind;
   versionLabel?: string;
   message?: string;
   status: ApprovalStatus;
@@ -399,6 +405,9 @@ export type Email = {
   bodyHtml?: string;
   receivedAt: string;
   createdAt: string;
+  // Unset means never opened — set once, the first time an admin views the
+  // email's detail page, never cleared back to unset.
+  readAt?: string;
 };
 
 export type CustomerMember = {
@@ -420,4 +429,92 @@ export type ProjectInquiry = {
   company: string;
   email: string;
   phone: string;
+};
+
+// Prepper (privat checklist-app, app/admin/appar/prepper/*) —
+// Notebook -> Checklist -> Section -> Item -> Subtask.
+export type PrepperNotebook = {
+  id: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PrepperChecklist = {
+  id: string;
+  notebookId: string;
+  title: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PrepperSubtask = {
+  id: string;
+  itemId: string;
+  title: string;
+  completed: boolean;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  completedBy?: string;
+  completedAt?: string;
+};
+
+export type PrepperItemType = "task" | "purchase" | "event" | "note";
+export type PrepperPurchaseStatus = "need" | "ordered" | "bought";
+export type PrepperAssignee = "ada" | "malin" | "both";
+
+export type PrepperItem = {
+  id: string;
+  sectionId: string;
+  title: string;
+  note?: string;
+  completed: boolean;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  updatedBy?: string;
+  completedBy?: string;
+  completedAt?: string;
+  subtasks: PrepperSubtask[];
+  type: PrepperItemType;
+  dueDate?: string;
+  priority: boolean;
+  purchaseStatus?: PrepperPurchaseStatus;
+  estimatedPrice?: number;
+  actualPrice?: number;
+  link?: string;
+  imageUrl?: string;
+  assignee?: PrepperAssignee;
+  tags?: string[];
+};
+
+export type PrepperSection = {
+  id: string;
+  checklistId: string;
+  title: string;
+  icon?: string;
+  color?: string;
+  position: number;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  items: PrepperItem[];
+};
+
+// The full tree for one checklist — what the checklist screen renders from.
+export type PrepperChecklistDetail = PrepperChecklist & {
+  sections: PrepperSection[];
 };

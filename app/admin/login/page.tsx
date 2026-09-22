@@ -1,12 +1,15 @@
 "use client";
 
-import { useActionState } from "react";
+import { use, useActionState } from "react";
 import { login } from "@/lib/actions/auth";
 
 const inputClasses =
   "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
 
-export default function LoginPage() {
+type Props = { searchParams: Promise<{ next?: string }> };
+
+export default function LoginPage({ searchParams }: Props) {
+  const { next } = use(searchParams);
   const [state, formAction, pending] = useActionState(login, undefined);
 
   return (
@@ -15,6 +18,7 @@ export default function LoginPage() {
         <h1 className="font-display text-xl font-bold text-bone">Logga in</h1>
         <p className="mt-1 text-sm text-stone">Admin för Lindqvist / Holmgren</p>
         <form action={formAction} className="mt-6 flex flex-col gap-4">
+          {next && <input type="hidden" name="next" value={next} />}
           <div>
             <label
               htmlFor="email"

@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/Card";
-import { Tag } from "@/components/ui/Tag";
 import { ProjectPhaseIndicator } from "@/components/customer/ProjectPhaseIndicator";
 import { MilestoneStatus } from "@/components/customer/MilestoneStatus";
 import { statusClasses, statusIcons, statusLabels } from "@/lib/project-status";
-import { getNextStepOwnerLabel } from "@/lib/project-phase";
 import { formatRelativeSv } from "@/lib/format";
 import type { ClientProjectWithCustomer } from "@/lib/types";
 
@@ -62,12 +60,11 @@ export function ProjectOverviewCard({ project, hrefBase = "/kund" }: Props) {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-bone/10 pt-3">
-        <Tag>{getNextStepOwnerLabel(project.status)}</Tag>
-        {project.customerUpdateAt && (
+      {project.customerUpdateAt && (
+        <div className="mt-4 border-t border-bone/10 pt-3">
           <span className="text-xs text-stone/60">Senast uppdaterat {formatRelativeSv(project.customerUpdateAt)}</span>
-        )}
-      </div>
+        </div>
+      )}
     </Card>
   );
 }

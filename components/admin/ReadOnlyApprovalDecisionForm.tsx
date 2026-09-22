@@ -1,12 +1,11 @@
-// Passed as ApprovalView's DecisionForm override in the admin "Kundvy"
-// preview — same reason MessagesPanel takes a readOnly flag: the real
-// decideApproval Server Action resolves the customer from the *session*,
-// and an admin session isn't a customer, so letting this render the real
-// form would just dead-end on submit.
+// Satisfies ApprovalView's injectable DecisionForm slot for the admin
+// "Visa som kund" preview — a pending approval must never be decidable from
+// here, or an admin click could record a decision as if the customer made
+// it. Same reasoning as the demo site's DemoApprovalDecisionForm override.
 export function ReadOnlyApprovalDecisionForm() {
   return (
-    <p className="text-xs text-stone/60">
-      Det här är en förhandsvisning — beslut går inte att skicka härifrån.
+    <p className="text-sm text-stone">
+      Förhandsvisning — beslutet kan bara fattas av kunden i deras egen portal.
     </p>
   );
 }

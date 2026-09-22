@@ -28,7 +28,9 @@ export async function login(_prevState: LoginState, formData: FormData): Promise
     return { error: "Fel e-post eller lösenord." };
   }
 
-  redirect("/admin");
+  const next = formData.get("next");
+  const isSafeNext = typeof next === "string" && next.startsWith("/admin/");
+  redirect(isSafeNext ? next : "/admin");
 }
 
 export async function logout() {

@@ -22,14 +22,14 @@ export function ProjectPhaseIndicator({ project }: Props) {
                 ? "bg-emerald/15 text-emerald"
                 : step.state === "done"
                   ? "text-stone/70"
-                  : "text-stone/40"
+                  : "text-stone/60"
             }`}
           >
             {step.state === "done" ? (
               <Check size={11} strokeWidth={2.5} />
             ) : (
               <span
-                className={`h-1.5 w-1.5 rounded-full ${step.state === "current" ? "bg-emerald" : "bg-stone/40"}`}
+                className={`h-1.5 w-1.5 rounded-full ${step.state === "current" ? "bg-emerald" : "bg-stone/60"}`}
                 aria-hidden
               />
             )}

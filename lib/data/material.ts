@@ -251,6 +251,16 @@ export async function isFolderSharedWithCustomer(customerId: string, folderId: s
   return hasSharedContent.get(folderId) ?? false;
 }
 
+// Admin-facing counterpart to isFolderSharedWithCustomer — a folder itself
+// has no visibility field (only the items inside it do), so the admin
+// material browser has no way to show "does this folder contain anything
+// shared?" without this. Reuses the same cached computation the customer
+// portal already does, just returns the whole map instead of one lookup.
+export async function getFolderSharedStatusMap(customerId: string): Promise<Map<string, boolean>> {
+  const { hasSharedContent } = await computeFoldersWithSharedContent(customerId);
+  return hasSharedContent;
+}
+
 // Derived from the same cached shared-items fetch computeFoldersWithSharedContent
 // already did — the customer folder cards' "N objekt" count, without its own
 // round trip to Supabase.
@@ -311,6 +321,27 @@ export async function getMaterialItemById(itemId: string): Promise<(MaterialItem
 
   const [item] = await withFileSignedUrls(supabase, [toMaterialItem(data)]);
   return item;
+}
+
+// Flat list of a single project's own material — the project workspace's
+// "Filer" section. Independent of folderId: a project file usually sits at
+// the customer's material root (folder_id null) so it's reachable from both
+// the project page and the customer's general library without being a
+// separate copy, but nothing stops it from also being filed into a folder.
+export async function getProjectMaterialItems(projectId: string): Promise<(MaterialItem & { downloadUrl: string | null })[]> {
+  const supabase = createServiceRoleClient();
+  const { data, error } = await supabase
+    .from("material_items")
+    .select("*")
+    .eq("project_id", projectId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("[getProjectMaterialItems] Supabase-fråga misslyckades", error);
+    return [];
+  }
+
+  return withFileSignedUrls(supabase, (data ?? []).map(toMaterialItem));
 }
 
 // Flat list of every item across every folder, with a readable folder-path

@@ -24,6 +24,7 @@ export function MaterialVisibilityToggle({ customerId, itemId, visibility, itemT
         trigger={
           <button
             type="button"
+            title="Endast internt — klicka för att dela med kunden"
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${classes}`}
           >
             <Lock size={11} strokeWidth={2.5} />
@@ -42,6 +43,7 @@ export function MaterialVisibilityToggle({ customerId, itemId, visibility, itemT
     <button
       type="button"
       onClick={() => setMaterialItemVisibility(customerId, itemId, "internal")}
+      title="Delat med kunden — klicka för att göra internt igen"
       className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${classes}`}
     >
       <Globe size={11} strokeWidth={2.5} />

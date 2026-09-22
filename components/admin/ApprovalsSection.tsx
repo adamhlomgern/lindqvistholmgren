@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, X } from "lucide-react";
+import { CheckCircle2, TriangleAlert, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ApprovalRequestDialog } from "@/components/admin/ApprovalRequestDialog";
@@ -15,9 +15,14 @@ type Props = {
   customerId?: string;
   approvals: ProjectApproval[];
   materialItems: (MaterialItem & { folderPath: string })[];
+  // 0 doesn't block sending a request — it just means no one will get the
+  // notification email yet (getActiveCustomerMemberEmails only mails
+  // accepted, non-revoked contacts), so it's worth flagging before you
+  // send something the customer won't hear about.
+  activeMemberCount: number;
 };
 
-export function ApprovalsSection({ projectId, customerId, approvals, materialItems }: Props) {
+export function ApprovalsSection({ projectId, customerId, approvals, materialItems, activeMemberCount }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -36,6 +41,16 @@ export function ApprovalsSection({ projectId, customerId, approvals, materialIte
           </button>
         )}
       </div>
+
+      {customerId && activeMemberCount === 0 && (
+        <div className="mt-3 flex items-start gap-2 rounded-xl bg-peach/10 px-3.5 py-2.5 text-xs text-peach">
+          <TriangleAlert size={14} strokeWidth={2.25} className="mt-0.5 shrink-0" />
+          <span>
+            Ingen kontaktperson hos kunden har loggat in i portalen ännu — ett mejl skickas inte förrän någon gjort
+            det. Kolla Åtkomst-fliken på kundkortet.
+          </span>
+        </div>
+      )}
 
       {approvals.length === 0 ? (
         <div className="mt-3 flex flex-col items-center gap-2 rounded-xl border border-dashed border-bone/15 px-6 py-10 text-center">
@@ -58,8 +73,11 @@ export function ApprovalsSection({ projectId, customerId, approvals, materialIte
                       {approval.title}
                       {approval.versionLabel && <span className="text-stone"> · {approval.versionLabel}</span>}
                     </p>
-                    <p className="mt-0.5 text-xs text-stone">
-                      Begärt {formatDateSv(approval.requestedAt)}
+                    <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs text-stone">
+                      <span className={approval.kind === "feedback" ? "text-lavender" : ""}>
+                        {approval.kind === "feedback" ? "Återkoppling" : "Godkännande"}
+                      </span>
+                      · Begärt {formatDateSv(approval.requestedAt)}
                       {approval.dueAt && ` · Svar önskas senast ${formatDateSv(approval.dueAt)}`}
                     </p>
                   </div>
@@ -107,6 +125,7 @@ export function ApprovalsSection({ projectId, customerId, approvals, materialIte
           projectId={projectId}
           customerId={customerId}
           materialItems={materialItems}
+          activeMemberCount={activeMemberCount}
         />
       )}
     </Card>

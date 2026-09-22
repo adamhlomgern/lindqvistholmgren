@@ -57,6 +57,8 @@ export default async function proxy(request: NextRequest) {
   if (!user && !isAdminLoginRoute) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/admin/login";
+    loginUrl.search = "";
+    loginUrl.searchParams.set("next", path);
     return NextResponse.redirect(loginUrl);
   }
 

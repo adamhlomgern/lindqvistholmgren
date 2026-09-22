@@ -1,13 +1,16 @@
-import { getMaterialFolderContents, getMaterialFolderTree } from "@/lib/data/material";
+import { getFolderSharedStatusMap, getMaterialFolderContents, getMaterialFolderTree } from "@/lib/data/material";
+import { getClientProjectsByCustomerId } from "@/lib/data/client-projects";
 import { MaterialWorkspace } from "@/components/admin/MaterialWorkspace";
 
 type Props = { params: Promise<{ id: string }> };
 
 export default async function CustomerMaterialRoute({ params }: Props) {
   const { id } = await params;
-  const [{ folders, items }, folderTree] = await Promise.all([
+  const [{ folders, items }, folderTree, projects, folderSharedStatus] = await Promise.all([
     getMaterialFolderContents(id, null),
     getMaterialFolderTree(id),
+    getClientProjectsByCustomerId(id),
+    getFolderSharedStatusMap(id),
   ]);
 
   return (
@@ -19,6 +22,8 @@ export default async function CustomerMaterialRoute({ params }: Props) {
       folders={folders}
       items={items}
       folderTree={folderTree}
+      projects={projects.map((project) => ({ id: project.id, title: project.title }))}
+      folderSharedStatus={Object.fromEntries(folderSharedStatus)}
     />
   );
 }

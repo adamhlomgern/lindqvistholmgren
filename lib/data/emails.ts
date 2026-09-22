@@ -13,6 +13,7 @@ type EmailRow = {
   body_html: string | null;
   received_at: string;
   created_at: string;
+  read_at: string | null;
 };
 
 function toEmail(row: EmailRow): Email {
@@ -28,6 +29,7 @@ function toEmail(row: EmailRow): Email {
     bodyHtml: row.body_html ?? undefined,
     receivedAt: row.received_at,
     createdAt: row.created_at,
+    readAt: row.read_at ?? undefined,
   };
 }
 
@@ -108,6 +110,21 @@ export async function getEmailsCount(): Promise<number> {
 
   if (error) {
     console.error("[getEmailsCount] Supabase-fråga misslyckades", error);
+    return 0;
+  }
+
+  return count ?? 0;
+}
+
+export async function getUnreadEmailCount(): Promise<number> {
+  const supabase = createServiceRoleClient();
+  const { count, error } = await supabase
+    .from("emails")
+    .select("*", { count: "exact", head: true })
+    .is("read_at", null);
+
+  if (error) {
+    console.error("[getUnreadEmailCount] Supabase-fråga misslyckades", error);
     return 0;
   }
 

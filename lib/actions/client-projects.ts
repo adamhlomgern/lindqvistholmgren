@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { deleteStoredFiles } from "@/lib/data/files";
-import { storeProjectFile } from "@/lib/actions/project-files";
+import { insertMaterialFile } from "@/lib/actions/material";
 import { logProjectActivity } from "@/lib/data/client-projects";
 import type { AwaitingCustomerType, ClientProjectStatus } from "@/lib/types";
 
@@ -33,12 +33,29 @@ function parsePhaseLabels(raw: FormDataEntryValue | null): string[] | null {
   return labels.length > 0 ? labels : null;
 }
 
+// Grunduppgifter only — title, customer, assignee, deadline, the internal
+// overview/notes. The customer-facing fields (status update, phase, next
+// milestone, what's awaiting the customer) are a separate concern, edited
+// inline on the project page via updateCustomerView/parseCustomerViewForm
+// below, not through this form — see CustomerViewCard.
 function parseClientProjectForm(formData: FormData) {
   const statusRaw = String(formData.get("status") ?? "");
   const status = VALID_STATUSES.includes(statusRaw as ClientProjectStatus)
     ? (statusRaw as ClientProjectStatus)
     : undefined;
 
+  return {
+    title: String(formData.get("title") ?? "").trim(),
+    customer_id: String(formData.get("customerId") ?? "").trim() || null,
+    assignee_entity_id: String(formData.get("assigneeEntityId") ?? "").trim() || null,
+    deadline: String(formData.get("deadline") ?? "").trim() || null,
+    overview: String(formData.get("overview") ?? "").trim() || null,
+    notes: String(formData.get("notes") ?? "").trim() || null,
+    ...(status ? { status } : {}),
+  };
+}
+
+function parseCustomerViewForm(formData: FormData) {
   const phaseLabels = parsePhaseLabels(formData.get("phaseLabels"));
   const phaseCurrentRaw = Number(formData.get("phaseCurrent"));
   const phaseCurrent = phaseLabels && Number.isInteger(phaseCurrentRaw) ? Math.min(Math.max(phaseCurrentRaw, 0), phaseLabels.length - 1) : null;
@@ -52,12 +69,6 @@ function parseClientProjectForm(formData: FormData) {
     : null;
 
   return {
-    title: String(formData.get("title") ?? "").trim(),
-    customer_id: String(formData.get("customerId") ?? "").trim() || null,
-    assignee_entity_id: String(formData.get("assigneeEntityId") ?? "").trim() || null,
-    deadline: String(formData.get("deadline") ?? "").trim() || null,
-    overview: String(formData.get("overview") ?? "").trim() || null,
-    notes: String(formData.get("notes") ?? "").trim() || null,
     customer_update: String(formData.get("customerUpdate") ?? "").trim() || null,
     next_milestone_label: String(formData.get("nextMilestoneLabel") ?? "").trim() || null,
     next_milestone_date: String(formData.get("nextMilestoneDate") ?? "").trim() || null,
@@ -67,7 +78,6 @@ function parseClientProjectForm(formData: FormData) {
     awaiting_customer_label: awaitingCustomerLabel,
     awaiting_customer_type: awaitingCustomerType,
     awaiting_customer_due: String(formData.get("awaitingCustomerDue") ?? "").trim() || null,
-    ...(status ? { status } : {}),
   };
 }
 
@@ -100,11 +110,7 @@ export async function createClientProject(
   }
 
   const supabase = createServiceRoleClient();
-  const { data, error } = await supabase
-    .from("client_projects")
-    .insert({ ...row, customer_update_at: row.customer_update ? new Date().toISOString() : null })
-    .select("id")
-    .single();
+  const { data, error } = await supabase.from("client_projects").insert(row).select("id").single();
 
   if (error) {
     return { error: `Kunde inte skapa projektet: ${error.message}` };
@@ -115,17 +121,43 @@ export async function createClientProject(
   const tasks = parseTasksField(formData.get("tasks"));
   const files = formData.getAll("files").filter((entry): entry is File => entry instanceof File && entry.size > 0);
 
-  await Promise.all([
+  const tasksInsert =
     tasks.length > 0
       ? supabase
           .from("project_checklist_items")
           .insert(tasks.map((label, position) => ({ project_id: projectId, label, position })))
-      : Promise.resolve(),
-    ...files.map(async (file) => {
-      const result = await storeProjectFile(supabase, projectId, file);
+      : Promise.resolve();
+
+  // Sequential, not Promise.all — each insertMaterialFile computes its own
+  // storage path from a fresh crypto.randomUUID(), but position needs to
+  // increment locally to avoid every file in the batch racing to read the
+  // same "next position" and landing on the same number.
+  async function storeFiles() {
+    const { data: positionRow } = await supabase
+      .from("material_items")
+      .select("position")
+      .eq("customer_id", row.customer_id)
+      .is("folder_id", null)
+      .order("position", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    let position = (positionRow?.position ?? -1) + 1;
+
+    for (const file of files) {
+      const result = await insertMaterialFile(supabase, {
+        customerId: row.customer_id!,
+        projectId,
+        folderId: null,
+        file,
+        visibility: "internal",
+        deliveryStatus: "draft",
+        position: position++,
+      });
       if (result.error) console.error("[createClientProject] Kunde inte spara bifogad fil", result.error);
-    }),
-  ]);
+    }
+  }
+
+  await Promise.all([tasksInsert, storeFiles()]);
 
   await logProjectActivity(projectId, "Projektet skapades");
 
@@ -147,8 +179,38 @@ export async function updateClientProject(
 
   const supabase = createServiceRoleClient();
 
+  const { error } = await supabase
+    .from("client_projects")
+    .update({ ...row, updated_at: new Date().toISOString() })
+    .eq("id", id);
+
+  if (error) {
+    return { error: `Kunde inte spara ändringarna: ${error.message}` };
+  }
+
+  await logProjectActivity(id, "Projektinfo uppdaterades");
+
+  revalidatePath("/admin/projekt");
+  revalidatePath(`/admin/projekt/${id}`);
+  redirect(`/admin/projekt/${id}`);
+}
+
+// Separate from updateClientProject — this is the inline "Kundvy" card on
+// the project page, edited without leaving the page (no redirect), so the
+// customer-facing fields don't have to live in the same big form as the
+// internal grunduppgifter. See parseCustomerViewForm's comment.
+export async function updateCustomerView(
+  id: string,
+  _prevState: ClientProjectFormState,
+  formData: FormData,
+): Promise<ClientProjectFormState> {
+  await verifySession();
+  const row = parseCustomerViewForm(formData);
+
+  const supabase = createServiceRoleClient();
+
   // customer_update_at should only move when the customer-facing text
-  // actually changes, not on every save of the project (deadline, notes,
+  // actually changes, not on every save of this card (phase, milestone,
   // ...) — otherwise "senast uppdaterat" in the kundportal would be
   // meaningless. Cheapest way to know that without threading extra state
   // through the form is to read the current value back first.
@@ -174,11 +236,11 @@ export async function updateClientProject(
     return { error: `Kunde inte spara ändringarna: ${error.message}` };
   }
 
-  await logProjectActivity(id, "Projektinfo uppdaterades");
+  await logProjectActivity(id, "Kundvyn uppdaterades");
 
   revalidatePath("/admin/projekt");
   revalidatePath(`/admin/projekt/${id}`);
-  redirect(`/admin/projekt/${id}`);
+  revalidatePath("/kund/projekt", "layout");
 }
 
 export async function setClientProjectStatus(id: string, status: ClientProjectStatus) {
@@ -228,8 +290,13 @@ export async function deleteClientProject(id: string) {
   await verifySession();
   const supabase = createServiceRoleClient();
 
-  const { data: files } = await supabase.from("project_files").select("storage_path").eq("project_id", id);
+  const { data: files } = await supabase
+    .from("material_items")
+    .select("storage_path")
+    .eq("project_id", id)
+    .not("storage_path", "is", null);
   await deleteStoredFiles((files ?? []).map((row) => row.storage_path));
+  await supabase.from("material_items").delete().eq("project_id", id);
 
   await supabase.from("client_projects").delete().eq("id", id);
 

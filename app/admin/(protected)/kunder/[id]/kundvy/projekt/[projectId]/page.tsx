@@ -5,20 +5,26 @@ import { ProjectDetailView } from "@/components/customer/ProjectDetailView";
 
 type Props = { params: Promise<{ id: string; projectId: string }> };
 
-export default async function CustomerKundvyProjectTab({ params }: Props) {
+// Reached both via "Visa som kund" on the project's own admin page (back
+// goes to that admin page) and via the kundvy "Projekt" tab's project list
+// (which links here directly) — hrefBase keeps the "Nästa steg" milestone
+// link and the customer-check below scoped to this preview either way.
+export default async function CustomerKundvyProjectPreview({ params }: Props) {
   const { id, projectId } = await params;
-  const [project, approvals] = await Promise.all([
-    getClientProjectById(projectId),
-    getProjectApprovals(projectId),
-  ]);
+  const [project, approvals] = await Promise.all([getClientProjectById(projectId), getProjectApprovals(projectId)]);
 
-  // Same "id must belong to this customer" check the real customer route
-  // makes against the session — here checked against the kundvy route's
-  // own customer id instead, so a mistyped projectId can't preview another
-  // customer's project.
   if (!project || project.customerId !== id) {
     notFound();
   }
 
-  return <ProjectDetailView project={project} approvals={approvals} hrefBase={`/admin/kunder/${id}/kundvy`} />;
+  return (
+    <ProjectDetailView
+      project={project}
+      approvals={approvals}
+      hrefBase={`/admin/kunder/${id}/kundvy`}
+      backHref={`/admin/projekt/${projectId}`}
+      backLabel={project.title}
+      approvalHref={(approvalId) => `/admin/kunder/${id}/kundvy/projekt/${projectId}/godkannande/${approvalId}`}
+    />
+  );
 }

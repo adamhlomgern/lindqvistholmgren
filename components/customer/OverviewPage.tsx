@@ -16,10 +16,16 @@ type Props = {
 // Order matches the audit: heading, anything needing the customer's action,
 // active projects (each self-contained — see ProjectOverviewCard), recent
 // messages, then a compact way to reach us.
+//
+// The heading is a general "welcome to the portal" intro, deliberately not
+// titled "Vad händer nu?" — that exact phrase is also the field label each
+// ProjectOverviewCard uses for its own project-specific status text, and
+// having both use identical wording read as duplicated content rather than
+// two different things (a portal-wide greeting vs. one project's update).
 export function OverviewPage({ activeProjects, actionItems, recentMessages, contact }: Props) {
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Vad händer nu?</h1>
+      <h1 className="font-display text-2xl font-bold text-bone">Välkommen till din kundportal</h1>
       <p className="mt-1 text-sm text-stone">
         {activeProjects.length > 0
           ? `${activeProjects.length} ${activeProjects.length === 1 ? "aktivt projekt" : "aktiva projekt"} hos oss just nu.`
@@ -40,9 +46,11 @@ export function OverviewPage({ activeProjects, actionItems, recentMessages, cont
         )}
       </div>
 
-      <div className="mt-4">
-        <MessagesPreviewCard messages={recentMessages} />
-      </div>
+      {recentMessages.length > 0 && (
+        <div className="mt-4">
+          <MessagesPreviewCard messages={recentMessages} />
+        </div>
+      )}
 
       <div className="mt-4">
         <CompactContactCard contact={contact} />

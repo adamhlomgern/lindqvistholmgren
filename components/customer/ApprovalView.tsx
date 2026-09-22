@@ -6,6 +6,7 @@ import { ApprovalDecisionForm } from "@/components/customer/ApprovalDecisionForm
 import { approvalStatusClasses, approvalStatusLabels, approvalStatusIcons } from "@/lib/approval-status";
 import { formatDateSv, formatRelativeSv } from "@/lib/format";
 import type { ProjectApprovalWithItem } from "@/lib/data/approvals";
+import type { ApprovalKind } from "@/lib/types";
 
 type Props = {
   approval: ProjectApprovalWithItem;
@@ -15,7 +16,7 @@ type Props = {
   // decideApproval Server Action, and so the back link stays inside the
   // demo route tree.
   backHref?: string;
-  DecisionForm?: ComponentType<{ approvalId: string }>;
+  DecisionForm?: ComponentType<{ approvalId: string; kind: ApprovalKind }>;
 };
 
 export function ApprovalView({
@@ -32,6 +33,9 @@ export function ApprovalView({
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
+          <p className="text-xs font-medium uppercase tracking-label text-stone">
+            {approval.kind === "feedback" ? "Återkoppling" : "Godkännande"}
+          </p>
           <h1 className="font-display text-2xl font-bold text-bone">{approval.title}</h1>
           {approval.versionLabel && <p className="mt-1 text-sm text-stone">Version {approval.versionLabel}</p>}
         </div>
@@ -54,7 +58,7 @@ export function ApprovalView({
 
       <Card className="mt-6">
         {approval.status === "pending" ? (
-          <DecisionForm approvalId={approval.id} />
+          <DecisionForm approvalId={approval.id} kind={approval.kind} />
         ) : (
           <div>
             <p className="text-sm font-medium text-bone">

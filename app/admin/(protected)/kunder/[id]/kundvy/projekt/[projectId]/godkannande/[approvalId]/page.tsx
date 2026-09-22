@@ -6,7 +6,7 @@ import { ReadOnlyApprovalDecisionForm } from "@/components/admin/ReadOnlyApprova
 
 type Props = { params: Promise<{ id: string; projectId: string; approvalId: string }> };
 
-export default async function CustomerKundvyApprovalTab({ params }: Props) {
+export default async function CustomerKundvyApprovalPreview({ params }: Props) {
   const { id, projectId, approvalId } = await params;
 
   const approval = await getApprovalWithItem(approvalId);
@@ -14,14 +14,13 @@ export default async function CustomerKundvyApprovalTab({ params }: Props) {
     notFound();
   }
 
-  const project = await getClientProjectById(approval.projectId);
-  const hrefBase = `/admin/kunder/${id}/kundvy`;
+  const project = await getClientProjectById(projectId);
 
   return (
     <ApprovalView
       approval={approval}
       projectTitle={project?.title ?? "Projekt"}
-      backHref={`${hrefBase}/projekt/${approval.projectId}`}
+      backHref={`/admin/kunder/${id}/kundvy/projekt/${projectId}`}
       DecisionForm={ReadOnlyApprovalDecisionForm}
     />
   );

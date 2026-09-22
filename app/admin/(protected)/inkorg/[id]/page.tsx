@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getEmailById } from "@/lib/data/emails";
 import { getCustomers } from "@/lib/data/customers";
 import { getEmailAttachments } from "@/lib/data/files";
-import { deleteEmail, matchEmailToCustomer } from "@/lib/actions/emails";
+import { deleteEmail, markEmailRead, matchEmailToCustomer } from "@/lib/actions/emails";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { BackLink } from "@/components/admin/BackLink";
@@ -23,6 +23,8 @@ export default async function EmailDetailPage({ params }: Props) {
   if (!email) {
     notFound();
   }
+
+  await markEmailRead(email.id);
 
   const [customers, attachments] = await Promise.all([
     email.customerId ? Promise.resolve([]) : getCustomers(),

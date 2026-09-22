@@ -28,6 +28,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
   ]);
   const attachmentCounts = await getEmailAttachmentCounts(emails.map((email) => email.id));
   const waitingThreadsCount = threads.filter((thread) => thread.latestMessage.authorRole === "customer").length;
+  const unreadEmailCount = emails.filter((email) => !email.readAt).length;
 
   return (
     <div>
@@ -47,6 +48,11 @@ export default async function AdminInboxPage({ searchParams }: Props) {
         >
           <Inbox size={15} strokeWidth={2.25} />
           Mejl
+          {unreadEmailCount > 0 && (
+            <span className="rounded-full bg-coral/15 px-2 py-0.5 text-[11px] font-semibold text-coral">
+              {unreadEmailCount}
+            </span>
+          )}
         </Link>
         <Link
           href="/admin/inkorg?tab=chatt"
@@ -100,14 +106,25 @@ export default async function AdminInboxPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="mt-8 flex flex-col gap-3">
-          {emails.map((email) => (
-            <Card key={email.id}>
+          {emails.map((email) => {
+            const unread = !email.readAt;
+            return (
+            <Card key={email.id} className={unread ? "border border-emerald/25 bg-emerald/[0.04]" : ""}>
               <div className="flex flex-wrap items-start justify-between gap-3">
-                <Link href={`/admin/inkorg/${email.id}`} className="min-w-0">
-                  <p className="font-display text-base font-bold text-bone hover:underline">
-                    {email.fromName || email.fromAddress}
-                  </p>
-                  <p className="text-sm text-stone">{email.fromAddress}</p>
+                <Link href={`/admin/inkorg/${email.id}`} className="flex min-w-0 items-start gap-2">
+                  {unread && (
+                    <span
+                      aria-label="Oläst"
+                      title="Oläst"
+                      className="mt-2 h-2 w-2 shrink-0 rounded-full bg-emerald"
+                    />
+                  )}
+                  <span className="min-w-0">
+                    <p className="font-display text-base font-bold text-bone hover:underline">
+                      {email.fromName || email.fromAddress}
+                    </p>
+                    <p className="text-sm text-stone">{email.fromAddress}</p>
+                  </span>
                 </Link>
                 <div className="flex shrink-0 items-center gap-2">
                   {(attachmentCounts.get(email.id) ?? 0) > 0 && (
@@ -167,7 +184,8 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                 </div>
               </div>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
 

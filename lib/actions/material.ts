@@ -3,12 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { createServiceRoleClient } from "@/lib/supabase/server";
-import { deleteStoredFiles } from "@/lib/data/files";
+import { deleteStoredFiles, sanitizeStorageFilename } from "@/lib/data/files";
 import { encryptText } from "@/lib/crypto/secrets";
 import { resolveAdminDisplayName } from "@/lib/format";
 import type { MaterialDeliveryStatus, MaterialVisibility } from "@/lib/types";
 
 export type MaterialFormState = { error?: string } | undefined;
+
+const MAX_MATERIAL_FILE_SIZE = 20 * 1024 * 1024;
 
 function revalidateMaterial(customerId: string) {
   revalidatePath(`/admin/kunder/${customerId}/material`, "layout");
@@ -177,6 +179,77 @@ export async function createLink(
   revalidateMaterial(customerId);
 }
 
+// Shared by the material-upload Route Handler and project creation (files
+// attached before the project row even had a page of its own) — kept as one
+// function so the storage-path scheme and cleanup-on-failed-insert behavior
+// can't drift between the two call sites, same reasoning as the old
+// storeProjectFile it replaces.
+export async function insertMaterialFile(
+  supabase: ReturnType<typeof createServiceRoleClient>,
+  params: {
+    customerId: string;
+    projectId?: string | null;
+    folderId?: string | null;
+    file: File;
+    visibility: MaterialVisibility;
+    deliveryStatus: MaterialDeliveryStatus;
+    position: number;
+  },
+): Promise<{ error?: string }> {
+  const { customerId, projectId, folderId, file, visibility, deliveryStatus, position } = params;
+
+  if (file.size > MAX_MATERIAL_FILE_SIZE) {
+    return { error: `${file.name} är för stor (max 20 MB).` };
+  }
+
+  const storagePath = `material/${customerId}/${folderId ?? "root"}/${crypto.randomUUID()}-${sanitizeStorageFilename(file.name)}`;
+  const { error: uploadError } = await supabase.storage.from("attachments").upload(storagePath, file, {
+    contentType: file.type || undefined,
+  });
+  if (uploadError) {
+    return { error: `Kunde inte ladda upp ${file.name}: ${uploadError.message}` };
+  }
+
+  const { error: insertError } = await supabase.from("material_items").insert({
+    customer_id: customerId,
+    project_id: projectId ?? null,
+    folder_id: folderId ?? null,
+    type: "file",
+    title: file.name,
+    filename: file.name,
+    content_type: file.type || null,
+    size: file.size,
+    storage_path: storagePath,
+    visibility,
+    delivery_status: deliveryStatus,
+    position,
+  });
+  if (insertError) {
+    await deleteStoredFiles([storagePath]);
+    return { error: `Kunde inte spara ${file.name}: ${insertError.message}` };
+  }
+
+  return {};
+}
+
+// Renames the display title only — for a file, `filename` (what a download
+// is actually saved as) and the storage path are left untouched, same as
+// renaming a file on a desktop doesn't change what's inside it.
+export async function renameMaterialItem(customerId: string, itemId: string, title: string) {
+  await verifySession();
+  const trimmedTitle = title.trim();
+  if (!trimmedTitle) return { error: "Namn krävs." };
+
+  const supabase = createServiceRoleClient();
+  const { error } = await supabase
+    .from("material_items")
+    .update({ title: trimmedTitle, updated_at: new Date().toISOString() })
+    .eq("id", itemId);
+
+  if (error) return { error: `Kunde inte spara: ${error.message}` };
+  revalidateMaterial(customerId);
+}
+
 export async function deleteMaterialItem(customerId: string, itemId: string, storagePath: string | null) {
   await verifySession();
   const supabase = createServiceRoleClient();
@@ -223,6 +296,32 @@ export async function moveMaterialItems(
       .in("id", itemIds);
   }
 
+  revalidateMaterial(customerId);
+}
+
+// "Egen ordning" reordering (move up/down) — takes the whole sibling group
+// in its new order and writes positions 0..n from scratch, rather than
+// swapping two rows, so the client only has to know the order it wants, not
+// juggle position numbers itself.
+export async function setMaterialFolderOrder(customerId: string, orderedFolderIds: string[]) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await Promise.all(
+    orderedFolderIds.map((id, position) =>
+      supabase.from("material_folders").update({ position, updated_at: new Date().toISOString() }).eq("id", id),
+    ),
+  );
+  revalidateMaterial(customerId);
+}
+
+export async function setMaterialItemOrder(customerId: string, orderedItemIds: string[]) {
+  await verifySession();
+  const supabase = createServiceRoleClient();
+  await Promise.all(
+    orderedItemIds.map((id, position) =>
+      supabase.from("material_items").update({ position, updated_at: new Date().toISOString() }).eq("id", id),
+    ),
+  );
   revalidateMaterial(customerId);
 }
 

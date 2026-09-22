@@ -1,7 +1,7 @@
 import Link from "next/link";
+import { BackLink } from "@/components/admin/BackLink";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
-import { BackLink } from "@/components/admin/BackLink";
 import { ProjectPhaseIndicator } from "@/components/customer/ProjectPhaseIndicator";
 import { MilestoneStatus } from "@/components/customer/MilestoneStatus";
 import { statusClasses, statusIcons, statusLabels } from "@/lib/project-status";
@@ -10,22 +10,34 @@ import { getNextStepOwnerLabel } from "@/lib/project-phase";
 import { formatRelativeSv } from "@/lib/format";
 import type { ClientProjectWithCustomer, ProjectApproval } from "@/lib/types";
 
-// hrefBase defaults to the real portal's own prefix — the admin "Kundvy"
-// preview passes its own subtree so back/approval links stay inside the
-// preview instead of dropping the admin into the real (auth-gated) customer
-// route tree.
 type Props = {
   project: ClientProjectWithCustomer;
   approvals: ProjectApproval[];
+  // Defaults to the real portal's own path; the admin "Visa som kund"
+  // preview overrides hrefBase (and, when it needs to break out of its own
+  // subtree — e.g. back to the project's real admin page — backHref/
+  // backLabel/approvalHref individually) so every link stays inside the
+  // right preview instead of dropping the admin into the auth-gated
+  // customer route tree.
   hrefBase?: string;
+  backHref?: string;
+  backLabel?: string;
+  approvalHref?: (approvalId: string) => string;
 };
 
-export function ProjectDetailView({ project, approvals, hrefBase = "/kund" }: Props) {
+export function ProjectDetailView({
+  project,
+  approvals,
+  hrefBase = "/kund",
+  backHref = `${hrefBase}/projekt`,
+  backLabel = "Alla projekt",
+  approvalHref = (approvalId) => `${hrefBase}/projekt/${project.id}/godkannande/${approvalId}`,
+}: Props) {
   const StatusIcon = statusIcons[project.status];
 
   return (
     <div>
-      <BackLink href={`${hrefBase}/projekt`} label="Alla projekt" />
+      <BackLink href={backHref} label={backLabel} />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
@@ -76,7 +88,7 @@ export function ProjectDetailView({ project, approvals, hrefBase = "/kund" }: Pr
             return (
               <Link
                 key={approval.id}
-                href={`${hrefBase}/projekt/${project.id}/godkannande/${approval.id}`}
+                href={approvalHref(approval.id)}
                 className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-bone/10 px-4 py-3 transition-colors hover:bg-bone/5"
               >
                 <span className="text-sm font-medium text-bone">{approval.title}</span>
