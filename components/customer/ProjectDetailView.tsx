@@ -14,7 +14,12 @@ type Props = {
   project: ClientProjectWithCustomer;
   approvals: ProjectApproval[];
   // Defaults to the real portal's own path; the admin "Visa som kund"
-  // preview overrides it to point back at the project's admin page instead.
+  // preview overrides hrefBase (and, when it needs to break out of its own
+  // subtree — e.g. back to the project's real admin page — backHref/
+  // backLabel/approvalHref individually) so every link stays inside the
+  // right preview instead of dropping the admin into the auth-gated
+  // customer route tree.
+  hrefBase?: string;
   backHref?: string;
   backLabel?: string;
   approvalHref?: (approvalId: string) => string;
@@ -23,9 +28,10 @@ type Props = {
 export function ProjectDetailView({
   project,
   approvals,
-  backHref = "/kund/projekt",
+  hrefBase = "/kund",
+  backHref = `${hrefBase}/projekt`,
   backLabel = "Alla projekt",
-  approvalHref = (approvalId) => `/kund/projekt/${project.id}/godkannande/${approvalId}`,
+  approvalHref = (approvalId) => `${hrefBase}/projekt/${project.id}/godkannande/${approvalId}`,
 }: Props) {
   const StatusIcon = statusIcons[project.status];
 
@@ -59,7 +65,7 @@ export function ProjectDetailView({
           <div>
             <p className="text-xs font-semibold uppercase tracking-label text-stone/65">Nästa steg</p>
             <div className="mt-1.5">
-              <MilestoneStatus project={project} />
+              <MilestoneStatus project={project} hrefBase={hrefBase} />
             </div>
           </div>
         </div>

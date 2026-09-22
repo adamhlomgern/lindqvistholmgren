@@ -5,17 +5,19 @@ import { getMilestoneState } from "@/lib/project-phase";
 import { formatDateSv } from "@/lib/format";
 import type { ClientProjectWithCustomer } from "@/lib/types";
 
-type Props = { project: ClientProjectWithCustomer };
+// hrefBase defaults to the real portal's own prefix — the admin "Kundvy"
+// preview passes its own subtree so the row stays inside the preview.
+type Props = { project: ClientProjectWithCustomer; hrefBase?: string };
 
 // Customer-facing project row — deliberately its own component rather than
 // reusing admin's ProjectRow, which surfaces internal checklist items
 // (task labels never meant for the customer to see).
-export function ProjectListRow({ project }: Props) {
+export function ProjectListRow({ project, hrefBase = "/kund" }: Props) {
   const StatusIcon = statusIcons[project.status];
   const milestoneState = getMilestoneState(project);
 
   return (
-    <Link href={`/kund/projekt/${project.id}`} className="block">
+    <Link href={`${hrefBase}/projekt/${project.id}`} className="block">
       <Card className={`transition-colors hover:bg-bone/[0.08] ${project.status === "klar" ? "opacity-70" : ""}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">

@@ -5,9 +5,10 @@ import { ProjectDetailView } from "@/components/customer/ProjectDetailView";
 
 type Props = { params: Promise<{ id: string; projectId: string }> };
 
-// Reached via "Visa som kund" on the project's own admin page, not from the
-// kundvy tabs — a project preview isn't one of the customer's top-level
-// sections, it's a drill-down from a specific project.
+// Reached both via "Visa som kund" on the project's own admin page (back
+// goes to that admin page) and via the kundvy "Projekt" tab's project list
+// (which links here directly) — hrefBase keeps the "Nästa steg" milestone
+// link and the customer-check below scoped to this preview either way.
 export default async function CustomerKundvyProjectPreview({ params }: Props) {
   const { id, projectId } = await params;
   const [project, approvals] = await Promise.all([getClientProjectById(projectId), getProjectApprovals(projectId)]);
@@ -20,6 +21,7 @@ export default async function CustomerKundvyProjectPreview({ params }: Props) {
     <ProjectDetailView
       project={project}
       approvals={approvals}
+      hrefBase={`/admin/kunder/${id}/kundvy`}
       backHref={`/admin/projekt/${projectId}`}
       backLabel={project.title}
       approvalHref={(approvalId) => `/admin/kunder/${id}/kundvy/projekt/${projectId}/godkannande/${approvalId}`}
