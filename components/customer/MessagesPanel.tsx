@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { sendCustomerMessage } from "@/lib/actions/customer-messages";
 import { EmojiPickerButton } from "@/components/admin/EmojiPickerButton";
 import { ChatImageUploadButton, useChatImageUpload } from "@/components/admin/ChatImageUploadButton";
+import { PendingImagePreview } from "@/components/admin/PendingImagePreview";
 import { ImageLightbox } from "@/components/admin/ImageLightbox";
 import { formatRelativeSv } from "@/lib/format";
 import type { CustomerMessage } from "@/lib/types";
@@ -30,6 +31,7 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [imageError, setImageError] = useState<string | undefined>();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pendingImage, setPendingImage] = useState<File | null>(null);
 
   const { pending: imagePending, uploadFile } = useChatImageUpload({
     uploadUrl: "/api/kund/chat-upload",
@@ -44,6 +46,20 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: "nearest" });
   }, [messages.length]);
+
+  // Local preview only — nothing is uploaded until "Skicka" is pressed.
+  const pendingImageUrl = useMemo(() => (pendingImage ? URL.createObjectURL(pendingImage) : null), [pendingImage]);
+  useEffect(() => {
+    return () => {
+      if (pendingImageUrl) URL.revokeObjectURL(pendingImageUrl);
+    };
+  }, [pendingImageUrl]);
+
+  async function handleSendImage() {
+    if (!pendingImage) return;
+    const ok = await uploadFile(pendingImage);
+    if (ok) setPendingImage(null);
+  }
 
   return (
     <div>
@@ -91,27 +107,31 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
           </p>
         ) : (
           <>
+            {pendingImage && pendingImageUrl && (
+              <PendingImagePreview file={pendingImage} previewUrl={pendingImageUrl} onRemove={() => setPendingImage(null)} />
+            )}
             <form ref={formRef} action={formAction} className="mt-4 flex items-end gap-2">
               <textarea
                 ref={textareaRef}
                 name="body"
-                required
+                required={!pendingImage}
                 rows={2}
-                placeholder="Skriv ett meddelande… (klistra in en bild med Ctrl+V)"
+                placeholder="Skriv ett meddelande…"
                 className={textareaClasses}
                 onPaste={(event) => {
                   const item = Array.from(event.clipboardData.items).find((entry) => entry.type.startsWith("image/"));
                   const file = item?.getAsFile();
                   if (!file) return;
                   event.preventDefault();
-                  void uploadFile(file);
+                  setPendingImage(file);
                 }}
               />
               <EmojiPickerButton textareaRef={textareaRef} />
-              <ChatImageUploadButton pending={imagePending} onPick={(file) => void uploadFile(file)} />
+              <ChatImageUploadButton pending={imagePending} onPick={setPendingImage} />
               <button
-                type="submit"
-                disabled={pending}
+                type={pendingImage ? "button" : "submit"}
+                disabled={pending || imagePending}
+                onClick={pendingImage ? () => void handleSendImage() : undefined}
                 className="shrink-0 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
               >
                 Skicka
