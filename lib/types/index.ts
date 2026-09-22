@@ -304,6 +304,17 @@ type StoredFile = {
 
 export type EmailAttachment = StoredFile & { emailId: string };
 
+// No id/createdAt of its own — unlike EmailAttachment, this isn't a separate
+// table row, just optional columns on the message itself (one image per
+// message, not a gallery), so there's nothing to key on beyond the path.
+export type CustomerMessageAttachment = {
+  filename: string;
+  contentType?: string;
+  size?: number;
+  storagePath: string;
+  url: string | null;
+};
+
 export type CustomerMessage = {
   id: string;
   customerId: string;
@@ -311,6 +322,7 @@ export type CustomerMessage = {
   authorLabel: string;
   body: string;
   createdAt: string;
+  attachment?: CustomerMessageAttachment;
 };
 
 export type MaterialItemType = "file" | "instruction" | "link";

@@ -35,7 +35,7 @@ export function MessagesPreviewCard({ messages, hrefBase = "/kund" }: Props) {
             <div key={message.id} className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs font-medium text-stone">{message.authorLabel}</p>
-                <p className="mt-0.5 line-clamp-1 text-sm text-bone">{message.body}</p>
+                <p className="mt-0.5 line-clamp-1 text-sm text-bone">{message.body || (message.attachment ? "📷 Bild" : "")}</p>
               </div>
               <span className="shrink-0 text-xs text-stone/60">{formatRelativeSv(message.createdAt)}</span>
             </div>
