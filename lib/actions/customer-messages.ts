@@ -1,13 +1,18 @@
 "use server";
 
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/auth/dal";
 import { verifyCustomerSession } from "@/lib/auth/customer";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { getCustomerById } from "@/lib/data/customers";
+import { getActiveCustomerMemberEmails } from "@/lib/data/customer-members";
+import { sendBrandedEmail } from "@/lib/email/send";
 import { resolveAdminDisplayName } from "@/lib/format";
 
 export type MessageFormState = { error?: string } | undefined;
+
+const FALLBACK_SITE_URL = "https://lindqvistholmgren.se";
 
 export async function sendAdminMessage(
   customerId: string,
@@ -29,6 +34,31 @@ export async function sendAdminMessage(
 
   revalidatePath(`/admin/kunder/${customerId}`);
   revalidatePath("/kund", "layout");
+
+  // Best-effort: the message is already saved above, so a failed notification
+  // email should never surface as if the message itself failed to send.
+  const recipients = await getActiveCustomerMemberEmails(customerId);
+  if (recipients.length === 0) return;
+
+  const origin = (await headers()).get("origin") ?? FALLBACK_SITE_URL;
+  const ctaUrl = `${origin}/kund/meddelanden`;
+
+  try {
+    await Promise.all(
+      recipients.map((to) =>
+        sendBrandedEmail({
+          to,
+          subject: "Nytt meddelande i er kundportal – Lindqvist / Holmgren",
+          heading: "Ni har fått ett nytt meddelande",
+          bodyHtml: "Vi har skickat ett nytt meddelande till er i kundportalen. Logga in för att läsa det och svara.",
+          ctaLabel: "Läs meddelandet",
+          ctaUrl,
+        }),
+      ),
+    );
+  } catch (err) {
+    console.error("[sendAdminMessage] Kunde inte skicka mejlnotis", err);
+  }
 }
 
 // customerId is deliberately not a parameter here — it comes straight out of
