@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/Card";
 import { sendAdminMessage } from "@/lib/actions/customer-messages";
+import { EmojiPickerButton } from "@/components/admin/EmojiPickerButton";
 import { formatRelativeSv } from "@/lib/format";
 import type { CustomerMessage } from "@/lib/types";
 
@@ -14,6 +15,7 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
   const [state, formAction, pending] = useActionState(action, undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (!pending && !state?.error) formRef.current?.reset();
@@ -46,7 +48,15 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
       </div>
 
       <form ref={formRef} action={formAction} className="mt-3 flex items-end gap-2">
-        <textarea name="body" required rows={2} placeholder="Skriv ett meddelande till kunden…" className={textareaClasses} />
+        <textarea
+          ref={textareaRef}
+          name="body"
+          required
+          rows={2}
+          placeholder="Skriv ett meddelande till kunden…"
+          className={textareaClasses}
+        />
+        <EmojiPickerButton textareaRef={textareaRef} />
         <button
           type="submit"
           disabled={pending}

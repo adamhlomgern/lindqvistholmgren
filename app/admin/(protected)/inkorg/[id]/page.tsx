@@ -3,12 +3,13 @@ import { notFound } from "next/navigation";
 import { getEmailById } from "@/lib/data/emails";
 import { getCustomers } from "@/lib/data/customers";
 import { getEmailAttachments } from "@/lib/data/files";
-import { deleteEmail, markEmailRead, matchEmailToCustomer } from "@/lib/actions/emails";
+import { deleteEmail, matchEmailToCustomer } from "@/lib/actions/emails";
 import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 import { BackLink } from "@/components/admin/BackLink";
 import { DeleteEmailButton } from "@/components/admin/DeleteEmailButton";
 import { BlockSenderButton } from "@/components/admin/BlockSenderButton";
+import { MarkEmailRead } from "@/components/admin/MarkEmailRead";
 import { EmailHtmlView } from "@/components/admin/EmailHtmlView";
 import { FileThumb } from "@/components/admin/FileThumb";
 import { formatDateSv } from "@/lib/format";
@@ -24,8 +25,6 @@ export default async function EmailDetailPage({ params }: Props) {
     notFound();
   }
 
-  await markEmailRead(email.id);
-
   const [customers, attachments] = await Promise.all([
     email.customerId ? Promise.resolve([]) : getCustomers(),
     getEmailAttachments(email.id),
@@ -33,6 +32,7 @@ export default async function EmailDetailPage({ params }: Props) {
 
   return (
     <div>
+      <MarkEmailRead emailId={email.id} />
       <BackLink href="/admin/inkorg" label="Tillbaka till inkorg" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
