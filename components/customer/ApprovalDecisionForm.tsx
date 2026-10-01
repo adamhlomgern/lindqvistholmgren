@@ -11,8 +11,19 @@ type Choice = "approved" | "changes_requested" | null;
 // Same approved/changes_requested mechanics for both kinds — only the copy
 // differs, so "feedback" doesn't read like a binding sign-off the way
 // "approval" does.
-const copy: Record<ApprovalKind, { approve: string; reject: string; approveSubmit: string; rejectSubmit: string; rejectPlaceholder: string }> = {
+const copy: Record<
+  ApprovalKind,
+  {
+    approve: string;
+    reject: string;
+    approveSubmit: string;
+    rejectSubmit: string;
+    rejectPlaceholder: string;
+    approvePlaceholder: string;
+  }
+> = {
   approval: {
+    approvePlaceholder: "Valfri kommentar…",
     approve: "Godkänn leverans",
     reject: "Begär ändringar",
     approveSubmit: "Skicka godkännande",
@@ -20,11 +31,12 @@ const copy: Record<ApprovalKind, { approve: string; reject: string; approveSubmi
     rejectPlaceholder: "Vad behöver ändras?",
   },
   feedback: {
-    approve: "Detta fungerar",
+    approve: "Återkoppla",
     reject: "Jag vill se andra alternativ",
     approveSubmit: "Skicka återkoppling",
     rejectSubmit: "Skicka återkoppling",
     rejectPlaceholder: "Vad skulle du vilja se istället?",
+    approvePlaceholder: "Skriv din återkoppling – t.ex. vilken riktning du väljer och svar på våra frågor.",
   },
 };
 
@@ -62,9 +74,9 @@ export function ApprovalDecisionForm({ approvalId, kind }: Props) {
       <textarea
         name="note"
         rows={3}
-        required={choice === "changes_requested"}
+        required={choice === "changes_requested" || kind === "feedback"}
         autoFocus
-        placeholder={choice === "changes_requested" ? labels.rejectPlaceholder : "Valfri kommentar…"}
+        placeholder={choice === "changes_requested" ? labels.rejectPlaceholder : labels.approvePlaceholder}
         className="w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50"
       />
       <div className="flex flex-wrap items-center gap-3">

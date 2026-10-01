@@ -5,7 +5,7 @@ import { Tag } from "@/components/ui/Tag";
 import { ProjectPhaseIndicator } from "@/components/customer/ProjectPhaseIndicator";
 import { MilestoneStatus } from "@/components/customer/MilestoneStatus";
 import { statusClasses, statusIcons, statusLabels } from "@/lib/project-status";
-import { approvalStatusClasses, approvalStatusIcons, approvalStatusLabels } from "@/lib/approval-status";
+import { approvalStatusClasses, approvalStatusIcons, approvalStatusLabel } from "@/lib/approval-status";
 import { getNextStepOwnerLabel } from "@/lib/project-phase";
 import { formatRelativeSv } from "@/lib/format";
 import type { ClientProjectWithCustomer, ProjectApproval } from "@/lib/types";
@@ -96,7 +96,7 @@ export function ProjectDetailView({
                   className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${approvalStatusClasses[approval.status]}`}
                 >
                   <ApprovalIcon size={12} strokeWidth={2.25} />
-                  {approvalStatusLabels[approval.status]}
+                  {approvalStatusLabel(approval.status, approval.kind)}
                 </span>
               </Link>
             );

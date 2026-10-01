@@ -131,7 +131,7 @@ export async function decideApproval(
   const supabase = createServiceRoleClient();
   const { data: approvalRow, error: approvalError } = await supabase
     .from("project_approvals")
-    .select("customer_id, project_id, material_item_id")
+    .select("customer_id, project_id, material_item_id, kind")
     .eq("id", approvalId)
     .maybeSingle();
   if (approvalError || !approvalRow) return { error: "Begäran kunde inte hittas." };
@@ -143,6 +143,10 @@ export async function decideApproval(
   };
 
   const { user } = await requireCustomerAccess(customerId);
+
+  if (approvalRow.kind === "feedback" && decision === "approved" && !note) {
+    return { error: "Skriv din återkoppling." };
+  }
 
   const { data: updated, error: updateError } = await supabase
     .from("project_approvals")
@@ -161,7 +165,9 @@ export async function decideApproval(
   if (updateError) return { error: `Kunde inte spara beslutet: ${updateError.message}` };
   if (!updated) return { error: "Den här förfrågan har redan besvarats." };
 
-  if (decision === "approved") {
+  // Feedback on a draft (e.g. picking a direction) isn't a sign-off, so it
+  // must not mark the file as final.
+  if (decision === "approved" && approvalRow.kind !== "feedback") {
     await supabase
       .from("material_items")
       .update({ delivery_status: "final", updated_at: new Date().toISOString() })

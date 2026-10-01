@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/Card";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ApprovalRequestDialog } from "@/components/admin/ApprovalRequestDialog";
 import { cancelApprovalRequest } from "@/lib/actions/approvals";
-import { approvalStatusClasses, approvalStatusLabels, approvalStatusIcons } from "@/lib/approval-status";
+import { approvalStatusClasses, approvalStatusLabel, approvalStatusIcons } from "@/lib/approval-status";
 import { formatDateSv } from "@/lib/format";
 import type { MaterialItem, ProjectApproval } from "@/lib/types";
 
@@ -86,7 +86,7 @@ export function ApprovalsSection({ projectId, customerId, approvals, materialIte
                       className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${approvalStatusClasses[approval.status]}`}
                     >
                       <StatusIcon size={12} strokeWidth={2.25} />
-                      {approvalStatusLabels[approval.status]}
+                      {approvalStatusLabel(approval.status, approval.kind)}
                     </span>
                     {approval.status === "pending" && (
                       <ConfirmDialog
