@@ -3,7 +3,7 @@ import { BackLink } from "@/components/admin/BackLink";
 import { Card } from "@/components/ui/Card";
 import { MaterialItemRow } from "@/components/customer/MaterialItemRow";
 import { ApprovalDecisionForm } from "@/components/customer/ApprovalDecisionForm";
-import { approvalStatusClasses, approvalStatusLabels, approvalStatusIcons } from "@/lib/approval-status";
+import { approvalStatusClasses, approvalStatusLabel, approvalStatusIcons } from "@/lib/approval-status";
 import { formatDateSv, formatRelativeSv } from "@/lib/format";
 import type { ProjectApprovalWithItem } from "@/lib/data/approvals";
 import type { ApprovalKind } from "@/lib/types";
@@ -43,13 +43,18 @@ export function ApprovalView({
           className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${approvalStatusClasses[approval.status]}`}
         >
           <StatusIcon size={12} strokeWidth={2.25} />
-          {approvalStatusLabels[approval.status]}
+          {approvalStatusLabel(approval.status, approval.kind)}
         </span>
       </div>
 
-      {approval.message && <p className="mt-4 whitespace-pre-wrap text-sm text-bone">{approval.message}</p>}
+      {approval.message && (
+        <Card className="mt-6">
+          <p className="text-xs font-medium uppercase tracking-label text-stone">Från oss</p>
+          <p className="mt-2 whitespace-pre-wrap text-sm text-bone">{approval.message}</p>
+        </Card>
+      )}
       {approval.dueAt && (
-        <p className="mt-2 text-xs text-stone">Svar önskas senast {formatDateSv(approval.dueAt)}</p>
+        <p className="mt-3 text-xs text-stone">Svar önskas senast {formatDateSv(approval.dueAt)}</p>
       )}
 
       <div className="mt-6">
@@ -62,7 +67,7 @@ export function ApprovalView({
         ) : (
           <div>
             <p className="text-sm font-medium text-bone">
-              {approval.status === "approved" ? "Godkänd" : "Ändringar begärda"}
+              {approvalStatusLabel(approval.status, approval.kind)}
               {approval.decidedAt && ` · ${formatRelativeSv(approval.decidedAt)}`}
             </p>
             {approval.decidedByLabel && <p className="mt-1 text-xs text-stone">Av {approval.decidedByLabel}</p>}

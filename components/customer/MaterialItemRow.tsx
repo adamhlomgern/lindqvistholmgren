@@ -92,21 +92,21 @@ export function MaterialItemRow({ item }: Props) {
   // type === "file"
   return (
     <Card>
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <File size={16} strokeWidth={2} className="shrink-0 text-stone" />
-            <p className="truncate text-sm font-medium text-bone">{item.title}</p>
-          </div>
-          {item.description && <p className="mt-1 text-sm text-stone">{item.description}</p>}
-          <p className="mt-1 text-xs text-stone/70">
-            {item.filename}
-            {item.contentType && ` · ${item.contentType.split("/")[1]?.toUpperCase()}`}
-            {item.size ? ` · ${formatBytes(item.size)}` : ""}
-          </p>
+      <div className="min-w-0">
+        <div className="flex items-center gap-2">
+          <File size={16} strokeWidth={2} className="shrink-0 text-stone" />
+          <p className="min-w-0 break-words text-sm font-medium text-bone">{item.title}</p>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {isPdf && item.downloadUrl && (
+        {item.description && <p className="mt-1 text-sm text-stone">{item.description}</p>}
+        <p className="mt-1 break-all text-xs text-stone/70">
+          {item.filename}
+          {item.contentType && ` · ${item.contentType.split("/")[1]?.toUpperCase()}`}
+          {item.size ? ` · ${formatBytes(item.size)}` : ""}
+        </p>
+      </div>
+      {item.downloadUrl && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {isPdf && (
             <a
               href={item.downloadUrl}
               target="_blank"
@@ -116,18 +116,19 @@ export function MaterialItemRow({ item }: Props) {
               Förhandsgranska
             </a>
           )}
-          {item.downloadUrl && (
-            <a
-              href={item.downloadUrl}
-              download={item.filename}
-              className="flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
-            >
-              <Download size={12} strokeWidth={2.5} />
-              Ladda ner
-            </a>
-          )}
+          {/* The signed URL is cross-origin, so the `download` attribute is
+              ignored; Supabase's own `download` query param makes it send
+              Content-Disposition: attachment instead (it isn't part of the
+              signed token, same as the SDK's createSignedUrl download option). */}
+          <a
+            href={`${item.downloadUrl}${item.downloadUrl.includes("?") ? "&" : "?"}download=${encodeURIComponent(item.filename ?? item.title)}`}
+            className="flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+          >
+            <Download size={12} strokeWidth={2.5} />
+            Ladda ner
+          </a>
         </div>
-      </div>
+      )}
       {isImage && item.downloadUrl && (
         <div className="mt-4">
           <ImagePreview url={item.downloadUrl} title={item.title} />
