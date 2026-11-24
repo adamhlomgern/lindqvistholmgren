@@ -542,7 +542,7 @@ function FolderSharedBadge({ hasSharedContent, compact = false }: { hasSharedCon
       <span
         title={title}
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-          hasSharedContent ? "bg-primary/15 text-primary" : "bg-fg/10 text-fg-muted"
+          hasSharedContent ? "bg-pine-100 text-pine-800" : "bg-fg/10 text-fg-muted"
         }`}
       >
         <Icon size={10} strokeWidth={2.5} />
@@ -554,7 +554,7 @@ function FolderSharedBadge({ hasSharedContent, compact = false }: { hasSharedCon
     <span
       title={title}
       className={`flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-        hasSharedContent ? "bg-primary/15 text-primary" : "bg-fg/10 text-fg-muted"
+        hasSharedContent ? "bg-pine-100 text-pine-800" : "bg-fg/10 text-fg-muted"
       }`}
     >
       <Icon size={10} strokeWidth={2.5} />

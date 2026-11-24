@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { PageHero } from "@/components/ui/PageHero";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { getProjects } from "@/lib/data/projects";
 import { accentForKey, iconTextClasses } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
@@ -52,7 +52,7 @@ export default async function ProjektPage() {
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       </div>
-                      <Tag>{project.category}</Tag>
+                      <CategoryPill accent={accent}>{project.category}</CategoryPill>
                       <h2 className="mt-4 font-display text-xl font-semibold text-fg">
                         {project.title}
                       </h2>

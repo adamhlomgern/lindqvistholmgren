@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getProjects } from "@/lib/data/projects";
 import { accentForKey, iconTextClasses } from "@/lib/design/accents";
@@ -42,7 +42,7 @@ export async function RelatedProjects({ currentSlug, category }: RelatedProjects
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
-                  <Tag>{project.category}</Tag>
+                  <CategoryPill accent={accent}>{project.category}</CategoryPill>
                   <h3 className="mt-3 font-display text-sm font-semibold leading-snug text-fg">
                     {project.title}
                   </h3>

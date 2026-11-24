@@ -46,8 +46,8 @@ export function SlideOver({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`absolute right-0 top-0 flex h-full w-full max-w-lg flex-col border-l border-line bg-surface shadow-pop transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : "translate-x-full"
+        className={`absolute right-0 top-0 flex h-full w-full max-w-lg flex-col border-l border-line bg-surface transition-[transform,box-shadow] duration-300 ease-out ${
+          open ? "translate-x-0 shadow-pop" : "translate-x-full shadow-none"
         }`}
       >
         <div className="flex shrink-0 items-center justify-between border-b border-line px-6 py-5">

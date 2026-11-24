@@ -10,7 +10,7 @@ type Props = { item: MaterialItem & { downloadUrl: string | null } };
 
 const backgrounds = {
   light: "bg-white",
-  dark: "bg-charcoal",
+  dark: "bg-ink-950",
   checkered:
     "bg-[linear-gradient(45deg,#88888833_25%,transparent_25%),linear-gradient(-45deg,#88888833_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#88888833_75%),linear-gradient(-45deg,transparent_75%,#88888833_75%)] bg-[length:16px_16px] bg-[position:0_0,0_8px,8px_-8px,-8px_0]",
 } as const;
@@ -35,7 +35,7 @@ function ImagePreview({ url, title }: { url: string; title: string }) {
             aria-label={`Bakgrund: ${key}`}
             className={`h-5 w-5 rounded-full border transition-colors ${
               background === key ? "border-primary" : "border-line-strong"
-            } ${key === "light" ? "bg-white" : key === "dark" ? "bg-charcoal" : "bg-[conic-gradient(#888_25%,transparent_25%,transparent_50%,#888_50%,#888_75%,transparent_75%)] bg-[length:8px_8px]"}`}
+            } ${key === "light" ? "bg-white" : key === "dark" ? "bg-ink-950" : "bg-[conic-gradient(#888_25%,transparent_25%,transparent_50%,#888_50%,#888_75%,transparent_75%)] bg-[length:8px_8px]"}`}
           />
         ))}
       </div>

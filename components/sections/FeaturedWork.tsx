@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { Button } from "@/components/ui/Button";
 import { getProjects } from "@/lib/data/projects";
 import { accentForKey, iconTextClasses } from "@/lib/design/accents";
@@ -46,7 +46,7 @@ export async function FeaturedWork() {
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
-                    <Tag>{project.category}</Tag>
+                    <CategoryPill accent={accent}>{project.category}</CategoryPill>
                     <h3 className="mt-4 font-display text-lg font-semibold text-fg">
                       {project.title}
                     </h3>

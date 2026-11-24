@@ -45,7 +45,7 @@ function getAttentionBadges(row: CustomerListRow, todayIso: string): Badge[] {
   const badges: Badge[] = [];
 
   if (row.waitingForReply) {
-    badges.push({ label: "Väntar på ditt svar", href: `${base}/meddelanden`, tone: "bg-coral/15 text-coral" });
+    badges.push({ label: "Väntar på ditt svar", href: `${base}/meddelanden`, tone: "bg-red-100 text-red-800" });
   }
   if (row.overdueInvoiceCount > 0) {
     badges.push({
@@ -53,14 +53,14 @@ function getAttentionBadges(row: CustomerListRow, todayIso: string): Badge[] {
         row.overdueInvoiceCount === 1 ? "" : "or"
       }`,
       href: `${base}/ekonomi`,
-      tone: "bg-coral/15 text-coral",
+      tone: "bg-red-100 text-red-800",
     });
   }
   if (isFollowUpToday(row, todayIso)) {
-    badges.push({ label: "Uppföljning idag", href: `${base}/projekt`, tone: "bg-peach/15 text-peach" });
+    badges.push({ label: "Uppföljning idag", href: `${base}/projekt`, tone: "bg-amber-100 text-amber-800" });
   }
   if (row.waitingOnCustomer) {
-    badges.push({ label: "Väntar på kund", href: `${base}/projekt`, tone: "bg-sky/15 text-sky" });
+    badges.push({ label: "Väntar på kund", href: `${base}/projekt`, tone: "bg-blue-100 text-blue-800" });
   }
 
   return badges.slice(0, 2);
@@ -182,7 +182,7 @@ export function CustomerListing({ rows }: { rows: CustomerListRow[] }) {
               type="button"
               onClick={() => setQuickFilter(option.value)}
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
-                quickFilter === option.value ? "bg-primary/15 text-primary" : "bg-fg/5 text-fg-muted hover:text-fg"
+                quickFilter === option.value ? "bg-pine-100 text-pine-800" : "bg-fg/5 text-fg-muted hover:text-fg"
               }`}
             >
               {option.label}

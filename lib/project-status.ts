@@ -13,11 +13,11 @@ export const statusLabels: Record<ClientProjectStatus, string> = {
 // intentionally reuses the app's status-accent classes rather than the
 // categorical entity-color palette used elsewhere in admin.
 export const statusClasses: Record<ClientProjectStatus, string> = {
-  planerat: "bg-fg/10 text-fg",
-  pagaende: "bg-sky/15 text-sky",
-  vantar_pa_kund: "bg-peach/15 text-peach",
-  pausat: "bg-fg/5 text-fg-muted",
-  klar: "bg-primary/15 text-primary",
+  planerat: "bg-ink-100 text-ink-800",
+  pagaende: "bg-blue-100 text-blue-800",
+  vantar_pa_kund: "bg-amber-100 text-amber-800",
+  pausat: "bg-ink-100 text-ink-700",
+  klar: "bg-pine-100 text-pine-800",
 };
 
 // One icon per status so the badge reads at a glance, not just by color —

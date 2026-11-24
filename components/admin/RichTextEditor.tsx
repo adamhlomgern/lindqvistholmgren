@@ -67,7 +67,7 @@ function ToolbarButton({
       aria-label={label}
       title={label}
       className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg px-2 text-xs font-semibold transition-colors disabled:opacity-40 ${
-        active ? "bg-primary/15 text-primary" : "text-fg-muted hover:bg-fg/10 hover:text-fg"
+        active ? "bg-pine-100 text-pine-800" : "text-fg-muted hover:bg-fg/10 hover:text-fg"
       }`}
     >
       {children}

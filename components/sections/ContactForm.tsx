@@ -50,7 +50,7 @@ export function ContactForm() {
     return (
       <GlassCard accent="emerald">
         <div className="flex flex-col items-center gap-4 py-8 text-center">
-          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-pine-100 text-pine-800">
             <Check size={26} strokeWidth={2.5} />
           </span>
           <div>

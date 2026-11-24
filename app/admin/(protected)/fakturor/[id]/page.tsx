@@ -15,6 +15,12 @@ import { BackLink } from "@/components/admin/BackLink";
 import { deleteInvoice } from "@/lib/actions/invoices";
 import type { InvoiceStatus } from "@/lib/types";
 
+const statusClasses: Record<InvoiceStatus, string> = {
+  utkast: "bg-ink-100 text-ink-700",
+  skickad: "bg-blue-100 text-blue-800",
+  betald: "bg-pine-100 text-pine-800",
+};
+
 const statusLabels: Record<InvoiceStatus, string> = {
   utkast: "Utkast",
   skickad: "Skickad",
@@ -47,7 +53,7 @@ export default async function InvoiceDetailPage({ params }: Props) {
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <h1 className="font-display text-2xl font-semibold text-fg">Faktura #{invoice.invoiceNumber}</h1>
-            <Tag>{statusLabels[invoice.status]}</Tag>
+            <Tag className={statusClasses[invoice.status]}>{statusLabels[invoice.status]}</Tag>
           </div>
           <Link href={`/admin/kunder/${invoice.customerId}`} className="mt-1.5 inline-block text-sm text-primary hover:underline">
             {invoice.customer.name}

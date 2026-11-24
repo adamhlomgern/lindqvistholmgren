@@ -19,7 +19,7 @@ export function ProjectPhaseIndicator({ project }: Props) {
           <span
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
               step.state === "current"
-                ? "bg-primary/15 text-primary"
+                ? "bg-pine-100 text-pine-800"
                 : step.state === "done"
                   ? "text-fg-subtle"
                   : "text-fg-subtle"

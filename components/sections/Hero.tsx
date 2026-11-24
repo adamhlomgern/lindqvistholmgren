@@ -21,7 +21,7 @@ export function Hero() {
               key={tag.label}
               className="inline-flex items-center gap-1.5 rounded-full bg-surface py-1 pl-2 pr-3 text-[13px] font-medium text-fg-muted shadow-card ring-1 ring-line"
             >
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-pine-100 text-pine-800">
                 <tag.icon size={12} strokeWidth={2.5} />
               </span>
               {tag.label}

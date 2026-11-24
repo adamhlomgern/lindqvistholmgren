@@ -237,7 +237,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
             type="button"
             onClick={() => setTab(t.value)}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-              tab === t.value ? "bg-primary/15 text-primary" : "text-fg-muted hover:text-fg"
+              tab === t.value ? "bg-pine-100 text-pine-800" : "text-fg-muted hover:text-fg"
             }`}
           >
             {t.label}

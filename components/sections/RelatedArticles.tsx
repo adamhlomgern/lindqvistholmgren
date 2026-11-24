@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
 import { getPublishedArticles } from "@/lib/data/articles";
@@ -40,7 +40,7 @@ export async function RelatedArticles({ currentSlug, category }: RelatedArticles
                   {article.title}
                 </h3>
                 <div className="mt-auto flex items-center gap-2 pt-3">
-                  <Tag>{article.category}</Tag>
+                  <CategoryPill accent={accent}>{article.category}</CategoryPill>
                   <span className="text-xs text-fg-muted">{article.readTime}</span>
                 </div>
               </GlassCard>

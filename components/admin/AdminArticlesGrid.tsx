@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { Select } from "@/components/ui/Select";
 import { ArticleCardMenu } from "@/components/admin/ArticleCardMenu";
 import { articleIcons, resolveCategoryVisual } from "@/lib/articles/visuals";
@@ -139,7 +139,7 @@ export function AdminArticlesGrid({
                   <h2 className="mt-3 line-clamp-2 font-display text-base font-semibold text-fg">{article.title}</h2>
                   <p className="mt-1.5 line-clamp-2 text-sm text-fg-muted">{article.excerpt}</p>
                   <div className="mt-auto flex items-center gap-2 pt-3">
-                    <Tag className="bg-fg/10 text-fg">{article.category}</Tag>
+                    <CategoryPill accent={accent}>{article.category}</CategoryPill>
                     <span className="text-xs text-fg-muted">
                       {article.status === "publicerad"
                         ? `Publicerad ${formatDateSv(article.date)}`

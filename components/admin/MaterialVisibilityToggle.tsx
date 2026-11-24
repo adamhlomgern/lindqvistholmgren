@@ -15,7 +15,7 @@ export function MaterialVisibilityToggle({ customerId, itemId, visibility, itemT
   const label = visibility === "shared" ? "Delat med kund" : "Internt";
   const classes =
     visibility === "shared"
-      ? "bg-primary/15 text-primary hover:bg-primary/25"
+      ? "bg-pine-100 text-pine-800 hover:bg-primary/25"
       : "bg-fg/10 text-fg-muted hover:bg-fg/15";
 
   if (visibility === "internal") {

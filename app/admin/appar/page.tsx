@@ -44,7 +44,7 @@ export default function ApparPage() {
               href={app.href}
               className="group flex flex-col gap-3 rounded-2xl border border-line bg-fg/5 p-6 transition-colors hover:bg-fg/[0.08]"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/15 text-primary">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-pine-100 text-pine-800">
                 <Icon size={20} strokeWidth={2} />
               </span>
               <span>

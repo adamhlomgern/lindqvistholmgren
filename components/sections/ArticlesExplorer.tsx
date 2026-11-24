@@ -6,7 +6,7 @@ import { LayoutGrid, ListFilter, Search, X } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { articleIcons, resolveCategoryVisual, iconTextClasses } from "@/lib/articles/visuals";
 import type { ArticleSummary } from "@/lib/types";
 import type { ArticleCategory } from "@/lib/data/categories";
@@ -113,7 +113,7 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
                 type="button"
                 onClick={() => selectCategory(null)}
                 className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm font-medium transition-colors ${
-                  activeCategory === null ? "bg-charcoal text-primary" : "text-fg hover:bg-fg/5"
+                  activeCategory === null ? "bg-fg text-canvas" : "text-fg hover:bg-fg/5"
                 }`}
               >
                 <span className="flex items-center gap-2">
@@ -132,11 +132,11 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
                     type="button"
                     onClick={() => selectCategory(active ? null : category)}
                     className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm font-medium transition-colors ${
-                      active ? "bg-charcoal text-primary" : "text-fg hover:bg-fg/5"
+                      active ? "bg-fg text-canvas" : "text-fg hover:bg-fg/5"
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <CategoryIcon size={14} strokeWidth={2.25} className={iconTextClasses[accent]} />
+                      <CategoryIcon size={14} strokeWidth={2.25} className={active ? "" : iconTextClasses[accent]} />
                       {category}
                     </span>
                     <span className="text-xs text-fg-subtle">{categoryCounts.get(category) ?? 0}</span>
@@ -179,7 +179,7 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
                       {article.excerpt}
                     </p>
                     <div className="mt-auto flex items-center gap-2 pt-3">
-                      <Tag>{article.category}</Tag>
+                      <CategoryPill accent={accent}>{article.category}</CategoryPill>
                       <span className="text-xs text-fg-muted">{article.readTime}</span>
                     </div>
                   </GlassCard>

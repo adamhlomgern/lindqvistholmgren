@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
@@ -98,15 +99,16 @@ export default function CustomerWelcomePage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-canvas px-6">
-      <div className="w-full max-w-sm rounded-2xl bg-fg/5 p-8">
-        <h1 className="font-display text-xl font-semibold text-fg">Välkommen</h1>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-surface-sunken px-6">
+      <Image src="/images/lindqvist-holmgren/lindqvist-holmgren-full-logo-on-light.svg" alt="Lindqvist / Holmgren" width={6065} height={2124} priority className="h-8 w-auto" />
+      <div className="w-full max-w-sm rounded-2xl bg-surface p-8 shadow-raised ring-1 ring-line">
+        <h1 className="font-display text-2xl font-semibold tracking-[-0.02em] text-fg">Välkommen</h1>
         <p className="mt-1 text-sm text-fg-muted">Sätt ett lösenord för att komma igång med kundportalen.</p>
 
         {status === "checking" && <p className="mt-6 text-sm text-fg-muted">Kontrollerar inbjudan…</p>}
 
         {status === "expired" && (
-          <p className="mt-6 text-sm text-coral">
+          <p className="mt-6 text-sm text-danger">
             Länken har gått ut eller redan använts. Be din kontaktperson hos oss om en ny inbjudan.
           </p>
         )}
@@ -116,7 +118,7 @@ export default function CustomerWelcomePage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-xs font-medium uppercase tracking-label text-fg-muted"
+                className="block text-sm font-medium text-fg"
               >
                 Lösenord
               </label>
@@ -133,7 +135,7 @@ export default function CustomerWelcomePage() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-xs font-medium uppercase tracking-label text-fg-muted"
+                className="block text-sm font-medium text-fg"
               >
                 Bekräfta lösenord
               </label>
@@ -147,11 +149,11 @@ export default function CustomerWelcomePage() {
                 className={`${inputClasses} mt-2`}
               />
             </div>
-            {error && <p className="text-sm text-coral">{error}</p>}
+            {error && <p className="text-sm text-danger">{error}</p>}
             <button
               type="submit"
               disabled={status === "saving"}
-              className="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
+              className="mt-2 inline-flex items-center justify-center h-11 rounded-full bg-primary px-5 text-[15px] font-medium shadow-card text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
             >
               {status === "saving" ? "Sparar…" : "Kom igång"}
             </button>

@@ -92,7 +92,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1.5">
                         <span className="text-xs text-fg-muted">{formatRelativeSv(thread.latestMessage.createdAt)}</span>
-                        {waitingForReply && <Tag className="bg-coral/15 text-coral">Väntar på svar</Tag>}
+                        {waitingForReply && <Tag className="bg-red-100 text-red-800">Väntar på svar</Tag>}
                       </div>
                     </div>
                   </Card>
@@ -151,7 +151,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
               <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
                 {email.customerId ? (
                   <Link href={`/admin/kunder/${email.customerId}`}>
-                    <Tag className="bg-primary/15 text-primary">Matchad kund</Tag>
+                    <Tag className="bg-pine-100 text-pine-800">Matchad kund</Tag>
                   </Link>
                 ) : (
                   <form

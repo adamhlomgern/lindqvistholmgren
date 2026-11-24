@@ -14,9 +14,9 @@ const statusLabels: Record<InvoiceStatus, string> = {
 };
 
 const statusClasses: Record<InvoiceStatus, string> = {
-  utkast: "bg-fg/5 text-fg-muted",
-  skickad: "bg-sky/15 text-sky",
-  betald: "bg-primary/15 text-primary",
+  utkast: "bg-ink-100 text-ink-700",
+  skickad: "bg-blue-100 text-blue-800",
+  betald: "bg-pine-100 text-pine-800",
 };
 
 type Props = { searchParams: Promise<{ entity?: string }> };

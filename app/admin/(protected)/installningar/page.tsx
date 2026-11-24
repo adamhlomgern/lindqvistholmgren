@@ -58,7 +58,7 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
           <div key={entity.id} className="flex items-center justify-between rounded-2xl bg-fg/5 px-5 py-3">
             <Link href={`/admin/installningar/firmor/${entity.id}`} className="flex items-center gap-2">
               <span className="text-sm font-medium text-fg">{entity.name}</span>
-              {entity.isDefault && <Tag className="bg-primary/15 text-primary">Standard</Tag>}
+              {entity.isDefault && <Tag className="bg-pine-100 text-pine-800">Standard</Tag>}
             </Link>
             <DeleteBillingItemButton
               action={deleteBillingEntity.bind(null, entity.id)}
@@ -85,7 +85,7 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
             <Link href={`/admin/installningar/bankkonton/${account.id}`} className="flex items-center gap-2">
               <span className="text-sm font-medium text-fg">{account.label}</span>
               <span className="text-xs text-fg-muted">{account.kontonummer}</span>
-              {account.isDefault && <Tag className="bg-primary/15 text-primary">Standard</Tag>}
+              {account.isDefault && <Tag className="bg-pine-100 text-pine-800">Standard</Tag>}
             </Link>
             <DeleteBillingItemButton
               action={deleteBankAccount.bind(null, account.id)}

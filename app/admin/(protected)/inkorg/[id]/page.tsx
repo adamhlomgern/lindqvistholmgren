@@ -56,7 +56,7 @@ export default async function EmailDetailPage({ params }: Props) {
       <div className="mt-6">
         {email.customerId ? (
           <Link href={`/admin/kunder/${email.customerId}`}>
-            <Tag className="bg-primary/15 text-primary">Matchad kund</Tag>
+            <Tag className="bg-pine-100 text-pine-800">Matchad kund</Tag>
           </Link>
         ) : (
           <form

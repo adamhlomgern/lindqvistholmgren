@@ -38,7 +38,7 @@ export function CategoryForm() {
                 aria-label={key}
                 className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${
                   active
-                    ? "border-primary bg-primary/15 text-primary"
+                    ? "border-primary bg-pine-100 text-pine-800"
                     : "border-line text-fg-muted hover:text-fg"
                 }`}
               >
