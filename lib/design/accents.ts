@@ -87,7 +87,7 @@ export const serviceAccents: Record<string, Accent> = {
   seo: "rose",
   design: "peach",
   tillvaxt: "lavender",
-  automation: "coral",
+  automation: "moss",
   support: "sky",
 };
 

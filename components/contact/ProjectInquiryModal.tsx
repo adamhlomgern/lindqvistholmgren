@@ -30,7 +30,7 @@ const CATEGORY_OPTIONS: { value: ProjectCategory; label: string; icon: LucideIco
   { value: "tryck", label: "Trycksaker", icon: Printer },
   { value: "forpackning", label: "Förpackningsdesign", icon: Package },
   { value: "webb", label: "Webbplats", icon: Code2 },
-  { value: "app-utveckling", label: "App / utveckling", icon: Smartphone },
+  { value: "app-utveckling", label: "System / app", icon: Smartphone },
   { value: "marknadsforing", label: "Marknadsföring", icon: TrendingUp },
   { value: "vet-inte", label: "Vet inte riktigt än", icon: HelpCircle },
 ];

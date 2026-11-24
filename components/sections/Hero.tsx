@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ChevronRight, Code2, Palette, TrendingUp } from "lucide-react";
+import { ArrowUpRight, ChevronRight, Code2, LayoutDashboard, Palette, TrendingUp } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
@@ -11,6 +11,7 @@ import { testimonials } from "@/lib/data/testimonials";
 const tags = [
   { icon: Code2, label: "Webb" },
   { icon: Palette, label: "Design" },
+  { icon: LayoutDashboard, label: "System" },
   { icon: TrendingUp, label: "Tillväxt" },
 ];
 
@@ -19,7 +20,7 @@ const team = [
   { name: "Malin", avatar: "/images/lindqvist-holmgren/malin-avataar-done.png" },
 ];
 
-// Rubriken säger vad kunden får (fler kunder), inte vilka vi är — det
+// Rubriken säger vad kunden får (ett företag som växer), inte vilka vi är — det
 // kommer direkt efter. Bevis (riktiga kunder, 50+ uppdrag) ligger precis
 // under knapparna så att det syns innan man behöver scrolla.
 export function Hero() {
@@ -42,11 +43,11 @@ export function Hero() {
           ))}
         </div>
         <h1 className="mt-7 max-w-4xl font-display text-[2.75rem] font-semibold leading-[1.04] tracking-[-0.035em] text-fg sm:text-6xl md:text-7xl">
-          Webb och design som ger er <span className="text-fg-subtle">fler kunder.</span>
+          Hemsidor och system som får ert företag att <span className="text-fg-subtle">växa.</span>
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg-muted">
-          Vi är två frilansare i Karlstad som bygger hemsidor, varumärken och marknadsföring för
-          företag som vill synas och få fler förfrågningar — i Värmland och i hela Sverige.
+          Vi är två frilansare i Karlstad som bygger hemsidor, varumärken och egna affärssystem —
+          från bokning och beställningar till kundportaler — för företag i Värmland och hela Sverige.
         </p>
         <div className="mt-9 flex flex-wrap items-center gap-3">
           <StartProjectButton trackingLocation="hero">
@@ -87,7 +88,7 @@ export function Hero() {
             className="tone-pine group flex min-h-72 flex-col justify-between rounded-3xl p-8 transition-transform duration-300 ease-out hover:-translate-y-0.5 sm:p-10 md:col-span-2 md:row-span-2"
           >
             <p className="flex items-center justify-between text-sm font-medium text-fg-muted">
-              Webb, design och tillväxt
+              Webb, design och system
               <ArrowUpRight
                 size={20}
                 className="text-fg transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -95,10 +96,11 @@ export function Hero() {
             </p>
             <div>
               <p className="max-w-lg font-display text-4xl font-semibold leading-[1.08] tracking-[-0.03em] sm:text-5xl">
-                En sajt ni kan vara <span className="text-highlight">stolta</span> över.
+                Från hemsidan till <span className="text-highlight">systemet bakom</span>.
               </p>
               <p className="mt-4 max-w-md text-fg-muted">
-                Design, utveckling och innehåll från samma två personer. Klart på veckor, inte månader.
+                Design, utveckling och de verktyg ni jobbar i varje dag — från samma två personer, hela
+                vägen från idé till lansering.
               </p>
             </div>
           </Link>

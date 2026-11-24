@@ -15,7 +15,7 @@ import { contactInfo, businessInfo, socialLinks } from "@/lib/data/site-info";
 export const metadata: Metadata = {
   title: "Om oss",
   description:
-    "Lindqvist / Holmgren är två frilansare, Ada och Malin, som tillsammans hjälper småföretag i Karlstad och hela Sverige med webb, design och marknadsföring.",
+    "Lindqvist / Holmgren är två frilansare, Ada och Malin, som tillsammans hjälper småföretag i Karlstad och hela Sverige med webb, design, affärssystem och marknadsföring.",
   alternates: {
     canonical: "/om-oss",
   },

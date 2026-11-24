@@ -30,7 +30,7 @@ export const projectCategoryLabels: Record<ProjectCategory, string> = {
   tryck: "Trycksaker",
   forpackning: "Förpackningsdesign",
   webb: "Webbplats",
-  "app-utveckling": "App / utveckling",
+  "app-utveckling": "System / app",
   marknadsforing: "Marknadsföring",
   "vet-inte": "Vet inte riktigt än",
 };

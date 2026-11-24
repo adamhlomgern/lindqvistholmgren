@@ -17,6 +17,7 @@ import { Process } from "@/components/sections/Process";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBanner } from "@/components/sections/CtaBanner";
+import { SystemsShowcase } from "@/components/sections/SystemsShowcase";
 
 const SITE_URL = "https://lindqvistholmgren.se";
 
@@ -130,7 +131,9 @@ export default async function ServiceCategoryPage({ params }: Props) {
         breadcrumbs={breadcrumbs}
       />
 
-      <Stats />
+      {/* Systemtjänsten visar demos man kan klicka i i stället för generiska
+          siffror — bästa beviset på att vi faktiskt bygger system. */}
+      {service.slug === "automation" ? <SystemsShowcase /> : <Stats />}
 
       <Section tone="olive">
         <Container>

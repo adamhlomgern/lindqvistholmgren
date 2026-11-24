@@ -19,7 +19,7 @@ import { CtaBanner } from "@/components/sections/CtaBanner";
 export const metadata: Metadata = {
   title: "Tjänster",
   description:
-    "Webb, SEO, design, tillväxt, automation och support för småföretag i Karlstad och hela Sverige. Se vad vi kan hjälpa er med.",
+    "Webb, affärssystem, SEO, design, tillväxt och support för småföretag i Karlstad och hela Sverige. Se vad vi kan hjälpa er med.",
   alternates: {
     canonical: "/tjanster",
   },
@@ -32,7 +32,7 @@ export default function TjansterPage() {
         icon={Sparkles}
         eyebrow="Våra tjänster"
         title="Allt ni behöver för att synas och växa digitalt"
-        description="Från första skiss till lanserad hemsida — vi hjälper er med webb, SEO, design, tillväxt och automation, samlat hos två personer."
+        description="Från första skiss till lanserad hemsida och egna affärssystem — vi hjälper er med webb, system, SEO, design och tillväxt, samlat hos två personer."
       />
       <Section tone="olive">
         <Container>
@@ -42,7 +42,7 @@ export default function TjansterPage() {
           </h2>
           <p className="mt-4 max-w-xl text-fg-muted">
             Varje tjänst går bra att boka fristående, men de flesta kunder kombinerar
-            två eller tre — från design till driftsatt automation.
+            två eller tre — från design till ett färdigt system i drift.
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2">
             {services.map((service, index) => {

@@ -257,7 +257,7 @@ export default function DesignSystemPage() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {accents.map((a, i) => (
                   <span key={a} className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${pillClasses[a]}`}>
-                    {["Webb", "SEO", "Design", "Tillväxt", "Automation", "Support", "E-handel"][i]}
+                    {["Webb", "SEO", "Design", "Tillväxt", "System", "Support", "E-handel"][i]}
                   </span>
                 ))}
               </div>

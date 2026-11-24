@@ -94,6 +94,110 @@ export const services: Service[] = [
     ],
   },
   {
+    slug: "automation",
+    title: "System & automation",
+    description: "Egna affärssystem och automatiserade flöden — bokning, order, kundportaler och interna verktyg.",
+    intro:
+      "Många företag driver verksamheten i Excel, mejltrådar och system som inte riktigt passar. Vi bygger skräddarsydda affärssystem — bokning, beställningar, kundportaler och interna verktyg — och automatiserar rutinerna runt dem, så att ni sparar tid och slipper dubbelarbete.",
+    heroHeadline: "Vi bygger affärssystemen som får vardagen att flyta.",
+    heroAccentWord: "affärssystemen",
+    features: [
+      {
+        icon: "layout-template",
+        title: "Skräddarsydda affärssystem",
+        description:
+          "Bokning, beställningar, offert eller fakturering — byggt för hur ni faktiskt jobbar, inte en färdig mall.",
+      },
+      {
+        icon: "shield-check",
+        title: "Kundportaler och inloggning",
+        description:
+          "Ge era kunder en egen inloggning där de följer projekt, godkänner leveranser och hittar sina filer.",
+      },
+      {
+        icon: "bar-chart",
+        title: "Interna verktyg och dashboards",
+        description: "Ersätt Excel och lösa listor med ett verktyg som visar det ni behöver, i realtid.",
+      },
+      {
+        icon: "mail",
+        title: "Automatiserade e-postflöden",
+        description: "Uppföljningsmejl och bekräftelser skickas automatiskt vid rätt tillfälle.",
+      },
+      {
+        icon: "workflow",
+        title: "Integrationer mellan system",
+        description:
+          "Vi kopplar ihop verktygen ni redan använder så information flödar utan manuellt jobb.",
+      },
+      {
+        icon: "calendar-clock",
+        title: "Bokning och orderhantering",
+        description: "Bokningar och ordrar hanteras automatiskt istället för i kalendrar och mejltrådar.",
+      },
+      {
+        icon: "zap",
+        title: "Anpassade automationer efter era rutiner",
+        description: "Vi bygger flöden utifrån hur ni faktiskt jobbar, inte en generisk mall.",
+      },
+    ],
+    process: [
+      {
+        icon: "target",
+        title: "Kartläggning",
+        description:
+          "Vi går igenom era rutiner och identifierar vad som tar onödigt mycket manuell tid.",
+      },
+      {
+        icon: "workflow",
+        title: "Flödesdesign",
+        description: "Vi ritar upp hur automationen ska fungera innan något byggs.",
+      },
+      {
+        icon: "zap",
+        title: "Implementering",
+        description: "Flödena byggs och kopplas ihop med de system ni redan använder.",
+      },
+      {
+        icon: "refresh-cw",
+        title: "Test & finjustering",
+        description: "Vi testar flödena i skarpt läge och justerar tills allt fungerar smidigt.",
+      },
+    ],
+    faq: [
+      {
+        question: "Kan ni bygga ett helt eget affärssystem åt oss?",
+        answer:
+          "Ja. Vi bygger allt från bokningssystem och beställningssidor till kundportaler och interna verktyg. Testa gärna våra demos för att se exempel — och vi driver själva vårt företag i ett system vi har byggt.",
+      },
+      {
+        question: "Varför inte bara köpa ett färdigt system?",
+        answer:
+          "Ibland är det rätt val, och då säger vi det. Men när ni anpassar er efter systemet i stället för tvärtom, betalar för funktioner ni inte använder eller sitter med flera verktyg som inte pratar med varandra, blir ett eget system ofta enklare i längden.",
+      },
+      {
+        question: "Vilka delar av verksamheten går att automatisera?",
+        answer:
+          "Ofta mer än man tror — bokningar, uppföljningsmejl, orderhantering och dataöverföring mellan system är vanliga exempel.",
+      },
+      {
+        question: "Måste vi byta system för att kunna automatisera?",
+        answer:
+          "Nej, oftast kopplar vi ihop de system ni redan använder istället för att byta ut dem.",
+      },
+      {
+        question: "Vad händer om något i flödet går fel?",
+        answer:
+          "Vi bygger in felhantering och finns kvar som stöd om något krånglar efter lansering.",
+      },
+      {
+        question: "Är automation bara för större företag?",
+        answer:
+          "Nej, även små tidsbesparingar gör stor skillnad för ett litet företag med begränsad tid.",
+      },
+    ],
+  },
+  {
     slug: "seo",
     title: "SEO",
     description: "Sökmotoroptimering som gör att fler kunder hittar er på Google.",
@@ -342,83 +446,6 @@ export const services: Service[] = [
         question: "Kan vi kombinera tillväxt med SEO eller webb?",
         answer:
           "Ja, många kunder kombinerar tjänsterna — tillväxt bygger ofta vidare på en stark teknisk och innehållsmässig grund.",
-      },
-    ],
-  },
-  {
-    slug: "automation",
-    title: "Automation",
-    description: "Automatiserade flöden som sparar tid i vardagen.",
-    intro:
-      "Mycket av det ni gör manuellt idag går att automatisera — bokningar, uppföljningsmejl, orderhantering och mer. Vi bygger automatiserade flöden som sparar tid och minskar risken för mänskliga misstag.",
-    heroHeadline: "Vi automatiserar bokningar, mejl och rutiner så ni sparar tid.",
-    heroAccentWord: "tid",
-    features: [
-      {
-        icon: "mail",
-        title: "Automatiserade e-postflöden",
-        description: "Uppföljningsmejl och bekräftelser skickas automatiskt vid rätt tillfälle.",
-      },
-      {
-        icon: "workflow",
-        title: "Integrationer mellan system",
-        description:
-          "Vi kopplar ihop verktygen ni redan använder så information flödar utan manuellt jobb.",
-      },
-      {
-        icon: "calendar-clock",
-        title: "Bokning och orderhantering",
-        description: "Bokningar och ordrar hanteras automatiskt istället för i kalendrar och mejltrådar.",
-      },
-      {
-        icon: "zap",
-        title: "Anpassade automationer efter era rutiner",
-        description: "Vi bygger flöden utifrån hur ni faktiskt jobbar, inte en generisk mall.",
-      },
-    ],
-    process: [
-      {
-        icon: "target",
-        title: "Kartläggning",
-        description:
-          "Vi går igenom era rutiner och identifierar vad som tar onödigt mycket manuell tid.",
-      },
-      {
-        icon: "workflow",
-        title: "Flödesdesign",
-        description: "Vi ritar upp hur automationen ska fungera innan något byggs.",
-      },
-      {
-        icon: "zap",
-        title: "Implementering",
-        description: "Flödena byggs och kopplas ihop med de system ni redan använder.",
-      },
-      {
-        icon: "refresh-cw",
-        title: "Test & finjustering",
-        description: "Vi testar flödena i skarpt läge och justerar tills allt fungerar smidigt.",
-      },
-    ],
-    faq: [
-      {
-        question: "Vilka delar av verksamheten går att automatisera?",
-        answer:
-          "Ofta mer än man tror — bokningar, uppföljningsmejl, orderhantering och dataöverföring mellan system är vanliga exempel.",
-      },
-      {
-        question: "Måste vi byta system för att kunna automatisera?",
-        answer:
-          "Nej, oftast kopplar vi ihop de system ni redan använder istället för att byta ut dem.",
-      },
-      {
-        question: "Vad händer om något i flödet går fel?",
-        answer:
-          "Vi bygger in felhantering och finns kvar som stöd om något krånglar efter lansering.",
-      },
-      {
-        question: "Är automation bara för större företag?",
-        answer:
-          "Nej, även små tidsbesparingar gör stor skillnad för ett litet företag med begränsad tid.",
       },
     ],
   },
