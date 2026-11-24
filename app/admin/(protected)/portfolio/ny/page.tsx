@@ -9,7 +9,7 @@ export default async function NewPortfolioProjectPage() {
   return (
     <div>
       <BackLink href="/admin/portfolio" label="Tillbaka till portfolio" />
-      <h1 className="font-display text-2xl font-bold text-bone">Nytt case</h1>
+      <h1 className="font-display text-2xl font-semibold text-fg">Nytt case</h1>
       <Card className="mt-8 max-w-2xl">
         <ProjectForm existingCategories={existingCategories} />
       </Card>

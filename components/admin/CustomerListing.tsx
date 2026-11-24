@@ -15,7 +15,7 @@ type QuickFilter = "all" | "active" | "followup";
 type SortKey = "name" | "lastContact" | "nextFollowUp";
 
 const portalLabels: Record<PortalStatus, string> = { none: "Inte inbjuden", invited: "Inbjuden", active: "Aktiv" };
-const portalTones: Record<PortalStatus, string> = { none: "text-stone", invited: "text-peach", active: "text-emerald" };
+const portalTones: Record<PortalStatus, string> = { none: "text-fg-muted", invited: "text-peach", active: "text-primary" };
 
 function displayName(customer: Customer) {
   return customer.company || customer.name;
@@ -123,10 +123,10 @@ export function CustomerListing({ rows }: { rows: CustomerListRow[] }) {
 
   if (rows.length === 0) {
     return (
-      <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
-        <Users size={24} strokeWidth={2} className="text-stone" />
-        <p className="text-sm text-stone">Inga kunder ännu.</p>
-        <Link href="/admin/kunder/ny" className="mt-1 text-sm font-medium text-emerald hover:underline">
+      <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
+        <Users size={24} strokeWidth={2} className="text-fg-muted" />
+        <p className="text-sm text-fg-muted">Inga kunder ännu.</p>
+        <Link href="/admin/kunder/ny" className="mt-1 text-sm font-medium text-primary hover:underline">
           Lägg till din första kund
         </Link>
       </div>
@@ -138,12 +138,12 @@ export function CustomerListing({ rows }: { rows: CustomerListRow[] }) {
       <div className="mt-6 flex flex-col gap-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative flex-1">
-            <Search size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-stone" />
+            <Search size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Sök på företag, kontaktperson eller e-post…"
-              className="w-full rounded-full border border-bone/10 bg-bone/5 py-2.5 pl-10 pr-4 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+              className="w-full rounded-full border border-line-strong bg-surface py-2.5 pl-10 pr-4 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
             />
           </div>
           <Select
@@ -182,14 +182,14 @@ export function CustomerListing({ rows }: { rows: CustomerListRow[] }) {
               type="button"
               onClick={() => setQuickFilter(option.value)}
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors ${
-                quickFilter === option.value ? "bg-emerald/15 text-emerald" : "bg-bone/5 text-stone hover:text-bone"
+                quickFilter === option.value ? "bg-primary/15 text-primary" : "bg-fg/5 text-fg-muted hover:text-fg"
               }`}
             >
               {option.label}
             </button>
           ))}
 
-          <span className="ml-auto text-xs text-stone">
+          <span className="ml-auto text-xs text-fg-muted">
             {sorted.length} {sorted.length === 1 ? "kund" : "kunder"}
             {hasActiveFilters && ` av ${rows.length}`}
           </span>
@@ -197,7 +197,7 @@ export function CustomerListing({ rows }: { rows: CustomerListRow[] }) {
             <button
               type="button"
               onClick={resetFilters}
-              className="flex items-center gap-1 text-xs font-medium text-stone transition-colors hover:text-bone"
+              className="flex items-center gap-1 text-xs font-medium text-fg-muted transition-colors hover:text-fg"
             >
               <RotateCcw size={12} strokeWidth={2.25} />
               Rensa filter
@@ -207,15 +207,15 @@ export function CustomerListing({ rows }: { rows: CustomerListRow[] }) {
       </div>
 
       {sorted.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center gap-2 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
-          <Search size={20} strokeWidth={2} className="text-stone" />
-          <p className="text-sm text-stone">Ingen kund matchar filtren.</p>
-          <button type="button" onClick={resetFilters} className="text-sm font-medium text-emerald hover:underline">
+        <div className="mt-8 flex flex-col items-center gap-2 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
+          <Search size={20} strokeWidth={2} className="text-fg-muted" />
+          <p className="text-sm text-fg-muted">Ingen kund matchar filtren.</p>
+          <button type="button" onClick={resetFilters} className="text-sm font-medium text-primary hover:underline">
             Rensa filter
           </button>
         </div>
       ) : (
-        <div className="mt-4 flex flex-col divide-y divide-bone/10 border-t border-bone/10">
+        <div className="mt-4 flex flex-col divide-y divide-line border-t border-line">
           {sorted.map((row) => (
             <CustomerRowItem key={row.customer.id} row={row} todayIso={todayIso} />
           ))}
@@ -230,19 +230,19 @@ function CustomerRowItem({ row, todayIso }: { row: CustomerListRow; todayIso: st
   const badges = getAttentionBadges(row, todayIso);
 
   return (
-    <div className="flex flex-col gap-3 px-2 py-4 transition-colors hover:bg-bone/[0.05] sm:flex-row sm:items-center sm:gap-4 sm:py-0 sm:min-h-[84px]">
+    <div className="flex flex-col gap-3 px-2 py-4 transition-colors hover:bg-fg/[0.05] sm:flex-row sm:items-center sm:gap-4 sm:py-0 sm:min-h-[84px]">
       <div className="flex items-start gap-3 sm:w-64 sm:shrink-0">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald/15 text-sm font-bold text-emerald">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary">
           {initials(customer)}
         </span>
         <div className="min-w-0 flex-1">
           <Link
             href={`/admin/kunder/${customer.id}`}
-            className="block truncate font-display text-sm font-bold text-bone hover:underline"
+            className="block truncate font-display text-sm font-semibold text-fg hover:underline"
           >
             {displayName(customer)}
           </Link>
-          {customer.company && <p className="truncate text-xs text-stone">{customer.name}</p>}
+          {customer.company && <p className="truncate text-xs text-fg-muted">{customer.name}</p>}
           {badges.length > 0 && (
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {badges.map((badge) => (
@@ -262,7 +262,7 @@ function CustomerRowItem({ row, todayIso }: { row: CustomerListRow; todayIso: st
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 text-xs text-stone sm:hidden">
+      <div className="flex flex-wrap items-center gap-3 text-xs text-fg-muted sm:hidden">
         <span>
           {row.activeProjectCount} {row.activeProjectCount === 1 ? "aktivt projekt" : "aktiva projekt"}
         </span>
@@ -271,7 +271,7 @@ function CustomerRowItem({ row, todayIso }: { row: CustomerListRow; todayIso: st
 
       <Link
         href={`/admin/kunder/${customer.id}/projekt`}
-        className="hidden text-sm text-bone hover:text-emerald hover:underline sm:block sm:w-16"
+        className="hidden text-sm text-fg hover:text-primary hover:underline sm:block sm:w-16"
       >
         {row.activeProjectCount}
       </Link>
@@ -279,15 +279,15 @@ function CustomerRowItem({ row, todayIso }: { row: CustomerListRow; todayIso: st
       <div className="hidden text-sm sm:block sm:w-40">
         {row.nextMilestone?.label || row.nextMilestone?.date ? (
           <>
-            {row.nextMilestone.label && <span className="block truncate text-bone">{row.nextMilestone.label}</span>}
-            {row.nextMilestone.date && <span className="text-xs text-stone">{formatDateSv(row.nextMilestone.date)}</span>}
+            {row.nextMilestone.label && <span className="block truncate text-fg">{row.nextMilestone.label}</span>}
+            {row.nextMilestone.date && <span className="text-xs text-fg-muted">{formatDateSv(row.nextMilestone.date)}</span>}
           </>
         ) : (
-          <span className="text-xs text-stone">Ingen uppföljning planerad</span>
+          <span className="text-xs text-fg-muted">Ingen uppföljning planerad</span>
         )}
       </div>
 
-      <div className="hidden text-xs text-stone sm:block sm:w-28">
+      <div className="hidden text-xs text-fg-muted sm:block sm:w-28">
         {row.lastContact ? formatRelativeSv(row.lastContact) : "Ingen kontakt ännu"}
       </div>
 

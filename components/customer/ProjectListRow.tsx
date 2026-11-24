@@ -18,11 +18,11 @@ export function ProjectListRow({ project, hrefBase = "/kund" }: Props) {
 
   return (
     <Link href={`${hrefBase}/projekt/${project.id}`} className="block">
-      <Card className={`transition-colors hover:bg-bone/[0.08] ${project.status === "klar" ? "opacity-70" : ""}`}>
+      <Card className={`transition-colors hover:bg-fg/[0.08] ${project.status === "klar" ? "opacity-70" : ""}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate font-display text-base font-bold text-bone">{project.title}</p>
-            {project.assignee && <p className="mt-0.5 text-sm text-stone">Ansvarig: {project.assignee.name}</p>}
+            <p className="truncate font-display text-base font-semibold text-fg">{project.title}</p>
+            {project.assignee && <p className="mt-0.5 text-sm text-fg-muted">Ansvarig: {project.assignee.name}</p>}
           </div>
           <span
             className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${statusClasses[project.status]}`}
@@ -33,7 +33,7 @@ export function ProjectListRow({ project, hrefBase = "/kund" }: Props) {
         </div>
 
         {milestoneState !== "none" && (
-          <p className="mt-3 border-t border-bone/10 pt-3 text-xs text-stone">
+          <p className="mt-3 border-t border-line pt-3 text-xs text-fg-muted">
             {milestoneState === "delivered" && `${project.nextMilestoneLabel} finns att granska`}
             {milestoneState === "planned" &&
               `${project.nextMilestoneLabel}${project.nextMilestoneDate ? ` · planerad ${formatDateSv(project.nextMilestoneDate)}` : ""}`}

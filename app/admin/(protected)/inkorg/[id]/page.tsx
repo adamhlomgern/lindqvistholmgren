@@ -36,12 +36,12 @@ export default async function EmailDetailPage({ params }: Props) {
       <BackLink href="/admin/inkorg" label="Tillbaka till inkorg" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h1 className="font-display text-2xl font-bold text-bone">{email.subject || "(Inget ämne)"}</h1>
-          <p className="mt-1 text-sm text-stone">
+          <h1 className="font-display text-2xl font-semibold text-fg">{email.subject || "(Inget ämne)"}</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             {email.fromName ? `${email.fromName} · ` : ""}
             {email.fromAddress}
           </p>
-          <p className="mt-0.5 text-xs text-stone">{formatDateSv(email.receivedAt)}</p>
+          <p className="mt-0.5 text-xs text-fg-muted">{formatDateSv(email.receivedAt)}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <BlockSenderButton email={email.fromAddress} redirectTo="/admin/inkorg" />
@@ -56,7 +56,7 @@ export default async function EmailDetailPage({ params }: Props) {
       <div className="mt-6">
         {email.customerId ? (
           <Link href={`/admin/kunder/${email.customerId}`}>
-            <Tag className="bg-emerald/15 text-emerald">Matchad kund</Tag>
+            <Tag className="bg-primary/15 text-primary">Matchad kund</Tag>
           </Link>
         ) : (
           <form
@@ -76,7 +76,7 @@ export default async function EmailDetailPage({ params }: Props) {
             />
             <button
               type="submit"
-              className="rounded-full border border-bone/15 px-2.5 py-1 text-xs font-medium text-bone transition-colors hover:bg-bone/10"
+              className="rounded-full border border-line-strong px-2.5 py-1 text-xs font-medium text-fg transition-colors hover:bg-fg/10"
             >
               Koppla
             </button>
@@ -86,18 +86,18 @@ export default async function EmailDetailPage({ params }: Props) {
 
       <Card className="mt-8">
         {email.bodyText ? (
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-bone">{email.bodyText}</p>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-fg">{email.bodyText}</p>
         ) : email.bodyHtml ? (
           <EmailHtmlView html={email.bodyHtml} />
         ) : (
-          <p className="text-sm text-stone">Inget innehåll.</p>
+          <p className="text-sm text-fg-muted">Inget innehåll.</p>
         )}
       </Card>
 
       {attachments.length > 0 && (
         <div className="mt-8">
-          <h2 className="font-display text-sm font-bold text-bone">
-            Bilagor <span className="text-stone">({attachments.length})</span>
+          <h2 className="font-display text-sm font-semibold text-fg">
+            Bilagor <span className="text-fg-muted">({attachments.length})</span>
           </h2>
           <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
             {attachments.map((attachment) => (

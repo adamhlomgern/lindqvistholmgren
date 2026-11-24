@@ -61,7 +61,7 @@ export default function FormaMarketingPage() {
             {/* Real render, not a UI screenshot — no synthetic glow, same
                 reasoning as Mumsa's hero photo: it already has its own warm
                 light from the house windows. */}
-            <div className="relative h-[340px] overflow-hidden rounded-[1.75rem] border border-bone/10 shadow-2xl shadow-charcoal/50 ring-1 ring-bone/5 sm:h-[400px]">
+            <div className="relative h-[340px] overflow-hidden rounded-[1.75rem] border border-line shadow-pop shadow-ink-950/50 ring-1 ring-line sm:h-[400px]">
               <Image
                 src="/images/demos/forma/hero-attefallshus.webp"
                 alt="Forma 30 i faluröd träpanel med sadeltak, i skymning"
@@ -86,10 +86,10 @@ export default function FormaMarketingPage() {
       <Section tone="olive">
         <Container>
           <Eyebrow icon={Layers}>Mer än ett kontaktformulär</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Konfiguratorer, kalkylatorer och komplex affärslogik
           </h2>
-          <p className="mt-4 max-w-xl text-stone">
+          <p className="mt-4 max-w-xl text-fg-muted">
             De flesta av våra demos visar kompletta system. Forma visar något annat — ett fristående, avancerat
             säljverktyg som kan byggas runt hur ett specifikt företag faktiskt säljer, med produktvisualisering och
             regelstyrd prissättning i centrum.
@@ -100,8 +100,8 @@ export default function FormaMarketingPage() {
               return (
                 <GlassCard key={item.title} accent={accent}>
                   <AccentBadge icon={item.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{item.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{item.description}</p>
                 </GlassCard>
               );
             })}
@@ -112,7 +112,7 @@ export default function FormaMarketingPage() {
       <Section tone="forest">
         <Container>
           <Eyebrow icon={Target}>Från konfiguration till kvalificerat lead</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Tre steg, en sammanhängande resa
           </h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-3">
@@ -121,8 +121,8 @@ export default function FormaMarketingPage() {
               return (
                 <GlassCard key={step.title} accent={accent}>
                   <AccentBadge icon={step.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{step.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step.description}</p>
                 </GlassCard>
               );
             })}
@@ -134,17 +134,17 @@ export default function FormaMarketingPage() {
         <Container>
           <GlassCard accent="peach" className="-m-6 items-start gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg md:text-3xl">
                 Sälj ni något med flera val, tillval och prisberoenden?
               </h2>
-              <p className="mt-2 text-stone">
+              <p className="mt-2 text-fg-muted">
                 Attefallshus är exempelbranschen — samma konfigurator- och regelmotor kan byggas runt vilken
                 produktkatalog som helst med varianter, tillval och beroenden mellan val.
               </p>
             </div>
             <Link
               href={formaRoutes.contactCta()}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-peach px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-peach px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-fg"
             >
               Prata med oss
               <ArrowUpRight size={16} strokeWidth={2.5} />
@@ -157,15 +157,15 @@ export default function FormaMarketingPage() {
         <Container>
           <GlassCard accent="emerald" className="-m-6 items-start gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">Klicka runt i en färdig demo</h2>
-              <p className="mt-2 text-stone">
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg md:text-3xl">Klicka runt i en färdig demo</h2>
+              <p className="mt-2 text-fg-muted">
                 Ingen inloggning behövs — bygg ett hus från grunden, se priset uppdateras live och skicka en
                 offertförfrågan.
               </p>
             </div>
             <Link
               href={formaRoutes.home()}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
             >
               Öppna Forma
               <ArrowUpRight size={16} strokeWidth={2.5} />

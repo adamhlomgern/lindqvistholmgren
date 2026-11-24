@@ -34,7 +34,7 @@ function ImagePreview({ url, title }: { url: string; title: string }) {
             onClick={() => setBackground(key)}
             aria-label={`Bakgrund: ${key}`}
             className={`h-5 w-5 rounded-full border transition-colors ${
-              background === key ? "border-emerald" : "border-bone/20"
+              background === key ? "border-primary" : "border-line-strong"
             } ${key === "light" ? "bg-white" : key === "dark" ? "bg-charcoal" : "bg-[conic-gradient(#888_25%,transparent_25%,transparent_50%,#888_50%,#888_75%,transparent_75%)] bg-[length:8px_8px]"}`}
           />
         ))}
@@ -51,10 +51,10 @@ export function MaterialItemRow({ item }: Props) {
     return (
       <Card>
         <div className="flex items-center gap-2">
-          <FileText size={16} strokeWidth={2} className="shrink-0 text-stone" />
-          <p className="font-display text-sm font-bold text-bone">{item.title}</p>
+          <FileText size={16} strokeWidth={2} className="shrink-0 text-fg-muted" />
+          <p className="font-display text-sm font-semibold text-fg">{item.title}</p>
         </div>
-        {item.description && <p className="mt-1 text-sm text-stone">{item.description}</p>}
+        {item.description && <p className="mt-1 text-sm text-fg-muted">{item.description}</p>}
         {item.bodyHtml && (
           <div className="article-prose mt-4 text-sm" dangerouslySetInnerHTML={{ __html: item.bodyHtml }} />
         )}
@@ -68,17 +68,17 @@ export function MaterialItemRow({ item }: Props) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <Link2 size={16} strokeWidth={2} className="shrink-0 text-stone" />
-              <p className="truncate text-sm font-medium text-bone">{item.title}</p>
+              <Link2 size={16} strokeWidth={2} className="shrink-0 text-fg-muted" />
+              <p className="truncate text-sm font-medium text-fg">{item.title}</p>
             </div>
-            {item.description && <p className="mt-1 text-sm text-stone">{item.description}</p>}
+            {item.description && <p className="mt-1 text-sm text-fg-muted">{item.description}</p>}
           </div>
           {item.url && (
             <a
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex shrink-0 items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
             >
               Öppna länk
               <ExternalLink size={12} strokeWidth={2.5} />
@@ -94,11 +94,11 @@ export function MaterialItemRow({ item }: Props) {
     <Card>
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          <File size={16} strokeWidth={2} className="shrink-0 text-stone" />
-          <p className="min-w-0 break-words text-sm font-medium text-bone">{item.title}</p>
+          <File size={16} strokeWidth={2} className="shrink-0 text-fg-muted" />
+          <p className="min-w-0 break-words text-sm font-medium text-fg">{item.title}</p>
         </div>
-        {item.description && <p className="mt-1 text-sm text-stone">{item.description}</p>}
-        <p className="mt-1 break-all text-xs text-stone/70">
+        {item.description && <p className="mt-1 text-sm text-fg-muted">{item.description}</p>}
+        <p className="mt-1 break-all text-xs text-fg-subtle">
           {item.filename}
           {item.contentType && ` · ${item.contentType.split("/")[1]?.toUpperCase()}`}
           {item.size ? ` · ${formatBytes(item.size)}` : ""}
@@ -111,7 +111,7 @@ export function MaterialItemRow({ item }: Props) {
               href={item.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-bone/10 px-4 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/15"
+              className="rounded-full bg-fg/10 px-4 py-2 text-xs font-medium text-fg transition-colors hover:bg-fg/15"
             >
               Förhandsgranska
             </a>
@@ -122,7 +122,7 @@ export function MaterialItemRow({ item }: Props) {
               signed token, same as the SDK's createSignedUrl download option). */}
           <a
             href={`${item.downloadUrl}${item.downloadUrl.includes("?") ? "&" : "?"}download=${encodeURIComponent(item.filename ?? item.title)}`}
-            className="flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+            className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
           >
             <Download size={12} strokeWidth={2.5} />
             Ladda ner

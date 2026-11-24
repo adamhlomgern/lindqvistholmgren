@@ -90,9 +90,9 @@ export default function OmOssPage() {
                     />
                   </div>
                   <div className="min-w-0 flex-1 text-center sm:text-left">
-                    <p className="font-display text-lg font-bold text-bone">{person.name}</p>
-                    <p className="mt-1 text-sm text-stone">{person.role}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-bone/80">{person.bio}</p>
+                    <p className="font-display text-lg font-semibold text-fg">{person.name}</p>
+                    <p className="mt-1 text-sm text-fg-muted">{person.role}</p>
+                    <p className="mt-4 text-sm leading-relaxed text-fg">{person.bio}</p>
                     <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
                       {person.tags.map((tag) => (
                         <Tag key={tag}>{tag}</Tag>
@@ -109,8 +109,8 @@ export default function OmOssPage() {
               return (
                 <GlassCard key={value.title} accent={accent}>
                   <AccentBadge icon={value.icon} accent={accent} />
-                  <h2 className="mt-4 font-display text-lg font-bold text-bone">{value.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
+                  <h2 className="mt-4 font-display text-lg font-semibold text-fg">{value.title}</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{value.description}</p>
                 </GlassCard>
               );
             })}
@@ -122,25 +122,25 @@ export default function OmOssPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <GlassCard accent="emerald">
               <AccentBadge icon={Mail} accent="emerald" />
-              <h2 className="mt-4 font-display text-lg font-bold text-bone">Kontakta oss</h2>
-              <ul className="mt-3 flex flex-col gap-2 text-sm text-stone">
+              <h2 className="mt-4 font-display text-lg font-semibold text-fg">Kontakta oss</h2>
+              <ul className="mt-3 flex flex-col gap-2 text-sm text-fg-muted">
                 <li>
                   E-post:{" "}
                   <a
                     href={`mailto:${contactInfo.email}`}
-                    className="text-bone transition-colors hover:text-emerald"
+                    className="text-fg transition-colors hover:text-primary"
                   >
                     {contactInfo.email}
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <MessageCircle size={16} strokeWidth={2} className="text-emerald" />
+                  <MessageCircle size={16} strokeWidth={2} className="text-primary" />
                   WhatsApp:{" "}
                   <a
                     href={contactInfo.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-bone transition-colors hover:text-emerald"
+                    className="text-fg transition-colors hover:text-primary"
                   >
                     {contactInfo.whatsapp}
                   </a>
@@ -152,7 +152,7 @@ export default function OmOssPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Lindqvist / Holmgren på Facebook"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-fg/5 text-fg-muted transition-colors hover:bg-fg/10 hover:text-primary"
                 >
                   <FacebookIcon size={16} strokeWidth={2} />
                 </a>
@@ -161,7 +161,7 @@ export default function OmOssPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Lindqvist / Holmgren på Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-fg/5 text-fg-muted transition-colors hover:bg-fg/10 hover:text-primary"
                 >
                   <InstagramIcon size={16} strokeWidth={2} />
                 </a>
@@ -169,15 +169,15 @@ export default function OmOssPage() {
             </GlassCard>
             <GlassCard accent="peach">
               <AccentBadge icon={MapPin} accent="peach" />
-              <h2 className="mt-4 font-display text-lg font-bold text-bone">Företagsuppgifter</h2>
-              <p className="mt-1 text-xs text-stone/70">
+              <h2 className="mt-4 font-display text-lg font-semibold text-fg">Företagsuppgifter</h2>
+              <p className="mt-1 text-xs text-fg-subtle">
                 Två enskilda firmor som samarbetar under varumärket Lindqvist / Holmgren.
               </p>
-              <ul className="mt-3 flex flex-col gap-2 text-sm text-stone">
+              <ul className="mt-3 flex flex-col gap-2 text-sm text-fg-muted">
                 <li>Adress: {contactInfo.address}</li>
                 <li>
                   {businessInfo.ada.name} — Org.nr: {businessInfo.ada.orgNumber}
-                  <span className="block text-xs text-stone/70">
+                  <span className="block text-xs text-fg-subtle">
                     Momsreg.nr: {businessInfo.ada.vatNumber}
                   </span>
                 </li>

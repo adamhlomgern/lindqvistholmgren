@@ -11,9 +11,9 @@ import { formatDateSv, formatRelativeSv } from "@/lib/format";
 import type { AwaitingCustomerType, ClientProjectWithCustomer } from "@/lib/types";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 const selectClasses = "w-full rounded-lg px-4 py-3 text-sm";
-const labelClasses = "block text-xs font-medium uppercase tracking-label text-stone";
+const labelClasses = "block text-xs font-medium uppercase tracking-label text-fg-muted";
 
 const awaitingTypeOptions: { value: AwaitingCustomerType; label: string }[] = [
   { value: "project", label: "Visa projekt" },
@@ -34,11 +34,11 @@ export function CustomerViewCard({ project }: { project: ClientProjectWithCustom
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2 font-display text-sm font-bold text-bone">
+        <h2 className="flex items-center gap-2 font-display text-sm font-semibold text-fg">
           <Users size={14} className="text-lavender" />
           Kundvy
         </h2>
-        <button type="button" onClick={() => setEditing(true)} className="text-xs font-medium text-emerald hover:underline">
+        <button type="button" onClick={() => setEditing(true)} className="text-xs font-medium text-primary hover:underline">
           Redigera
         </button>
       </div>
@@ -47,37 +47,37 @@ export function CustomerViewCard({ project }: { project: ClientProjectWithCustom
         {project.phaseLabels && project.phaseLabels.length > 0 && <ProjectPhaseIndicator project={project} />}
 
         <div>
-          <p className="whitespace-pre-wrap text-sm text-stone">
+          <p className="whitespace-pre-wrap text-sm text-fg-muted">
             {project.customerUpdate || "Ingen statusuppdatering satt ännu — kunden ser ingen uppdatering."}
           </p>
           {project.customerUpdateAt && (
-            <p className="mt-1 text-xs text-stone/60">Uppdaterat {formatRelativeSv(project.customerUpdateAt)}</p>
+            <p className="mt-1 text-xs text-fg-subtle">Uppdaterat {formatRelativeSv(project.customerUpdateAt)}</p>
           )}
         </div>
 
         <div>
           <span className={labelClasses}>Nästa milstolpe</span>
-          <p className="mt-1 text-sm text-bone">
+          <p className="mt-1 text-sm text-fg">
             {project.nextMilestoneLabel ? (
               <>
                 {project.nextMilestoneLabel}
                 {project.nextMilestoneDate && (
-                  <span className="text-stone"> · {formatDateSv(project.nextMilestoneDate)}</span>
+                  <span className="text-fg-muted"> · {formatDateSv(project.nextMilestoneDate)}</span>
                 )}
-                {project.nextMilestoneDelivered && <span className="text-emerald"> · Levererad</span>}
+                {project.nextMilestoneDelivered && <span className="text-primary"> · Levererad</span>}
               </>
             ) : (
-              <span className="text-stone">Ingen satt.</span>
+              <span className="text-fg-muted">Ingen satt.</span>
             )}
           </p>
         </div>
 
         <div>
           <span className={labelClasses}>Väntar på kund</span>
-          <p className="mt-1 text-sm text-bone">
-            {project.awaitingCustomerLabel || <span className="text-stone">Inget just nu.</span>}
+          <p className="mt-1 text-sm text-fg">
+            {project.awaitingCustomerLabel || <span className="text-fg-muted">Inget just nu.</span>}
             {project.awaitingCustomerDue && (
-              <span className="text-stone"> · Svar senast {formatDateSv(project.awaitingCustomerDue)}</span>
+              <span className="text-fg-muted"> · Svar senast {formatDateSv(project.awaitingCustomerDue)}</span>
             )}
           </p>
         </div>
@@ -109,7 +109,7 @@ function CustomerViewForm({ project, onDone }: { project: ClientProjectWithCusto
     <Card>
       <form action={formAction} className="flex flex-col gap-5">
         <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-2 font-display text-sm font-bold text-bone">
+          <h2 className="flex items-center gap-2 font-display text-sm font-semibold text-fg">
             <Users size={14} className="text-lavender" />
             Kundvy
           </h2>
@@ -125,7 +125,7 @@ function CustomerViewForm({ project, onDone }: { project: ClientProjectWithCusto
           </div>
           <input type="hidden" name="phaseLabels" value={phaseLabels.map((l) => l.trim()).filter(Boolean).join(",")} readOnly />
           <input type="hidden" name="phaseCurrent" value={phaseCurrent} readOnly />
-          <p className="mt-2 text-xs text-stone">Lämna listan tom för ingen fasindikator.</p>
+          <p className="mt-2 text-xs text-fg-muted">Lämna listan tom för ingen fasindikator.</p>
         </div>
 
         <div>
@@ -159,12 +159,12 @@ function CustomerViewForm({ project, onDone }: { project: ClientProjectWithCusto
             />
           </div>
         </div>
-        <label className="flex items-center gap-2.5 text-sm text-bone">
+        <label className="flex items-center gap-2.5 text-sm text-fg">
           <input
             type="checkbox"
             name="nextMilestoneDelivered"
             defaultChecked={project.nextMilestoneDelivered}
-            className="h-4 w-4 rounded border-bone/20 bg-bone/5 accent-emerald"
+            className="h-4 w-4 rounded border-line-strong bg-fg/5 accent-primary"
           />
           Milstolpen är levererad — kunden kan granska den
         </label>
@@ -204,18 +204,18 @@ function CustomerViewForm({ project, onDone }: { project: ClientProjectWithCusto
           </div>
         )}
 
-        <div className="flex items-center gap-3 border-t border-bone/10 pt-4">
+        <div className="flex items-center gap-3 border-t border-line pt-4">
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
           >
             {pending ? "Sparar…" : "Spara"}
           </button>
           <button
             type="button"
             onClick={onDone}
-            className="text-sm font-medium text-stone transition-colors hover:text-bone"
+            className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
           >
             Avbryt
           </button>

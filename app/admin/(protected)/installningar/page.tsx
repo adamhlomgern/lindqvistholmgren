@@ -28,8 +28,8 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Inställningar</h1>
-      <p className="mt-1 text-sm text-stone">
+      <h1 className="font-display text-2xl font-semibold text-fg">Inställningar</h1>
+      <p className="mt-1 text-sm text-fg-muted">
         Ditt konto, samt firmor och bankkonton som går att välja mellan när du skapar en faktura.
       </p>
 
@@ -39,26 +39,26 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
         </p>
       )}
 
-      <h2 className="mt-8 font-display text-lg font-bold text-bone">Ditt konto</h2>
+      <h2 className="mt-8 font-display text-lg font-semibold text-fg">Ditt konto</h2>
       <AccountSettingsForm email={email} displayName={displayName} fallbackName={nameFromEmail(email)} />
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="font-display text-lg font-bold text-bone">Firmor</h2>
+        <h2 className="font-display text-lg font-semibold text-fg">Firmor</h2>
         <Link
           href="/admin/installningar/firmor/ny"
-          className="flex items-center gap-1.5 self-start rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+          className="flex items-center gap-1.5 self-start rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
         >
           <Plus size={14} strokeWidth={2.5} />
           Ny firma
         </Link>
       </div>
       <div className="mt-4 flex flex-col gap-2">
-        {billingEntities.length === 0 && <p className="text-sm text-stone">Inga firmor ännu.</p>}
+        {billingEntities.length === 0 && <p className="text-sm text-fg-muted">Inga firmor ännu.</p>}
         {billingEntities.map((entity) => (
-          <div key={entity.id} className="flex items-center justify-between rounded-2xl bg-bone/5 px-5 py-3">
+          <div key={entity.id} className="flex items-center justify-between rounded-2xl bg-fg/5 px-5 py-3">
             <Link href={`/admin/installningar/firmor/${entity.id}`} className="flex items-center gap-2">
-              <span className="text-sm font-medium text-bone">{entity.name}</span>
-              {entity.isDefault && <Tag className="bg-emerald/15 text-emerald">Standard</Tag>}
+              <span className="text-sm font-medium text-fg">{entity.name}</span>
+              {entity.isDefault && <Tag className="bg-primary/15 text-primary">Standard</Tag>}
             </Link>
             <DeleteBillingItemButton
               action={deleteBillingEntity.bind(null, entity.id)}
@@ -69,23 +69,23 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
       </div>
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="font-display text-lg font-bold text-bone">Bankkonton</h2>
+        <h2 className="font-display text-lg font-semibold text-fg">Bankkonton</h2>
         <Link
           href="/admin/installningar/bankkonton/ny"
-          className="flex items-center gap-1.5 self-start rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+          className="flex items-center gap-1.5 self-start rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
         >
           <Plus size={14} strokeWidth={2.5} />
           Nytt bankkonto
         </Link>
       </div>
       <div className="mt-4 flex flex-col gap-2">
-        {bankAccounts.length === 0 && <p className="text-sm text-stone">Inga bankkonton ännu.</p>}
+        {bankAccounts.length === 0 && <p className="text-sm text-fg-muted">Inga bankkonton ännu.</p>}
         {bankAccounts.map((account) => (
-          <div key={account.id} className="flex items-center justify-between rounded-2xl bg-bone/5 px-5 py-3">
+          <div key={account.id} className="flex items-center justify-between rounded-2xl bg-fg/5 px-5 py-3">
             <Link href={`/admin/installningar/bankkonton/${account.id}`} className="flex items-center gap-2">
-              <span className="text-sm font-medium text-bone">{account.label}</span>
-              <span className="text-xs text-stone">{account.kontonummer}</span>
-              {account.isDefault && <Tag className="bg-emerald/15 text-emerald">Standard</Tag>}
+              <span className="text-sm font-medium text-fg">{account.label}</span>
+              <span className="text-xs text-fg-muted">{account.kontonummer}</span>
+              {account.isDefault && <Tag className="bg-primary/15 text-primary">Standard</Tag>}
             </Link>
             <DeleteBillingItemButton
               action={deleteBankAccount.bind(null, account.id)}

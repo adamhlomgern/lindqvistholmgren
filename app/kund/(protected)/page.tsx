@@ -17,7 +17,7 @@ export default async function CustomerOverviewRoute() {
   ]);
 
   if (!customer) {
-    return <p className="text-sm text-stone">Kunde inte hitta kunduppgifterna.</p>;
+    return <p className="text-sm text-fg-muted">Kunde inte hitta kunduppgifterna.</p>;
   }
 
   return (

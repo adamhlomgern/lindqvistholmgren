@@ -15,8 +15,8 @@ export default async function AdminTagsPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Taggar</h1>
-      <p className="mt-1 text-sm text-stone">
+      <h1 className="font-display text-2xl font-semibold text-fg">Taggar</h1>
+      <p className="mt-1 text-sm text-fg-muted">
         Byt namn på eller ta bort taggar — ändringen slår igenom på alla artiklar som använder dem.
       </p>
 

@@ -77,8 +77,8 @@ export function ProjectWorkspace({
 
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="truncate font-display text-2xl font-bold text-bone">{project.title}</h1>
-          <p className="mt-1 text-sm text-stone">
+          <h1 className="truncate font-display text-2xl font-semibold text-fg">{project.title}</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             {project.customer ? project.customer.company || project.customer.name : "Ingen kund kopplad"}
           </p>
         </div>
@@ -100,14 +100,14 @@ export function ProjectWorkspace({
               aria-label="Fler alternativ"
               aria-haspopup="menu"
               aria-expanded={menuOpen}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/5 hover:text-bone"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/5 hover:text-fg"
             >
               <MoreHorizontal size={18} strokeWidth={2.25} />
             </button>
             {menuOpen && (
               <div
                 role="menu"
-                className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-bone/10 bg-forest p-1.5 shadow-xl"
+                className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-line bg-surface p-1.5 shadow-pop"
               >
                 <button
                   type="button"
@@ -116,12 +116,12 @@ export function ProjectWorkspace({
                     setEditing(true);
                     setMenuOpen(false);
                   }}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5"
                 >
                   <Pencil size={14} strokeWidth={2.25} />
                   Redigera projektinfo
                 </button>
-                <div className="my-1 border-t border-bone/10" />
+                <div className="my-1 border-t border-line" />
                 <DeleteClientProjectButton
                   action={deleteClientProject.bind(null, project.id)}
                   projectTitle={project.title}

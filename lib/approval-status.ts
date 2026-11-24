@@ -19,7 +19,7 @@ export function approvalStatusLabel(status: ApprovalStatus, kind: ApprovalKind):
 
 export const approvalStatusClasses: Record<ApprovalStatus, string> = {
   pending: "bg-peach/15 text-peach",
-  approved: "bg-emerald/15 text-emerald",
+  approved: "bg-primary/15 text-primary",
   changes_requested: "bg-peach/15 text-peach",
 };
 

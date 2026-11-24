@@ -44,9 +44,9 @@ export default function DemosPage() {
                       )}
                       {comingSoon && <Tag>Kommer snart</Tag>}
                     </div>
-                    <h2 className="mt-4 font-display text-lg font-bold text-bone">{demo.title}</h2>
-                    <p className="mt-1 text-xs uppercase tracking-label text-stone">{demo.tagline}</p>
-                    <p className="mt-3 text-sm leading-relaxed text-stone">{demo.description}</p>
+                    <h2 className="mt-4 font-display text-lg font-semibold text-fg">{demo.title}</h2>
+                    <p className="mt-1 text-xs uppercase tracking-label text-fg-muted">{demo.tagline}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-fg-muted">{demo.description}</p>
                   </div>
                   {!comingSoon && (
                     <span

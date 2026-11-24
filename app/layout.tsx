@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Space_Grotesk } from "next/font/google";
+import { Geist, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ProjectInquiryProvider } from "@/components/contact/ProjectInquiryContext";
@@ -13,9 +13,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+// Rubriker (font-display / font-heading i globals.css).
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -71,9 +73,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="sv"
-      className={`${geistSans.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-forest text-bone">
+      <body className="min-h-full flex flex-col bg-canvas text-fg">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

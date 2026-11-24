@@ -17,7 +17,7 @@ export function FileThumb({
   const isImage = contentType?.startsWith("image/");
 
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-xl border border-bone/10 bg-bone/5">
+    <div className="group relative aspect-square overflow-hidden rounded-xl border border-line bg-fg/5">
       <a
         href={url ?? "#"}
         target="_blank"
@@ -36,13 +36,13 @@ export function FileThumb({
           </div>
         ) : (
           <>
-            <FileIcon size={22} strokeWidth={1.75} className="text-stone" />
-            <span className="line-clamp-2 text-[11px] text-stone">{filename}</span>
+            <FileIcon size={22} strokeWidth={1.75} className="text-fg-muted" />
+            <span className="line-clamp-2 text-[11px] text-fg-muted">{filename}</span>
           </>
         )}
       </a>
       {isImage && (
-        <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-charcoal/90 to-transparent px-2 pb-1.5 pt-4 text-[11px] text-bone">
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-canvas/90 to-transparent px-2 pb-1.5 pt-4 text-[11px] text-fg">
           {filename}
         </span>
       )}

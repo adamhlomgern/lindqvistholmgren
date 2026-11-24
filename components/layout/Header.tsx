@@ -22,37 +22,36 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50">
-      <Container className="flex items-center justify-between gap-6 py-4">
+    <header className="sticky top-0 z-50 border-b border-line bg-canvas/80 backdrop-blur-xl backdrop-saturate-150">
+      <Container className="flex h-16 items-center justify-between gap-6">
         <Link href="/" className="shrink-0">
           <Image
-            src="/images/lindqvist-holmgren/lindqvist-holmgren-full-logo.svg"
+            src="/images/lindqvist-holmgren/lindqvist-holmgren-full-logo-on-light.svg"
             alt="Lindqvist / Holmgren"
             width={6065}
             height={2124}
             priority
-            className="hidden h-9 w-auto md:block"
+            className="hidden h-8 w-auto md:block"
           />
           <Image
-            src="/images/lindqvist-holmgren/LH-liten-svg.svg"
+            src="/images/lindqvist-holmgren/LH-liten-svg-on-light.svg"
             alt="Lindqvist / Holmgren"
             width={1108}
             height={1066}
             priority
-            className="h-9 w-auto md:hidden"
+            className="h-8 w-auto md:hidden"
           />
         </Link>
-        <nav className="hidden items-center gap-1 rounded-full border border-bone/10 bg-bone/10 p-1.5 backdrop-blur-md md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => {
             const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-charcoal text-emerald"
-                    : "text-bone/80 hover:bg-charcoal hover:text-emerald"
+                aria-current={active ? "page" : undefined}
+                className={`rounded-full px-3.5 py-2 text-[15px] font-medium transition-colors ${
+                  active ? "bg-fg/[0.06] text-fg" : "text-fg-muted hover:bg-fg/[0.04] hover:text-fg"
                 }`}
               >
                 {item.label}
@@ -71,7 +70,7 @@ export function Header() {
           onClick={() => setMenuOpen(true)}
           aria-label="Öppna meny"
           aria-expanded={menuOpen}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/10 bg-bone/10 text-bone transition-colors hover:bg-bone/15 md:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-fg ring-1 ring-inset ring-line-strong transition-colors hover:bg-surface-sunken md:hidden"
         >
           <Menu size={20} strokeWidth={2} />
         </button>

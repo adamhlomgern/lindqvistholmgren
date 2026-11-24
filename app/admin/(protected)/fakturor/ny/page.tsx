@@ -26,19 +26,19 @@ export default async function NewInvoicePage({ searchParams }: Props) {
   return (
     <div>
       <BackLink href="/admin/fakturor" label="Tillbaka till fakturor" />
-      <h1 className="font-display text-2xl font-bold text-bone">Ny faktura</h1>
+      <h1 className="font-display text-2xl font-semibold text-fg">Ny faktura</h1>
       {missing.length > 0 ? (
-        <p className="mt-4 text-sm text-stone">
+        <p className="mt-4 text-sm text-fg-muted">
           Du behöver lägga till {missing.join(" och ")} innan du kan skapa en faktura.{" "}
           {customers.length === 0 && (
-            <Link href="/admin/kunder/ny" className="text-emerald hover:underline">
+            <Link href="/admin/kunder/ny" className="text-primary hover:underline">
               Lägg till kund
             </Link>
           )}
           {(billingEntities.length === 0 || bankAccounts.length === 0) && (
             <>
               {customers.length === 0 && " · "}
-              <Link href="/admin/installningar" className="text-emerald hover:underline">
+              <Link href="/admin/installningar" className="text-primary hover:underline">
                 Gå till inställningar
               </Link>
             </>

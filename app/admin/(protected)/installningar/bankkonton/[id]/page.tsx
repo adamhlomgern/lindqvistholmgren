@@ -17,7 +17,7 @@ export default async function EditBankAccountPage({ params }: Props) {
   return (
     <div>
       <BackLink href="/admin/installningar" label="Tillbaka till inställningar" />
-      <h1 className="font-display text-2xl font-bold text-bone">{account.label}</h1>
+      <h1 className="font-display text-2xl font-semibold text-fg">{account.label}</h1>
       <Card className="mt-8 max-w-2xl">
         <BankAccountForm account={account} />
       </Card>

@@ -52,7 +52,7 @@ export function PhaseListEditor({ labels, current, onChange }: Props) {
             onClick={() => onChange(labels, index)}
             aria-label={index === current ? "Aktuell fas" : `Markera "${label || "fas"}" som aktuell`}
             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
-              index === current ? "bg-emerald text-charcoal" : "bg-bone/10 text-stone hover:bg-bone/15"
+              index === current ? "bg-primary text-on-primary" : "bg-fg/10 text-fg-muted hover:bg-fg/15"
             }`}
           >
             {index === current && <Check size={13} strokeWidth={2.5} />}
@@ -61,7 +61,7 @@ export function PhaseListEditor({ labels, current, onChange }: Props) {
             value={label}
             onChange={(event) => updateLabel(index, event.target.value)}
             placeholder="Fasnamn"
-            className="w-full min-w-0 flex-1 rounded-lg border border-bone/10 bg-bone/5 px-3 py-2 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+            className="w-full min-w-0 flex-1 rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
           />
           <div className="flex shrink-0 items-center">
             <button
@@ -69,7 +69,7 @@ export function PhaseListEditor({ labels, current, onChange }: Props) {
               onClick={() => move(index, -1)}
               disabled={index === 0}
               aria-label="Flytta upp"
-              className="flex h-8 w-8 items-center justify-center text-stone transition-colors hover:text-bone disabled:opacity-30"
+              className="flex h-8 w-8 items-center justify-center text-fg-muted transition-colors hover:text-fg disabled:opacity-30"
             >
               <ChevronUp size={14} strokeWidth={2.25} />
             </button>
@@ -78,7 +78,7 @@ export function PhaseListEditor({ labels, current, onChange }: Props) {
               onClick={() => move(index, 1)}
               disabled={index === labels.length - 1}
               aria-label="Flytta ner"
-              className="flex h-8 w-8 items-center justify-center text-stone transition-colors hover:text-bone disabled:opacity-30"
+              className="flex h-8 w-8 items-center justify-center text-fg-muted transition-colors hover:text-fg disabled:opacity-30"
             >
               <ChevronDown size={14} strokeWidth={2.25} />
             </button>
@@ -87,7 +87,7 @@ export function PhaseListEditor({ labels, current, onChange }: Props) {
             type="button"
             onClick={() => removePhase(index)}
             aria-label={`Ta bort "${label || "fas"}"`}
-            className="flex h-8 w-8 shrink-0 items-center justify-center text-stone transition-colors hover:text-coral"
+            className="flex h-8 w-8 shrink-0 items-center justify-center text-fg-muted transition-colors hover:text-coral"
           >
             <X size={14} strokeWidth={2.25} />
           </button>
@@ -96,7 +96,7 @@ export function PhaseListEditor({ labels, current, onChange }: Props) {
       <button
         type="button"
         onClick={addPhase}
-        className="mt-1 flex items-center gap-1.5 self-start text-xs font-medium text-emerald hover:underline"
+        className="mt-1 flex items-center gap-1.5 self-start text-xs font-medium text-primary hover:underline"
       >
         <Plus size={13} strokeWidth={2.5} />
         Lägg till fas

@@ -1,6 +1,10 @@
 import { HTMLAttributes, ReactNode } from "react";
 
-type SectionTone = "forest" | "charcoal" | "olive";
+// light = vit (standard), subtle = ljusgrå för att skilja sektioner åt,
+// pine = mörkgrönt block, lilac = mjukt lila block. Varje tone skriver om de
+// semantiska färgerna (fg, primary, line …) för allt innehåll i sektionen.
+// forest/charcoal/olive är de gamla namnen och pekar på light/subtle.
+type SectionTone = "light" | "subtle" | "pine" | "lilac" | "forest" | "charcoal" | "olive";
 
 type SectionProps = HTMLAttributes<HTMLElement> & {
   children: ReactNode;
@@ -8,14 +12,18 @@ type SectionProps = HTMLAttributes<HTMLElement> & {
 };
 
 const toneClasses: Record<SectionTone, string> = {
-  forest: "bg-forest text-bone",
-  charcoal: "bg-charcoal text-bone",
-  olive: "bg-olive text-bone",
+  light: "tone-light",
+  subtle: "tone-subtle",
+  pine: "tone-pine",
+  lilac: "tone-lilac",
+  forest: "tone-light",
+  charcoal: "tone-subtle",
+  olive: "tone-subtle",
 };
 
-export function Section({ tone = "forest", className = "", children, ...props }: SectionProps) {
+export function Section({ tone = "light", className = "", children, ...props }: SectionProps) {
   return (
-    <section className={`py-24 md:py-32 ${toneClasses[tone]} ${className}`} {...props}>
+    <section className={`py-20 md:py-28 ${toneClasses[tone]} ${className}`} {...props}>
       {children}
     </section>
   );

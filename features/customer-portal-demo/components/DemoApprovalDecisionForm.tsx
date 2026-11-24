@@ -23,14 +23,14 @@ export function DemoApprovalDecisionForm(_props: { approvalId: string }) {
         <button
           type="button"
           onClick={() => setChoice("approved")}
-          className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
         >
           Godkänn leverans
         </button>
         <button
           type="button"
           onClick={() => setChoice("changes_requested")}
-          className="rounded-full bg-bone/10 px-5 py-2.5 text-sm font-medium text-bone transition-colors hover:bg-bone/15"
+          className="rounded-full bg-fg/10 px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-fg/15"
         >
           Begär ändringar
         </button>
@@ -53,14 +53,14 @@ export function DemoApprovalDecisionForm(_props: { approvalId: string }) {
         value={note}
         onChange={(event) => setNote(event.target.value)}
         placeholder={choice === "changes_requested" ? "Vad behöver ändras?" : "Valfri kommentar…"}
-        className="w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50"
+        className="w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50"
       />
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
           disabled={pending}
           className={`rounded-full px-5 py-2.5 text-sm font-semibold transition-colors disabled:opacity-60 ${
-            choice === "approved" ? "bg-emerald text-charcoal hover:bg-bone" : "bg-peach text-charcoal hover:bg-bone"
+            choice === "approved" ? "bg-primary text-on-primary hover:bg-primary-hover" : "bg-peach text-on-primary hover:bg-primary-hover"
           }`}
         >
           {pending ? "Sammanställer slutleverans…" : choice === "approved" ? "Skicka godkännande" : "Skicka begäran om ändring"}
@@ -68,7 +68,7 @@ export function DemoApprovalDecisionForm(_props: { approvalId: string }) {
         <button
           type="button"
           onClick={() => setChoice(null)}
-          className="text-sm font-medium text-stone transition-colors hover:text-bone"
+          className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
         >
           Avbryt
         </button>

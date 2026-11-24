@@ -27,16 +27,16 @@ export default async function ArticlePreviewPage({ params }: Props) {
   }
 
   return (
-    <div className="bg-forest">
-      <div className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-bone/10 bg-charcoal px-4 py-3">
+    <div className="bg-canvas">
+      <div className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-line bg-canvas/90 backdrop-blur px-4 py-3">
         <Link
           href={`/admin/artiklar/${article.slug}`}
-          className="flex items-center gap-1.5 text-sm text-bone hover:text-emerald"
+          className="flex items-center gap-1.5 text-sm text-fg hover:text-primary"
         >
           <ArrowLeft size={15} strokeWidth={2.25} />
           Tillbaka till redigering
         </Link>
-        <span className="rounded-full bg-bone/10 px-3 py-1 text-xs font-medium text-bone">
+        <span className="rounded-full bg-fg/10 px-3 py-1 text-xs font-medium text-fg">
           Förhandsgranskning · {articleStatusLabels[article.status]}
         </span>
       </div>

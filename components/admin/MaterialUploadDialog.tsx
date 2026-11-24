@@ -98,7 +98,7 @@ export function MaterialUploadDialog({ open, onClose, customerId, folderId }: Pr
       <div className="flex flex-col gap-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <span className="block text-xs font-medium uppercase tracking-label text-stone">Synlighet</span>
+            <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Synlighet</span>
             <div className="mt-2">
               <Select
                 value={visibility}
@@ -112,7 +112,7 @@ export function MaterialUploadDialog({ open, onClose, customerId, folderId }: Pr
             </div>
           </div>
           <div>
-            <span className="block text-xs font-medium uppercase tracking-label text-stone">Leveransstatus</span>
+            <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Leveransstatus</span>
             <div className="mt-2">
               <Select
                 value={deliveryStatus}
@@ -134,7 +134,7 @@ export function MaterialUploadDialog({ open, onClose, customerId, folderId }: Pr
             event.preventDefault();
             if (event.dataTransfer.files.length > 0) addFiles(event.dataTransfer.files);
           }}
-          className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-bone/20 px-4 py-6 text-sm text-stone transition-colors hover:border-emerald/40 hover:text-bone"
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 py-6 text-sm text-fg-muted transition-colors hover:border-primary/40 hover:text-fg"
         >
           <Upload size={16} strokeWidth={2.25} />
           Dra filer hit eller välj filer
@@ -153,21 +153,21 @@ export function MaterialUploadDialog({ open, onClose, customerId, folderId }: Pr
         {entries.length > 0 && (
           <div className="flex flex-col gap-1.5">
             {entries.map((entry, index) => (
-              <div key={`${entry.file.name}-${index}`} className="flex items-center gap-2.5 rounded-lg bg-bone/5 px-3 py-2 text-sm">
-                {entry.status === "done" && <CheckCircle2 size={14} className="shrink-0 text-emerald" />}
+              <div key={`${entry.file.name}-${index}`} className="flex items-center gap-2.5 rounded-lg bg-fg/5 px-3 py-2 text-sm">
+                {entry.status === "done" && <CheckCircle2 size={14} className="shrink-0 text-primary" />}
                 {entry.status === "error" && <XCircle size={14} className="shrink-0 text-coral" />}
                 {(entry.status === "pending" || entry.status === "uploading") && (
-                  <span className="h-3.5 w-3.5 shrink-0 rounded-full border border-bone/20" />
+                  <span className="h-3.5 w-3.5 shrink-0 rounded-full border border-line-strong" />
                 )}
-                <span className="min-w-0 flex-1 truncate text-bone">{entry.file.name}</span>
-                <span className="shrink-0 text-xs text-stone">{formatBytes(entry.file.size)}</span>
+                <span className="min-w-0 flex-1 truncate text-fg">{entry.file.name}</span>
+                <span className="shrink-0 text-xs text-fg-muted">{formatBytes(entry.file.size)}</span>
                 {entry.status === "error" && <span className="shrink-0 text-xs text-coral">{entry.error}</span>}
                 {entry.status === "pending" && (
                   <button
                     type="button"
                     onClick={() => removeEntry(index)}
                     aria-label={`Ta bort ${entry.file.name}`}
-                    className="shrink-0 text-stone transition-colors hover:text-coral"
+                    className="shrink-0 text-fg-muted transition-colors hover:text-coral"
                   >
                     <X size={13} strokeWidth={2.25} />
                   </button>
@@ -183,7 +183,7 @@ export function MaterialUploadDialog({ open, onClose, customerId, folderId }: Pr
               type="button"
               onClick={handleUploadAll}
               disabled={submitting}
-              className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
             >
               {submitting ? "Laddar upp…" : "Ladda upp"}
             </button>
@@ -198,7 +198,7 @@ export function MaterialUploadDialog({ open, onClose, customerId, folderId }: Pr
               Försök igen
             </button>
           )}
-          <button type="button" onClick={handleClose} className="text-sm font-medium text-stone transition-colors hover:text-bone">
+          <button type="button" onClick={handleClose} className="text-sm font-medium text-fg-muted transition-colors hover:text-fg">
             {entries.length > 0 && entries.every((e) => e.status === "done") ? "Klar" : "Avbryt"}
           </button>
         </div>

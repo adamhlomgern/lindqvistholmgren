@@ -15,21 +15,21 @@ export function ProjectPhaseIndicator({ project }: Props) {
     <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2">
       {steps.map((step, index) => (
         <div key={step.label} className="flex items-center gap-1.5">
-          {index > 0 && <span className="h-px w-3 shrink-0 bg-bone/15" aria-hidden />}
+          {index > 0 && <span className="h-px w-3 shrink-0 bg-fg/15" aria-hidden />}
           <span
             className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
               step.state === "current"
-                ? "bg-emerald/15 text-emerald"
+                ? "bg-primary/15 text-primary"
                 : step.state === "done"
-                  ? "text-stone/70"
-                  : "text-stone/60"
+                  ? "text-fg-subtle"
+                  : "text-fg-subtle"
             }`}
           >
             {step.state === "done" ? (
               <Check size={11} strokeWidth={2.5} />
             ) : (
               <span
-                className={`h-1.5 w-1.5 rounded-full ${step.state === "current" ? "bg-emerald" : "bg-stone/60"}`}
+                className={`h-1.5 w-1.5 rounded-full ${step.state === "current" ? "bg-primary" : "bg-fg-muted/60"}`}
                 aria-hidden
               />
             )}

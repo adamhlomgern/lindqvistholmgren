@@ -45,19 +45,19 @@ export function CustomerSidebar({ companyName, unreadMessageCount }: SidebarProp
 
   return (
     <>
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-bone/10 bg-charcoal/60 md:flex md:h-screen">
-        <div className="shrink-0 border-b border-bone/10 px-6 py-5">
-          <p className="font-display text-base font-bold text-bone">Lindqvist / Holmgren</p>
-          <p className="mt-0.5 truncate text-xs text-stone/70">{companyName}</p>
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-line bg-surface-sunken md:flex md:h-screen">
+        <div className="shrink-0 border-b border-line px-6 py-5">
+          <p className="font-display text-base font-semibold text-fg">Lindqvist / Holmgren</p>
+          <p className="mt-0.5 truncate text-xs text-fg-subtle">{companyName}</p>
         </div>
         <nav className="flex flex-1 flex-col px-3 py-5">
           <NavLinks pathname={pathname} size="sm" unreadMessageCount={unreadMessageCount} />
         </nav>
-        <div className="shrink-0 border-t border-bone/10 px-3 py-3">
+        <div className="shrink-0 border-t border-line px-3 py-3">
           <form action={logoutCustomer}>
             <button
               type="submit"
-              className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-stone transition-colors hover:bg-bone/5 hover:text-coral"
+              className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm font-medium text-fg-muted transition-colors hover:bg-fg/5 hover:text-coral"
             >
               <LogOut size={18} strokeWidth={2} />
               Logga ut
@@ -66,28 +66,28 @@ export function CustomerSidebar({ companyName, unreadMessageCount }: SidebarProp
         </div>
       </aside>
 
-      <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-bone/10 bg-charcoal/95 px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-canvas/90 backdrop-blur px-4 py-3 md:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Öppna meny"
-          className="-ml-1.5 flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-3 text-bone active:bg-bone/5"
+          className="-ml-1.5 flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-3 text-fg active:bg-fg/5"
         >
           <span className="relative">
             <Menu size={20} strokeWidth={2} />
             {unreadMessageCount > 0 && (
-              <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[10px] font-semibold text-charcoal">
+              <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[10px] font-semibold text-on-primary">
                 {unreadMessageCount}
               </span>
             )}
           </span>
-          <span className="font-display text-sm font-bold">{currentLabel}</span>
+          <span className="font-display text-sm font-semibold">{currentLabel}</span>
         </button>
         <form action={logoutCustomer}>
           <button
             type="submit"
             aria-label="Logga ut"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-stone active:bg-bone/5 active:text-coral"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-fg-muted active:bg-fg/5 active:text-coral"
           >
             <LogOut size={18} strokeWidth={2} />
           </button>
@@ -95,21 +95,21 @@ export function CustomerSidebar({ companyName, unreadMessageCount }: SidebarProp
       </div>
 
       <div
-        className={`fixed inset-0 z-40 flex h-dvh w-screen flex-col bg-forest transition-opacity duration-300 ease-out md:hidden ${
+        className={`fixed inset-0 z-40 flex h-dvh w-screen flex-col bg-canvas transition-opacity duration-300 ease-out md:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={!open}
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-bone/10 px-6 py-5">
+        <div className="flex shrink-0 items-center justify-between border-b border-line px-6 py-5">
           <div>
-            <p className="font-display text-base font-bold text-bone">Lindqvist / Holmgren</p>
-            <p className="mt-0.5 text-xs text-stone/70">{companyName}</p>
+            <p className="font-display text-base font-semibold text-fg">Lindqvist / Holmgren</p>
+            <p className="mt-0.5 text-xs text-fg-subtle">{companyName}</p>
           </div>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Stäng meny"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/10 bg-bone/10 text-bone transition-colors hover:bg-bone/15"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-fg ring-1 ring-inset ring-line-strong transition-colors hover:bg-surface-sunken"
           >
             <X size={20} strokeWidth={2} />
           </button>
@@ -119,11 +119,11 @@ export function CustomerSidebar({ companyName, unreadMessageCount }: SidebarProp
           <NavLinks pathname={pathname} size="lg" onNavigate={() => setOpen(false)} unreadMessageCount={unreadMessageCount} />
         </nav>
 
-        <div className="shrink-0 border-t border-bone/10 px-4 py-4">
+        <div className="shrink-0 border-t border-line px-4 py-4">
           <form action={logoutCustomer}>
             <button
               type="submit"
-              className="flex w-full items-center gap-3 rounded-lg px-4 py-3.5 text-base font-medium text-stone transition-colors hover:bg-bone/5 hover:text-coral"
+              className="flex w-full items-center gap-3 rounded-lg px-4 py-3.5 text-base font-medium text-fg-muted transition-colors hover:bg-fg/5 hover:text-coral"
             >
               <LogOut size={20} strokeWidth={2} />
               Logga ut
@@ -160,7 +160,7 @@ function NavLinks({
             href={item.href}
             onClick={onNavigate}
             className={`flex items-center justify-between rounded-lg font-medium transition-colors ${sizeClasses} ${
-              active ? "bg-emerald/10 text-emerald" : "text-stone hover:bg-bone/5 hover:text-bone"
+              active ? "bg-surface text-fg shadow-card ring-1 ring-line" : "text-fg-muted hover:bg-fg/[0.04] hover:text-fg"
             }`}
           >
             <span className="flex items-center gap-3">

@@ -23,10 +23,10 @@ export function Stats() {
               <GlassCard key={stat.label} accent={accent} padding="compact" className="items-start gap-3 sm:gap-4">
                 <AccentBadge icon={stat.icon} accent={accent} size={16} boxSize="compact" />
                 <div>
-                  <p className="font-display text-2xl font-bold tracking-tight text-bone sm:text-3xl md:text-4xl">
+                  <p className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg sm:text-3xl md:text-4xl">
                     {stat.value}
                   </p>
-                  <p className="mt-1 text-sm text-stone">{stat.label}</p>
+                  <p className="mt-1 text-sm text-fg-muted">{stat.label}</p>
                 </div>
               </GlassCard>
             );

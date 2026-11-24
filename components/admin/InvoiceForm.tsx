@@ -8,14 +8,14 @@ import { formatCurrencySek } from "@/lib/format";
 import { Select } from "@/components/ui/Select";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 
 const selectClasses = "w-full rounded-lg px-4 py-3 text-sm";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="block">
-      <span className="block text-xs font-medium uppercase tracking-label text-stone">{label}</span>
+      <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">{label}</span>
       <div className="mt-2">{children}</div>
     </div>
   );
@@ -23,8 +23,8 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="border-t border-bone/10 pt-6 first:border-t-0 first:pt-0">
-      <h2 className="font-display text-sm font-bold text-bone">{title}</h2>
+    <div className="border-t border-line pt-6 first:border-t-0 first:pt-0">
+      <h2 className="font-display text-sm font-semibold text-fg">{title}</h2>
       <div className="mt-4 flex flex-col gap-5">{children}</div>
     </div>
   );
@@ -66,9 +66,9 @@ function LineItemsField({
   return (
     <div className="flex flex-col gap-3">
       {rows.map((row, index) => (
-        <div key={index} className="flex flex-col gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3 sm:flex-row sm:items-end">
+        <div key={index} className="flex flex-col gap-2 rounded-xl border border-line bg-fg/5 p-3 sm:flex-row sm:items-end">
           <div className="min-w-0 flex-1">
-            <span className="block text-[10px] font-medium uppercase tracking-label text-stone/70">
+            <span className="block text-[10px] font-medium uppercase tracking-label text-fg-subtle">
               Tjänst
             </span>
             <input
@@ -79,7 +79,7 @@ function LineItemsField({
             />
           </div>
           <div className="sm:w-20 sm:shrink-0">
-            <span className="block text-[10px] font-medium uppercase tracking-label text-stone/70">
+            <span className="block text-[10px] font-medium uppercase tracking-label text-fg-subtle">
               Antal
             </span>
             <input
@@ -90,7 +90,7 @@ function LineItemsField({
             />
           </div>
           <div className="sm:w-28 sm:shrink-0">
-            <span className="block text-[10px] font-medium uppercase tracking-label text-stone/70">
+            <span className="block text-[10px] font-medium uppercase tracking-label text-fg-subtle">
               À-pris (kr)
             </span>
             <input
@@ -104,7 +104,7 @@ function LineItemsField({
             type="button"
             onClick={() => remove(index)}
             aria-label="Ta bort rad"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-stone transition-colors hover:text-coral"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-fg-muted transition-colors hover:text-coral"
           >
             <X size={16} strokeWidth={2.25} />
           </button>
@@ -114,15 +114,15 @@ function LineItemsField({
       <button
         type="button"
         onClick={() => setRows((prev) => [...prev, { description: "", quantity: "1", unitPrice: "" }])}
-        className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1.5 text-xs font-medium text-emerald transition-colors hover:bg-emerald/10"
+        className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
       >
         <Plus size={14} strokeWidth={2.5} />
         Lägg till rad
       </button>
 
       {parsed.length > 0 && (
-        <p className="self-end text-sm text-stone">
-          Delsumma: <span className="font-medium text-bone">{formatCurrencySek(subtotal)}</span>
+        <p className="self-end text-sm text-fg-muted">
+          Delsumma: <span className="font-medium text-fg">{formatCurrencySek(subtotal)}</span>
         </p>
       )}
 
@@ -246,7 +246,7 @@ export function InvoiceForm({
                     type="button"
                     onClick={() => setMomsRate(option)}
                     className={`rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                      momsRate === option ? "bg-emerald text-charcoal" : "bg-bone/5 text-stone hover:bg-bone/10"
+                      momsRate === option ? "bg-primary text-on-primary" : "bg-fg/5 text-fg-muted hover:bg-fg/10"
                     }`}
                   >
                     {option}%
@@ -277,12 +277,12 @@ export function InvoiceForm({
         </Field>
       </Section>
 
-      <div className="flex flex-col gap-3 border-t border-bone/10 pt-6">
+      <div className="flex flex-col gap-3 border-t border-line pt-6">
         {state?.error && <p className="text-sm text-coral">{state.error}</p>}
         <button
           type="submit"
           disabled={pending}
-          className="self-start rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+          className="self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
         >
           {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa faktura"}
         </button>

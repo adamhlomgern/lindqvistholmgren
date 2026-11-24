@@ -16,10 +16,10 @@ export function CustomerPortalSummaryCard({
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-sm font-bold text-bone">Kundportal</h2>
+        <h2 className="font-display text-sm font-semibold text-fg">Kundportal</h2>
         <Link
           href={`/admin/kunder/${customerId}/atkomst`}
-          className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline"
+          className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
         >
           Öppna åtkomst
           <ArrowUpRight size={12} />
@@ -27,10 +27,10 @@ export function CustomerPortalSummaryCard({
       </div>
 
       {total === 0 ? (
-        <p className="mt-3 text-sm text-stone">Ingen kontaktperson inbjuden ännu.</p>
+        <p className="mt-3 text-sm text-fg-muted">Ingen kontaktperson inbjuden ännu.</p>
       ) : (
-        <div className="mt-3 flex flex-col gap-1 text-sm text-stone">
-          {active > 0 && <p className="text-emerald">{active} aktiv{active === 1 ? "" : "a"}</p>}
+        <div className="mt-3 flex flex-col gap-1 text-sm text-fg-muted">
+          {active > 0 && <p className="text-primary">{active} aktiv{active === 1 ? "" : "a"}</p>}
           {invited > 0 && <p className="text-peach">{invited} inbjuden{invited === 1 ? "" : "a"}</p>}
           {revoked > 0 && <p className="text-coral">{revoked} återkallad{revoked === 1 ? "" : "e"}</p>}
         </div>

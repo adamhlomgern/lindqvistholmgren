@@ -48,7 +48,7 @@ export function ArticleCardMenu({
         aria-label="Fler alternativ"
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
       >
         <MoreHorizontal size={16} strokeWidth={2.25} />
       </button>
@@ -56,12 +56,12 @@ export function ArticleCardMenu({
         <div
           role="menu"
           onClick={(event) => event.preventDefault()}
-          className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-bone/10 bg-forest p-1.5 shadow-xl"
+          className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-line bg-surface p-1.5 shadow-pop"
         >
           <Link
             href={`/admin/artiklar/${slug}`}
             role="menuitem"
-            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-fg/5"
           >
             <Pencil size={14} strokeWidth={2.25} />
             Redigera
@@ -70,7 +70,7 @@ export function ArticleCardMenu({
             href={`/admin/artiklar/${slug}/forhandsgranska`}
             target="_blank"
             role="menuitem"
-            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-fg/5"
           >
             <Eye size={14} strokeWidth={2.25} />
             Förhandsgranska
@@ -82,7 +82,7 @@ export function ArticleCardMenu({
               setOpen(false);
               duplicateArticle(slug);
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5"
           >
             <Copy size={14} strokeWidth={2.25} />
             Duplicera
@@ -94,12 +94,12 @@ export function ArticleCardMenu({
               setOpen(false);
               setArticleStatus(slug, isPublished ? "avpublicerad" : "publicerad");
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5"
           >
             <EyeOff size={14} strokeWidth={2.25} />
             {isPublished ? "Avpublicera" : "Publicera"}
           </button>
-          <div className="my-1 border-t border-bone/10" />
+          <div className="my-1 border-t border-line" />
           <ConfirmDialog
             trigger={
               <button

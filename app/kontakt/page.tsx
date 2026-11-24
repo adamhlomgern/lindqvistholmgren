@@ -55,25 +55,25 @@ export default function KontaktPage() {
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
             <div className="flex flex-col gap-4">
               <GlassCard accent="emerald">
-                <span className={`flex h-14 w-14 items-center justify-center rounded-full font-display text-xl font-bold ${badgeClasses.emerald}`}>
+                <span className={`flex h-14 w-14 items-center justify-center rounded-full font-display text-xl font-semibold ${badgeClasses.emerald}`}>
                   A/M
                 </span>
-                <p className="mt-4 font-display text-lg font-bold text-bone">Prata med Ada & Malin</p>
-                <p className="mt-2 text-sm leading-relaxed text-stone">
+                <p className="mt-4 font-display text-lg font-semibold text-fg">Prata med Ada & Malin</p>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">
                   All kontakt går direkt till oss, som håller ihop projektet från start till mål —
                   inga mellanhänder, inga väntetider.
                 </p>
               </GlassCard>
               <GlassCard accent="emerald">
-                <div className="-m-6 divide-y divide-bone/10">
+                <div className="-m-6 divide-y divide-line">
                   {contactPoints.map((point) => (
                     <div key={point.title} className="flex items-center gap-4 px-6 py-4">
                       <AccentBadge icon={point.icon} accent="emerald" />
                       <div>
-                        <p className="text-xs font-medium uppercase tracking-label text-stone">
+                        <p className="text-xs font-medium uppercase tracking-label text-fg-muted">
                           {point.title}
                         </p>
-                        <p className="mt-1 text-sm font-semibold text-bone">{point.value}</p>
+                        <p className="mt-1 text-sm font-semibold text-fg">{point.value}</p>
                       </div>
                     </div>
                   ))}

@@ -12,7 +12,7 @@ export const articleStatusLabels: Record<ArticleStatus, string> = {
 // expected state, and a badge on every single card would be more noise
 // than signal. The other three statuses are the exceptions worth flagging.
 export const articleStatusClasses: Partial<Record<ArticleStatus, string>> = {
-  utkast: "bg-bone/10 text-bone",
+  utkast: "bg-fg/10 text-fg",
   schemalagd: "bg-sky/15 text-sky",
   avpublicerad: "bg-coral/15 text-coral",
 };

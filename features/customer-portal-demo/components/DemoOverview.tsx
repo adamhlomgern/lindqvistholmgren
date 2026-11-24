@@ -35,10 +35,10 @@ export function DemoOverview() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">
+      <h1 className="font-display text-2xl font-semibold text-fg">
         {demo.finalMaterialsUnlocked ? "Klart! Er identitet är levererad" : "Ditt sista godkännande behövs"}
       </h1>
-      <p className="mt-1 text-sm text-stone">
+      <p className="mt-1 text-sm text-fg-muted">
         {demo.finalMaterialsUnlocked
           ? "Slutleveransen finns i materialbiblioteket, redo att användas."
           : "1 aktivt projekt hos oss just nu."}

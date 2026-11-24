@@ -7,10 +7,10 @@ import type { ClientProjectWithCustomer } from "@/lib/types";
 export function CustomerActiveProjectsCard({ projects }: { projects: ClientProjectWithCustomer[] }) {
   return (
     <Card>
-      <h2 className="font-display text-sm font-bold text-bone">Aktiva projekt</h2>
+      <h2 className="font-display text-sm font-semibold text-fg">Aktiva projekt</h2>
 
       {projects.length === 0 ? (
-        <p className="mt-3 text-sm text-stone">Inget aktivt projekt just nu.</p>
+        <p className="mt-3 text-sm text-fg-muted">Inget aktivt projekt just nu.</p>
       ) : (
         <div className="mt-3 flex flex-col gap-1">
           {projects.map((project) => {
@@ -19,11 +19,11 @@ export function CustomerActiveProjectsCard({ projects }: { projects: ClientProje
               <Link
                 key={project.id}
                 href={`/admin/projekt/${project.id}`}
-                className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-bone/[0.06]"
+                className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-fg/[0.06]"
               >
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-bone">{project.title}</p>
-                  <p className="text-xs text-stone">
+                  <p className="truncate text-sm font-medium text-fg">{project.title}</p>
+                  <p className="text-xs text-fg-muted">
                     {project.deadline ? `Deadline ${formatDateSv(project.deadline)}` : "Inget deadline satt"}
                   </p>
                 </div>

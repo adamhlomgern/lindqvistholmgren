@@ -29,7 +29,7 @@ export function Lightbox({ src, alt, onClose, onPrev, onNext }: LightboxProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-charcoal/95 p-4 backdrop-blur-sm md:p-10"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-950/90 p-4 backdrop-blur-sm md:p-10"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -38,7 +38,7 @@ export function Lightbox({ src, alt, onClose, onPrev, onNext }: LightboxProps) {
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-bone/10 text-bone transition-colors hover:bg-bone/20"
+        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         aria-label="Stäng"
       >
         <X size={20} />
@@ -51,7 +51,7 @@ export function Lightbox({ src, alt, onClose, onPrev, onNext }: LightboxProps) {
             event.stopPropagation();
             onPrev();
           }}
-          className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-bone/10 text-bone transition-colors hover:bg-bone/20"
+          className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
           aria-label="Föregående bild"
         >
           <ChevronLeft size={20} />
@@ -64,7 +64,7 @@ export function Lightbox({ src, alt, onClose, onPrev, onNext }: LightboxProps) {
             event.stopPropagation();
             onNext();
           }}
-          className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-bone/10 text-bone transition-colors hover:bg-bone/20"
+          className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
           aria-label="Nästa bild"
         >
           <ChevronRight size={20} />

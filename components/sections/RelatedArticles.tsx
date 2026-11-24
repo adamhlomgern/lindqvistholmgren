@@ -26,8 +26,8 @@ export async function RelatedArticles({ currentSlug, category }: RelatedArticles
   }
 
   return (
-    <div className="mt-16 border-t border-bone/10 pt-10">
-      <h2 className="font-display text-xl font-bold text-bone">Fler artiklar</h2>
+    <div className="mt-16 border-t border-line pt-10">
+      <h2 className="font-display text-xl font-semibold text-fg">Fler artiklar</h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         {related.map((article) => {
           const accent = resolveCategoryVisual(categories, article.category).accent;
@@ -36,12 +36,12 @@ export async function RelatedArticles({ currentSlug, category }: RelatedArticles
             <Link key={article.slug} href={`/artiklar/${article.slug}`} className="group block">
               <GlassCard accent={accent}>
                 <AccentBadge icon={Icon} accent={accent} />
-                <h3 className="mt-3 font-display text-sm font-bold leading-snug text-bone">
+                <h3 className="mt-3 font-display text-sm font-semibold leading-snug text-fg">
                   {article.title}
                 </h3>
                 <div className="mt-auto flex items-center gap-2 pt-3">
                   <Tag>{article.category}</Tag>
-                  <span className="text-xs text-stone">{article.readTime}</span>
+                  <span className="text-xs text-fg-muted">{article.readTime}</span>
                 </div>
               </GlassCard>
             </Link>

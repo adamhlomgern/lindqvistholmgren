@@ -100,7 +100,7 @@ export default async function ServiceLandingPage({ params }: Props) {
                         size={16}
                         strokeWidth={2.5}
                       />
-                      <span className="text-sm leading-relaxed text-bone">{highlight}</span>
+                      <span className="text-sm leading-relaxed text-fg">{highlight}</span>
                     </li>
                   ))}
                 </ul>
@@ -108,13 +108,13 @@ export default async function ServiceLandingPage({ params }: Props) {
             )}
             <div className="flex flex-col gap-5">
               {page.body.map((paragraph, index) => (
-                <p key={index} className="text-base leading-relaxed text-stone">
+                <p key={index} className="text-base leading-relaxed text-fg-muted">
                   {paragraph}
                 </p>
               ))}
             </div>
-            <div className="mt-12 flex flex-col items-start gap-4 border-t border-bone/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-stone">Vill ni komma igång?</p>
+            <div className="mt-12 flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-fg-muted">Vill ni komma igång?</p>
               <div className="flex gap-3">
                 <Button href="/kontakt">
                   Kontakta oss
@@ -130,7 +130,7 @@ export default async function ServiceLandingPage({ params }: Props) {
 
             {siblingPages.length > 0 && (
               <div className="mt-14">
-                <h2 className="font-display text-xl font-bold text-bone">
+                <h2 className="font-display text-xl font-semibold text-fg">
                   Fler sidor om {service ? service.titleLower ?? service.title.toLowerCase() : "tjänsten"}
                 </h2>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -142,10 +142,10 @@ export default async function ServiceLandingPage({ params }: Props) {
                     >
                       <GlassCard accent={accent} className="justify-between">
                         <div>
-                          <h3 className="font-display text-base font-bold text-bone">
+                          <h3 className="font-display text-base font-semibold text-fg">
                             {sibling.title}
                           </h3>
-                          <p className="mt-2 text-sm leading-relaxed text-stone">
+                          <p className="mt-2 text-sm leading-relaxed text-fg-muted">
                             {sibling.description}
                           </p>
                         </div>

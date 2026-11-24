@@ -17,12 +17,12 @@ export default async function CustomerProjectsTab({ params }: Props) {
 
   if (projects.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
-        <BriefcaseBusiness size={24} strokeWidth={2} className="text-stone" />
-        <p className="text-sm text-stone">Inga projekt kopplade till kunden ännu.</p>
+      <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
+        <BriefcaseBusiness size={24} strokeWidth={2} className="text-fg-muted" />
+        <p className="text-sm text-fg-muted">Inga projekt kopplade till kunden ännu.</p>
         <Link
           href={`/admin/projekt/ny?customer=${id}`}
-          className="mt-1 flex items-center gap-1.5 text-sm font-medium text-emerald hover:underline"
+          className="mt-1 flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
         >
           <Plus size={14} strokeWidth={2.5} />
           Skapa ett projekt

@@ -15,18 +15,18 @@ export function MessagesPreviewCard({ messages, hrefBase = "/kund" }: Props) {
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-sm font-bold text-bone">Senaste meddelanden</h3>
+        <h3 className="font-display text-sm font-semibold text-fg">Senaste meddelanden</h3>
         <Link
           href={`${hrefBase}/meddelanden`}
-          className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline"
+          className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
         >
           Öppna meddelande
           <ArrowRight size={12} strokeWidth={2.5} />
         </Link>
       </div>
       {messages.length === 0 ? (
-        <p className="mt-3 flex items-center gap-2 text-sm text-stone">
-          <MessageSquareText size={15} className="text-stone/60" />
+        <p className="mt-3 flex items-center gap-2 text-sm text-fg-muted">
+          <MessageSquareText size={15} className="text-fg-subtle" />
           Inga meddelanden ännu.
         </p>
       ) : (
@@ -34,10 +34,10 @@ export function MessagesPreviewCard({ messages, hrefBase = "/kund" }: Props) {
           {messages.map((message) => (
             <div key={message.id} className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-stone">{message.authorLabel}</p>
-                <p className="mt-0.5 line-clamp-1 text-sm text-bone">{message.body || (message.attachment ? "📷 Bild" : "")}</p>
+                <p className="text-xs font-medium text-fg-muted">{message.authorLabel}</p>
+                <p className="mt-0.5 line-clamp-1 text-sm text-fg">{message.body || (message.attachment ? "📷 Bild" : "")}</p>
               </div>
-              <span className="shrink-0 text-xs text-stone/60">{formatRelativeSv(message.createdAt)}</span>
+              <span className="shrink-0 text-xs text-fg-subtle">{formatRelativeSv(message.createdAt)}</span>
             </div>
           ))}
         </div>

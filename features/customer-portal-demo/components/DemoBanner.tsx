@@ -19,7 +19,7 @@ export function DemoBanner() {
           <button
             type="button"
             onClick={jumpToEnd}
-            className="rounded-full border border-bone/15 px-3 py-1.5 text-xs font-medium text-stone transition-colors hover:border-bone/25 hover:text-bone"
+            className="rounded-full border border-line-strong px-3 py-1.5 text-xs font-medium text-fg-muted transition-colors hover:border-line-strong hover:text-fg"
           >
             Visa färdig leverans
           </button>
@@ -27,7 +27,7 @@ export function DemoBanner() {
         <button
           type="button"
           onClick={reset}
-          className="flex items-center gap-1.5 rounded-full border border-bone/15 px-3 py-1.5 text-xs font-medium text-stone transition-colors hover:border-bone/25 hover:text-bone"
+          className="flex items-center gap-1.5 rounded-full border border-line-strong px-3 py-1.5 text-xs font-medium text-fg-muted transition-colors hover:border-line-strong hover:text-fg"
         >
           <RotateCcw size={13} strokeWidth={2.25} />
           Återställ demo

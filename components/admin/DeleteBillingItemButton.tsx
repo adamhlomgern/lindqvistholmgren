@@ -13,7 +13,7 @@ export function DeleteBillingItemButton({
   return (
     <ConfirmDialog
       trigger={
-        <button type="button" aria-label={`Ta bort ${itemName}`} className="text-stone hover:text-coral">
+        <button type="button" aria-label={`Ta bort ${itemName}`} className="text-fg-muted hover:text-coral">
           <X size={16} strokeWidth={2.25} />
         </button>
       }

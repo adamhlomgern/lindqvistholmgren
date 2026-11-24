@@ -37,7 +37,7 @@ function FooterLinkList({ links }: { links: FooterLink[] }) {
     <ul className="flex flex-col gap-3">
       {links.map((link) => (
         <li key={link.href}>
-          <Link href={link.href} className="text-sm text-bone/70 transition-colors hover:text-emerald">
+          <Link href={link.href} className="text-sm text-fg-muted transition-colors hover:text-fg">
             {link.label}
           </Link>
         </li>
@@ -51,16 +51,16 @@ function FooterContact({ className = "" }: { className?: string }) {
     <div className={className}>
       <a
         href="mailto:info@lindqvistholmgren.se"
-        className="flex items-center gap-2.5 text-sm text-bone/70 transition-colors hover:text-emerald"
+        className="flex items-center gap-2.5 text-sm text-fg-muted transition-colors hover:text-fg"
       >
-        <Mail size={16} strokeWidth={2} className="text-stone" />
+        <Mail size={16} strokeWidth={2} className="text-fg-muted" />
         info@lindqvistholmgren.se
       </a>
-      <p className="mt-3 flex items-center gap-2.5 text-sm text-bone/70">
-        <MapPin size={16} strokeWidth={2} className="text-stone" />
+      <p className="mt-3 flex items-center gap-2.5 text-sm text-fg-muted">
+        <MapPin size={16} strokeWidth={2} className="text-fg-muted" />
         Karlstad, Sverige
       </p>
-      <Button href="/kontakt" variant="secondary" className="mt-5 w-full">
+      <Button href="/kontakt" className="mt-5 w-full">
         Starta ett projekt
       </Button>
     </div>
@@ -72,8 +72,8 @@ export function Footer() {
   const { openPreferences } = useCookieConsent();
 
   return (
-    <footer className="bg-charcoal">
-      <Container className="py-16">
+    <footer className="tone-pine">
+      <Container className="py-20">
         <div className="grid gap-12 md:grid-cols-[1.3fr_1fr_1fr_1.1fr] md:gap-8">
           <div className="max-w-sm">
             <Link href="/" className="inline-block">
@@ -85,12 +85,12 @@ export function Footer() {
                 className="h-8 w-auto"
               />
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-stone">
+            <p className="mt-4 text-sm leading-relaxed text-fg-muted">
               Två frilansare med bas i Karlstad. Vi hjälper företag växa digitalt —
               lokalt och i hela Sverige, personligt och utan mellanhänder.
             </p>
-            <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-bone/5 py-1.5 pl-2.5 pr-3.5 text-xs font-medium uppercase tracking-label text-stone">
-              <Clock className="text-emerald" size={14} strokeWidth={2.25} />
+            <p className="mt-5 inline-flex items-center gap-2 rounded-full bg-fg/5 py-1.5 pl-2.5 pr-3.5 text-sm font-semibold text-fg">
+              <Clock className="text-highlight" size={14} strokeWidth={2.25} />
               Svar inom 24 timmar
             </p>
             <div className="mt-5 flex items-center gap-3">
@@ -99,7 +99,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Lindqvist / Holmgren på Facebook"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-fg/[0.08] text-fg transition-colors hover:bg-fg/15"
               >
                 <FacebookIcon size={16} strokeWidth={2} />
               </a>
@@ -108,7 +108,7 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Lindqvist / Holmgren på Instagram"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-fg/[0.08] text-fg transition-colors hover:bg-fg/15"
               >
                 <InstagramIcon size={16} strokeWidth={2} />
               </a>
@@ -116,23 +116,23 @@ export function Footer() {
           </div>
 
           <div className="hidden md:block">
-            <p className="text-xs font-medium uppercase tracking-label text-stone">Tjänster</p>
+            <p className="text-sm font-semibold text-fg">Tjänster</p>
             <div className="mt-4">
               <FooterLinkList links={serviceLinks} />
             </div>
           </div>
           <div className="hidden md:block">
-            <p className="text-xs font-medium uppercase tracking-label text-stone">Sidor</p>
+            <p className="text-sm font-semibold text-fg">Sidor</p>
             <div className="mt-4">
               <FooterLinkList links={pageLinks} />
             </div>
           </div>
           <div className="hidden md:block">
-            <p className="text-xs font-medium uppercase tracking-label text-stone">Kontakt</p>
+            <p className="text-sm font-semibold text-fg">Kontakt</p>
             <FooterContact className="mt-4" />
           </div>
 
-          <div className="divide-y divide-bone/10 border-y border-bone/10 md:hidden">
+          <div className="divide-y divide-line border-y border-line md:hidden">
             {footerGroups.map((group) => {
               const isOpen = openGroup === group.id;
               return (
@@ -143,10 +143,10 @@ export function Footer() {
                     className="flex w-full items-center justify-between gap-4 py-4 text-left"
                     aria-expanded={isOpen}
                   >
-                    <span className="text-sm font-semibold text-bone">{group.label}</span>
+                    <span className="text-sm font-semibold text-fg">{group.label}</span>
                     <ChevronDown
                       size={16}
-                      className={`shrink-0 text-emerald transition-transform duration-300 ${
+                      className={`shrink-0 text-fg-muted transition-transform duration-300 ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     />
@@ -168,21 +168,21 @@ export function Footer() {
           </div>
 
           <div className="md:hidden">
-            <p className="text-xs font-medium uppercase tracking-label text-stone">Kontakt</p>
+            <p className="text-sm font-semibold text-fg">Kontakt</p>
             <FooterContact className="mt-4" />
           </div>
         </div>
       </Container>
-      <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-bone/10 py-6 text-xs text-stone/70">
+      <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-line py-6 text-[13px] text-fg-muted">
         <p>© {new Date().getFullYear()} Lindqvist / Holmgren</p>
         <div className="flex items-center gap-4">
-          <button type="button" onClick={openPreferences} className="transition-colors hover:text-emerald">
+          <button type="button" onClick={openPreferences} className="transition-colors hover:text-fg">
             🍪 Cookie-inställningar
           </button>
-          <Link href="/integritetspolicy" className="transition-colors hover:text-emerald">
+          <Link href="/integritetspolicy" className="transition-colors hover:text-fg">
             Integritetspolicy
           </Link>
-          <Link href="/allmanna-villkor" className="transition-colors hover:text-emerald">
+          <Link href="/allmanna-villkor" className="transition-colors hover:text-fg">
             Allmänna villkor
           </Link>
         </div>

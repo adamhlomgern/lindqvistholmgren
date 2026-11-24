@@ -96,10 +96,10 @@ export default async function ProjectPage({ params }: Props) {
                   <Tag key={tag}>{tag}</Tag>
                 ))}
               </div>
-              <h1 className="mt-4 font-display text-4xl font-bold leading-[0.95] tracking-tight text-bone md:text-5xl">
+              <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-5xl">
                 {project.title}
               </h1>
-              <p className="mt-6 text-lg leading-relaxed text-stone">{project.intro}</p>
+              <p className="mt-6 text-lg leading-relaxed text-fg-muted">{project.intro}</p>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Button href="/kontakt">
                   Starta ett liknande projekt
@@ -122,8 +122,8 @@ export default async function ProjectPage({ params }: Props) {
                 <div key={key} className="flex flex-col gap-3">
                   <AccentBadge icon={icon} accent={accent} size={16} />
                   <div>
-                    <p className="text-xs uppercase tracking-label text-stone/70">{label}</p>
-                    <p className="mt-1.5 text-sm font-medium text-bone">{project[key]}</p>
+                    <p className="text-xs uppercase tracking-label text-fg-subtle">{label}</p>
+                    <p className="mt-1.5 text-sm font-medium text-fg">{project[key]}</p>
                   </div>
                 </div>
               ))}
@@ -133,14 +133,14 @@ export default async function ProjectPage({ params }: Props) {
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             <GlassCard accent={accent}>
               <AccentBadge icon={Target} accent={accent} />
-              <h2 className="mt-4 font-display text-lg font-bold text-bone">Utmaningen</h2>
-              <p className="mt-3 text-sm leading-relaxed text-stone">{project.challenge}</p>
+              <h2 className="mt-4 font-display text-lg font-semibold text-fg">Utmaningen</h2>
+              <p className="mt-3 text-sm leading-relaxed text-fg-muted">{project.challenge}</p>
             </GlassCard>
             <GlassCard accent={accent}>
               <AccentBadge icon={Lightbulb} accent={accent} />
-              <h2 className="mt-4 font-display text-lg font-bold text-bone">Vår lösning</h2>
+              <h2 className="mt-4 font-display text-lg font-semibold text-fg">Vår lösning</h2>
               {project.solution.map((paragraph) => (
-                <p key={paragraph} className="mt-3 text-sm leading-relaxed text-stone first:mt-0">
+                <p key={paragraph} className="mt-3 text-sm leading-relaxed text-fg-muted first:mt-0">
                   {paragraph}
                 </p>
               ))}
@@ -151,8 +151,8 @@ export default async function ProjectPage({ params }: Props) {
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {project.stats.map((stat) => (
                 <GlassCard key={stat.label} accent={accent} className="text-center">
-                  <p className={`font-display text-3xl font-bold ${iconTextClasses[accent]}`}>{stat.value}</p>
-                  <p className="mt-2 text-sm leading-snug text-stone">{stat.label}</p>
+                  <p className={`font-display text-3xl font-semibold ${iconTextClasses[accent]}`}>{stat.value}</p>
+                  <p className="mt-2 text-sm leading-snug text-fg-muted">{stat.label}</p>
                 </GlassCard>
               ))}
             </div>
@@ -163,8 +163,8 @@ export default async function ProjectPage({ params }: Props) {
               <div className="flex items-center gap-3">
                 <AccentBadge icon={Images} accent={accent} size={16} />
                 <div>
-                  <h2 className="font-display text-lg font-bold text-bone">Från projektet</h2>
-                  <p className="text-sm text-stone/70">Klicka på en bild för att förstora.</p>
+                  <h2 className="font-display text-lg font-semibold text-fg">Från projektet</h2>
+                  <p className="text-sm text-fg-subtle">Klicka på en bild för att förstora.</p>
                 </div>
               </div>
               <div className="mt-6">
@@ -173,8 +173,8 @@ export default async function ProjectPage({ params }: Props) {
             </div>
           )}
 
-          <div className="mt-14 flex flex-col items-start gap-4 border-t border-bone/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-stone">Har ni ett liknande projekt på gång?</p>
+          <div className="mt-14 flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-fg-muted">Har ni ett liknande projekt på gång?</p>
             <div className="flex gap-3">
               <Button href="/kontakt">
                 Kontakta oss

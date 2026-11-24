@@ -16,7 +16,7 @@ export default async function NewClientProjectPage({ searchParams }: Props) {
   return (
     <div>
       <BackLink href="/admin/projekt" label="Projekt" />
-      <h1 className="font-display text-2xl font-bold text-bone">Nytt projekt</h1>
+      <h1 className="font-display text-2xl font-semibold text-fg">Nytt projekt</h1>
       <Card className="mt-8 max-w-3xl">
         <ClientProjectForm customers={customers} billingEntities={billingEntities} initialCustomerId={customer} />
       </Card>

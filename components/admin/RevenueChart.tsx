@@ -13,11 +13,11 @@ export function RevenueChart({ data }: { data: MonthlyRevenue[] }) {
           const height = month.total > 0 ? Math.max((month.total / max) * CHART_HEIGHT, 4) : 2;
           return (
             <div key={month.month} className="flex flex-1 flex-col items-center justify-end gap-1.5">
-              <span className="text-[10px] font-medium text-stone">
+              <span className="text-[10px] font-medium text-fg-muted">
                 {month.total > 0 ? formatCurrencySek(month.total) : ""}
               </span>
               <div
-                className="w-full rounded-t-md bg-emerald/70"
+                className="w-full rounded-t-md bg-primary/70"
                 style={{ height }}
                 title={`${month.label}: ${formatCurrencySek(month.total)}`}
               />
@@ -25,9 +25,9 @@ export function RevenueChart({ data }: { data: MonthlyRevenue[] }) {
           );
         })}
       </div>
-      <div className="mt-2 flex gap-3 border-t border-bone/10 pt-2">
+      <div className="mt-2 flex gap-3 border-t border-line pt-2">
         {data.map((month) => (
-          <span key={month.month} className="flex-1 text-center text-[10px] uppercase tracking-label text-stone">
+          <span key={month.month} className="flex-1 text-center text-[10px] uppercase tracking-label text-fg-muted">
             {month.label}
           </span>
         ))}

@@ -32,18 +32,18 @@ export default async function AdminInboxPage({ searchParams }: Props) {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Inkorg</h1>
-      <p className="mt-1 text-sm text-stone">
+      <h1 className="font-display text-2xl font-semibold text-fg">Inkorg</h1>
+      <p className="mt-1 text-sm text-fg-muted">
         {activeTab === "mejl"
           ? "Inkommande mejl, synkade från företagets mejlbox. Uppdateras automatiskt var 10:e minut."
           : "Chattmeddelanden mellan er och kunder i kundportalen."}
       </p>
 
-      <div className="mt-6 flex items-center gap-1 border-b border-bone/10">
+      <div className="mt-6 flex items-center gap-1 border-b border-line">
         <Link
           href="/admin/inkorg"
           className={`flex items-center gap-2 border-b-2 px-3 pb-3 text-sm font-medium transition-colors ${
-            activeTab === "mejl" ? "border-emerald text-bone" : "border-transparent text-stone hover:text-bone"
+            activeTab === "mejl" ? "border-primary text-fg" : "border-transparent text-fg-muted hover:text-fg"
           }`}
         >
           <Inbox size={15} strokeWidth={2.25} />
@@ -57,7 +57,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
         <Link
           href="/admin/inkorg?tab=chatt"
           className={`flex items-center gap-2 border-b-2 px-3 pb-3 text-sm font-medium transition-colors ${
-            activeTab === "chatt" ? "border-emerald text-bone" : "border-transparent text-stone hover:text-bone"
+            activeTab === "chatt" ? "border-primary text-fg" : "border-transparent text-fg-muted hover:text-fg"
           }`}
         >
           <MessageSquareText size={15} strokeWidth={2.25} />
@@ -72,9 +72,9 @@ export default async function AdminInboxPage({ searchParams }: Props) {
 
       {activeTab === "chatt" ? (
         threads.length === 0 ? (
-          <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
-            <MessageSquareText size={24} strokeWidth={2} className="text-stone" />
-            <p className="text-sm text-stone">Inga chattmeddelanden ännu.</p>
+          <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
+            <MessageSquareText size={24} strokeWidth={2} className="text-fg-muted" />
+            <p className="text-sm text-fg-muted">Inga chattmeddelanden ännu.</p>
           </div>
         ) : (
           <div className="mt-8 flex flex-col gap-3">
@@ -82,16 +82,16 @@ export default async function AdminInboxPage({ searchParams }: Props) {
               const waitingForReply = thread.latestMessage.authorRole === "customer";
               return (
                 <Link key={thread.customerId} href={`/admin/inkorg/chatt/${thread.customerId}`}>
-                  <Card className="transition-colors hover:bg-bone/[0.08]">
+                  <Card className="transition-colors hover:bg-fg/[0.08]">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <p className="font-display text-base font-bold text-bone">{thread.customerName}</p>
-                        <p className="mt-1 line-clamp-1 text-sm text-stone">
+                        <p className="font-display text-base font-semibold text-fg">{thread.customerName}</p>
+                        <p className="mt-1 line-clamp-1 text-sm text-fg-muted">
                           {thread.latestMessage.body || (thread.latestMessage.attachment ? "📷 Bild" : "")}
                         </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1.5">
-                        <span className="text-xs text-stone">{formatRelativeSv(thread.latestMessage.createdAt)}</span>
+                        <span className="text-xs text-fg-muted">{formatRelativeSv(thread.latestMessage.createdAt)}</span>
                         {waitingForReply && <Tag className="bg-coral/15 text-coral">Väntar på svar</Tag>}
                       </div>
                     </div>
@@ -102,56 +102,56 @@ export default async function AdminInboxPage({ searchParams }: Props) {
           </div>
         )
       ) : emails.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
-          <Inbox size={24} strokeWidth={2} className="text-stone" />
-          <p className="text-sm text-stone">Inga mejl synkade ännu.</p>
+        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
+          <Inbox size={24} strokeWidth={2} className="text-fg-muted" />
+          <p className="text-sm text-fg-muted">Inga mejl synkade ännu.</p>
         </div>
       ) : (
         <div className="mt-8 flex flex-col gap-3">
           {emails.map((email) => {
             const unread = !email.readAt;
             return (
-            <Card key={email.id} className={unread ? "border border-emerald/25 bg-emerald/[0.04]" : ""}>
+            <Card key={email.id} className={unread ? "border border-primary/25 bg-primary/[0.04]" : ""}>
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <Link href={`/admin/inkorg/${email.id}`} className="flex min-w-0 items-start gap-2">
                   {unread && (
                     <span
                       aria-label="Oläst"
                       title="Oläst"
-                      className="mt-2 h-2 w-2 shrink-0 rounded-full bg-emerald"
+                      className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary"
                     />
                   )}
                   <span className="min-w-0">
-                    <p className="font-display text-base font-bold text-bone hover:underline">
+                    <p className="font-display text-base font-semibold text-fg hover:underline">
                       {email.fromName || email.fromAddress}
                     </p>
-                    <p className="text-sm text-stone">{email.fromAddress}</p>
+                    <p className="text-sm text-fg-muted">{email.fromAddress}</p>
                   </span>
                 </Link>
                 <div className="flex shrink-0 items-center gap-2">
                   {(attachmentCounts.get(email.id) ?? 0) > 0 && (
-                    <span className="flex items-center gap-1 text-xs text-stone">
+                    <span className="flex items-center gap-1 text-xs text-fg-muted">
                       <Paperclip size={12} strokeWidth={2.25} />
                       {attachmentCounts.get(email.id)}
                     </span>
                   )}
-                  <span className="text-xs text-stone">{formatDateSv(email.receivedAt)}</span>
+                  <span className="text-xs text-fg-muted">{formatDateSv(email.receivedAt)}</span>
                 </div>
               </div>
 
               <Link href={`/admin/inkorg/${email.id}`} className="block">
                 {email.subject && (
-                  <p className="mt-3 text-sm font-medium text-bone hover:underline">{email.subject}</p>
+                  <p className="mt-3 text-sm font-medium text-fg hover:underline">{email.subject}</p>
                 )}
                 {email.bodyText && (
-                  <p className="mt-1 line-clamp-2 text-sm text-stone">{email.bodyText}</p>
+                  <p className="mt-1 line-clamp-2 text-sm text-fg-muted">{email.bodyText}</p>
                 )}
               </Link>
 
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-bone/10 pt-4">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
                 {email.customerId ? (
                   <Link href={`/admin/kunder/${email.customerId}`}>
-                    <Tag className="bg-emerald/15 text-emerald">Matchad kund</Tag>
+                    <Tag className="bg-primary/15 text-primary">Matchad kund</Tag>
                   </Link>
                 ) : (
                   <form
@@ -171,7 +171,7 @@ export default async function AdminInboxPage({ searchParams }: Props) {
                     />
                     <button
                       type="submit"
-                      className="rounded-full border border-bone/15 px-2.5 py-1 text-xs font-medium text-bone transition-colors hover:bg-bone/10"
+                      className="rounded-full border border-line-strong px-2.5 py-1 text-xs font-medium text-fg transition-colors hover:bg-fg/10"
                     >
                       Koppla
                     </button>
@@ -197,13 +197,13 @@ export default async function AdminInboxPage({ searchParams }: Props) {
             {blockedSenders.map((sender) => (
               <div
                 key={sender.id}
-                className="flex items-center justify-between rounded-2xl bg-bone/5 px-5 py-3"
+                className="flex items-center justify-between rounded-2xl bg-fg/5 px-5 py-3"
               >
-                <span className="text-sm text-bone">{sender.email}</span>
+                <span className="text-sm text-fg">{sender.email}</span>
                 <form action={unblockSender.bind(null, sender.id)}>
                   <button
                     type="submit"
-                    className="text-xs font-medium text-stone transition-colors hover:text-emerald"
+                    className="text-xs font-medium text-fg-muted transition-colors hover:text-primary"
                   >
                     Avblockera
                   </button>

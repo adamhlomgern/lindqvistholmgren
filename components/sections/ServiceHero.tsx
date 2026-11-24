@@ -35,7 +35,7 @@ export function ServiceHero({
         <div className="mt-6">
           <Eyebrow icon={icon}>{eyebrow}</Eyebrow>
         </div>
-        <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-[0.95] tracking-tight text-bone md:text-6xl">
+        <h1 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-6xl">
           {parts.length > 1 ? (
             <>
               {parts[0]}
@@ -46,17 +46,17 @@ export function ServiceHero({
             headline
           )}
         </h1>
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone">{description}</p>
+        <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg-muted">{description}</p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Button href="/kontakt">
             Kontakta oss
             <ChevronRight size={16} strokeWidth={2.5} />
           </Button>
-          <Button href="/projekt" variant="ghost">
+          <Button href="/projekt" variant="secondary">
             Se vårt arbete
           </Button>
         </div>
-        <p className="mt-5 text-xs uppercase tracking-label text-stone/70">
+        <p className="mt-5 text-xs uppercase tracking-label text-fg-subtle">
           Svar inom 24 timmar · Ingen bindningstid
         </p>
       </Container>

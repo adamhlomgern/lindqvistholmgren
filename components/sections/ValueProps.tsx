@@ -32,7 +32,7 @@ export function ValueProps() {
     <Section tone="forest">
       <Container>
         <Eyebrow icon={ShieldCheck}>Varför vi</Eyebrow>
-        <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+        <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
           Det som skiljer oss från en vanlig byrå
         </h2>
         <div className="mt-12 grid gap-4 sm:grid-cols-3">
@@ -41,8 +41,8 @@ export function ValueProps() {
             return (
               <GlassCard key={value.title} accent={accent}>
                 <AccentBadge icon={value.icon} accent={accent} />
-                <h3 className="mt-5 font-display text-lg font-bold text-bone">{value.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
+                <h3 className="mt-5 font-display text-lg font-semibold text-fg">{value.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{value.description}</p>
               </GlassCard>
             );
           })}

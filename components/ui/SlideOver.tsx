@@ -37,7 +37,7 @@ export function SlideOver({
   return (
     <div className={`fixed inset-0 z-40 ${open ? "pointer-events-auto" : "pointer-events-none"}`} aria-hidden={!open}>
       <div
-        className={`absolute inset-0 bg-charcoal/80 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-ink-950/40 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
@@ -46,17 +46,17 @@ export function SlideOver({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={`absolute right-0 top-0 flex h-full w-full max-w-lg flex-col border-l border-bone/10 bg-forest shadow-2xl transition-transform duration-300 ease-out ${
+        className={`absolute right-0 top-0 flex h-full w-full max-w-lg flex-col border-l border-line bg-surface shadow-pop transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-bone/10 px-6 py-5">
-          <h2 className="font-display text-base font-bold text-bone">{title}</h2>
+        <div className="flex shrink-0 items-center justify-between border-b border-line px-6 py-5">
+          <h2 className="font-display text-lg font-semibold tracking-[-0.01em] text-fg">{title}</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Stäng"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
           >
             <X size={18} strokeWidth={2.25} />
           </button>

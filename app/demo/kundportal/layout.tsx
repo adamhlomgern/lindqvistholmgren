@@ -5,7 +5,7 @@ import { DemoBanner } from "@/features/customer-portal-demo/components/DemoBanne
 export default function KundportalDemoLayout({ children }: LayoutProps<"/demo/kundportal">) {
   return (
     <CustomerPortalDemoProvider>
-      <div className="flex flex-col bg-forest text-bone md:h-screen">
+      <div className="flex flex-col bg-canvas text-fg md:h-screen">
         <DemoBanner />
         <div className="flex flex-1 flex-col md:flex-row md:overflow-hidden">
           <DemoSidebar />

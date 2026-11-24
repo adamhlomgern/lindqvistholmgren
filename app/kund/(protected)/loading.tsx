@@ -6,7 +6,7 @@ import { LoaderCircle } from "lucide-react";
 export default function CustomerLoading() {
   return (
     <div className="flex min-h-[50vh] items-center justify-center">
-      <LoaderCircle size={22} className="animate-spin text-stone motion-reduce:animate-none" />
+      <LoaderCircle size={22} className="animate-spin text-fg-muted motion-reduce:animate-none" />
     </div>
   );
 }

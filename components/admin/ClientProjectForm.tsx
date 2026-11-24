@@ -11,7 +11,7 @@ import {
 } from "@/lib/actions/client-projects";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 const selectClasses = "w-full rounded-lg px-4 py-3 text-sm";
 
 const statusOptions: { value: ClientProjectStatus; label: string }[] = [
@@ -24,7 +24,7 @@ const statusOptions: { value: ClientProjectStatus; label: string }[] = [
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="block">
-      <span className="block text-xs font-medium uppercase tracking-label text-stone">{label}</span>
+      <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">{label}</span>
       <div className="mt-2">{children}</div>
     </div>
   );
@@ -32,8 +32,8 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-5 border-t border-bone/10 pt-6 first:border-0 first:pt-0">
-      <h2 className="font-display text-sm font-bold text-bone">{title}</h2>
+    <div className="flex flex-col gap-5 border-t border-line pt-6 first:border-0 first:pt-0">
+      <h2 className="font-display text-sm font-semibold text-fg">{title}</h2>
       {children}
     </div>
   );
@@ -124,7 +124,7 @@ export function ClientProjectForm({
             }))}
           />
           {selectedCustomer?.company && (
-            <p className="mt-2 text-sm text-stone">Kontaktperson: {selectedCustomer.name}</p>
+            <p className="mt-2 text-sm text-fg-muted">Kontaktperson: {selectedCustomer.name}</p>
           )}
         </Field>
         <Field label="Projektöversikt">
@@ -173,14 +173,14 @@ export function ClientProjectForm({
                 {tasks.map((task, index) => (
                   <div
                     key={`${task}-${index}`}
-                    className="flex items-center gap-2.5 rounded-lg bg-bone/5 px-3 py-2 text-sm text-bone"
+                    className="flex items-center gap-2.5 rounded-lg bg-fg/5 px-3 py-2 text-sm text-fg"
                   >
                     <span className="flex-1">{task}</span>
                     <button
                       type="button"
                       onClick={() => setTasks((prev) => prev.filter((_, i) => i !== index))}
                       aria-label={`Ta bort "${task}"`}
-                      className="text-stone transition-colors hover:text-coral"
+                      className="text-fg-muted transition-colors hover:text-coral"
                     >
                       <X size={13} strokeWidth={2.25} />
                     </button>
@@ -207,7 +207,7 @@ export function ClientProjectForm({
                 onClick={addTask}
                 disabled={!taskInput.trim()}
                 aria-label="Lägg till punkt"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-emerald text-charcoal transition-colors hover:bg-bone disabled:opacity-40"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-40"
               >
                 <Plus size={16} strokeWidth={2.5} />
               </button>
@@ -224,15 +224,15 @@ export function ClientProjectForm({
                 {files.map((file, index) => (
                   <div
                     key={`${file.name}-${index}`}
-                    className="flex items-center gap-2.5 rounded-lg bg-bone/5 px-3 py-2 text-sm text-bone"
+                    className="flex items-center gap-2.5 rounded-lg bg-fg/5 px-3 py-2 text-sm text-fg"
                   >
                     <span className="min-w-0 flex-1 truncate">{file.name}</span>
-                    <span className="shrink-0 text-xs text-stone">{formatBytes(file.size)}</span>
+                    <span className="shrink-0 text-xs text-fg-muted">{formatBytes(file.size)}</span>
                     <button
                       type="button"
                       onClick={() => removeFile(index)}
                       aria-label={`Ta bort ${file.name}`}
-                      className="shrink-0 text-stone transition-colors hover:text-coral"
+                      className="shrink-0 text-fg-muted transition-colors hover:text-coral"
                     >
                       <X size={13} strokeWidth={2.25} />
                     </button>
@@ -246,7 +246,7 @@ export function ClientProjectForm({
                 event.preventDefault();
                 if (event.dataTransfer.files.length > 0) addFiles(event.dataTransfer.files);
               }}
-              className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-bone/20 px-4 py-4 text-sm text-stone transition-colors hover:border-emerald/40 hover:text-bone"
+              className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 py-4 text-sm text-fg-muted transition-colors hover:border-primary/40 hover:text-fg"
             >
               <Upload size={16} strokeWidth={2.25} />
               Dra filer hit eller välj filer
@@ -275,11 +275,11 @@ export function ClientProjectForm({
         />
       </Section>
 
-      <div className="flex items-center gap-3 border-t border-bone/10 pt-6">
+      <div className="flex items-center gap-3 border-t border-line pt-6">
         <button
           type="submit"
           disabled={pending}
-          className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+          className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
         >
           {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa projekt"}
         </button>
@@ -287,7 +287,7 @@ export function ClientProjectForm({
           <button
             type="button"
             onClick={onCancel}
-            className="text-sm font-medium text-stone transition-colors hover:text-bone"
+            className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
           >
             Avbryt
           </button>

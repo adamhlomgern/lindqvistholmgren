@@ -134,22 +134,22 @@ export default async function ServiceCategoryPage({ params }: Props) {
 
       <Section tone="olive">
         <Container>
-          <h2 className="max-w-xl font-display text-2xl font-bold leading-[0.95] tracking-tight text-bone md:text-3xl">
+          <h2 className="max-w-xl font-display text-2xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-3xl">
             Vad ingår
           </h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {service.features.map((feature) => (
               <GlassCard key={feature.title} accent={accent}>
                 <AccentBadge icon={serviceFeatureIcons[feature.icon]} accent={accent} />
-                <h3 className="mt-5 font-display text-lg font-bold text-bone">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-stone">{feature.description}</p>
+                <h3 className="mt-5 font-display text-lg font-semibold text-fg">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{feature.description}</p>
               </GlassCard>
             ))}
           </div>
 
           {pages.length > 0 && (
             <>
-              <h2 className="mt-14 max-w-xl font-display text-2xl font-bold leading-[0.95] tracking-tight text-bone md:text-3xl">
+              <h2 className="mt-14 max-w-xl font-display text-2xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-3xl">
                 Läs mer om {titleLower}
               </h2>
               <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -161,8 +161,8 @@ export default async function ServiceCategoryPage({ params }: Props) {
                   >
                     <GlassCard accent={accent} className="justify-between">
                       <div>
-                        <h3 className="font-display text-base font-bold text-bone">{page.title}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-stone">{page.description}</p>
+                        <h3 className="font-display text-base font-semibold text-fg">{page.title}</h3>
+                        <p className="mt-2 text-sm leading-relaxed text-fg-muted">{page.description}</p>
                       </div>
                       <ArrowUpRight
                         className={`mt-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 ${iconTextClasses[accent]}`}

@@ -74,8 +74,8 @@ export function MaterialLibrary({ basePath, breadcrumb, folders, folderItemCount
       {breadcrumb.length > 0 && <Breadcrumbs items={crumbs} className="mb-3" />}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-bone">{currentFolderName ?? "Material"}</h1>
-          {!currentFolderName && <p className="mt-1 text-sm text-stone">Filer, instruktioner och länkar från oss.</p>}
+          <h1 className="font-display text-2xl font-semibold text-fg">{currentFolderName ?? "Material"}</h1>
+          {!currentFolderName && <p className="mt-1 text-sm text-fg-muted">Filer, instruktioner och länkar från oss.</p>}
         </div>
         {!isEmpty && (
           <MaterialViewControls
@@ -89,7 +89,7 @@ export function MaterialLibrary({ basePath, breadcrumb, folders, folderItemCount
 
       {pinnedItems && pinnedItems.length > 0 && (
         <div className="mt-6">
-          <h2 className="flex items-center gap-1.5 font-display text-sm font-bold text-bone">
+          <h2 className="flex items-center gap-1.5 font-display text-sm font-semibold text-fg">
             <Star size={13} strokeWidth={2.5} className="text-peach" fill="currentColor" />
             Viktigt just nu
           </h2>
@@ -107,13 +107,13 @@ export function MaterialLibrary({ basePath, breadcrumb, folders, folderItemCount
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {sortedFolders.map((folder) => (
                 <Link key={folder.id} href={`${basePath}/${folder.id}`}>
-                  <Card className="h-full transition-colors hover:bg-bone/[0.08]">
+                  <Card className="h-full transition-colors hover:bg-fg/[0.08]">
                     <div className="flex items-center gap-2.5">
                       <Folder size={18} strokeWidth={2} className="shrink-0 text-peach" />
-                      <p className="truncate text-sm font-medium text-bone">{folder.name}</p>
+                      <p className="truncate text-sm font-medium text-fg">{folder.name}</p>
                     </div>
-                    {folder.description && <p className="mt-1.5 text-xs text-stone">{folder.description}</p>}
-                    <p className="mt-2 text-xs text-stone/60">{folderItemCounts.get(folder.id) ?? 0} objekt</p>
+                    {folder.description && <p className="mt-1.5 text-xs text-fg-muted">{folder.description}</p>}
+                    <p className="mt-2 text-xs text-fg-subtle">{folderItemCounts.get(folder.id) ?? 0} objekt</p>
                   </Card>
                 </Link>
               ))}
@@ -134,11 +134,11 @@ export function MaterialLibrary({ basePath, breadcrumb, folders, folderItemCount
             <Link
               key={folder.id}
               href={`${basePath}/${folder.id}`}
-              className="flex flex-col items-center gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3 text-center transition-colors hover:bg-bone/[0.08]"
+              className="flex flex-col items-center gap-2 rounded-xl border border-line bg-fg/5 p-3 text-center transition-colors hover:bg-fg/[0.08]"
             >
               <Folder size={26} strokeWidth={1.75} className="text-peach" />
-              <p className="line-clamp-2 text-xs font-medium text-bone">{folder.name}</p>
-              <p className="text-[11px] text-stone/60">{folderItemCounts.get(folder.id) ?? 0} objekt</p>
+              <p className="line-clamp-2 text-xs font-medium text-fg">{folder.name}</p>
+              <p className="text-[11px] text-fg-subtle">{folderItemCounts.get(folder.id) ?? 0} objekt</p>
             </Link>
           ))}
           {sortedItems.map((item) => (
@@ -149,7 +149,7 @@ export function MaterialLibrary({ basePath, breadcrumb, folders, folderItemCount
 
       {isEmpty && (
         <Card className="mt-6">
-          <p className="text-sm text-stone">Inget material här ännu.</p>
+          <p className="text-sm text-fg-muted">Inget material här ännu.</p>
         </Card>
       )}
     </div>
@@ -172,12 +172,12 @@ function MaterialItemGridCard({ item }: { item: MaterialItemWithUrl }) {
         </div>
       ) : (
         <>
-          <TypeIcon size={22} strokeWidth={1.75} className="text-stone" />
-          <span className="line-clamp-2 text-[11px] text-stone">{item.title}</span>
+          <TypeIcon size={22} strokeWidth={1.75} className="text-fg-muted" />
+          <span className="line-clamp-2 text-[11px] text-fg-muted">{item.title}</span>
         </>
       )}
       {isImage && (
-        <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-charcoal/90 to-transparent px-2 pb-1.5 pt-4 text-[11px] text-bone">
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-canvas/90 to-transparent px-2 pb-1.5 pt-4 text-[11px] text-fg">
           {item.title}
         </span>
       )}
@@ -185,7 +185,7 @@ function MaterialItemGridCard({ item }: { item: MaterialItemWithUrl }) {
   );
 
   const className =
-    "relative flex aspect-square flex-col items-center justify-center gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3 text-center transition-colors hover:bg-bone/[0.08]";
+    "relative flex aspect-square flex-col items-center justify-center gap-2 rounded-xl border border-line bg-fg/5 p-3 text-center transition-colors hover:bg-fg/[0.08]";
 
   if (!href) {
     return <div className={className}>{content}</div>;

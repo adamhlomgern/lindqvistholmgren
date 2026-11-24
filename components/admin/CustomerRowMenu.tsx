@@ -36,14 +36,14 @@ export function CustomerRowMenu({ customer }: { customer: Customer }) {
         aria-label="Fler alternativ"
         aria-haspopup="menu"
         aria-expanded={open}
-        className="flex h-9 w-9 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+        className="flex h-9 w-9 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
       >
         <MoreHorizontal size={18} strokeWidth={2.25} />
       </button>
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-bone/10 bg-forest p-1.5 shadow-xl"
+          className="absolute right-0 top-full z-20 mt-1.5 w-56 rounded-xl border border-line bg-surface p-1.5 shadow-pop"
         >
           {links.map((item) => (
             <Link
@@ -51,13 +51,13 @@ export function CustomerRowMenu({ customer }: { customer: Customer }) {
               href={item.href}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+              className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5"
             >
               <item.icon size={14} strokeWidth={2.25} />
               {item.label}
             </Link>
           ))}
-          <div className="my-1 border-t border-bone/10" />
+          <div className="my-1 border-t border-line" />
           <button
             type="button"
             role="menuitem"
@@ -65,7 +65,7 @@ export function CustomerRowMenu({ customer }: { customer: Customer }) {
               setOpen(false);
               setEditOpen(true);
             }}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5"
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5"
           >
             <Pencil size={14} strokeWidth={2.25} />
             Redigera kund

@@ -17,7 +17,7 @@ export function Services() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <Eyebrow icon={Sparkles}>Våra tjänster</Eyebrow>
-            <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+            <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
               Allt ni behöver för att synas och växa digitalt
             </h2>
           </div>
@@ -35,10 +35,10 @@ export function Services() {
                 <GlassCard accent={accent} className="justify-between">
                   <div>
                     <AccentBadge icon={Icon} accent={accent} size={22} />
-                    <h3 className="mt-4 font-display text-lg font-bold text-bone">
+                    <h3 className="mt-4 font-display text-lg font-semibold text-fg">
                       {service.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-stone">
+                    <p className="mt-2 text-sm leading-relaxed text-fg-muted">
                       {service.description}
                     </p>
                   </div>

@@ -36,7 +36,7 @@ export function MaterialViewControls({ sortMode, onSortModeChange, viewMode, onV
         options={sortOptions}
         className="rounded-full px-3.5 py-2 text-xs"
       />
-      <div className="flex items-center gap-0.5 rounded-full bg-bone/5 p-0.5">
+      <div className="flex items-center gap-0.5 rounded-full bg-fg/5 p-0.5">
         {viewModes.map(({ value, label, Icon }) => (
           <button
             key={value}
@@ -46,7 +46,7 @@ export function MaterialViewControls({ sortMode, onSortModeChange, viewMode, onV
             aria-pressed={viewMode === value}
             title={label}
             className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${
-              viewMode === value ? "bg-emerald text-charcoal" : "text-stone hover:text-bone"
+              viewMode === value ? "bg-primary text-on-primary" : "text-fg-muted hover:text-fg"
             }`}
           >
             <Icon size={14} strokeWidth={2.25} />

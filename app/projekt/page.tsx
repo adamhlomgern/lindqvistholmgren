@@ -53,11 +53,11 @@ export default async function ProjektPage() {
                         />
                       </div>
                       <Tag>{project.category}</Tag>
-                      <h2 className="mt-4 font-display text-xl font-bold text-bone">
+                      <h2 className="mt-4 font-display text-xl font-semibold text-fg">
                         {project.title}
                       </h2>
-                      <p className="mt-2 text-sm leading-relaxed text-stone">{project.summary}</p>
-                      <p className="mt-4 text-xs uppercase tracking-label text-stone/70">
+                      <p className="mt-2 text-sm leading-relaxed text-fg-muted">{project.summary}</p>
+                      <p className="mt-4 text-xs uppercase tracking-label text-fg-subtle">
                         {project.industry} · {project.launch}
                       </p>
                     </div>

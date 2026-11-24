@@ -37,10 +37,10 @@ export default function TjansterPage() {
       <Section tone="olive">
         <Container>
           <Eyebrow icon={Sparkles}>Sex tjänsteområden</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Välj en tjänst, eller slå ihop flera
           </h2>
-          <p className="mt-4 max-w-xl text-stone">
+          <p className="mt-4 max-w-xl text-fg-muted">
             Varje tjänst går bra att boka fristående, men de flesta kunder kombinerar
             två eller tre — från design till driftsatt automation.
           </p>
@@ -54,20 +54,20 @@ export default function TjansterPage() {
                     <div className="flex items-center gap-4">
                       <AccentBadge icon={Icon} accent={accent} size={20} className="h-12 w-12" />
                       <div>
-                        <span className={`font-display text-xs font-bold ${iconTextClasses[accent]}`}>
+                        <span className={`font-display text-xs font-semibold ${iconTextClasses[accent]}`}>
                           0{index + 1}
                         </span>
-                        <h3 className="font-display text-xl font-bold text-bone">
+                        <h3 className="font-display text-xl font-semibold text-fg">
                           {service.title}
                         </h3>
                       </div>
                     </div>
-                    <p className="mt-4 text-sm leading-relaxed text-stone">
+                    <p className="mt-4 text-sm leading-relaxed text-fg-muted">
                       {service.description}
                     </p>
                     <ul className="mt-4 flex flex-col gap-2">
                       {service.features.slice(0, 3).map((feature) => (
-                        <li key={feature.title} className="flex items-start gap-2 text-sm text-bone/90">
+                        <li key={feature.title} className="flex items-start gap-2 text-sm text-fg">
                           <Check
                             className={`mt-0.5 shrink-0 ${iconTextClasses[accent]}`}
                             size={14}

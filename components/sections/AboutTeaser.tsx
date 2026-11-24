@@ -22,11 +22,11 @@ const team: { initial: string; name: string; role: string; accent: Accent }[] = 
 
 export function AboutTeaser() {
   return (
-    <Section tone="charcoal">
+    <Section tone="lilac">
       <Container className="grid gap-10 md:grid-cols-[1fr_1.2fr] md:items-center">
         <div>
           <Eyebrow icon={Heart}>Om oss</Eyebrow>
-          <h2 className="mt-4 font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Två personer. Ett gemensamt hantverk.
           </h2>
           <div className="mt-6 flex flex-col gap-3">
@@ -37,8 +37,8 @@ export function AboutTeaser() {
                 >
                   {person.initial}
                 </span>
-                <p className="text-sm text-stone">
-                  <span className="font-semibold text-bone">{person.name}</span> —{" "}
+                <p className="text-sm text-fg-muted">
+                  <span className="font-semibold text-fg">{person.name}</span> —{" "}
                   {person.role}
                 </p>
               </div>
@@ -46,7 +46,7 @@ export function AboutTeaser() {
           </div>
         </div>
         <div>
-          <p className="text-lg leading-relaxed text-stone">
+          <p className="text-lg leading-relaxed text-fg-muted">
             Vi är inte en stor byrå med projektledare och mellanhänder — vi är två
             frilansare som driver Lindqvist / Holmgren tillsammans, med bas i Karlstad.
             Ni pratar alltid direkt med den som faktiskt gör jobbet, och vi lägger

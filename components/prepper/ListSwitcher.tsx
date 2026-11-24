@@ -218,7 +218,7 @@ export function ListSwitcher(props: Props) {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-3xl bg-prepper-background px-3 pb-8 pt-4 shadow-xl"
+              className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-3xl bg-prepper-background px-3 pb-8 pt-4 shadow-pop"
             >
               <div className="mb-2 flex items-center justify-between px-2">
                 <div className="h-1 w-10 rounded-full bg-prepper-border" />

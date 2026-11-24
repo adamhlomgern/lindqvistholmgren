@@ -17,7 +17,7 @@ export default async function EditBillingEntityPage({ params }: Props) {
   return (
     <div>
       <BackLink href="/admin/installningar" label="Tillbaka till inställningar" />
-      <h1 className="font-display text-2xl font-bold text-bone">{entity.name}</h1>
+      <h1 className="font-display text-2xl font-semibold text-fg">{entity.name}</h1>
       <Card className="mt-8 max-w-2xl">
         <BillingEntityForm entity={entity} />
       </Card>

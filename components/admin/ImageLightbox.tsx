@@ -17,14 +17,14 @@ export function ImageLightbox({ url, alt, onClose }: { url: string; alt: string;
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-charcoal/90 p-4"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-950/90 p-4"
       onClick={onClose}
     >
       <button
         type="button"
         aria-label="Stäng förhandsvisning"
         onClick={onClose}
-        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-bone/10 text-bone transition-colors hover:bg-bone/20"
+        className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
       >
         <X size={18} strokeWidth={2.25} />
       </button>

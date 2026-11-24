@@ -5,7 +5,7 @@ import { SlideOver } from "@/components/ui/SlideOver";
 import { renameMaterialItem, type MaterialFormState } from "@/lib/actions/material";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 
 type Props = {
   open: boolean;
@@ -30,14 +30,14 @@ export function MaterialItemRenameDialog({ open, onClose, customerId, itemId, ti
     <SlideOver open={open} onClose={onClose} title="Byt namn">
       <form action={formAction} className="flex flex-col gap-5">
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">Namn</span>
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Namn</span>
           <input name="title" defaultValue={title} required autoFocus className={`mt-2 ${inputClasses}`} />
         </div>
         <div className="flex items-center gap-3 pt-2">
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
           >
             {pending ? "Sparar…" : "Spara"}
           </button>

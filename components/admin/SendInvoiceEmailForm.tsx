@@ -22,7 +22,7 @@ export function SendInvoiceEmailForm({
           <button
             type="button"
             disabled={pending || !customerEmail}
-            className="flex items-center gap-1.5 rounded-full bg-emerald px-3.5 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-50"
             title={!customerEmail ? "Kunden saknar e-postadress" : undefined}
           >
             <Send size={14} strokeWidth={2.25} />
@@ -34,7 +34,7 @@ export function SendInvoiceEmailForm({
         onConfirm={() => formAction(new FormData())}
       />
       {state?.error && <p className="mt-2 max-w-xs text-xs text-coral">{state.error}</p>}
-      {state?.success && <p className="mt-2 text-xs text-emerald">Fakturan har skickats.</p>}
+      {state?.success && <p className="mt-2 text-xs text-primary">Fakturan har skickats.</p>}
     </div>
   );
 }

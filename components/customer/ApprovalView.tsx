@@ -33,11 +33,11 @@ export function ApprovalView({
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium uppercase tracking-label text-stone">
+          <p className="text-xs font-medium uppercase tracking-label text-fg-muted">
             {approval.kind === "feedback" ? "Återkoppling" : "Godkännande"}
           </p>
-          <h1 className="font-display text-2xl font-bold text-bone">{approval.title}</h1>
-          {approval.versionLabel && <p className="mt-1 text-sm text-stone">Version {approval.versionLabel}</p>}
+          <h1 className="font-display text-2xl font-semibold text-fg">{approval.title}</h1>
+          {approval.versionLabel && <p className="mt-1 text-sm text-fg-muted">Version {approval.versionLabel}</p>}
         </div>
         <span
           className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${approvalStatusClasses[approval.status]}`}
@@ -49,12 +49,12 @@ export function ApprovalView({
 
       {approval.message && (
         <Card className="mt-6">
-          <p className="text-xs font-medium uppercase tracking-label text-stone">Från oss</p>
-          <p className="mt-2 whitespace-pre-wrap text-sm text-bone">{approval.message}</p>
+          <p className="text-xs font-medium uppercase tracking-label text-fg-muted">Från oss</p>
+          <p className="mt-2 whitespace-pre-wrap text-sm text-fg">{approval.message}</p>
         </Card>
       )}
       {approval.dueAt && (
-        <p className="mt-3 text-xs text-stone">Svar önskas senast {formatDateSv(approval.dueAt)}</p>
+        <p className="mt-3 text-xs text-fg-muted">Svar önskas senast {formatDateSv(approval.dueAt)}</p>
       )}
 
       <div className="mt-6">
@@ -66,12 +66,12 @@ export function ApprovalView({
           <DecisionForm approvalId={approval.id} kind={approval.kind} />
         ) : (
           <div>
-            <p className="text-sm font-medium text-bone">
+            <p className="text-sm font-medium text-fg">
               {approvalStatusLabel(approval.status, approval.kind)}
               {approval.decidedAt && ` · ${formatRelativeSv(approval.decidedAt)}`}
             </p>
-            {approval.decidedByLabel && <p className="mt-1 text-xs text-stone">Av {approval.decidedByLabel}</p>}
-            {approval.decisionNote && <p className="mt-3 text-sm text-bone">{approval.decisionNote}</p>}
+            {approval.decidedByLabel && <p className="mt-1 text-xs text-fg-muted">Av {approval.decidedByLabel}</p>}
+            {approval.decisionNote && <p className="mt-3 text-sm text-fg">{approval.decisionNote}</p>}
           </div>
         )}
       </Card>

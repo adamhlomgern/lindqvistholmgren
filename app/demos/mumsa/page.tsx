@@ -58,7 +58,7 @@ export default function MumsaMarketingPage() {
                 halo, but this is a real photo that already has its own warm
                 light from the oven — an extra CSS glow just reads as a stray
                 smudge above the card instead of intentional lighting. */}
-            <div className="animate-float relative h-[280px] overflow-hidden rounded-[1.75rem] border border-bone/10 shadow-2xl shadow-charcoal/50 ring-1 ring-bone/5 sm:h-[340px]">
+            <div className="animate-float relative h-[280px] overflow-hidden rounded-[1.75rem] border border-line shadow-pop shadow-ink-950/50 ring-1 ring-line sm:h-[340px]">
               <Image
                 src="/images/demos/mumsa/hero-pizza-oven.jpg"
                 alt="Nybakad pizza"
@@ -83,10 +83,10 @@ export default function MumsaMarketingPage() {
       <Section tone="olive">
         <Container>
           <Eyebrow icon={Sparkles}>Så fungerar det</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Från tom meny till första ordern
           </h2>
-          <p className="mt-4 max-w-xl text-stone">
+          <p className="mt-4 max-w-xl text-fg-muted">
             Restaurangen kommer igång utan tekniskt kunnande — och kunderna märker aldrig att det inte är en dyr, skräddarsydd lösning.
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -95,8 +95,8 @@ export default function MumsaMarketingPage() {
               return (
                 <GlassCard key={step.title} accent={accent}>
                   <AccentBadge icon={step.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{step.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step.description}</p>
                 </GlassCard>
               );
             })}
@@ -107,7 +107,7 @@ export default function MumsaMarketingPage() {
       <Section tone="forest">
         <Container>
           <Eyebrow icon={ClipboardList}>Tre vyer, ett system</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Kund, restaurang och ägare ser samma order
           </h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-3">
@@ -116,8 +116,8 @@ export default function MumsaMarketingPage() {
               return (
                 <GlassCard key={view.title} accent={accent}>
                   <AccentBadge icon={view.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{view.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{view.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{view.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{view.description}</p>
                 </GlassCard>
               );
             })}
@@ -129,16 +129,16 @@ export default function MumsaMarketingPage() {
         <Container>
           <GlassCard accent="peach" className="-m-6 items-start gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg md:text-3xl">
                 Klicka runt i en färdig demo
               </h2>
-              <p className="mt-2 text-stone">
+              <p className="mt-2 text-fg-muted">
                 Ingen inloggning behövs — beställ en pizza som kund, byt vy och se ordern landa i köket direkt.
               </p>
             </div>
             <Link
               href={mumsaRoutes.storefront()}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-peach px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-peach px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-fg"
             >
               Öppna Mumsa
               <ArrowUpRight size={16} strokeWidth={2.5} />

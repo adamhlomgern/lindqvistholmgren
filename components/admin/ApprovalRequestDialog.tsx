@@ -8,7 +8,7 @@ import { createApprovalRequest } from "@/lib/actions/approvals";
 import type { ApprovalKind, MaterialItem } from "@/lib/types";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 const selectClasses = "w-full rounded-lg px-4 py-3 text-sm";
 
 type Props = {
@@ -51,7 +51,7 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
     <SlideOver open={open} onClose={onClose} title="Be kunden titta på material">
       <form action={formAction} className="flex flex-col gap-5">
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">Typ av begäran</span>
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Typ av begäran</span>
           <input type="hidden" name="kind" value={kind} />
           <div className="mt-2 flex flex-col gap-2">
             {kindOptions.map((option) => (
@@ -60,17 +60,17 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
                 type="button"
                 onClick={() => setKind(option.value)}
                 className={`rounded-lg border px-4 py-3 text-left transition-colors ${
-                  kind === option.value ? "border-emerald bg-emerald/10" : "border-bone/10 bg-bone/5 hover:bg-bone/[0.08]"
+                  kind === option.value ? "border-primary bg-primary/10" : "border-line bg-fg/5 hover:bg-fg/[0.08]"
                 }`}
               >
-                <span className="block text-sm font-medium text-bone">{option.label}</span>
-                <span className="mt-0.5 block text-xs text-stone">{option.description}</span>
+                <span className="block text-sm font-medium text-fg">{option.label}</span>
+                <span className="mt-0.5 block text-xs text-fg-muted">{option.description}</span>
               </button>
             ))}
           </div>
         </div>
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">Material</span>
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Material</span>
           <div className="mt-2">
             <Select
               name="materialItemId"
@@ -85,13 +85,13 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
             />
           </div>
           {materialItems.length === 0 && (
-            <p className="mt-2 text-xs text-stone">
+            <p className="mt-2 text-xs text-fg-muted">
               Ladda upp materialet till kunden i biblioteket innan du kan begära ett godkännande.
             </p>
           )}
         </div>
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">Titel</span>
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Titel</span>
           <input
             ref={titleInputRef}
             name="title"
@@ -102,18 +102,18 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <span className="block text-xs font-medium uppercase tracking-label text-stone">Version (valfritt)</span>
+            <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Version (valfritt)</span>
             <input name="versionLabel" placeholder="T.ex. v2" className={`mt-2 ${inputClasses}`} />
           </div>
           <div>
-            <span className="block text-xs font-medium uppercase tracking-label text-stone">
+            <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">
               Svar önskas senast (valfritt)
             </span>
             <input name="dueAt" type="date" className={`mt-2 ${inputClasses}`} />
           </div>
         </div>
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">
             Meddelande till kund (valfritt)
           </span>
           <textarea
@@ -136,7 +136,7 @@ export function ApprovalRequestDialog({ open, onClose, projectId, customerId, ma
           <button
             type="submit"
             disabled={pending || materialItems.length === 0}
-            className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
           >
             {pending ? "Skickar…" : "Skicka begäran"}
           </button>

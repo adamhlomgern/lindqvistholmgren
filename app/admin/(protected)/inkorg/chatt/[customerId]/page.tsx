@@ -22,14 +22,14 @@ export default async function InboxChatThreadPage({ params }: Props) {
       <BackLink href="/admin/inkorg?tab=chatt" label="Tillbaka till inkorg" />
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="truncate font-display text-2xl font-bold text-bone">
+          <h1 className="truncate font-display text-2xl font-semibold text-fg">
             {customer.company || customer.name}
           </h1>
-          {customer.company && <p className="mt-1 text-sm text-stone">{customer.name}</p>}
+          {customer.company && <p className="mt-1 text-sm text-fg-muted">{customer.name}</p>}
         </div>
         <Link
           href={`/admin/kunder/${customer.id}`}
-          className="shrink-0 text-xs font-medium text-emerald hover:underline"
+          className="shrink-0 text-xs font-medium text-primary hover:underline"
         >
           Till kundkortet
         </Link>

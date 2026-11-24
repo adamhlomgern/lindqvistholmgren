@@ -6,7 +6,7 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { acceptCustomerInvite } from "@/lib/actions/customer-invites";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none";
 
 type Status = "checking" | "ready" | "expired" | "saving" | "error";
 
@@ -98,12 +98,12 @@ export default function CustomerWelcomePage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-forest px-6">
-      <div className="w-full max-w-sm rounded-2xl bg-bone/5 p-8">
-        <h1 className="font-display text-xl font-bold text-bone">Välkommen</h1>
-        <p className="mt-1 text-sm text-stone">Sätt ett lösenord för att komma igång med kundportalen.</p>
+    <div className="flex min-h-screen items-center justify-center bg-canvas px-6">
+      <div className="w-full max-w-sm rounded-2xl bg-fg/5 p-8">
+        <h1 className="font-display text-xl font-semibold text-fg">Välkommen</h1>
+        <p className="mt-1 text-sm text-fg-muted">Sätt ett lösenord för att komma igång med kundportalen.</p>
 
-        {status === "checking" && <p className="mt-6 text-sm text-stone">Kontrollerar inbjudan…</p>}
+        {status === "checking" && <p className="mt-6 text-sm text-fg-muted">Kontrollerar inbjudan…</p>}
 
         {status === "expired" && (
           <p className="mt-6 text-sm text-coral">
@@ -116,7 +116,7 @@ export default function CustomerWelcomePage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-xs font-medium uppercase tracking-label text-stone"
+                className="block text-xs font-medium uppercase tracking-label text-fg-muted"
               >
                 Lösenord
               </label>
@@ -133,7 +133,7 @@ export default function CustomerWelcomePage() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-xs font-medium uppercase tracking-label text-stone"
+                className="block text-xs font-medium uppercase tracking-label text-fg-muted"
               >
                 Bekräfta lösenord
               </label>
@@ -151,7 +151,7 @@ export default function CustomerWelcomePage() {
             <button
               type="submit"
               disabled={status === "saving"}
-              className="mt-2 inline-flex items-center justify-center rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+              className="mt-2 inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
             >
               {status === "saving" ? "Sparar…" : "Kom igång"}
             </button>

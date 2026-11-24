@@ -5,15 +5,15 @@ export function NotesCard({ notes, onEdit }: { notes?: string; onEdit: () => voi
   return (
     <Card>
       <div className="flex items-center justify-between gap-2">
-        <h2 className="font-display text-sm font-bold text-bone">Anteckningar</h2>
+        <h2 className="font-display text-sm font-semibold text-fg">Anteckningar</h2>
         <div className="flex items-center gap-2">
           <InternalOnlyBadge />
-          <button type="button" onClick={onEdit} className="text-xs font-medium text-emerald hover:underline">
+          <button type="button" onClick={onEdit} className="text-xs font-medium text-primary hover:underline">
             Redigera
           </button>
         </div>
       </div>
-      <p className="mt-3 whitespace-pre-wrap text-sm text-stone">{notes || "Inga anteckningar ännu."}</p>
+      <p className="mt-3 whitespace-pre-wrap text-sm text-fg-muted">{notes || "Inga anteckningar ännu."}</p>
     </Card>
   );
 }

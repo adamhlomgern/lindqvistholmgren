@@ -66,17 +66,17 @@ const initialState = {
 type SubmitState = "idle" | "submitting" | "success" | "error";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none";
 
 const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 
 // Windows renders <option> against the OS theme, not the page's CSS, unless
 // each option carries its own explicit colors.
-const optionStyle = { backgroundColor: "var(--color-forest)", color: "var(--color-bone)" };
+const optionStyle = { backgroundColor: "var(--color-surface)", color: "var(--color-fg)" };
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="block text-xs font-medium uppercase tracking-label text-stone">
+    <label className="block text-xs font-medium uppercase tracking-label text-fg-muted">
       {label}
       {children}
     </label>
@@ -112,7 +112,7 @@ function Dropdown<T extends string>({
       <ChevronDown
         size={16}
         strokeWidth={2.5}
-        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-stone"
+        className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-fg-muted"
       />
     </div>
   );
@@ -193,30 +193,30 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-charcoal/80 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-ink-950/40 p-4 backdrop-blur-sm"
       onClick={handleClose}
     >
       <div
         role="dialog"
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-y-auto rounded-2xl border border-bone/10 bg-forest p-6 md:p-8"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-y-auto rounded-2xl border border-line bg-surface p-6 md:p-8"
       >
         {submitState === "success" ? (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald/10 text-emerald">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Check size={26} strokeWidth={2.5} />
             </span>
             <div>
-              <h3 className="font-display text-xl font-bold text-bone">Tack för din förfrågan!</h3>
-              <p className="mt-2 max-w-sm text-sm leading-relaxed text-stone">
+              <h3 className="font-display text-xl font-semibold text-fg">Tack för din förfrågan!</h3>
+              <p className="mt-2 max-w-sm text-sm leading-relaxed text-fg-muted">
                 Vi går igenom det du skickat in och hör av oss inom 24 timmar.
               </p>
             </div>
             <button
               type="button"
               onClick={handleClose}
-              className="mt-2 inline-flex cursor-pointer items-center justify-center rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="mt-2 inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
             >
               Stäng
             </button>
@@ -224,21 +224,21 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
         ) : (
           <>
             <div className="flex items-center justify-between gap-4">
-              <p className="text-xs font-medium uppercase tracking-label text-stone">
+              <p className="text-xs font-medium uppercase tracking-label text-fg-muted">
                 Steg {step + 1} av {TOTAL_STEPS}
               </p>
               <button
                 type="button"
                 onClick={handleClose}
                 aria-label="Stäng"
-                className="cursor-pointer rounded-full p-1.5 text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+                className="cursor-pointer rounded-full p-1.5 text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
               >
                 <X size={18} />
               </button>
             </div>
-            <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-bone/10">
+            <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-fg/10">
               <div
-                className="h-full rounded-full bg-emerald transition-all duration-300"
+                className="h-full rounded-full bg-primary transition-all duration-300"
                 style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
               />
             </div>
@@ -264,10 +264,10 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
               <div className="flex-1">
                 {step === 0 && (
                   <div>
-                    <h3 className="font-display text-xl font-bold text-bone">
+                    <h3 className="font-display text-xl font-semibold text-fg">
                       Vad gäller ditt projekt?
                     </h3>
-                    <p className="mt-1.5 text-sm text-stone">Kryssa i ett eller flera alternativ.</p>
+                    <p className="mt-1.5 text-sm text-fg-muted">Kryssa i ett eller flera alternativ.</p>
                     <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
                       {CATEGORY_OPTIONS.map(({ value, label, icon: Icon }) => {
                         const checked = form.categories.includes(value);
@@ -276,20 +276,20 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                             key={value}
                             className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
                               checked
-                                ? "border-emerald bg-emerald/10 text-emerald"
-                                : "border-bone/10 bg-bone/5 text-bone/90 hover:border-bone/20"
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-line bg-fg/5 text-fg hover:border-line-strong"
                             }`}
                           >
                             <input
                               type="checkbox"
                               checked={checked}
                               onChange={() => toggleCategory(value)}
-                              className="h-4 w-4 shrink-0 accent-emerald"
+                              className="h-4 w-4 shrink-0 accent-primary"
                             />
                             <Icon
                               size={15}
                               strokeWidth={2.25}
-                              className={checked ? "text-emerald" : "text-stone"}
+                              className={checked ? "text-primary" : "text-fg-muted"}
                             />
                             {label}
                           </label>
@@ -301,10 +301,10 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
 
                 {step === 1 && (
                   <div>
-                    <h3 className="font-display text-xl font-bold text-bone">
+                    <h3 className="font-display text-xl font-semibold text-fg">
                       Vad är er ungefärliga budget?
                     </h3>
-                    <p className="mt-1.5 text-sm text-stone">
+                    <p className="mt-1.5 text-sm text-fg-muted">
                       Hjälper oss föreslå rätt omfattning — ni binder er inte till något.
                     </p>
                     <Dropdown
@@ -317,10 +317,10 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
 
                 {step === 2 && (
                   <div>
-                    <h3 className="font-display text-xl font-bold text-bone">
+                    <h3 className="font-display text-xl font-semibold text-fg">
                       När vill ni komma igång?
                     </h3>
-                    <p className="mt-1.5 text-sm text-stone">Ingen bindning — bara en fingervisning.</p>
+                    <p className="mt-1.5 text-sm text-fg-muted">Ingen bindning — bara en fingervisning.</p>
                     <Dropdown
                       value={form.timeline}
                       onChange={(value) => setForm((prev) => ({ ...prev, timeline: value }))}
@@ -331,10 +331,10 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
 
                 {step === 3 && (
                   <div>
-                    <h3 className="font-display text-xl font-bold text-bone">
+                    <h3 className="font-display text-xl font-semibold text-fg">
                       Berätta kort om projektet
                     </h3>
-                    <p className="mt-1.5 text-sm text-stone">
+                    <p className="mt-1.5 text-sm text-fg-muted">
                       Vad vill ni åstadkomma? Ju mer vi förstår, desto bättre kan vi hjälpa er.
                     </p>
                     <textarea
@@ -347,7 +347,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                       placeholder="T.ex. Vi behöver en ny hemsida som känns modern och gör det enkelt för kunder att boka tid hos oss..."
                       className={`${inputClasses} mt-5 resize-none`}
                     />
-                    <p className="mt-2 text-xs text-stone">
+                    <p className="mt-2 text-xs text-fg-muted">
                       {form.description.trim().length < 20
                         ? `Skriv minst ${20 - form.description.trim().length} tecken till`
                         : "Bra, det räcker gott!"}
@@ -357,10 +357,10 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
 
                 {step === 4 && (
                   <div>
-                    <h3 className="font-display text-xl font-bold text-bone">
+                    <h3 className="font-display text-xl font-semibold text-fg">
                       Dina kontaktuppgifter
                     </h3>
-                    <p className="mt-1.5 text-sm text-stone">
+                    <p className="mt-1.5 text-sm text-fg-muted">
                       Sista steget — så vi vet vem vi ska höra av oss till.
                     </p>
                     <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -424,7 +424,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                   <button
                     type="button"
                     onClick={() => setStep((s) => s - 1)}
-                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-bone/80 transition-colors hover:text-emerald"
+                    className="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-fg transition-colors hover:text-primary"
                   >
                     <ChevronLeft size={16} strokeWidth={2.5} />
                     Tillbaka
@@ -438,7 +438,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                     type="button"
                     disabled={!canAdvance()}
                     onClick={() => setStep((s) => s + 1)}
-                    className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Nästa
                     <ChevronRight size={16} strokeWidth={2.5} />
@@ -447,7 +447,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                   <button
                     type="submit"
                     disabled={submitState === "submitting" || !canSubmit}
-                    className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:cursor-not-allowed disabled:opacity-40"
+                    className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     {submitState === "submitting" ? "Skickar…" : "Skicka förfrågan"}
                   </button>

@@ -21,8 +21,8 @@ export function ProjectOverviewCard({ project, hrefBase = "/kund" }: Props) {
     <Card>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="font-display text-base font-bold text-bone">{project.title}</p>
-          {project.assignee && <p className="mt-0.5 text-sm text-stone">Ansvarig: {project.assignee.name}</p>}
+          <p className="font-display text-base font-semibold text-fg">{project.title}</p>
+          {project.assignee && <p className="mt-0.5 text-sm text-fg-muted">Ansvarig: {project.assignee.name}</p>}
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <span
@@ -33,7 +33,7 @@ export function ProjectOverviewCard({ project, hrefBase = "/kund" }: Props) {
           </span>
           <Link
             href={`${hrefBase}/projekt/${project.id}`}
-            className="flex items-center gap-1 text-sm font-medium text-emerald hover:underline"
+            className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
           >
             Visa projekt
             <ArrowRight size={13} strokeWidth={2.5} />
@@ -45,15 +45,15 @@ export function ProjectOverviewCard({ project, hrefBase = "/kund" }: Props) {
         <ProjectPhaseIndicator project={project} />
       </div>
 
-      <div className="mt-4 grid gap-4 border-t border-bone/10 pt-4 sm:grid-cols-2">
+      <div className="mt-4 grid gap-4 border-t border-line pt-4 sm:grid-cols-2">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-label text-stone/65">Vad händer nu?</p>
-          <p className="mt-1.5 whitespace-pre-wrap text-sm text-bone">
+          <p className="text-xs font-semibold uppercase tracking-label text-fg-subtle">Vad händer nu?</p>
+          <p className="mt-1.5 whitespace-pre-wrap text-sm text-fg">
             {project.customerUpdate || "Ingen uppdatering ännu."}
           </p>
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-label text-stone/65">Nästa steg</p>
+          <p className="text-xs font-semibold uppercase tracking-label text-fg-subtle">Nästa steg</p>
           <div className="mt-1.5">
             <MilestoneStatus project={project} hrefBase={hrefBase} />
           </div>
@@ -61,8 +61,8 @@ export function ProjectOverviewCard({ project, hrefBase = "/kund" }: Props) {
       </div>
 
       {project.customerUpdateAt && (
-        <div className="mt-4 border-t border-bone/10 pt-3">
-          <span className="text-xs text-stone/60">Senast uppdaterat {formatRelativeSv(project.customerUpdateAt)}</span>
+        <div className="mt-4 border-t border-line pt-3">
+          <span className="text-xs text-fg-subtle">Senast uppdaterat {formatRelativeSv(project.customerUpdateAt)}</span>
         </div>
       )}
     </Card>

@@ -36,7 +36,7 @@ export function ArticleOutline({
   }, [headings]);
 
   if (headings.length === 0) {
-    return <p className="text-xs text-stone">Rubriker (H2/H3) i artikeln visas här.</p>;
+    return <p className="text-xs text-fg-muted">Rubriker (H2/H3) i artikeln visas här.</p>;
   }
 
   const minLevel = Math.min(...headings.map((h) => h.level));
@@ -54,10 +54,10 @@ export function ArticleOutline({
           }}
           style={{ paddingLeft: `${(heading.level - minLevel) * 12}px` }}
           className={`flex items-center gap-1.5 truncate rounded-lg px-2 py-1.5 text-xs transition-colors ${
-            activeId === heading.id ? "text-emerald" : "text-stone hover:text-bone"
+            activeId === heading.id ? "text-primary" : "text-fg-muted hover:text-fg"
           }`}
         >
-          {activeId === heading.id && <span className="h-1 w-1 shrink-0 rounded-full bg-emerald" />}
+          {activeId === heading.id && <span className="h-1 w-1 shrink-0 rounded-full bg-primary" />}
           <span className="truncate">{heading.text || "(Rubrik)"}</span>
         </a>
       ))}

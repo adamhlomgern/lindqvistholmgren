@@ -43,11 +43,11 @@ export function Select({
       disabled={disabled}
     >
       <RadixSelect.Trigger
-        className={`flex items-center justify-between gap-2 border border-bone/10 bg-bone/5 text-bone outline-none focus:border-emerald disabled:opacity-50 ${className}`}
+        className={`flex items-center justify-between gap-2 border border-line-strong bg-surface text-fg outline-none transition-colors hover:border-ink-400 focus:border-primary focus:ring-4 focus:ring-primary/10 data-[placeholder]:text-fg-subtle disabled:opacity-50 ${className}`}
       >
         <RadixSelect.Value placeholder={placeholder} />
         <RadixSelect.Icon>
-          <ChevronDown size={15} strokeWidth={2.25} className="shrink-0 text-stone" />
+          <ChevronDown size={15} strokeWidth={2.25} className="shrink-0 text-fg-muted" />
         </RadixSelect.Icon>
       </RadixSelect.Trigger>
 
@@ -55,7 +55,7 @@ export function Select({
         <RadixSelect.Content
           position="popper"
           sideOffset={6}
-          className="z-50 max-h-72 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-bone/10 bg-forest shadow-xl"
+          className="z-50 max-h-72 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-line bg-surface shadow-pop"
         >
           <RadixSelect.Viewport className="p-1.5">
             {options.map((option) => (
@@ -63,10 +63,10 @@ export function Select({
                 key={option.value}
                 value={option.value}
                 disabled={option.disabled}
-                className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-8 pr-3 text-sm text-bone outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[highlighted]:bg-bone/10"
+                className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-8 pr-3 text-sm text-fg outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-40 data-[highlighted]:bg-surface-sunken"
               >
                 <RadixSelect.ItemIndicator className="absolute left-2.5 inline-flex items-center">
-                  <Check size={14} strokeWidth={2.5} className="text-emerald" />
+                  <Check size={14} strokeWidth={2.5} className="text-primary" />
                 </RadixSelect.ItemIndicator>
                 <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
               </RadixSelect.Item>

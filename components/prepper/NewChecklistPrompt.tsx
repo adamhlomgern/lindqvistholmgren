@@ -31,7 +31,7 @@ export function NewChecklistPrompt({ notebookId, notebookName }: { notebookId: s
         Arbetsböcker
       </Link>
       <BookOpen size={22} strokeWidth={1.5} className="text-prepper-text-faint" />
-      <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text">{notebookName}</h1>
+      <h1 className="text-[32px] font-prepper-display font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text">{notebookName}</h1>
       <p className="max-w-xs text-[15px] leading-[1.55] text-prepper-text-muted">
         Här är det tomt än så länge. Lägg till första checklistan i den här arbetsboken.
       </p>

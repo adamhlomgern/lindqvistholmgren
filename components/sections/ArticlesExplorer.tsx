@@ -66,14 +66,14 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
         <button
           type="button"
           onClick={() => setFiltersOpen((open) => !open)}
-          className="flex w-full items-center justify-between rounded-full border border-bone/10 bg-bone/5 px-4 py-2.5 text-sm font-medium text-bone"
+          className="flex w-full items-center justify-between rounded-full border border-line bg-fg/5 px-4 py-2.5 text-sm font-medium text-fg"
         >
           <span className="flex items-center gap-2">
             <ListFilter size={16} strokeWidth={2.25} />
             Filtrera
           </span>
           {activeFilterCount > 0 && (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald text-xs font-semibold text-charcoal">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-on-primary">
               {activeFilterCount}
             </span>
           )}
@@ -85,21 +85,21 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
           <div className="relative">
             <Search
               size={16}
-              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-stone/60"
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-subtle"
             />
             <input
               type="text"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Sök artiklar..."
-              className="w-full rounded-lg border border-bone/10 bg-bone/5 py-2.5 pl-10 pr-9 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+              className="w-full rounded-lg border border-line-strong bg-surface py-2.5 pl-10 pr-9 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
                 aria-label="Rensa sökning"
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone/60 hover:text-bone"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg"
               >
                 <X size={15} />
               </button>
@@ -107,20 +107,20 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
           </div>
 
           <div className="mt-6">
-            <p className="text-xs font-medium uppercase tracking-label text-stone/70">Kategori</p>
+            <p className="text-xs font-medium uppercase tracking-label text-fg-subtle">Kategori</p>
             <div className="mt-3 flex flex-col gap-0.5">
               <button
                 type="button"
                 onClick={() => selectCategory(null)}
                 className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm font-medium transition-colors ${
-                  activeCategory === null ? "bg-charcoal text-emerald" : "text-bone/80 hover:bg-bone/5"
+                  activeCategory === null ? "bg-charcoal text-primary" : "text-fg hover:bg-fg/5"
                 }`}
               >
                 <span className="flex items-center gap-2">
                   <LayoutGrid size={14} strokeWidth={2.25} />
                   Alla
                 </span>
-                <span className="text-xs text-stone/60">{articles.length}</span>
+                <span className="text-xs text-fg-subtle">{articles.length}</span>
               </button>
               {categories.map(({ name: category }) => {
                 const active = activeCategory === category;
@@ -132,14 +132,14 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
                     type="button"
                     onClick={() => selectCategory(active ? null : category)}
                     className={`flex items-center justify-between rounded-full px-3 py-1.5 text-left text-sm font-medium transition-colors ${
-                      active ? "bg-charcoal text-emerald" : "text-bone/80 hover:bg-bone/5"
+                      active ? "bg-charcoal text-primary" : "text-fg hover:bg-fg/5"
                     }`}
                   >
                     <span className="flex items-center gap-2">
                       <CategoryIcon size={14} strokeWidth={2.25} className={iconTextClasses[accent]} />
                       {category}
                     </span>
-                    <span className="text-xs text-stone/60">{categoryCounts.get(category) ?? 0}</span>
+                    <span className="text-xs text-fg-subtle">{categoryCounts.get(category) ?? 0}</span>
                   </button>
                 );
               })}
@@ -150,7 +150,7 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-6 text-xs font-medium text-stone underline decoration-stone/40 underline-offset-4 hover:text-emerald"
+              className="mt-6 text-xs font-medium text-fg-muted underline decoration-fg-muted/40 underline-offset-4 hover:text-primary"
             >
               Rensa alla filter
             </button>
@@ -159,7 +159,7 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
       </aside>
 
       <div>
-        <p className="text-sm text-stone">
+        <p className="text-sm text-fg-muted">
           {filteredArticles.length} {filteredArticles.length === 1 ? "artikel" : "artiklar"}
         </p>
 
@@ -172,15 +172,15 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
                 <Link key={article.slug} href={`/artiklar/${article.slug}`} className="group block">
                   <GlassCard accent={accent}>
                     <AccentBadge icon={Icon} accent={accent} size={20} className="h-11 w-11" />
-                    <h2 className="mt-4 break-words font-display text-base font-bold leading-snug text-bone">
+                    <h2 className="mt-4 break-words font-display text-base font-semibold leading-snug text-fg">
                       {article.title}
                     </h2>
-                    <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-stone/80">
+                    <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-fg-subtle">
                       {article.excerpt}
                     </p>
                     <div className="mt-auto flex items-center gap-2 pt-3">
                       <Tag>{article.category}</Tag>
-                      <span className="text-xs text-stone">{article.readTime}</span>
+                      <span className="text-xs text-fg-muted">{article.readTime}</span>
                     </div>
                   </GlassCard>
                 </Link>
@@ -188,14 +188,14 @@ export function ArticlesExplorer({ articles, categories }: ArticlesExplorerProps
             })}
           </div>
         ) : (
-          <div className="mt-8 rounded-2xl border border-bone/10 bg-bone/5 p-6 text-center">
-            <p className="text-sm text-stone">
+          <div className="mt-8 rounded-2xl border border-line bg-fg/5 p-6 text-center">
+            <p className="text-sm text-fg-muted">
               Inga artiklar matchar din sökning eller dina filter.
             </p>
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-3 text-sm font-medium text-emerald underline decoration-emerald/40 underline-offset-4 hover:text-bone"
+              className="mt-3 text-sm font-medium text-primary underline decoration-primary/40 underline-offset-4 hover:text-fg"
             >
               Rensa alla filter
             </button>

@@ -19,7 +19,7 @@ import { Card } from "@/components/ui/Card";
 import type { OutlineHeading } from "@/lib/articles/outline";
 
 const inputClasses =
-  "w-full min-w-0 rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full min-w-0 rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   // A <label> here would be nice for a11y, but native label-click-delegation
@@ -28,8 +28,8 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   // buttons, tag pills), where it hijacks clicks meant for something else.
   return (
     <div className="block min-w-0">
-      <span className="block text-xs font-medium uppercase tracking-label text-stone">{label}</span>
-      {hint && <span className="mt-0.5 block text-xs text-stone/70">{hint}</span>}
+      <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">{label}</span>
+      {hint && <span className="mt-0.5 block text-xs text-fg-subtle">{hint}</span>}
       <div className="mt-2">{children}</div>
     </div>
   );
@@ -125,9 +125,9 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
 
   if (categories.length === 0) {
     return (
-      <p className="text-sm text-stone">
+      <p className="text-sm text-fg-muted">
         Du behöver{" "}
-        <Link href="/admin/kategorier" className="text-emerald hover:underline">
+        <Link href="/admin/kategorier" className="text-primary hover:underline">
           lägga till en kategori
         </Link>{" "}
         innan du kan skapa en artikel.
@@ -146,19 +146,19 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
     >
       <div ref={sentinelRef} aria-hidden className="h-px" />
 
-      <div className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-bone/10 bg-charcoal/95 px-4 py-2 backdrop-blur sm:px-6">
+      <div className="sticky top-0 z-30 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-line bg-canvas/90 backdrop-blur px-4 py-2 backdrop-blur sm:px-6">
         <div className="flex min-w-0 items-center gap-2">
           <Link
             href="/admin/artiklar"
             aria-label="Tillbaka till artiklar"
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/5 hover:text-bone md:hidden"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/5 hover:text-fg md:hidden"
           >
             <ArrowLeft size={16} strokeWidth={2.25} />
           </Link>
           <div className="min-w-0">
-            <p className="truncate font-display text-sm font-bold text-bone">{titleValue || "Ny artikel"}</p>
+            <p className="truncate font-display text-sm font-semibold text-fg">{titleValue || "Ny artikel"}</p>
             {!compact && (
-              <p className="text-xs text-stone">
+              <p className="text-xs text-fg-muted">
                 {wordCount > 0 ? `${wordCount} ord · cirka ${readMinutes} min läsning` : "Inget innehåll ännu"}
               </p>
             )}
@@ -171,7 +171,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
               target="_blank"
               aria-label="Förhandsgranska"
               title="Förhandsgranska"
-              className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline"
+              className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
             >
               <span className="hidden sm:inline">Förhandsgranska</span>
               <ArrowUpRight size={14} strokeWidth={2.5} />
@@ -180,7 +180,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           <button
             type="submit"
             disabled={pending}
-            className="inline-flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60 sm:px-5"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60 sm:px-5"
           >
             {pending && <LoaderCircle size={14} aria-hidden className="animate-spin motion-reduce:animate-none" />}
             {pending ? "Sparar…" : isEditing ? "Spara" : "Skapa"}
@@ -193,14 +193,14 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
                 aria-label="Fler alternativ"
                 aria-haspopup="menu"
                 aria-expanded={menuOpen}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/5 hover:text-bone"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/5 hover:text-fg"
               >
                 <MoreHorizontal size={16} strokeWidth={2.25} />
               </button>
               {menuOpen && (
                 <div
                   role="menu"
-                  className="absolute right-0 top-full z-20 mt-1.5 w-52 rounded-xl border border-bone/10 bg-forest p-1.5 shadow-xl"
+                  className="absolute right-0 top-full z-20 mt-1.5 w-52 rounded-xl border border-line bg-surface p-1.5 shadow-pop"
                 >
                   <ConfirmDialog
                     trigger={
@@ -224,20 +224,20 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
             </div>
           )}
         </div>
-        <div role="status" aria-live="polite" aria-atomic="true" className={`flex w-full items-center justify-end gap-1.5 text-xs ${state?.error && !pending ? "text-coral" : saved && !pending ? "text-emerald" : "text-stone"}`}>
+        <div role="status" aria-live="polite" aria-atomic="true" className={`flex w-full items-center justify-end gap-1.5 text-xs ${state?.error && !pending ? "text-coral" : saved && !pending ? "text-primary" : "text-fg-muted"}`}>
           {saved && !pending && <Check size={14} aria-hidden />}
           {pending ? "Sparar ändringarna…" : state?.error ? state.error : hasUnsavedChanges ? "Du har osparade ändringar" : saved ? "Ändringarna är sparade" : null}
         </div>
       </div>
 
-      <div className="flex items-center gap-1 self-start rounded-full bg-bone/5 p-1">
+      <div className="flex items-center gap-1 self-start rounded-full bg-fg/5 p-1">
         {tabs.map((t) => (
           <button
             key={t.value}
             type="button"
             onClick={() => setTab(t.value)}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-              tab === t.value ? "bg-emerald/15 text-emerald" : "text-stone hover:text-bone"
+              tab === t.value ? "bg-primary/15 text-primary" : "text-fg-muted hover:text-fg"
             }`}
           >
             {t.label}
@@ -250,7 +250,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
           <div
             className={
               tab === "innehall"
-                ? "flex flex-col gap-5 sm:rounded-2xl sm:bg-bone/5 sm:p-6"
+                ? "flex flex-col gap-5 sm:rounded-2xl sm:bg-fg/5 sm:p-6"
                 : "hidden"
             }
           >
@@ -261,7 +261,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
                 onChange={setTitleValue}
                 required
                 maxHeight={110}
-                className={`${inputClasses} font-display font-bold`}
+                className={`${inputClasses} font-display font-semibold`}
               />
             </Field>
             <Field label="Ingress (visas i listan)" hint={`${excerptValue.length} tecken`}>
@@ -328,13 +328,13 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
 
           <Card className={tab === "seo" ? "flex flex-col gap-5" : "hidden"}>
             <div className="min-w-0">
-              <span className="block text-xs font-medium uppercase tracking-label text-stone">Sökmotorvisning</span>
-              <div className="mt-2 min-w-0 rounded-lg border border-bone/10 bg-bone/5 px-4 py-3">
+              <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Sökmotorvisning</span>
+              <div className="mt-2 min-w-0 rounded-lg border border-line bg-fg/5 px-4 py-3">
                 <p className="truncate text-sm text-sky">{seoTitleValue || titleValue || "Artikelns titel"}</p>
-                <p className="truncate text-xs text-emerald/80">
+                <p className="truncate text-xs text-primary/80">
                   lindqvistholmgren.se/artiklar/{slugValue || "url-slug"}
                 </p>
-                <p className="mt-1 line-clamp-2 text-xs text-stone">
+                <p className="mt-1 line-clamp-2 text-xs text-fg-muted">
                   {metaDescriptionValue || excerptValue || "Ingressen visas här om inget annat anges."}
                 </p>
               </div>
@@ -377,7 +377,7 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
         {tab === "innehall" && (
           <div className="hidden lg:block">
             <div className="sticky top-20">
-              <span className="text-xs font-semibold uppercase tracking-label text-stone/50">Artikelstruktur</span>
+              <span className="text-xs font-semibold uppercase tracking-label text-fg-subtle">Artikelstruktur</span>
               <div className="mt-3">
                 <ArticleOutline headings={outline} />
               </div>
@@ -388,15 +388,15 @@ export function ArticleForm({ article, availableTags, categories }: ArticleFormP
 
       {structureOpen && (
         <div role="dialog" aria-label="Artikelstruktur" className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-charcoal/80" onClick={() => setStructureOpen(false)} />
-          <div className="absolute inset-x-0 bottom-0 max-h-[70vh] overflow-y-auto rounded-t-2xl border-t border-bone/10 bg-forest p-5 shadow-2xl">
+          <div className="absolute inset-0 bg-ink-950/40" onClick={() => setStructureOpen(false)} />
+          <div className="absolute inset-x-0 bottom-0 max-h-[70vh] overflow-y-auto rounded-t-2xl border-t border-line bg-canvas p-5 shadow-pop">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-label text-stone/50">Artikelstruktur</span>
+              <span className="text-xs font-semibold uppercase tracking-label text-fg-subtle">Artikelstruktur</span>
               <button
                 type="button"
                 onClick={() => setStructureOpen(false)}
                 aria-label="Stäng"
-                className="flex h-7 w-7 items-center justify-center rounded-full text-stone hover:text-bone"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted hover:text-fg"
               >
                 <X size={16} strokeWidth={2.25} />
               </button>

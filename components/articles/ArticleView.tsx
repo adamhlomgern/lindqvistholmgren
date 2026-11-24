@@ -20,30 +20,30 @@ export function ArticleView({ article }: { article: Article }) {
       <Section tone="forest" className="pt-20 md:pt-28">
         <Container>
           <div className="mx-auto max-w-3xl">
-            <nav aria-label="Brödsmulor" className="flex items-center gap-1.5 text-xs text-stone">
-              <Link href="/" className="hover:text-emerald">
+            <nav aria-label="Brödsmulor" className="flex items-center gap-1.5 text-xs text-fg-muted">
+              <Link href="/" className="hover:text-primary">
                 Hem
               </Link>
               <ChevronRight size={12} strokeWidth={2.5} />
-              <Link href="/artiklar" className="hover:text-emerald">
+              <Link href="/artiklar" className="hover:text-primary">
                 Artiklar
               </Link>
               <ChevronRight size={12} strokeWidth={2.5} />
-              <span className="truncate text-stone/70">{article.title}</span>
+              <span className="truncate text-fg-subtle">{article.title}</span>
             </nav>
             <div className="mt-4 flex items-center gap-3">
               <Tag>{article.category}</Tag>
-              <span className="text-xs text-stone">
+              <span className="text-xs text-fg-muted">
                 {formatDate(article.date)} · {article.readTime}
               </span>
             </div>
-            <h1 className="mt-4 font-display text-3xl font-bold leading-[0.98] tracking-tight text-bone md:text-5xl">
+            <h1 className="mt-4 font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-5xl">
               {article.title}
             </h1>
             {article.tags.length > 0 && (
               <div className="mt-5 flex flex-wrap gap-1.5">
                 {article.tags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-bone/5 px-3 py-1 text-xs font-medium text-stone">
+                  <span key={tag} className="rounded-full bg-fg/5 px-3 py-1 text-xs font-medium text-fg-muted">
                     {tag}
                   </span>
                 ))}
@@ -56,8 +56,8 @@ export function ArticleView({ article }: { article: Article }) {
         <Container>
           <div className="mx-auto max-w-3xl">
             <div className="article-prose" dangerouslySetInnerHTML={{ __html: article.content }} />
-            <div className="mt-12 flex flex-col items-start gap-4 border-t border-bone/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-stone">Har ni frågor eller ett projekt på gång?</p>
+            <div className="mt-12 flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-fg-muted">Har ni frågor eller ett projekt på gång?</p>
               <div className="flex gap-3">
                 <Button href="/kontakt">
                   Kontakta oss

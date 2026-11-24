@@ -23,8 +23,8 @@ export async function RelatedProjects({ currentSlug, category }: RelatedProjects
   }
 
   return (
-    <div className="mt-16 border-t border-bone/10 pt-10">
-      <h2 className="font-display text-xl font-bold text-bone">Fler projekt</h2>
+    <div className="mt-16 border-t border-line pt-10">
+      <h2 className="font-display text-xl font-semibold text-fg">Fler projekt</h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         {related.map((project) => {
           const accent = accentForKey(project.category);
@@ -43,7 +43,7 @@ export async function RelatedProjects({ currentSlug, category }: RelatedProjects
                     />
                   </div>
                   <Tag>{project.category}</Tag>
-                  <h3 className="mt-3 font-display text-sm font-bold leading-snug text-bone">
+                  <h3 className="mt-3 font-display text-sm font-semibold leading-snug text-fg">
                     {project.title}
                   </h3>
                 </div>
