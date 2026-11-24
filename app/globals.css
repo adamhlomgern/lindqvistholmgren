@@ -489,21 +489,18 @@ body {
   background: color-mix(in srgb, var(--color-bone) 5%, transparent);
 }
 
-/* ─── Nytt ljust designsystem (utkast, branch claude/hopeful-brown-wvkdjt) ───
-   Två lager:
-   1. Färgskalor (pine, mint, lilac, plum, blush, ink), 50–950. Genererade i
-      OKLCH med samma ljushetstrappa för alla skalor, så att t.ex. pine-700
-      och plum-700 har ungefär samma kontrast mot vitt. Alla steg 600+ klarar
-      WCAG AA (4.5:1) mot vitt.
-   2. Semantiska tokens (canvas, surface, fg, primary …) som komponenter
-      använder. En "tone" (.tone-pine, .tone-lilac …) skriver om dem för en
-      sektion, så samma komponent fungerar på ljus, grön, lila och vinröd yta
-      utan egna varianter. Kontrasten för varje tone är kontrollerad: brödtext
-      ≥ 4.5:1, knappar ≥ 4.5:1.
+/* ─── Nytt ljust designsystem (utkast 02, branch claude/hopeful-brown-wvkdjt) ───
+   Princip: vitt och nästan svart bär sidan. Grönt är den enda starka färgen,
+   lila är en mjuk yta och vinrött en liten accent. Inga fler färger samtidigt.
+   1. Färgskalor (pine, lilac, plum, ink), 50–950, genererade i OKLCH med samma
+      ljushetstrappa, så att samma steg har ungefär samma kontrast i alla
+      skalor. Ink är en nästan helt neutral grå.
+   2. Semantiska tokens (canvas, surface, fg, primary …). En tone (.tone-pine,
+      .tone-lilac …) skriver om dem för en sektion. Text och knappar i varje
+      tone klarar WCAG AA (4.5:1).
    @theme static (inte inline) så att utilities blir var(--color-*) som kan
-   skrivas om av .tone-*-klasserna, och så att alla skalsteg alltid finns som
-   variabler även om ingen utility använder dem. Används ännu bara av
-   /designsystem. */
+   skrivas om av .tone-*-klasserna, och så att alla skalsteg alltid finns.
+   Används ännu bara av /designsystem. */
 @theme static {
   --color-pine-50: #f0faf4;
   --color-pine-100: #e1f3e9;
@@ -516,18 +513,6 @@ body {
   --color-pine-800: #005035;
   --color-pine-900: #023724;
   --color-pine-950: #012416;
-
-  --color-mint-50: #ebfcf0;
-  --color-mint-100: #d8f7e1;
-  --color-mint-200: #b2efc6;
-  --color-mint-300: #7ee2a3;
-  --color-mint-400: #33cc7d;
-  --color-mint-500: #0aac63;
-  --color-mint-600: #08884d;
-  --color-mint-700: #036b3c;
-  --color-mint-800: #04502c;
-  --color-mint-900: #00381c;
-  --color-mint-950: #012411;
 
   --color-lilac-50: #f9f5fd;
   --color-lilac-100: #f1eaf9;
@@ -553,29 +538,17 @@ body {
   --color-plum-900: #590420;
   --color-plum-950: #3d0013;
 
-  --color-blush-50: #fef3fb;
-  --color-blush-100: #fde6f7;
-  --color-blush-200: #f9cfef;
-  --color-blush-300: #f1b1e2;
-  --color-blush-400: #df8ece;
-  --color-blush-500: #c66bb4;
-  --color-blush-600: #a44a94;
-  --color-blush-700: #873378;
-  --color-blush-800: #67225c;
-  --color-blush-900: #4b1442;
-  --color-blush-950: #32082c;
-
-  --color-ink-50: #f4f8f6;
-  --color-ink-100: #eaefed;
-  --color-ink-200: #d9e0dd;
-  --color-ink-300: #c3cbc8;
-  --color-ink-400: #a7b0ad;
-  --color-ink-500: #89938f;
-  --color-ink-600: #6a7470;
-  --color-ink-700: #515c58;
-  --color-ink-800: #3a4541;
-  --color-ink-900: #26312d;
-  --color-ink-950: #151f1c;
+  --color-ink-50: #f6f7f6;
+  --color-ink-100: #eceeed;
+  --color-ink-200: #dcdede;
+  --color-ink-300: #c7c9c8;
+  --color-ink-400: #acafad;
+  --color-ink-500: #8e9190;
+  --color-ink-600: #6f7271;
+  --color-ink-700: #575a59;
+  --color-ink-800: #404342;
+  --color-ink-900: #2b2f2d;
+  --color-ink-950: #1b1e1c;
 
   /* Semantiska tokens — standard är ljust läge */
   --color-canvas: #ffffff;
@@ -585,23 +558,18 @@ body {
   --color-fg-muted: var(--color-ink-700);
   --color-fg-subtle: var(--color-ink-600);
   --color-line: var(--color-ink-200);
-  --color-primary: var(--color-pine-700);
+  --color-primary: var(--color-pine-800);
   --color-on-primary: #ffffff;
-  --color-cta: var(--color-mint-400);
-  --color-on-cta: var(--color-pine-950);
-  --color-highlight: var(--color-plum-800);
-  --color-check: var(--color-pine-600);
+  --color-highlight: var(--color-pine-700);
+  --color-check: var(--color-pine-700);
   --color-line-strong: var(--color-ink-300);
-  --color-primary-hover: var(--color-pine-800);
-  --color-cta-hover: var(--color-mint-300);
+  --color-primary-hover: var(--color-pine-900);
 }
 
 .tone-light,
-.tone-mist,
+.tone-subtle,
 .tone-pine,
-.tone-lilac,
-.tone-plum,
-.tone-blush {
+.tone-lilac {
   background-color: var(--color-canvas);
   color: var(--color-fg);
 }
@@ -613,17 +581,14 @@ body {
   --color-fg-muted: var(--color-ink-700);
   --color-fg-subtle: var(--color-ink-600);
   --color-line: var(--color-ink-200);
-  --color-primary: var(--color-pine-700);
+  --color-primary: var(--color-pine-800);
   --color-on-primary: #ffffff;
-  --color-cta: var(--color-mint-400);
-  --color-on-cta: var(--color-pine-950);
-  --color-highlight: var(--color-plum-800);
-  --color-check: var(--color-pine-600);
+  --color-highlight: var(--color-pine-700);
+  --color-check: var(--color-pine-700);
   --color-line-strong: var(--color-ink-300);
-  --color-primary-hover: var(--color-pine-800);
-  --color-cta-hover: var(--color-mint-300);
+  --color-primary-hover: var(--color-pine-900);
 }
-.tone-mist {
+.tone-subtle {
   --color-canvas: var(--color-ink-50);
   --color-surface: #ffffff;
   --color-surface-sunken: var(--color-ink-100);
@@ -631,85 +596,40 @@ body {
   --color-fg-muted: var(--color-ink-700);
   --color-fg-subtle: var(--color-ink-600);
   --color-line: var(--color-ink-200);
-  --color-primary: var(--color-pine-700);
+  --color-primary: var(--color-pine-800);
   --color-on-primary: #ffffff;
-  --color-cta: var(--color-mint-400);
-  --color-on-cta: var(--color-pine-950);
-  --color-highlight: var(--color-plum-800);
-  --color-check: var(--color-pine-600);
+  --color-highlight: var(--color-pine-700);
+  --color-check: var(--color-pine-700);
   --color-line-strong: var(--color-ink-300);
-  --color-primary-hover: var(--color-pine-800);
-  --color-cta-hover: var(--color-mint-300);
+  --color-primary-hover: var(--color-pine-900);
 }
 .tone-pine {
-  --color-canvas: var(--color-pine-800);
-  --color-surface: var(--color-pine-900);
+  --color-canvas: var(--color-pine-900);
+  --color-surface: var(--color-pine-800);
   --color-surface-sunken: var(--color-pine-950);
   --color-fg: #ffffff;
-  --color-fg-muted: var(--color-pine-100);
-  --color-fg-subtle: var(--color-pine-200);
+  --color-fg-muted: var(--color-pine-200);
+  --color-fg-subtle: var(--color-pine-300);
   --color-line: var(--color-pine-700);
-  --color-primary: var(--color-mint-400);
+  --color-primary: #ffffff;
   --color-on-primary: var(--color-pine-950);
-  --color-cta: var(--color-mint-400);
-  --color-on-cta: var(--color-pine-950);
-  --color-highlight: var(--color-blush-300);
-  --color-check: var(--color-mint-400);
+  --color-highlight: var(--color-lilac-200);
+  --color-check: var(--color-lilac-200);
   --color-line-strong: var(--color-pine-600);
-  --color-primary-hover: var(--color-mint-300);
-  --color-cta-hover: var(--color-mint-300);
+  --color-primary-hover: var(--color-pine-50);
 }
 .tone-lilac {
-  --color-canvas: var(--color-lilac-300);
-  --color-surface: var(--color-lilac-100);
-  --color-surface-sunken: var(--color-lilac-400);
-  --color-fg: var(--color-plum-950);
-  --color-fg-muted: var(--color-plum-900);
-  --color-fg-subtle: var(--color-plum-800);
-  --color-line: var(--color-lilac-400);
-  --color-primary: var(--color-plum-800);
-  --color-on-primary: var(--color-blush-50);
-  --color-cta: var(--color-plum-800);
-  --color-on-cta: var(--color-blush-50);
-  --color-highlight: var(--color-plum-800);
-  --color-check: var(--color-plum-700);
-  --color-line-strong: var(--color-lilac-500);
-  --color-primary-hover: var(--color-plum-900);
-  --color-cta-hover: var(--color-plum-900);
-}
-.tone-plum {
-  --color-canvas: var(--color-plum-900);
-  --color-surface: var(--color-plum-950);
-  --color-surface-sunken: var(--color-plum-950);
-  --color-fg: var(--color-blush-50);
-  --color-fg-muted: var(--color-blush-200);
-  --color-fg-subtle: var(--color-blush-300);
-  --color-line: var(--color-plum-800);
-  --color-primary: var(--color-blush-300);
-  --color-on-primary: var(--color-plum-950);
-  --color-cta: var(--color-blush-300);
-  --color-on-cta: var(--color-plum-950);
-  --color-highlight: var(--color-blush-300);
-  --color-check: var(--color-blush-300);
-  --color-line-strong: var(--color-plum-700);
-  --color-primary-hover: var(--color-blush-200);
-  --color-cta-hover: var(--color-blush-200);
-}
-.tone-blush {
-  --color-canvas: var(--color-blush-100);
+  --color-canvas: var(--color-lilac-200);
   --color-surface: #ffffff;
-  --color-surface-sunken: var(--color-blush-200);
-  --color-fg: var(--color-plum-950);
-  --color-fg-muted: var(--color-plum-900);
-  --color-fg-subtle: var(--color-plum-800);
-  --color-line: var(--color-blush-200);
+  --color-surface-sunken: var(--color-lilac-300);
+  --color-fg: var(--color-ink-950);
+  --color-fg-muted: var(--color-ink-800);
+  --color-fg-subtle: var(--color-ink-700);
+  --color-line: var(--color-lilac-300);
   --color-primary: var(--color-plum-800);
-  --color-on-primary: var(--color-blush-50);
-  --color-cta: var(--color-plum-800);
-  --color-on-cta: var(--color-blush-50);
-  --color-highlight: var(--color-plum-700);
-  --color-check: var(--color-plum-700);
-  --color-line-strong: var(--color-blush-300);
+  --color-on-primary: #ffffff;
+  --color-highlight: var(--color-plum-800);
+  --color-check: var(--color-plum-800);
+  --color-line-strong: var(--color-lilac-400);
   --color-primary-hover: var(--color-plum-900);
-  --color-cta-hover: var(--color-plum-900);
 }
