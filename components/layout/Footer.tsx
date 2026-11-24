@@ -173,7 +173,7 @@ export function Footer() {
           </div>
         </div>
       </Container>
-      <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-line py-6 text-[13px] text-fg-muted">
+      <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-line pb-24 pt-6 text-[13px] text-fg-muted md:pb-6">
         <p>© {new Date().getFullYear()} Lindqvist / Holmgren</p>
         <div className="flex items-center gap-4">
           <button type="button" onClick={openPreferences} className="transition-colors hover:text-fg">

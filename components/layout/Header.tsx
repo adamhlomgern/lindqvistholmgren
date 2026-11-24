@@ -60,7 +60,7 @@ export function Header() {
           })}
         </nav>
         <div className="hidden md:block">
-          <StartProjectButton>
+          <StartProjectButton trackingLocation="header">
             Starta ett projekt
             <ChevronRight size={14} strokeWidth={2.5} />
           </StartProjectButton>

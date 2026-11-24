@@ -11,7 +11,7 @@ const defaultFaqs = [
   {
     question: "Vad kostar ett projekt?",
     answer:
-      "Det beror helt på omfattning och behov — varje projekt är skräddarsytt. Hör av er så tar vi fram en tydlig offert innan något påbörjas.",
+      "Vi har ingen prislista, eftersom inga två projekt är lika. Så här går det till: ni berättar vad ni behöver, vi går igenom det tillsammans och sedan får ni en offert med omfattning och pris. Inget påbörjas innan ni har sagt ja, och ni binder er inte till något genom att fråga. Har ni en budget i huvudet berättar vi vad som går att göra för den.",
   },
   {
     question: "Hur lång tid tar det?",
@@ -107,6 +107,16 @@ export function Faq({
               })}
             </div>
           </GlassCard>
+          <p className="mt-6 text-[15px] text-fg-muted">
+            Hittar ni inte svaret?{" "}
+            <a
+              href="mailto:info@lindqvistholmgren.se"
+              className="font-medium text-fg underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-fg"
+            >
+              Mejla oss
+            </a>{" "}
+            så svarar vi inom 24 timmar.
+          </p>
         </div>
       </Container>
     </Section>

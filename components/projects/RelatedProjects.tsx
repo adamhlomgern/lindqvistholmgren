@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { CategoryPill } from "@/components/ui/CategoryPill";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { ProjectResultBadge } from "@/components/projects/ProjectResultBadge";
 import { getProjects } from "@/lib/data/projects";
 import { accentForKey, iconTextClasses } from "@/lib/design/accents";
 
@@ -41,6 +42,7 @@ export async function RelatedProjects({ currentSlug, category }: RelatedProjects
                       quality={90}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
+                    <ProjectResultBadge project={project} className="absolute bottom-3 left-3" />
                   </div>
                   <CategoryPill accent={accent}>{project.category}</CategoryPill>
                   <h3 className="mt-3 font-display text-sm font-semibold leading-snug text-fg">

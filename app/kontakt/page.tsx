@@ -45,7 +45,7 @@ export default function KontaktPage() {
         title="Har ni ett projekt på gång?"
         description="Berätta kort vad ni behöver hjälp med, så hör vi av oss inom 24 timmar. Inget krångel, inga mellanhänder."
       >
-        <StartProjectButton>
+        <StartProjectButton trackingLocation="kontakt-hero">
           Starta ett projekt
           <ChevronRight size={16} strokeWidth={2.5} />
         </StartProjectButton>

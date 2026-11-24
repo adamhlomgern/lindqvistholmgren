@@ -37,15 +37,17 @@ type ProcessProps = {
   steps?: { number: string; title: string; description: string; icon: LucideIcon }[];
   eyebrow?: string;
   title?: string;
+  tone?: "light" | "subtle";
 };
 
 export function Process({
   steps = defaultSteps,
   eyebrow = "Vårt arbetssätt",
   title = "En nära process, från idé till lansering",
+  tone = "subtle",
 }: ProcessProps) {
   return (
-    <Section tone="olive">
+    <Section tone={tone}>
       <Container>
         <Eyebrow icon={Route}>{eyebrow}</Eyebrow>
         <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">

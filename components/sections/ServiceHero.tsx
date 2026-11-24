@@ -5,6 +5,8 @@ import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
+import { CtaReassurance } from "@/components/ui/CtaReassurance";
+import { StartProjectButton } from "@/components/contact/StartProjectButton";
 import { iconTextClasses, type Accent } from "@/lib/design/accents";
 
 type ServiceHeroProps = {
@@ -48,17 +50,15 @@ export function ServiceHero({
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg-muted">{description}</p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
-          <Button href="/kontakt">
-            Kontakta oss
+          <StartProjectButton trackingLocation="tjanst-hero">
+            Få ett förslag
             <ChevronRight size={16} strokeWidth={2.5} />
-          </Button>
+          </StartProjectButton>
           <Button href="/projekt" variant="secondary">
             Se vårt arbete
           </Button>
         </div>
-        <p className="mt-5 text-xs uppercase tracking-label text-fg-subtle">
-          Svar inom 24 timmar · Ingen bindningstid
-        </p>
+        <CtaReassurance className="mt-5" />
       </Container>
     </Section>
   );

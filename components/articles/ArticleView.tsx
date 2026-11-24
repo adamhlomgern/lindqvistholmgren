@@ -6,8 +6,44 @@ import { CategoryPill } from "@/components/ui/CategoryPill";
 import { getCategories } from "@/lib/data/categories";
 import { resolveCategoryVisual } from "@/lib/articles/visuals";
 import { Button } from "@/components/ui/Button";
+import { CtaReassurance } from "@/components/ui/CtaReassurance";
+import { StartProjectButton } from "@/components/contact/StartProjectButton";
 import { RelatedArticles } from "@/components/sections/RelatedArticles";
 import type { Article } from "@/lib/types";
+
+// Avslutande CTA som knyter an till det artikeln handlar om. Den som läst
+// klart en artikel om SEO är varmare för en SEO-fråga än för "Kontakta oss".
+const ctaByTopic: { match: RegExp; title: string }[] = [
+  { match: /seo|sök|google/i, title: "Vill ni synas bättre på Google?" },
+  { match: /e-handel|webbshop|shop/i, title: "Vill ni börja sälja online?" },
+  { match: /design|varumärke|profil|logo/i, title: "Behöver ni en tydligare profil?" },
+  { match: /marknadsföring|tillväxt|annons/i, title: "Vill ni få fler kunder via nätet?" },
+  { match: /webb|hemsida/i, title: "Funderar ni på en ny hemsida?" },
+];
+
+function ArticleCta({ category }: { category: string }) {
+  const title = ctaByTopic.find((topic) => topic.match.test(category))?.title ?? "Har ni ett projekt på gång?";
+  return (
+    <aside className="tone-lilac mt-14 rounded-3xl p-8 sm:p-10">
+      <p className="font-display text-2xl font-semibold leading-tight tracking-[-0.02em] text-fg sm:text-3xl">
+        {title}
+      </p>
+      <p className="mt-3 max-w-lg text-fg-muted">
+        Berätta kort om er situation, så får ni ett förslag på upplägg från oss — Ada och Malin, inga mellanhänder.
+      </p>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <StartProjectButton trackingLocation="artikel-slut">
+          Få ett förslag
+          <ChevronRight size={16} strokeWidth={2.5} />
+        </StartProjectButton>
+        <Button href="/artiklar" variant="secondary">
+          Fler artiklar
+        </Button>
+      </div>
+      <CtaReassurance className="mt-6" />
+    </aside>
+  );
+}
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("sv-SE", { dateStyle: "long" }).format(new Date(date));
@@ -60,18 +96,7 @@ export async function ArticleView({ article }: { article: Article }) {
         <Container>
           <div className="mx-auto max-w-3xl">
             <div className="article-prose" dangerouslySetInnerHTML={{ __html: article.content }} />
-            <div className="mt-12 flex flex-col items-start gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-fg-muted">Har ni frågor eller ett projekt på gång?</p>
-              <div className="flex gap-3">
-                <Button href="/kontakt">
-                  Kontakta oss
-                  <ChevronRight size={16} strokeWidth={2.5} />
-                </Button>
-                <Button href="/artiklar" variant="secondary">
-                  Fler artiklar
-                </Button>
-              </div>
-            </div>
+            <ArticleCta category={article.category} />
             <RelatedArticles currentSlug={article.slug} category={article.category} />
           </div>
         </Container>

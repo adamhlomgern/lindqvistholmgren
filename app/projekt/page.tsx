@@ -8,7 +8,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { CategoryPill } from "@/components/ui/CategoryPill";
 import { getProjects } from "@/lib/data/projects";
-import { accentForKey, iconTextClasses } from "@/lib/design/accents";
+import { accentForKey } from "@/lib/design/accents";
+import { ProjectResultBadge } from "@/components/projects/ProjectResultBadge";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default async function ProjektPage() {
                           quality={90}
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
+                        <ProjectResultBadge project={project} className="absolute bottom-3 left-3" />
                       </div>
                       <CategoryPill accent={accent}>{project.category}</CategoryPill>
                       <h2 className="mt-4 font-display text-xl font-semibold text-fg">
@@ -61,10 +63,10 @@ export default async function ProjektPage() {
                         {project.industry} · {project.launch}
                       </p>
                     </div>
-                    <ArrowUpRight
-                      className={`mt-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 ${iconTextClasses[accent]}`}
-                      size={18}
-                    />
+                    <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-fg transition-[gap] duration-200 group-hover:gap-2.5">
+                      Se caset
+                      <ArrowUpRight size={16} strokeWidth={2.25} />
+                    </span>
                   </GlassCard>
                 </Link>
               );

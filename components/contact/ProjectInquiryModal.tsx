@@ -17,6 +17,8 @@ import {
   X,
 } from "lucide-react";
 import type { ProjectBudget, ProjectCategory, ProjectTimeline } from "@/lib/types";
+import { CtaReassurance } from "@/components/ui/CtaReassurance";
+import { trackConversion } from "@/lib/analytics";
 
 type ProjectInquiryModalProps = {
   isOpen: boolean;
@@ -49,7 +51,19 @@ const TIMELINE_OPTIONS: { value: ProjectTimeline; label: string }[] = [
   { value: "utforskar", label: "Utforskar bara ännu" },
 ];
 
-const TOTAL_STEPS = 5;
+// Fyra steg: vad, budget + tid, beskrivning, kontaktuppgifter. Budget och
+// tidsram låg tidigare i var sitt steg; ihop blir flödet kortare utan att vi
+// tappar någon uppgift.
+const TOTAL_STEPS = 4;
+
+// "Snabbt meddelande" hoppar över stegen och skickar samma standardvärden som
+// kontaktformuläret på /kontakt (components/sections/ContactForm.tsx), så att
+// förfrågan ser likadan ut i admin.
+const QUICK_DEFAULTS = {
+  categories: ["vet-inte"] as ProjectCategory[],
+  budget: "vet-inte" as ProjectBudget,
+  timeline: "utforskar" as ProjectTimeline,
+};
 
 const initialState = {
   categories: [] as ProjectCategory[],
@@ -76,7 +90,7 @@ const optionStyle = { backgroundColor: "var(--color-surface)", color: "var(--col
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="block text-xs font-medium uppercase tracking-label text-fg-muted">
+    <label className="block text-sm font-medium text-fg">
       {label}
       {children}
     </label>
@@ -93,7 +107,7 @@ function Dropdown<T extends string>({
   options: { value: T; label: string }[];
 }) {
   return (
-    <div className="relative mt-5">
+    <div className="relative mt-2">
       <select
         value={value}
         onChange={(event) => onChange(event.target.value as T)}
@@ -122,6 +136,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
   const [step, setStep] = useState(0);
   const [form, setForm] = useState(initialState);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [quick, setQuick] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -145,6 +160,17 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
     setStep(0);
     setForm(initialState);
     setSubmitState("idle");
+    setQuick(false);
+  }
+
+  function goToStep(next: number) {
+    setStep(next);
+    trackConversion({ name: "inquiry_step", step: next + 1, mode: "full" });
+  }
+
+  function switchToQuick() {
+    setQuick(true);
+    trackConversion({ name: "inquiry_quick_mode" });
   }
 
   function toggleCategory(value: ProjectCategory) {
@@ -161,17 +187,19 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
       case 0:
         return form.categories.length > 0;
       case 1:
-        return form.budget !== "";
+        return form.budget !== "" && form.timeline !== "";
       case 2:
-        return form.timeline !== "";
-      case 3:
         return form.description.trim().length >= 20;
       default:
         return true;
     }
   }
 
-  const canSubmit = form.name.trim().length > 0 && EMAIL_PATTERN.test(form.email);
+  const canSubmit =
+    form.name.trim().length > 0 &&
+    EMAIL_PATTERN.test(form.email) &&
+    (!quick || form.description.trim().length >= 20);
+  const isLastStep = quick || step === TOTAL_STEPS - 1;
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -182,9 +210,10 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
       const response = await fetch("/api/projektforfragan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(quick ? { ...form, ...QUICK_DEFAULTS } : form),
       });
       if (!response.ok) throw new Error("request failed");
+      trackConversion({ name: "inquiry_submit", mode: quick ? "quick" : "full" });
       setSubmitState("success");
     } catch {
       setSubmitState("error");
@@ -200,7 +229,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
         role="dialog"
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-y-auto rounded-2xl border border-line bg-surface p-6 md:p-8"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col overflow-y-auto rounded-2xl bg-surface p-6 shadow-pop ring-1 ring-line md:p-8"
       >
         {submitState === "success" ? (
           <div className="flex flex-col items-center gap-4 py-8 text-center">
@@ -224,14 +253,14 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
         ) : (
           <>
             <div className="flex items-center justify-between gap-4">
-              <p className="text-xs font-medium uppercase tracking-label text-fg-muted">
-                Steg {step + 1} av {TOTAL_STEPS}
+              <p className="text-sm font-medium text-fg-muted">
+                {quick ? "Snabbt meddelande" : `Steg ${step + 1} av ${TOTAL_STEPS}`}
               </p>
               <button
                 type="button"
                 onClick={handleClose}
                 aria-label="Stäng"
-                className="cursor-pointer rounded-full p-1.5 text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
+                className="cursor-pointer rounded-full p-1.5 text-fg-muted transition-colors hover:bg-surface-sunken hover:text-fg"
               >
                 <X size={18} />
               </button>
@@ -239,12 +268,12 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
             <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-fg/10">
               <div
                 className="h-full rounded-full bg-primary transition-all duration-300"
-                style={{ width: `${((step + 1) / TOTAL_STEPS) * 100}%` }}
+                style={{ width: quick ? "100%" : `${((step + 1) / TOTAL_STEPS) * 100}%` }}
               />
             </div>
 
             <form
-              onSubmit={step === TOTAL_STEPS - 1 ? handleSubmit : (event) => event.preventDefault()}
+              onSubmit={isLastStep ? handleSubmit : (event) => event.preventDefault()}
               className="mt-6 flex flex-1 flex-col"
             >
               <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
@@ -262,12 +291,61 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                 />
               </div>
               <div className="flex-1">
-                {step === 0 && (
+                {quick && (
+                  <div>
+                    <h3 className="font-display text-xl font-semibold text-fg">Skriv fritt till oss</h3>
+                    <p className="mt-1.5 text-sm text-fg-muted">
+                      Berätta kort vad ni funderar på, så hör vi av oss inom 24 timmar.
+                    </p>
+                    <div className="mt-5 flex flex-col gap-4">
+                      <Field label="Meddelande *">
+                        <textarea
+                          autoFocus
+                          rows={4}
+                          value={form.description}
+                          onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
+                          placeholder="T.ex. Vi funderar på en ny hemsida och vill veta hur ni brukar lägga upp det…"
+                          className={`${inputClasses} mt-2 resize-none`}
+                        />
+                      </Field>
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <Field label="Namn *">
+                          <input
+                            required
+                            value={form.name}
+                            onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+                            className={`${inputClasses} mt-2`}
+                            placeholder="Ditt namn"
+                          />
+                        </Field>
+                        <Field label="E-post *">
+                          <input
+                            type="email"
+                            required
+                            value={form.email}
+                            onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
+                            className={`${inputClasses} mt-2`}
+                            placeholder="din@epost.se"
+                          />
+                        </Field>
+                      </div>
+                      {form.description.trim().length > 0 && form.description.trim().length < 20 && (
+                        <p className="text-xs text-fg-muted">
+                          Skriv minst {20 - form.description.trim().length} tecken till i meddelandet
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {!quick && step === 0 && (
                   <div>
                     <h3 className="font-display text-xl font-semibold text-fg">
                       Vad gäller ditt projekt?
                     </h3>
-                    <p className="mt-1.5 text-sm text-fg-muted">Kryssa i ett eller flera alternativ.</p>
+                    <p className="mt-1.5 text-sm text-fg-muted">
+                      Tar under en minut. Kryssa i ett eller flera alternativ.
+                    </p>
                     <div className="mt-5 grid gap-2.5 sm:grid-cols-2">
                       {CATEGORY_OPTIONS.map(({ value, label, icon: Icon }) => {
                         const checked = form.categories.includes(value);
@@ -277,7 +355,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                             className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
                               checked
                                 ? "border-primary bg-pine-100 text-pine-800"
-                                : "border-line bg-fg/5 text-fg hover:border-line-strong"
+                                : "border-line bg-surface text-fg hover:border-line-strong hover:bg-surface-sunken"
                             }`}
                           >
                             <input
@@ -299,28 +377,30 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                   </div>
                 )}
 
-                {step === 1 && (
+                {!quick && step === 0 && (
+                  <button
+                    type="button"
+                    onClick={switchToQuick}
+                    className="mt-5 cursor-pointer text-sm text-fg-muted underline decoration-line-strong underline-offset-4 transition-colors hover:text-fg hover:decoration-fg"
+                  >
+                    Hellre skriva fritt? Skicka ett kort meddelande i stället
+                  </button>
+                )}
+
+                {!quick && step === 1 && (
                   <div>
-                    <h3 className="font-display text-xl font-semibold text-fg">
-                      Vad är er ungefärliga budget?
-                    </h3>
+                    <h3 className="font-display text-xl font-semibold text-fg">Budget och tidsram</h3>
                     <p className="mt-1.5 text-sm text-fg-muted">
-                      Hjälper oss föreslå rätt omfattning — ni binder er inte till något.
+                      En fingervisning räcker — det hjälper oss föreslå rätt omfattning. Ni binder er inte
+                      till något.
                     </p>
+                    <p className="mt-5 text-sm font-medium text-fg">Ungefärlig budget</p>
                     <Dropdown
                       value={form.budget}
                       onChange={(value) => setForm((prev) => ({ ...prev, budget: value }))}
                       options={BUDGET_OPTIONS}
                     />
-                  </div>
-                )}
-
-                {step === 2 && (
-                  <div>
-                    <h3 className="font-display text-xl font-semibold text-fg">
-                      När vill ni komma igång?
-                    </h3>
-                    <p className="mt-1.5 text-sm text-fg-muted">Ingen bindning — bara en fingervisning.</p>
+                    <p className="mt-5 text-sm font-medium text-fg">När vill ni komma igång?</p>
                     <Dropdown
                       value={form.timeline}
                       onChange={(value) => setForm((prev) => ({ ...prev, timeline: value }))}
@@ -329,7 +409,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                   </div>
                 )}
 
-                {step === 3 && (
+                {!quick && step === 2 && (
                   <div>
                     <h3 className="font-display text-xl font-semibold text-fg">
                       Berätta kort om projektet
@@ -355,7 +435,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                   </div>
                 )}
 
-                {step === 4 && (
+                {!quick && step === 3 && (
                   <div>
                     <h3 className="font-display text-xl font-semibold text-fg">
                       Dina kontaktuppgifter
@@ -414,16 +494,18 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
               </div>
 
               {submitState === "error" && (
-                <p className="mt-4 text-sm text-coral">
+                <p className="mt-4 text-sm text-danger">
                   Något gick fel. Försök igen, eller mejla oss direkt på info@lindqvistholmgren.se.
                 </p>
               )}
 
-              <div className="mt-8 flex items-center justify-between gap-3">
-                {step > 0 ? (
+              {isLastStep && <CtaReassurance className="mt-6 text-[13px]" />}
+
+              <div className="mt-6 flex items-center justify-between gap-3">
+                {quick || step > 0 ? (
                   <button
                     type="button"
-                    onClick={() => setStep((s) => s - 1)}
+                    onClick={() => (quick ? setQuick(false) : setStep((s) => s - 1))}
                     className="inline-flex cursor-pointer items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium text-fg transition-colors hover:text-primary"
                   >
                     <ChevronLeft size={16} strokeWidth={2.5} />
@@ -433,11 +515,11 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                   <span />
                 )}
 
-                {step < TOTAL_STEPS - 1 ? (
+                {!isLastStep ? (
                   <button
                     type="button"
                     disabled={!canAdvance()}
-                    onClick={() => setStep((s) => s + 1)}
+                    onClick={() => goToStep(step + 1)}
                     className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     Nästa

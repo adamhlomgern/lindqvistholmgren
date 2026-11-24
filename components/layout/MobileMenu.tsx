@@ -96,7 +96,7 @@ export function MobileMenu({ open, onClose, navItems }: MobileMenuProps) {
         style={{ transitionDelay: open ? `${120 + navItems.length * 70}ms` : "0ms" }}
       >
         <Container className="flex flex-col gap-6 py-8">
-          <StartProjectButton onClick={onClose} className="w-full py-4 text-base">
+          <StartProjectButton onClick={onClose} trackingLocation="mobilmeny" className="w-full text-base">
             Starta ett projekt
             <ArrowRight size={16} strokeWidth={2.5} />
           </StartProjectButton>

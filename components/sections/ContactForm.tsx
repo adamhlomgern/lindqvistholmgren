@@ -5,7 +5,7 @@ import { Check, Send } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 
 const inputClasses =
-  "mt-2 w-full rounded-xl border border-line-strong bg-surface px-4 py-3.5 text-sm text-fg placeholder:text-fg-subtle transition-colors focus:border-primary/60 focus:bg-fg/[0.08] focus:outline-none focus:ring-4 focus:ring-primary/10";
+  "mt-2 w-full rounded-xl border border-line-strong bg-surface px-4 py-3.5 text-sm text-fg placeholder:text-fg-subtle transition-colors focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10";
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
 
