@@ -10,8 +10,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   const isAdmin = pathname?.startsWith("/admin");
   const isKund = pathname?.startsWith("/kund");
   const isProductDemo = pathname?.startsWith("/demo/");
+  const isDesignSystem = pathname?.startsWith("/designsystem");
 
-  if (isAdmin || isKund || isProductDemo) {
+  if (isAdmin || isKund || isProductDemo || isDesignSystem) {
     return <>{children}</>;
   }
 
