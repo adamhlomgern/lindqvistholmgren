@@ -55,7 +55,7 @@ function Label({ children }: { children: ReactNode }) {
 }
 
 function H2({ children }: { children: ReactNode }) {
-  return <h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">{children}</h2>;
+  return <h2 className="mt-3 text-3xl font-semibold font-heading tracking-[-0.02em] sm:text-4xl">{children}</h2>;
 }
 
 export default function DesignSystemPage() {
@@ -64,7 +64,7 @@ export default function DesignSystemPage() {
       {/* Nav */}
       <nav className="border-b border-line">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <span className="text-lg font-semibold tracking-[-0.04em]">qvistgren</span>
+          <span className="text-lg font-semibold font-heading tracking-[-0.02em]">qvistgren</span>
           <div className="hidden items-center gap-8 text-[15px] text-fg-muted md:flex">
             <span className="text-fg">Tjänster</span>
             <span>Case</span>
@@ -77,8 +77,8 @@ export default function DesignSystemPage() {
 
       {/* Hero */}
       <header className="mx-auto max-w-6xl px-4 pb-16 pt-20 sm:px-6 sm:pt-28">
-        <Label>Designsystem · utkast 02</Label>
-        <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] tracking-[-0.045em] sm:text-7xl">
+        <Label>Designsystem · utkast 03</Label>
+        <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] font-heading tracking-[-0.02em] sm:text-7xl">
           Webb och design som syns.{" "}
           <span className="text-fg-subtle">Utan krångel.</span>
         </h1>
@@ -100,7 +100,7 @@ export default function DesignSystemPage() {
           <div className="tone-pine flex min-h-80 flex-col justify-between rounded-3xl p-8 md:col-span-2 md:row-span-2 sm:p-10">
             <Label>Hemsidor</Label>
             <div>
-              <p className="max-w-lg text-4xl font-semibold leading-[1.05] tracking-[-0.04em] sm:text-5xl">
+              <p className="max-w-lg text-4xl font-semibold leading-[1.05] font-heading tracking-[-0.02em] sm:text-5xl">
                 En sajt ni kan vara <span className="text-highlight">stolta</span> över.
               </p>
               <p className="mt-4 max-w-md text-fg-muted">
@@ -116,14 +116,14 @@ export default function DesignSystemPage() {
           <div className="tone-lilac flex flex-col justify-between rounded-3xl p-8">
             <Label>Svarstid</Label>
             <p>
-              <span className="block text-6xl font-semibold tracking-[-0.05em] text-highlight">24 h</span>
+              <span className="block text-6xl font-semibold font-heading tracking-[-0.02em] text-highlight">24 h</span>
               <span className="mt-1 block text-fg-muted">till ett första förslag.</span>
             </p>
           </div>
           <div className={`${card} flex flex-col justify-between p-8`}>
             <Label>Senaste case</Label>
             <p className="flex items-end justify-between gap-4">
-              <span className="text-xl font-semibold tracking-[-0.02em]">Mumsa — beställning online</span>
+              <span className="text-xl font-semibold font-heading tracking-[-0.02em]">Mumsa — beställning online</span>
               <ArrowUpRight className="size-5 shrink-0 text-fg-muted" />
             </p>
           </div>
@@ -146,7 +146,7 @@ export default function DesignSystemPage() {
                 className={`${c.tone} flex flex-col rounded-3xl p-8 ${c.featured ? "" : "ring-1 ring-line"}`}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold tracking-[-0.02em]">{c.title}</h3>
+                  <h3 className="text-lg font-semibold font-heading tracking-[-0.02em]">{c.title}</h3>
                   {c.featured && (
                     <span className="rounded-full bg-lilac-200 px-2.5 py-1 text-xs font-medium text-plum-900">
                       Populärast
@@ -154,7 +154,7 @@ export default function DesignSystemPage() {
                   )}
                 </div>
                 <p className="mt-6">
-                  <span className="text-4xl font-semibold tracking-[-0.04em]">{c.price}</span>
+                  <span className="text-4xl font-semibold font-heading tracking-[-0.02em]">{c.price}</span>
                   <span className="text-fg-muted">{c.unit}</span>
                 </p>
                 <p className="mt-1 text-sm text-fg-muted">exkl. moms</p>
@@ -216,7 +216,7 @@ export default function DesignSystemPage() {
             {tones.map((t) => (
               <div key={t.id} className={`tone-${t.id} flex min-h-64 flex-col rounded-3xl p-6 ring-1 ring-line`}>
                 <Label>tone-{t.id}</Label>
-                <p className="mt-2 text-2xl font-semibold tracking-[-0.03em]">
+                <p className="mt-2 text-2xl font-semibold font-heading tracking-[-0.02em]">
                   Rubrik <span className="text-highlight">här</span>
                 </p>
                 <p className="mt-2 text-[15px] text-fg-muted">{t.note}</p>
@@ -291,10 +291,10 @@ export default function DesignSystemPage() {
 
       <footer className="tone-pine">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16 sm:flex-row sm:items-end sm:justify-between sm:px-6">
-          <p className="text-4xl font-semibold tracking-[-0.045em] sm:text-5xl">
+          <p className="text-4xl font-semibold font-heading tracking-[-0.02em] sm:text-5xl">
             Hör av er.<span className="text-highlight"> Vi svarar snabbt.</span>
           </p>
-          <p className="text-sm text-fg-muted">Utkast 02 · claude/hopeful-brown-wvkdjt</p>
+          <p className="text-sm text-fg-muted">Utkast 03 · claude/hopeful-brown-wvkdjt</p>
         </div>
       </footer>
     </div>

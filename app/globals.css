@@ -489,6 +489,14 @@ body {
   background: color-mix(in srgb, var(--color-bone) 5%, transparent);
 }
 
+/* Rubriktypsnitt för det nya designsystemet. Byt här för att testa ett annat.
+   inline, så att font-heading blir var(--font-poppins) direkt på elementet:
+   --font-poppins sätts av app/designsystem/layout.tsx på en wrapper, inte på
+   :root, så en vanlig @theme-variabel skulle lösas upp utan den. */
+@theme inline {
+  --font-heading: var(--font-poppins), var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 /* ─── Nytt ljust designsystem (utkast 02, branch claude/hopeful-brown-wvkdjt) ───
    Princip: vitt och nästan svart bär sidan. Grönt är den enda starka färgen,
    lila är en mjuk yta och vinrött en liten accent. Inga fler färger samtidigt.
