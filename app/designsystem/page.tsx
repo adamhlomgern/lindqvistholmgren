@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight, Check } from "lucide-react";
 import { palette, steps, type ScaleName } from "@/lib/design-system/palette";
 import { contrast } from "@/lib/design-system/contrast";
+import { accents, pillClasses, badgeClasses } from "@/lib/design/accents";
 
 // Lekplats för det nya ljusa designsystemet. Ligger utanför SiteChrome
 // (se components/layout/SiteChrome.tsx) så att den mörka headern/footern inte
@@ -77,7 +78,7 @@ export default function DesignSystemPage() {
 
       {/* Hero */}
       <header className="mx-auto max-w-6xl px-4 pb-16 pt-20 sm:px-6 sm:pt-28">
-        <Label>Designsystem · utkast 03</Label>
+        <Label>Designsystem · v1</Label>
         <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] font-heading tracking-[-0.02em] sm:text-7xl">
           Webb och design som syns.{" "}
           <span className="text-fg-subtle">Utan krångel.</span>
@@ -234,6 +235,7 @@ export default function DesignSystemPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Label>Palett</Label>
           <H2>Fem färger bär allt</H2>
+          <p className="mt-4 max-w-xl text-fg-muted">Resten är kompletterande färger för kategorier och status, aldrig för stora ytor.</p>
           <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-5">
             {core.map((c) => (
               <div key={c.name}>
@@ -244,6 +246,40 @@ export default function DesignSystemPage() {
                 </p>
               </div>
             ))}
+          </div>
+
+          <div className="mt-16 grid gap-10 md:grid-cols-2">
+            <div>
+              <p className="text-[15px] font-semibold">Kategorier</p>
+              <p className="mt-1 text-sm text-fg-muted">
+                Sju kompletterande färger för pills i artiklar, projekt och admin. Steg 50/800 med kant.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {accents.map((a, i) => (
+                  <span key={a} className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${pillClasses[a]}`}>
+                    {["Webb", "SEO", "Design", "Tillväxt", "Automation", "Support", "E-handel"][i]}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {accents.map((a) => (
+                  <span key={a} className={`flex h-9 w-9 items-center justify-center rounded-full ${badgeClasses[a]}`}>
+                    <Check className="size-4" strokeWidth={2.5} />
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-[15px] font-semibold">Status</p>
+              <p className="mt-1 text-sm text-fg-muted">Ljus bakgrund (100) och mörk text (800) i samma färg.</p>
+              <div className="mt-4 flex flex-wrap gap-2 text-xs font-medium">
+                <span className="rounded-full bg-ink-100 px-2.5 py-1 text-ink-700">Utkast</span>
+                <span className="rounded-full bg-blue-100 px-2.5 py-1 text-blue-800">Skickad</span>
+                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-amber-800">Väntar på kund</span>
+                <span className="rounded-full bg-pine-100 px-2.5 py-1 text-pine-800">Betald</span>
+                <span className="rounded-full bg-red-100 px-2.5 py-1 text-red-800">Förfallen</span>
+              </div>
+            </div>
           </div>
 
           <details className="group mt-16">
@@ -294,7 +330,7 @@ export default function DesignSystemPage() {
           <p className="text-4xl font-semibold font-heading tracking-[-0.02em] sm:text-5xl">
             Hör av er.<span className="text-highlight"> Vi svarar snabbt.</span>
           </p>
-          <p className="text-sm text-fg-muted">Utkast 03 · claude/hopeful-brown-wvkdjt</p>
+          <p className="text-sm text-fg-muted">Designsystem v1</p>
         </div>
       </footer>
     </div>

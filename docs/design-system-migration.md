@@ -31,48 +31,69 @@ Referens: `/designsystem` (utkast 03) och tokens i `app/globals.css`.
 ## Checklista
 
 ### Grund
-- [ ] Kompletterande skalor (amber, red, blue, teal, rose) + kategorifärger
-- [ ] Statusfärger: success, warning, danger, info
-- [ ] Gamla tokens mappade till ljusa värden som skyddsnät
-- [ ] Poppins för rubriker sajtbrett (`font-display`), Geist för text
-- [ ] `globals.css`: body, artikeltypografi, scrollbar, fokusring
-- [ ] Codemod över app/, components/, lib/, kundportal-demot
+- [x] Kompletterande skalor (amber, red, blue, teal, rose) + kategorifärger
+- [x] Statusfärger: success, warning, danger, info
+- [x] Gamla tokens mappade till ljusa värden som skyddsnät
+- [x] Poppins för rubriker sajtbrett (`font-display`), Geist för text
+- [x] `globals.css`: body, artikeltypografi, scrollbar, fokusring
+- [x] Codemod över app/, components/, lib/, kundportal-demot
 
 ### UI-komponenter (`components/ui`)
-- [ ] Button (primär, sekundär, ghost) med tydliga hovers
-- [ ] GlassCard → vit yta med kant, skugga och lyft vid hover
-- [ ] Card, Section (tones), Eyebrow, Tag, AccentBadge
-- [ ] PageHero, Breadcrumbs, Container
-- [ ] Select, SlideOver, ConfirmDialog (vita ytor, mörk scrim)
+- [x] Button (primär, sekundär, ghost) med tydliga hovers
+- [x] GlassCard → vit yta med kant, skugga och lyft vid hover
+- [x] Card, Section (tones), Eyebrow, Tag, AccentBadge
+- [x] PageHero, Breadcrumbs, Container
+- [x] Select, SlideOver, ConfirmDialog (vita ytor, mörk scrim)
 
 ### Publika sajten
-- [ ] Header + MobileMenu
-- [ ] Footer
-- [ ] Startsidan: Hero, LogoCarousel, Stats, Services, FeaturedWork, Process,
+- [x] Header + MobileMenu
+- [x] Footer
+- [x] Startsidan: Hero, LogoCarousel, Stats, Services, FeaturedWork, Process,
       Testimonials, AboutTeaser, Faq, CtaBanner
-- [ ] Tjänster + tjänstesidor (ServiceHero, ValueProps)
-- [ ] Projekt / case + galleri + lightbox
-- [ ] Artiklar: lista, filter, artikelsida, kategoripills
-- [ ] Om oss, Kontakt, Starta ett projekt (formulär), demos-översikt
-- [ ] Juridiska sidor, cookiebanner
-- [ ] OG-bilder
+- [x] Tjänster + tjänstesidor (ServiceHero, ValueProps)
+- [x] Projekt / case + galleri + lightbox
+- [x] Artiklar: lista, filter, artikelsida, kategoripills
+- [x] Om oss, Kontakt, Starta ett projekt (formulär), demos-översikt
+- [x] Juridiska sidor, cookiebanner
+- [x] OG-bilder
 
 ### Kundportal
-- [ ] Inloggning, glömt lösenord, välkommen
-- [ ] Layout + sidomeny
-- [ ] Översikt, projekt, material, meddelanden, godkännanden
-- [ ] Kundportal-demot (`/demo/kundportal`)
+- [x] Inloggning, glömt lösenord, välkommen
+- [x] Layout + sidomeny
+- [x] Översikt, projekt, material, meddelanden, godkännanden
+- [x] Kundportal-demot (`/demo/kundportal`)
 
 ### Admin
-- [ ] Inloggning, layout + sidomeny
-- [ ] Översikt, kunder, projekt, fakturor, förfrågningar, inkorg
-- [ ] Artiklar (editor, förhandsgranskning), kategorier, taggar, portfolio
-- [ ] Menyer, dialoger, select, lightbox
+- [x] Inloggning, layout + sidomeny
+- [x] Översikt, kunder, projekt, fakturor, förfrågningar, inkorg
+- [x] Artiklar (editor, förhandsgranskning), kategorier, taggar, portfolio
+- [x] Menyer, dialoger, select, lightbox
 
 ### Prepper
-- [ ] Tokens mappade till nya paletten, typsnitt
+- [x] Tokens mappade till nya paletten, typsnitt
 
 ### Kontroll
-- [ ] Lint + build
-- [ ] Skärmdumpar desktop + mobil
-- [ ] Inga kvarvarande gamla tokens
+- [x] Lint (0 fel) + typkontroll + produktionsbuild
+- [x] Skärmdumpar desktop + mobil: startsida, tjänster, projekt, artiklar, om oss,
+      kontakt, demos, juridik, 404, cookiebanner, projektmodal, inloggning,
+      admin (översikt, kunder, projekt, fakturor, inkorg + detaljsidor), Prepper,
+      kundportalen och kundportal-demot
+- [x] Inga kvarvarande gamla tokens (`bone`, `stone`, `forest`, `charcoal`, `olive`)
+      utanför produktdemona
+
+## Bra att veta
+
+- **Semantiska tokens först.** Skriv `text-fg`, `text-fg-muted`, `bg-surface`,
+  `border-line`, `bg-primary` osv. Använd råa skalsteg (`pine-700`, `lilac-200`)
+  bara för medvetna färgaccenter.
+- **Tones byter färg på allt i en sektion:** `tone-light`, `tone-subtle`, `tone-pine`,
+  `tone-lilac` (eller `<Section tone="…">`). En komponent behöver aldrig en egen mörk variant.
+- **Djup:** `shadow-card` (vilande kort), `shadow-raised` (hover/lyft), `shadow-pop`
+  (menyer, dialoger). `GlassCard` heter kvar men är nu ett vitt kort.
+- **Kategorier:** `CategoryPill` + `pillClasses` i `lib/design/accents.ts`. Accentnamnen
+  (`emerald`, `peach` …) är oförändrade eftersom de ligger sparade i databasen.
+- **Logotyper:** `*-on-light.svg` är de mörka varianterna för ljus bakgrund. Originalen
+  (vit + mint) används på mörkt, t.ex. i footern. Kundlogotyperna i karusellen är ljusa
+  PNG:er som färgas mörka med CSS-filter.
+- **Ej ändrat:** e-postmallar och faktura-PDF har egna färger, och produktdemona
+  Bokad, Forma, Mumsa och Servicekoll har sina egna designsystem.
