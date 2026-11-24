@@ -60,12 +60,12 @@ export function SystemsShowcase() {
           ))}
         </ul>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {liveDemos.map((demo) => (
             <Link
               key={demo.slug}
               href={`/demos/${demo.slug}`}
-              className="group flex flex-col justify-between rounded-2xl bg-surface p-6 ring-1 ring-line transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-pine-700"
+              className="group flex flex-col justify-between rounded-2xl bg-surface p-5 ring-1 ring-line transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-pine-700"
             >
               <div>
                 {demo.logo ? (
