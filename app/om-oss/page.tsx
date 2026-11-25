@@ -8,8 +8,9 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Tag } from "@/components/ui/Tag";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
-import { accents, type Accent } from "@/lib/design/accents";
+import type { Accent } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
+import { Reveal } from "@/components/motion/Reveal";
 import { contactInfo, businessInfo, socialLinks } from "@/lib/data/site-info";
 
 export const metadata: Metadata = {
@@ -74,47 +75,54 @@ export default function OmOssPage() {
         title="Två personer. Ett gemensamt hantverk."
         description="Vi är inte en stor byrå med projektledare och mellanhänder — vi är två frilansare som driver Lindqvist / Holmgren tillsammans, med bas i Karlstad. Ni pratar alltid direkt med den som faktiskt gör jobbet, och vi lägger stolthet i att leverera något genomarbetat, oavsett hur stort eller litet projektet är."
       />
-      <Section tone="olive">
+      <Section tone="light" className="pt-4 md:pt-6">
         <Container>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {team.map((person) => (
-              <GlassCard key={person.name} accent={person.accent}>
-                <div className="flex flex-col gap-5 sm:flex-row">
-                  <div className="relative mx-auto h-44 w-36 shrink-0 sm:mx-0 sm:h-40 sm:w-32">
-                    <Image
-                      src={person.avatar}
-                      alt={person.name}
-                      fill
-                      sizes="144px"
-                      className="object-contain object-top"
+          <div className="grid gap-6 md:grid-cols-2">
+            {team.map((person, index) => (
+              <Reveal key={person.name} delay={index * 0.1}>
+                <article className="overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-line">
+                  <div className={`relative flex h-80 items-end justify-center overflow-hidden ${index === 0 ? "bg-lilac-200" : "bg-amber-100"}`}>
+                    <span
+                      aria-hidden
+                      className={`absolute -right-10 -top-10 h-56 w-56 rounded-full ${index === 0 ? "bg-lilac-300" : "bg-amber-200"}`}
                     />
+                    <div className="relative h-72 w-60">
+                      <Image src={person.avatar} alt={person.name} fill sizes="240px" className="object-contain object-bottom" />
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1 text-center sm:text-left">
-                    <p className="font-display text-lg font-semibold text-fg">{person.name}</p>
-                    <p className="mt-1 text-sm text-fg-muted">{person.role}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-fg">{person.bio}</p>
-                    <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
+                  <div className="p-8">
+                    <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] text-fg">{person.name}</h2>
+                    <p className="mt-1 text-fg-muted">{person.role}</p>
+                    <p className="mt-5 leading-relaxed text-fg">{person.bio}</p>
+                    <div className="mt-6 flex flex-wrap gap-2">
                       {person.tags.map((tag) => (
                         <Tag key={tag}>{tag}</Tag>
                       ))}
                     </div>
                   </div>
-                </div>
-              </GlassCard>
+                </article>
+              </Reveal>
             ))}
           </div>
-          <div className="mt-12 grid gap-4 sm:grid-cols-3">
-            {values.map((value, index) => {
-              const accent = accents[index % accents.length];
-              return (
-                <GlassCard key={value.title} accent={accent}>
-                  <AccentBadge icon={value.icon} accent={accent} />
-                  <h2 className="mt-4 font-display text-lg font-semibold text-fg">{value.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{value.description}</p>
-                </GlassCard>
-              );
-            })}
-          </div>
+        </Container>
+      </Section>
+
+      <Section tone="pine">
+        <Container>
+          <p className="text-sm font-medium text-fg-muted">Det vi står för</p>
+          <ol className="mt-8 divide-y divide-line border-y border-line">
+            {values.map((value, index) => (
+              <li key={value.title}>
+                <Reveal delay={index * 0.08} className="grid gap-3 py-10 md:grid-cols-[6rem_1fr_1fr] md:items-baseline md:gap-10">
+                  <span className="font-display text-lg font-semibold tabular-nums text-highlight">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] md:text-5xl">{value.title}</h2>
+                  <p className="max-w-md text-lg leading-relaxed text-fg-muted">{value.description}</p>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
         </Container>
       </Section>
       <Section tone="olive">
