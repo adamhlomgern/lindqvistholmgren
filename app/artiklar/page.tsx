@@ -48,10 +48,10 @@ export default async function ArtiklarPage() {
       <PageHero
         icon={Newspaper}
         eyebrow="Artiklar"
-        title="Tips och tankar om digital tillväxt"
-        description="Kort och konkret läsning om webb, design och marknadsföring — skrivet för er som driver företag, inte för andra byråer."
+        title="Tips för er som driver företag"
+        description="Kort läsning om hemsidor, Google, design och system. Skrivet för företagare, inte för andra byråer."
       />
-      <Section tone="olive">
+      <Section tone="light" className="pt-0 md:pt-0">
         <Container>
           <ArticlesExplorer articles={articles} categories={categories} />
         </Container>
