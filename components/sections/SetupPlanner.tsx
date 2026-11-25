@@ -88,7 +88,7 @@ export function SetupPlanner({ tone = "light" }: { tone?: "light" | "subtle" }) 
             </fieldset>
             <fieldset>
               <legend className="text-sm font-semibold text-fg">2. Hur vill ni betala?</legend>
-              <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+              <div className="mt-3 grid gap-2.5">
                 {paymentModels.map((m) => (
                   <Option
                     key={m.key}
