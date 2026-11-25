@@ -73,7 +73,7 @@ export function ContactForm() {
 
   return (
     <GlassCard accent="emerald">
-      <h2 className="font-display text-xl font-semibold text-fg">Skicka ett meddelande</h2>
+      <h2 className="font-display text-2xl font-semibold tracking-[-0.02em] text-fg">Skicka ett meddelande</h2>
       <p className="mt-1 text-sm text-fg-muted">Fyll i formuläret så återkommer vi inom 24 timmar.</p>
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
         <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
@@ -90,7 +90,7 @@ export function ContactForm() {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="name" className="text-xs font-medium uppercase tracking-label text-fg-muted">
+            <label htmlFor="name" className="text-sm font-medium text-fg">
               Namn
             </label>
             <input
@@ -104,7 +104,7 @@ export function ContactForm() {
             />
           </div>
           <div>
-            <label htmlFor="email" className="text-xs font-medium uppercase tracking-label text-fg-muted">
+            <label htmlFor="email" className="text-sm font-medium text-fg">
               E-post
             </label>
             <input
@@ -119,7 +119,7 @@ export function ContactForm() {
           </div>
         </div>
         <div>
-          <label htmlFor="message" className="text-xs font-medium uppercase tracking-label text-fg-muted">
+          <label htmlFor="message" className="text-sm font-medium text-fg">
             Meddelande
           </label>
           <textarea
@@ -134,7 +134,7 @@ export function ContactForm() {
           />
         </div>
         {submitState === "error" && (
-          <p className="text-sm text-coral">
+          <p className="text-sm text-danger">
             Något gick fel. Försök igen, eller mejla oss direkt på info@lindqvistholmgren.se.
           </p>
         )}

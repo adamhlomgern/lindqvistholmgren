@@ -9,7 +9,7 @@ import { serviceIcons, serviceFeatureIcons } from "@/lib/design/service-icons";
 import { ServiceHero } from "@/components/sections/ServiceHero";
 import { FeatureList } from "@/components/sections/FeatureList";
 import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
-import { CaseSpotlight } from "@/components/sections/CaseSpotlight";
+import { CaseSpotlight, serviceCaseMatch } from "@/components/sections/CaseSpotlight";
 import { ServiceVisual } from "@/components/visuals/ServiceVisual";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
@@ -18,15 +18,6 @@ import { SystemsShowcase } from "@/components/sections/SystemsShowcase";
 
 const SITE_URL = "https://lindqvistholmgren.se";
 
-// Vilka case som visas på respektive tjänstesida (matchas mot projektets
-// kategori och tjänster). Saknas träff visas de senaste casen.
-const caseMatch: Record<string, RegExp> = {
-  webb: /webb|hemsida|webbplats|shop/i,
-  seo: /seo|sök/i,
-  design: /design|profil|logo|grafisk|varumärke/i,
-  tillvaxt: /marknad|tillväxt|annons|seo/i,
-  support: /webb|support|underhåll/i,
-};
 
 type Props = {
   params: Promise<{ category: string }>;
@@ -179,7 +170,7 @@ export default async function ServiceCategoryPage({ params }: Props) {
       {service.slug === "automation" ? (
         <SystemsShowcase />
       ) : (
-        <CaseSpotlight match={caseMatch[service.slug]} title={`${service.title} vi har gjort`} />
+        <CaseSpotlight match={serviceCaseMatch[service.slug]} title={`${service.title} vi har gjort`} />
       )}
 
       {service.process && service.process.length > 0 && (

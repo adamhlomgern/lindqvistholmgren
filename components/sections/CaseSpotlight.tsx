@@ -9,6 +9,16 @@ import { Reveal } from "@/components/motion/Reveal";
 import { getProjects } from "@/lib/data/projects";
 import { accentForKey } from "@/lib/design/accents";
 
+// Vilka case som visas på respektive tjänstesida (matchas mot projektets
+// kategori och tjänster). Saknas träff visas de senaste casen.
+export const serviceCaseMatch: Record<string, RegExp> = {
+  webb: /webb|hemsida|webbplats|shop/i,
+  seo: /seo|sök/i,
+  design: /design|profil|logo|grafisk|varumärke/i,
+  tillvaxt: /marknad|tillväxt|annons|seo/i,
+  support: /webb|support|underhåll/i,
+};
+
 // Ett eller två case i stort format: bild, resultat i stora siffror och en
 // tydlig länk. Matchar på kategori (t.ex. /webb|hemsida/) så att en
 // tjänstesida visar case från samma område; annars de senaste.
