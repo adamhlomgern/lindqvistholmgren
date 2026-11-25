@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ContactButtons } from "@/features/service-platform/components/ContactButtons";
 import type { Asset, Customer } from "@/features/service-platform/types";
 import { getAssetStatus } from "@/features/service-platform/utils/status";
 import { serviceRoutes } from "@/features/service-platform/config/product";
@@ -23,7 +27,7 @@ function CustomerCard({ customer, assets }: { customer: Customer; assets: Asset[
 
   return (
     <Link
-      href={serviceRoutes.assets({ customerId: customer.id })}
+      href={serviceRoutes.customer(customer.id)}
       className="block rounded-2xl border border-demo-border bg-demo-surface p-4 transition-colors hover:bg-demo-surface-hover"
     >
       <p className="font-medium text-demo-text">{customer.companyName ?? customer.name}</p>
@@ -43,6 +47,7 @@ function CustomerCard({ customer, assets }: { customer: Customer; assets: Asset[
 }
 
 export function CustomersTable({ customers, assets }: CustomersTableProps) {
+  const router = useRouter();
   return (
     <>
       {/* A table that scrolls sideways is awkward to use on a phone, so
@@ -63,15 +68,22 @@ export function CustomersTable({ customers, assets }: CustomersTableProps) {
                 <th className="px-4 py-3 font-medium">Kontakt</th>
                 <th className="px-4 py-3 font-medium">Objekt</th>
                 <th className="px-4 py-3 font-medium">Service snart</th>
+                <th className="px-4 py-3 font-medium">
+                  <span className="sr-only">Kontakta</span>
+                </th>
               </tr>
             </thead>
             <tbody>
               {customers.map((customer) => {
                 const { total, dueSoon } = dueSoonCountFor(customer, assets);
                 return (
-                  <tr key={customer.id} className="border-b border-demo-border last:border-0 hover:bg-demo-surface-hover">
+                  <tr
+                    key={customer.id}
+                    onClick={() => router.push(serviceRoutes.customer(customer.id))}
+                    className="cursor-pointer border-b border-demo-border transition-colors last:border-0 hover:bg-demo-surface-hover"
+                  >
                     <td className="whitespace-nowrap px-4 py-3">
-                      <Link href={serviceRoutes.assets({ customerId: customer.id })} className="block">
+                      <Link href={serviceRoutes.customer(customer.id)} className="block">
                         <span className="font-medium text-demo-text">{customer.companyName ?? customer.name}</span>
                         {customer.companyName && (
                           <span className="block text-xs text-demo-text-muted">{customer.name}</span>
@@ -85,6 +97,9 @@ export function CustomersTable({ customers, assets }: CustomersTableProps) {
                     <td className="whitespace-nowrap px-4 py-3 text-demo-text-muted">{total} st</td>
                     <td className="whitespace-nowrap px-4 py-3 text-demo-text-muted">
                       {dueSoon > 0 ? `${dueSoon} st` : "—"}
+                    </td>
+                    <td className="px-2 py-1.5">
+                      <ContactButtons customer={customer} variant="icons" />
                     </td>
                   </tr>
                 );

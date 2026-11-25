@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, Circle, Mail, MessageSquare, Wrench } from "lucide-react";
+import { ArrowLeft, CalendarCheck, Check, Circle, Mail, MessageSquare, Wrench, X } from "lucide-react";
 import { useServicePlatform } from "@/features/service-platform/state/ServicePlatformProvider";
 import { getAssetStatus } from "@/features/service-platform/utils/status";
 import { getReminderTimeline } from "@/features/service-platform/utils/reminders";
@@ -13,22 +13,21 @@ import { StatusBadge } from "@/features/service-platform/components/StatusBadge"
 import { Button } from "@/components/demo/Button";
 import { Card } from "@/components/demo/Card";
 import { RegisterServiceModal } from "@/features/service-platform/components/RegisterServiceModal";
+import { BookServiceModal } from "@/features/service-platform/components/BookServiceModal";
+import { ContactButtons } from "@/features/service-platform/components/ContactButtons";
+import { ActivityTimeline } from "@/features/service-platform/components/ActivityTimeline";
 import { EmptyState } from "@/components/demo/EmptyState";
 
+function formatBooked(bookedAt: string) {
+  return `${new Date(bookedAt).toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long" })} kl ${bookedAt.slice(11, 16)}`;
+}
+
 export function AssetDetailView({ assetId }: { assetId: string }) {
-  const { assets, customers, serviceEvents, toggleManualContact } = useServicePlatform();
+  const { assets, customers, bookService, notify } = useServicePlatform();
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [bookOpen, setBookOpen] = useState(false);
 
   const asset = assets.find((item) => item.id === assetId);
-
-  const history = useMemo(
-    () =>
-      serviceEvents
-        .filter((event) => event.assetId === assetId)
-        .sort((a, b) => (a.performedAt < b.performedAt ? 1 : -1)),
-    [serviceEvents, assetId],
-  );
-
   const reminders = useMemo(() => (asset ? getReminderTimeline(asset) : []), [asset]);
 
   if (!asset) {
@@ -52,10 +51,7 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <Link
-          href={serviceRoutes.assets()}
-          className="inline-flex items-center gap-1.5 text-sm text-demo-text-muted hover:text-demo-text"
-        >
+        <Link href={serviceRoutes.assets()} className="inline-flex items-center gap-1.5 text-sm text-demo-text-muted hover:text-demo-text">
           <ArrowLeft size={15} />
           Tillbaka till objekt
         </Link>
@@ -67,12 +63,53 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
           </div>
           <StatusBadge status={status} />
         </div>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          {customer && <ContactButtons customer={customer} asset={asset} />}
+          <Button variant="secondary" onClick={() => setBookOpen(true)}>
+            <CalendarCheck size={15} />
+            {asset.bookedAt ? "Ändra bokning" : "Boka tid"}
+          </Button>
+          <Button onClick={() => setRegisterOpen(true)}>
+            <Wrench size={15} />
+            Registrera service
+          </Button>
+        </div>
       </div>
+
+      {asset.bookedAt && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-demo-info/30 bg-demo-info-soft px-5 py-4">
+          <div className="flex items-center gap-3">
+            <CalendarCheck size={20} className="text-demo-info" />
+            <div>
+              <p className="text-sm text-demo-text-muted">Bokad tid</p>
+              <p className="font-semibold capitalize text-demo-text">{formatBooked(asset.bookedAt)}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              bookService(asset.id, null);
+              notify("Bokningen är avbokad");
+            }}
+            className="inline-flex items-center gap-1 text-sm font-medium text-demo-text-muted hover:text-demo-danger"
+          >
+            <X size={14} />
+            Avboka
+          </button>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <p className="text-xs uppercase tracking-label text-demo-text-muted">Kund</p>
-          <p className="mt-1.5 font-medium text-demo-text">{customer ? customer.name : "Internt"}</p>
+          {customer ? (
+            <Link href={serviceRoutes.customer(customer.id)} className="group mt-1.5 block">
+              <span className="font-medium text-demo-text group-hover:underline">{customer.name}</span>
+              {customer.phone && <span className="block text-sm text-demo-text-muted">{customer.phone}</span>}
+            </Link>
+          ) : (
+            <p className="mt-1.5 font-medium text-demo-text">Internt</p>
+          )}
         </Card>
         <Card>
           <p className="text-xs uppercase tracking-label text-demo-text-muted">Senaste service</p>
@@ -91,87 +128,47 @@ export function AssetDetailView({ assetId }: { assetId: string }) {
         </Card>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div>
-          <h2 className="font-display text-lg font-bold text-demo-text">Servicehistorik</h2>
-          <div className="mt-4 flex flex-col gap-3">
-            {history.length === 0 ? (
-              <p className="text-sm text-demo-text-muted">Ingen service registrerad ännu.</p>
-            ) : (
-              history.map((event) => (
-                <Card key={event.id}>
-                  <p className="font-medium text-demo-text">{formatDateSv(event.performedAt)}</p>
-                  <p className="text-sm text-demo-text-muted">{event.serviceType ?? "Service"}</p>
-                  {event.notes && <p className="mt-1 text-sm text-demo-text-muted">{event.notes}</p>}
-                </Card>
-              ))
-            )}
+      <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+        <Card>
+          <h2 className="font-display text-lg font-bold text-demo-text">Historik</h2>
+          <p className="mt-0.5 text-sm text-demo-text-muted">Service, samtal, sms, mejl och påminnelser.</p>
+          <div className="mt-5">
+            <ActivityTimeline assets={[asset]} emptyText="Ingen historik ännu." />
           </div>
-        </div>
+        </Card>
 
         <div>
-          <h2 className="font-display text-lg font-bold text-demo-text">Påminnelser</h2>
+          <h2 className="font-display text-lg font-bold text-demo-text">Automatiska påminnelser</h2>
           <div className="mt-4 flex flex-col gap-2">
             {reminders.length === 0 ? (
-              <p className="text-sm text-demo-text-muted">Inga påminnelser planerade — sätt ett nästa servicedatum.</p>
+              <p className="text-sm text-demo-text-muted">Inga påminnelser planerade. Sätt ett nästa servicedatum.</p>
             ) : (
               reminders.map((reminder) => {
                 const ChannelIcon = reminder.channel === "email" ? Mail : MessageSquare;
                 const sent = reminder.state === "sent";
                 return (
-                  <div
-                    key={reminder.id}
-                    className="flex items-center gap-3 rounded-xl border border-demo-border bg-demo-surface px-4 py-3 text-sm"
-                  >
-                    {sent ? (
-                      <Check size={15} className="text-demo-primary" />
-                    ) : (
-                      <Circle size={11} className="text-demo-text-faint" />
-                    )}
+                  <div key={reminder.id} className="flex items-center gap-3 rounded-xl border border-demo-border bg-demo-surface px-4 py-3 text-sm">
+                    {sent ? <Check size={15} className="text-demo-primary" /> : <Circle size={11} className="text-demo-text-faint" />}
                     <span className="text-demo-text">{reminder.daysBefore} dagar innan</span>
                     <ChannelIcon size={14} className="text-demo-text-muted" />
-                    <span className="text-demo-text-muted">{reminder.channel === "email" ? "Email" : "SMS"}</span>
+                    <span className="text-demo-text-muted">{reminder.channel === "email" ? "Mejl" : "Sms"}</span>
                     <span className="ml-auto text-xs text-demo-text-muted">{sent ? "skickad" : "planerad"}</span>
                   </div>
                 );
               })
             )}
           </div>
-
-          {customer && (
-            <button
-              type="button"
-              onClick={() => toggleManualContact(asset.id)}
-              className={`mt-3 flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors ${
-                asset.manualContactedAt
-                  ? "border-demo-primary/30 bg-demo-primary-soft"
-                  : "border-dashed border-demo-border bg-demo-surface hover:border-demo-text-faint"
-              }`}
-            >
-              <span
-                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
-                  asset.manualContactedAt ? "border-demo-primary bg-demo-primary text-white" : "border-demo-border"
-                }`}
-              >
-                {asset.manualContactedAt && <Check size={13} />}
-              </span>
-              <span className={asset.manualContactedAt ? "text-demo-primary-soft-text" : "text-demo-text"}>
-                Vi har själva ringt {customer.name} om servicen
-                {asset.manualContactedAt && ` — ${formatDateSv(asset.manualContactedAt)}`}
-              </span>
-            </button>
+          {asset.notes && (
+            <div className="mt-6">
+              <h3 className="text-sm font-semibold text-demo-text">Anteckningar</h3>
+              <p className="mt-1 text-sm text-demo-text-muted">{asset.notes}</p>
+            </div>
           )}
         </div>
       </div>
 
-      <div>
-        <Button onClick={() => setRegisterOpen(true)}>
-          <Wrench size={16} />
-          Registrera service
-        </Button>
-      </div>
-
       <RegisterServiceModal open={registerOpen} onClose={() => setRegisterOpen(false)} asset={asset} />
+      <BookServiceModal open={bookOpen} onClose={() => setBookOpen(false)} asset={asset} customer={customer} />
     </div>
   );
 }

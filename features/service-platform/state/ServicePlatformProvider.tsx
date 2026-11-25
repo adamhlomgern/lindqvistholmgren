@@ -1,7 +1,8 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useReducer, type ReactNode } from "react";
-import type { Asset, Customer, ServiceEvent } from "@/features/service-platform/types";
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from "react";
+import { CheckCircle2 } from "lucide-react";
+import type { Asset, CallOutcome, ContactChannel, ContactEvent, Customer, ServiceEvent } from "@/features/service-platform/types";
 import { createSeedData, type SeedData } from "@/features/service-platform/data/seed";
 import { addMonths, toISODate } from "@/features/service-platform/utils/dates";
 import { defaultIndustry, isIndustryKey, type IndustryKey } from "@/features/service-platform/config/industries";
@@ -14,6 +15,9 @@ type Action =
   | { type: "ADD_ASSET"; asset: Asset }
   | { type: "REGISTER_SERVICE"; assetId: string; event: ServiceEvent; nextServiceDate: string | null }
   | { type: "TOGGLE_MANUAL_CONTACT"; assetId: string; contactedAt: string | null }
+  | { type: "LOG_CONTACTS"; events: ContactEvent[] }
+  | { type: "BOOK_SERVICE"; assetId: string; bookedAt: string | null }
+  | { type: "UPDATE_CUSTOMER_NOTES"; customerId: string; notes: string }
   | { type: "SET_INDUSTRY"; industry: IndustryKey }
   | { type: "RESET"; seed: SeedData };
 
@@ -36,9 +40,35 @@ function reducer(state: State, action: Action): State {
                 // A fresh service cycle starts — any earlier "we called
                 // about this" note no longer applies.
                 manualContactedAt: null,
+                bookedAt: null,
               }
             : asset,
         ),
+      };
+    case "LOG_CONTACTS": {
+      // Ett samtal räknas som att man själv kontaktat kunden om objektet.
+      const calledAssets = new Set(
+        action.events.filter((e) => e.channel === "call" && e.assetId).map((e) => e.assetId as string),
+      );
+      return {
+        ...state,
+        contactEvents: [...action.events, ...state.contactEvents],
+        assets: calledAssets.size
+          ? state.assets.map((asset) =>
+              calledAssets.has(asset.id) ? { ...asset, manualContactedAt: toISODate(new Date()) } : asset,
+            )
+          : state.assets,
+      };
+    }
+    case "BOOK_SERVICE":
+      return {
+        ...state,
+        assets: state.assets.map((asset) => (asset.id === action.assetId ? { ...asset, bookedAt: action.bookedAt } : asset)),
+      };
+    case "UPDATE_CUSTOMER_NOTES":
+      return {
+        ...state,
+        customers: state.customers.map((c) => (c.id === action.customerId ? { ...c, notes: action.notes } : c)),
       };
     case "TOGGLE_MANUAL_CONTACT":
       return {
@@ -57,7 +87,8 @@ function reducer(state: State, action: Action): State {
 }
 
 type NewCustomerInput = Omit<Customer, "id" | "createdAt">;
-type NewAssetInput = Omit<Asset, "id" | "createdAt" | "manualContactedAt">;
+type NewAssetInput = Omit<Asset, "id" | "createdAt" | "manualContactedAt" | "bookedAt">;
+type ContactInput = { customerId: string; assetId: string | null; channel: ContactChannel; message?: string; outcome?: CallOutcome };
 type RegisterServiceInput = { performedAt: string; serviceType?: string; notes?: string; nextServiceDate: string | null };
 
 type ServicePlatformContextValue = Omit<State, "industryTouched"> & {
@@ -65,6 +96,10 @@ type ServicePlatformContextValue = Omit<State, "industryTouched"> & {
   addAsset: (input: NewAssetInput) => Asset;
   registerService: (assetId: string, input: RegisterServiceInput) => void;
   toggleManualContact: (assetId: string) => void;
+  logContacts: (inputs: ContactInput[]) => void;
+  bookService: (assetId: string, bookedAt: string | null) => void;
+  updateCustomerNotes: (customerId: string, notes: string) => void;
+  notify: (message: string) => void;
   setIndustry: (industry: IndustryKey) => void;
   resetDemo: () => void;
 };
@@ -106,6 +141,7 @@ export function ServicePlatformProvider({ children }: { children: ReactNode }) {
       ...input,
       id: generateId("asset"),
       manualContactedAt: null,
+      bookedAt: null,
       createdAt: new Date().toISOString(),
     };
     dispatch({ type: "ADD_ASSET", asset });
@@ -135,6 +171,33 @@ export function ServicePlatformProvider({ children }: { children: ReactNode }) {
     [state.assets],
   );
 
+  const logContacts = useCallback((inputs: ContactInput[]) => {
+    const now = new Date();
+    const stamp = `${toISODate(now)}T${now.toTimeString().slice(0, 5)}`;
+    dispatch({
+      type: "LOG_CONTACTS",
+      events: inputs.map((input) => ({ ...input, id: generateId("contact"), at: stamp })),
+    });
+  }, []);
+
+  const bookService = useCallback((assetId: string, bookedAt: string | null) => {
+    dispatch({ type: "BOOK_SERVICE", assetId, bookedAt });
+  }, []);
+
+  const updateCustomerNotes = useCallback((customerId: string, notes: string) => {
+    dispatch({ type: "UPDATE_CUSTOMER_NOTES", customerId, notes });
+  }, []);
+
+  // Liten bekräftelse längst ned ("SMS skickat till …"), så att varje
+  // åtgärd i demon känns som att den faktiskt hände.
+  const [toast, setToast] = useState<{ id: number; message: string } | null>(null);
+  const notify = useCallback((message: string) => setToast({ id: Date.now(), message }), []);
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 3200);
+    return () => clearTimeout(t);
+  }, [toast]);
+
   const setIndustry = useCallback((industry: IndustryKey) => {
     dispatch({ type: "SET_INDUSTRY", industry });
   }, []);
@@ -148,18 +211,38 @@ export function ServicePlatformProvider({ children }: { children: ReactNode }) {
       customers: state.customers,
       assets: state.assets,
       serviceEvents: state.serviceEvents,
+      contactEvents: state.contactEvents,
       industry: resolvedIndustry,
       addCustomer,
       addAsset,
       registerService,
       toggleManualContact,
+      logContacts,
+      bookService,
+      updateCustomerNotes,
+      notify,
       setIndustry,
       resetDemo,
     }),
-    [state, resolvedIndustry, addCustomer, addAsset, registerService, toggleManualContact, setIndustry, resetDemo],
+    [state, resolvedIndustry, addCustomer, addAsset, registerService, toggleManualContact, logContacts, bookService, updateCustomerNotes, notify, setIndustry, resetDemo],
   );
 
-  return <ServicePlatformContext.Provider value={value}>{children}</ServicePlatformContext.Provider>;
+  return (
+    <ServicePlatformContext.Provider value={value}>
+      {children}
+      <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-20 z-[70] flex justify-center px-4 md:bottom-6">
+        {toast && (
+          <div
+            key={toast.id}
+            className="flex items-center gap-2 rounded-full bg-demo-text px-4 py-2.5 text-sm font-medium text-white shadow-xl"
+          >
+            <CheckCircle2 size={16} className="text-emerald-300" />
+            {toast.message}
+          </div>
+        )}
+      </div>
+    </ServicePlatformContext.Provider>
+  );
 }
 
 export function useServicePlatform(): ServicePlatformContextValue {

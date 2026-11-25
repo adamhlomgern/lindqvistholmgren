@@ -15,7 +15,7 @@ type RegisterServiceModalProps = {
 };
 
 export function RegisterServiceModal({ open, onClose, asset }: RegisterServiceModalProps) {
-  const { registerService } = useServicePlatform();
+  const { registerService, notify } = useServicePlatform();
   const [performedAt, setPerformedAt] = useState(() => toISODate(new Date()));
   const [serviceType, setServiceType] = useState("Årlig service");
   const [notes, setNotes] = useState("");
@@ -39,6 +39,7 @@ export function RegisterServiceModal({ open, onClose, asset }: RegisterServiceMo
       notes: notes.trim() || undefined,
       nextServiceDate: nextServiceDate || null,
     });
+    notify(`Service registrerad för ${asset.name}`);
     onClose();
   }
 

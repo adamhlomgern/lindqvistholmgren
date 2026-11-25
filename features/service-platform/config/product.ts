@@ -13,5 +13,7 @@ export const serviceRoutes = {
       ? `/demo/servicekoll/assets?customer=${params.customerId}`
       : "/demo/servicekoll/assets",
   asset: (id: string) => `/demo/servicekoll/assets/${id}`,
+  customer: (id: string) => `/demo/servicekoll/customers/${id}`,
+  bookings: () => "/demo/servicekoll/bookings",
   contactCta: () => "/kontakt?interest=servicekoll",
 };

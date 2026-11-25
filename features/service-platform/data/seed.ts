@@ -1,10 +1,11 @@
-import type { Asset, Customer, ServiceEvent } from "@/features/service-platform/types";
+import type { Asset, ContactEvent, Customer, ServiceEvent } from "@/features/service-platform/types";
 import { addDays, addMonths, toISODate } from "@/features/service-platform/utils/dates";
 
 export type SeedData = {
   customers: Customer[];
   assets: Asset[];
   serviceEvents: ServiceEvent[];
+  contactEvents: ContactEvent[];
 };
 
 type AssetBlueprint = {
@@ -17,6 +18,9 @@ type AssetBlueprint = {
   dueInDays: number | null;
   historyEntries?: number;
   manualContacted?: boolean;
+  // Bokad tid relativt idag (dagar, klockslag), för att demon ska visa några
+  // bokningar direkt.
+  booked?: { inDays: number; time: string };
 };
 
 // dueInDays is relative to "today" at seed time, so the demo always shows a
@@ -38,14 +42,14 @@ export function createSeedData(today: Date = new Date()): SeedData {
   const blueprints: AssetBlueprint[] = [
     // Automotive — customer-owned vehicles
     { id: "asset-1", customerId: "cust-1", name: "Kia EV3", category: "vehicle", identifier: "ABC123", intervalMonths: 12, dueInDays: -3, historyEntries: 2 },
-    { id: "asset-2", customerId: "cust-2", name: "Volvo XC60", category: "vehicle", identifier: "XYZ789", intervalMonths: 12, dueInDays: 12, manualContacted: true },
+    { id: "asset-2", customerId: "cust-2", name: "Volvo XC60", category: "vehicle", identifier: "XYZ789", intervalMonths: 12, dueInDays: 12, manualContacted: true, booked: { inDays: 9, time: "08:30" } },
     { id: "asset-3", customerId: "cust-3", name: "Tesla Model Y", category: "vehicle", identifier: "DEF456", intervalMonths: 12, dueInDays: 45 },
     { id: "asset-4", customerId: "cust-1", name: "VW Golf", category: "vehicle", identifier: "GHI321", intervalMonths: 12, dueInDays: 200 },
     { id: "asset-5", customerId: "cust-4", name: "Toyota Hilux", category: "vehicle", identifier: "JKL654", intervalMonths: 12, dueInDays: null },
     { id: "asset-6", customerId: "cust-5", name: "BMW 320i", category: "vehicle", identifier: "MNO987", intervalMonths: 12, dueInDays: -20 },
 
     // Heatpump & ventilation — customer-owned installations
-    { id: "asset-7", customerId: "cust-6", name: "IVT Geo 512", category: "heat_pump", identifier: "SN-183829", intervalMonths: 12, dueInDays: 8, historyEntries: 2 },
+    { id: "asset-7", customerId: "cust-6", name: "IVT Geo 512", category: "heat_pump", identifier: "SN-183829", intervalMonths: 12, dueInDays: 8, historyEntries: 2, booked: { inDays: 6, time: "10:00" } },
     { id: "asset-8", customerId: "cust-7", name: "Nibe F750", category: "heat_pump", identifier: "SN-220144", intervalMonths: 12, dueInDays: -5, manualContacted: true },
     { id: "asset-9", customerId: "cust-6", name: "Systemair Ventilationsaggregat", category: "ventilation", identifier: "SN-556231", intervalMonths: 6, dueInDays: 60 },
     { id: "asset-10", customerId: "cust-8", name: "Thermia Diplomat", category: "heat_pump", identifier: "SN-778812", intervalMonths: 12, dueInDays: 150 },
@@ -79,6 +83,7 @@ export function createSeedData(today: Date = new Date()): SeedData {
       nextServiceDate,
       serviceIntervalMonths: bp.intervalMonths,
       manualContactedAt: bp.manualContacted ? iso(today, -2) : null,
+      bookedAt: bp.booked ? `${iso(today, bp.booked.inDays)}T${bp.booked.time}` : null,
       createdAt: iso(today, -365),
     });
 
@@ -101,7 +106,17 @@ export function createSeedData(today: Date = new Date()): SeedData {
     }
   }
 
-  return { customers, assets, serviceEvents };
+  const at = (offsetDays: number, time: string) => `${iso(today, offsetDays)}T${time}`;
+  const contactEvents: ContactEvent[] = [
+    { id: "contact-1", customerId: "cust-2", assetId: "asset-2", channel: "call", at: at(-2, "09:14"), outcome: "booked", message: "Bokade service, vill ha lånebil." },
+    { id: "contact-2", customerId: "cust-5", assetId: "asset-6", channel: "sms", at: at(-6, "13:02"), message: "Hej Petra! Din BMW 320i är försenad för service. Svara på detta SMS eller ring oss så bokar vi en tid." },
+    { id: "contact-3", customerId: "cust-5", assetId: "asset-6", channel: "call", at: at(-3, "15:40"), outcome: "no_answer" },
+    { id: "contact-4", customerId: "cust-6", assetId: "asset-7", channel: "email", at: at(-4, "08:05"), message: "Dags för årlig service av er IVT Geo 512. Vi har tider nästa vecka." },
+    { id: "contact-5", customerId: "cust-6", assetId: "asset-7", channel: "call", at: at(-1, "11:20"), outcome: "booked" },
+    { id: "contact-6", customerId: "cust-7", assetId: "asset-8", channel: "call", at: at(-2, "10:45"), outcome: "call_back", message: "Lena ringer tillbaka efter semestern." },
+  ];
+
+  return { customers, assets, serviceEvents, contactEvents };
 }
 
 function iso(today: Date, offsetDays: number): string {
