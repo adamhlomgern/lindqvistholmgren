@@ -100,6 +100,47 @@ export function createSeedData(): SeedData {
     createdAt: dayAgo(5),
   };
 
+  // Fler exempel i olika säljsteg så att säljvyn (tabell och tavla) ser ut
+  // som en riktig pipeline.
+  const extra: {
+    id: string;
+    name: string;
+    phone: string;
+    municipality: string;
+    start: string;
+    status: QuoteRequest["status"];
+    days: number;
+    config: Partial<Omit<Configuration, "id">> & { model: Configuration["model"] };
+  }[] = [
+    { id: "C7M21", name: "Sara Lindqvist", phone: "070-555 12 34", municipality: "Hammarö", start: "Sommaren 2026", status: "mote-bokat", days: 9, config: { model: "forma-30", exterior: { facade: "natur", roof: "sadel", windows: "standard" }, yearRoundLiving: true, packages: ["winter"] } },
+    { id: "D2P58", name: "Mikael Ek", phone: "072-321 76 54", municipality: "Kil", start: "Våren 2027", status: "offert-skickad", days: 14, config: { model: "forma-25", exterior: { facade: "svart", roof: "platt", windows: "standard" }, packages: ["smart-home"] } },
+    { id: "E9R13", name: "Familjen Holm", phone: "076-444 98 21", municipality: "Grums", start: "Hösten 2026", status: "vunnen", days: 31, config: { model: "forma-30", exterior: { facade: "falurod", roof: "sadel", windows: "standard" }, yearRoundLiving: true, packages: ["winter", "smart-home"] } },
+    { id: "F1T77", name: "Linnea Ström", phone: "070-888 22 11", municipality: "Karlstad", start: "Vet inte än", status: "ny", days: 1, config: { model: "forma-20", exterior: { facade: "natur", roof: "platt", windows: "standard" } } },
+    { id: "G6W40", name: "Per Axelsson", phone: "073-111 45 90", municipality: "Arvika", start: "Våren 2027", status: "forlorad", days: 40, config: { model: "forma-25", exterior: { facade: "svart", roof: "sadel", windows: "standard" } } },
+  ];
+  for (const e of extra) {
+    const configuration = makeSeedConfiguration(
+      { ...e.config, id: e.id, site: { municipality: e.municipality, terrain: "plan", waterAndSewer: "ja", access: "ja" } },
+      dayAgo(e.days),
+    );
+    configurations[e.id] = configuration;
+    const price = calculatePrice(configuration);
+    const leadId = `lead-${e.id.toLowerCase()}`;
+    quoteRequests[leadId] = {
+      id: leadId,
+      configurationId: e.id,
+      name: e.name,
+      email: `${e.name.split(" ")[0].toLowerCase()}@example.se`,
+      phone: e.phone,
+      municipality: e.municipality,
+      desiredStart: e.start,
+      estimatedLow: price.rangeLow,
+      estimatedHigh: price.rangeHigh,
+      status: e.status,
+      createdAt: dayAgo(e.days),
+    };
+  }
+
   return { configurations, quoteRequests };
 }
 
