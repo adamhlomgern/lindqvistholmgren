@@ -13,6 +13,12 @@ export const contactInfo = {
 // Ada och Malin driver varsin enskild firma under det gemensamma
 // varumärket Lindqvist / Holmgren — inget delat bolag, så org.nr anges
 // per person snarare än som ett gemensamt fält.
+// Bankgiro för betalning av fakturor. Visas i footern, på Om oss och på
+// kontaktsidan.
+export const paymentInfo = {
+  bankgiro: "5455-4464",
+} as const;
+
 export const businessInfo = {
   ada: { name: "Ada", orgNumber: "951009-8537", vatNumber: "SE951009853701" },
   malin: { name: "Malin", orgNumber: "960223-9387" },

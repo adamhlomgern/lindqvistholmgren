@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import { services } from "@/lib/data/services";
 import { useCookieConsent } from "@/components/consent/CookieConsentProvider";
-import { socialLinks } from "@/lib/data/site-info";
+import { paymentInfo, socialLinks } from "@/lib/data/site-info";
 
 type FooterLink = { href: string; label: string };
 
@@ -174,7 +174,11 @@ export function Footer() {
         </div>
       </Container>
       <Container className="flex flex-wrap items-center justify-between gap-4 border-t border-line pb-24 pt-6 text-[13px] text-fg-muted md:pb-6">
-        <p>© {new Date().getFullYear()} Lindqvist / Holmgren</p>
+        <p>
+          © {new Date().getFullYear()} Lindqvist / Holmgren
+          <span className="mx-2 text-fg-subtle">·</span>
+          Bankgiro {paymentInfo.bankgiro}
+        </p>
         <div className="flex items-center gap-4">
           <button type="button" onClick={openPreferences} className="transition-colors hover:text-fg">
             🍪 Cookie-inställningar

@@ -8,7 +8,7 @@ import { CtaReassurance } from "@/components/ui/CtaReassurance";
 import { ContactForm } from "@/components/sections/ContactForm";
 import { StartProjectButton } from "@/components/contact/StartProjectButton";
 import { Reveal } from "@/components/motion/Reveal";
-import { contactInfo } from "@/lib/data/site-info";
+import { contactInfo, paymentInfo } from "@/lib/data/site-info";
 import { testimonials } from "@/lib/data/testimonials";
 
 export const metadata: Metadata = {
@@ -136,6 +136,9 @@ export default function KontaktPage() {
                 </span>
               </a>
             </div>
+            <p className="mt-4 text-sm text-fg-muted">
+              Betala en faktura? Bankgiro <span className="font-medium text-fg">{paymentInfo.bankgiro}</span>
+            </p>
           </div>
 
         </div>

@@ -11,7 +11,7 @@ import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
 import type { Accent } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 import { Reveal } from "@/components/motion/Reveal";
-import { contactInfo, businessInfo, socialLinks } from "@/lib/data/site-info";
+import { contactInfo, businessInfo, paymentInfo, socialLinks } from "@/lib/data/site-info";
 
 export const metadata: Metadata = {
   title: "Om oss",
@@ -183,6 +183,7 @@ export default function OmOssPage() {
               </p>
               <ul className="mt-3 flex flex-col gap-2 text-sm text-fg-muted">
                 <li>Adress: {contactInfo.address}</li>
+                <li>Bankgiro: {paymentInfo.bankgiro}</li>
                 <li>
                   {businessInfo.ada.name} — Org.nr: {businessInfo.ada.orgNumber}
                   <span className="block text-xs text-fg-subtle">
