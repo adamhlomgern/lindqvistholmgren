@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Clock, User } from "lucide-react";
+import { BellRing, Check, Clock, MessageSquare, Phone, User } from "lucide-react";
 import { Badge } from "@/components/demo/Badge";
 import type { Booking } from "@/features/booking-platform/types";
 import { bookingStatusLabels, bookingStatusTone } from "@/features/booking-platform/utils/status";
@@ -29,6 +29,8 @@ export function BookingCard({
   onCancel?: () => void;
 }) {
   const [confirmingCancel, setConfirmingCancel] = useState(false);
+  const [reminded, setReminded] = useState(false);
+  const telHref = `tel:${customerPhone.replace(/[^\d+]/g, "")}`;
   const actionable = booking.status === "confirmed" && (onComplete || onNoShow || onCancel);
 
   return (
@@ -54,6 +56,34 @@ export function BookingCard({
           </p>
         )}
       </div>
+
+      {booking.status === "confirmed" && (
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-demo-border pt-2.5 text-xs">
+          <a
+            href={telHref}
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium text-demo-text-muted transition-colors hover:bg-demo-surface-hover hover:text-demo-text"
+          >
+            <Phone size={12} /> Ring
+          </a>
+          <a
+            href={`sms:${customerPhone.replace(/[^\d+]/g, "")}`}
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium text-demo-text-muted transition-colors hover:bg-demo-surface-hover hover:text-demo-text"
+          >
+            <MessageSquare size={12} /> Sms
+          </a>
+          <button
+            type="button"
+            disabled={reminded}
+            onClick={() => setReminded(true)}
+            className={`ml-auto inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-medium transition-colors ${
+              reminded ? "text-demo-primary" : "text-demo-text-muted hover:bg-demo-surface-hover hover:text-demo-text"
+            }`}
+          >
+            {reminded ? <Check size={12} /> : <BellRing size={12} />}
+            {reminded ? "Påminnelse skickad" : "Skicka påminnelse"}
+          </button>
+        </div>
+      )}
 
       {actionable && (
         <div className="flex flex-wrap items-center gap-2 border-t border-demo-border pt-2.5">
