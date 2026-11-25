@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { Plus, UtensilsCrossed } from "lucide-react";
 import type { MenuItem } from "@/features/restaurant-platform/types";
 import { formatSek } from "@/features/restaurant-platform/utils/format";
+import { useRestaurantPlatform } from "@/features/restaurant-platform/state/RestaurantPlatformProvider";
 
 export function MenuItemCard({
   item,
@@ -12,11 +15,16 @@ export function MenuItemCard({
   cartQuantity?: number;
   onSelect: (item: MenuItem) => void;
 }) {
+  const { soldOut } = useRestaurantPlatform();
+  const isSoldOut = soldOut.includes(item.id);
   return (
     <button
       type="button"
+      disabled={isSoldOut}
       onClick={() => onSelect(item)}
-      className="flex items-center gap-4 rounded-2xl border border-demo-border bg-demo-surface p-3 text-left transition-colors hover:bg-demo-surface-hover sm:p-4"
+      className={`flex items-center gap-4 rounded-2xl border border-demo-border bg-demo-surface p-3 text-left transition-colors sm:p-4 ${
+        isSoldOut ? "cursor-not-allowed opacity-60" : "hover:bg-demo-surface-hover"
+      }`}
     >
       <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-demo-neutral-soft">
         {item.image ? (
@@ -44,9 +52,13 @@ export function MenuItemCard({
         <p className="mt-1 line-clamp-2 text-sm text-demo-text-muted">{item.description}</p>
         <div className="mt-2 flex items-center justify-between">
           <span className="text-sm font-semibold text-demo-text">{formatSek(item.price)}</span>
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-demo-primary text-white">
-            <Plus size={15} strokeWidth={2.5} />
-          </span>
+          {isSoldOut ? (
+            <span className="rounded-full bg-demo-neutral-soft px-2.5 py-1 text-xs font-semibold text-demo-text-muted">Slut för idag</span>
+          ) : (
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-demo-primary text-white">
+              <Plus size={15} strokeWidth={2.5} />
+            </span>
+          )}
         </div>
       </div>
     </button>

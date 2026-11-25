@@ -6,7 +6,9 @@ import { createSeedData, type SeedData } from "@/features/restaurant-platform/da
 import { cartLineUnitPrice, cartSubtotal, orderDeliveryFee } from "@/features/restaurant-platform/utils/pricing";
 import { nextStatus } from "@/features/restaurant-platform/utils/orderStatus";
 
-type State = SeedData & { cart: CartLine[] };
+// soldOut: rätter som restaurangen markerat som slut för dagen (se
+// MenuAvailability); kunden kan då inte beställa dem.
+type State = SeedData & { cart: CartLine[]; soldOut: string[] };
 
 type Action =
   | { type: "ADD_TO_CART"; line: CartLine }
@@ -18,6 +20,7 @@ type Action =
   | { type: "CANCEL_ORDER"; orderId: string; at: string }
   | { type: "SET_DELIVERY_ENABLED"; enabled: boolean }
   | { type: "UPDATE_RESTAURANT"; patch: Partial<Restaurant> }
+  | { type: "TOGGLE_SOLD_OUT"; menuItemId: string }
   | { type: "RESET"; seed: SeedData };
 
 function reducer(state: State, action: Action): State {
@@ -67,8 +70,16 @@ function reducer(state: State, action: Action): State {
       return { ...state, restaurant: { ...state.restaurant, deliveryEnabled: action.enabled } };
     case "UPDATE_RESTAURANT":
       return { ...state, restaurant: { ...state.restaurant, ...action.patch } };
+    case "TOGGLE_SOLD_OUT":
+      return {
+        ...state,
+        soldOut: state.soldOut.includes(action.menuItemId)
+          ? state.soldOut.filter((id) => id !== action.menuItemId)
+          : [...state.soldOut, action.menuItemId],
+        cart: state.cart.filter((line) => line.menuItemId !== action.menuItemId),
+      };
     case "RESET":
-      return { ...action.seed, cart: [] };
+      return { ...action.seed, cart: [], soldOut: [] };
     default:
       return state;
   }
@@ -109,6 +120,8 @@ type RestaurantPlatformContextValue = Omit<State, never> & {
   setOrderStatus: (orderId: string, status: OrderStatus) => void;
   setDeliveryEnabled: (enabled: boolean) => void;
   updateRestaurant: (patch: Partial<Restaurant>) => void;
+  soldOut: string[];
+  toggleSoldOut: (menuItemId: string) => void;
   resetDemo: () => void;
   getOrder: (orderId: string) => Order | undefined;
 };
@@ -121,7 +134,8 @@ function generateId(prefix: string): string {
 
 export function RestaurantPlatformProvider({ children }: { children: ReactNode }) {
   const seed = useMemo(() => createSeedData(), []);
-  const [state, dispatch] = useReducer(reducer, seed, (initialSeed) => ({ ...initialSeed, cart: [] }));
+  const [state, dispatch] = useReducer(reducer, seed, (initialSeed) => ({ ...initialSeed, cart: [], soldOut: [] }));
+  const toggleSoldOut = useCallback((menuItemId: string) => dispatch({ type: "TOGGLE_SOLD_OUT", menuItemId }), []);
 
   const addToCart = useCallback((input: NewCartLineInput) => {
     dispatch({ type: "ADD_TO_CART", line: { ...input, id: generateId("cart") } });
@@ -223,6 +237,8 @@ export function RestaurantPlatformProvider({ children }: { children: ReactNode }
       setOrderStatus,
       setDeliveryEnabled,
       updateRestaurant,
+      soldOut: state.soldOut,
+      toggleSoldOut,
       resetDemo,
       getOrder,
     }),
@@ -238,6 +254,7 @@ export function RestaurantPlatformProvider({ children }: { children: ReactNode }
       setOrderStatus,
       setDeliveryEnabled,
       updateRestaurant,
+      toggleSoldOut,
       resetDemo,
       getOrder,
     ],

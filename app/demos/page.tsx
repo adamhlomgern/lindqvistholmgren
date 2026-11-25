@@ -29,25 +29,25 @@ const details: Record<string, { openHref: string; image: string; fits: string; t
     openHref: "/demo/mumsa",
     image: "/images/demos/screens/mumsa.webp",
     fits: "Restauranger och caféer som vill ta emot beställningar på sin egen sajt.",
-    tryThis: ["Beställ en pizza som kund", "Byt till restaurangvyn och se ordern landa i köket", "Se dagens försäljning som ägare"],
+    tryThis: ["Beställ en pizza som kund och följ ordern live", "Byt till restaurangvyn och flytta ordern genom köket", "Markera en rätt som slut och se den försvinna för kunden"],
   },
   bokad: {
     openHref: "/demo/bokad",
     image: "/images/demos/screens/bokad.webp",
     fits: "Salonger, kliniker, PT och andra som tar emot bokningar.",
-    tryThis: ["Sök och jämför salonger i Värmland", "Boka en tid i några få steg", "Byt till salongens och ägarens vy"],
+    tryThis: ["Boka en tid som kund i några få steg", "Lägg in en telefonbokning i salongens vy", "Se veckans beläggning och intäkter som ägare"],
   },
   forma: {
     openHref: "/demo/forma",
     image: "/images/demos/screens/forma.webp",
     fits: "Företag som säljer produkter med många val, till exempel hus, kök eller maskiner.",
-    tryThis: ["Bygg ett attefallshus steg för steg", "Se priset ändras medan du väljer", "Skicka en färdig offertförfrågan"],
+    tryThis: ["Bygg ett attefallshus och se priset ändras", "Skicka en offertförfrågan", "Flytta förfrågan genom säljtavlan som säljare"],
   },
   kundportal: {
     openHref: "/demo/kundportal",
     image: "/images/demos/kundportal/overview.webp",
     fits: "Byråer, konsulter och alla som levererar till kunder i flera steg.",
-    tryThis: ["Granska och godkänn en leverans", "Hitta rätt fil i materialbiblioteket", "Läs och svara på meddelanden"],
+    tryThis: ["Granska och godkänn en leverans", "Hitta rätt fil i materialbiblioteket", "Skriv ett meddelande och få svar"],
   },
 };
 
