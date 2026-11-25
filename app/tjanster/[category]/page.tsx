@@ -1,25 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, ChevronRight, Sparkles } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { Section } from "@/components/ui/Section";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { AccentBadge } from "@/components/ui/AccentBadge";
-import { Button } from "@/components/ui/Button";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { services } from "@/lib/data/services";
 import { servicePages } from "@/lib/data/service-pages";
-import { getServiceAccent, iconTextClasses } from "@/lib/design/accents";
+import { getServiceAccent } from "@/lib/design/accents";
 import { serviceIcons, serviceFeatureIcons } from "@/lib/design/service-icons";
 import { ServiceHero } from "@/components/sections/ServiceHero";
-import { Stats } from "@/components/sections/Stats";
-import { Process } from "@/components/sections/Process";
+import { FeatureList } from "@/components/sections/FeatureList";
+import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
+import { CaseSpotlight } from "@/components/sections/CaseSpotlight";
+import { ServiceVisual } from "@/components/visuals/ServiceVisual";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 import { SystemsShowcase } from "@/components/sections/SystemsShowcase";
 
 const SITE_URL = "https://lindqvistholmgren.se";
+
+// Vilka case som visas på respektive tjänstesida (matchas mot projektets
+// kategori och tjänster). Saknas träff visas de senaste casen.
+const caseMatch: Record<string, RegExp> = {
+  webb: /webb|hemsida|webbplats|shop/i,
+  seo: /seo|sök/i,
+  design: /design|profil|logo|grafisk|varumärke/i,
+  tillvaxt: /marknad|tillväxt|annons|seo/i,
+  support: /webb|support|underhåll/i,
+};
 
 type Props = {
   params: Promise<{ category: string }>;
@@ -129,74 +136,60 @@ export default async function ServiceCategoryPage({ params }: Props) {
         description={service.intro}
         accent={accent}
         breadcrumbs={breadcrumbs}
+        visual={<ServiceVisual slug={service.slug} />}
       />
 
-      {/* Systemtjänsten visar demos man kan klicka i i stället för generiska
-          siffror — bästa beviset på att vi faktiskt bygger system. */}
-      {service.slug === "automation" ? <SystemsShowcase /> : <Stats />}
-
-      <Section tone="olive">
-        <Container>
-          <h2 className="max-w-xl font-display text-2xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-3xl">
-            Vad ingår
-          </h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {service.features.map((feature) => (
-              <GlassCard key={feature.title} accent={accent}>
-                <AccentBadge icon={serviceFeatureIcons[feature.icon]} accent={accent} />
-                <h3 className="mt-5 font-display text-lg font-semibold text-fg">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{feature.description}</p>
-              </GlassCard>
-            ))}
-          </div>
-
-          {pages.length > 0 && (
-            <>
-              <h2 className="mt-14 max-w-xl font-display text-2xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-3xl">
-                Läs mer om {titleLower}
-              </h2>
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <FeatureList
+        eyebrow="Vad ingår"
+        title={`Allt ni behöver för ${titleLower}, från en och samma plats`}
+        intro={service.description}
+        accent={accent}
+        features={service.features.map((feature) => ({
+          icon: serviceFeatureIcons[feature.icon],
+          title: feature.title,
+          description: feature.description,
+        }))}
+        aside={
+          pages.length > 0 ? (
+            <nav aria-label={`Mer om ${titleLower}`}>
+              <p className="text-sm font-semibold text-fg">Läs mer om {titleLower}</p>
+              <ul className="mt-3 divide-y divide-line border-y border-line">
                 {pages.map((page) => (
-                  <Link
-                    key={page.slug}
-                    href={`/tjanster/${service.slug}/${page.slug}`}
-                    className="group block"
-                  >
-                    <GlassCard accent={accent} className="justify-between">
-                      <div>
-                        <h3 className="font-display text-base font-semibold text-fg">{page.title}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-fg-muted">{page.description}</p>
-                      </div>
+                  <li key={page.slug}>
+                    <Link
+                      href={`/tjanster/${service.slug}/${page.slug}`}
+                      className="group flex items-center justify-between gap-4 py-2.5 text-[15px] text-fg-muted transition-colors hover:text-fg"
+                    >
+                      {page.title}
                       <ArrowUpRight
-                        className={`mt-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 ${iconTextClasses[accent]}`}
-                        size={18}
+                        size={15}
+                        className="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                       />
-                    </GlassCard>
-                  </Link>
+                    </Link>
+                  </li>
                 ))}
-              </div>
-            </>
-          )}
+              </ul>
+            </nav>
+          ) : undefined
+        }
+      />
 
-          <div className="mt-10">
-            <Button href="/projekt" variant="secondary">
-              Se vårt arbete
-              <ChevronRight size={16} strokeWidth={2.5} />
-            </Button>
-          </div>
-        </Container>
-      </Section>
+      {/* Systemtjänsten visar demos man kan klicka i — bästa beviset på att vi
+          faktiskt bygger system. Övriga tjänster visar case från samma område. */}
+      {service.slug === "automation" ? (
+        <SystemsShowcase />
+      ) : (
+        <CaseSpotlight match={caseMatch[service.slug]} title={`${service.title} vi har gjort`} />
+      )}
 
       {service.process && service.process.length > 0 && (
-        <Process
-          steps={service.process.map((step, index) => ({
-            number: String(index + 1).padStart(2, "0"),
+        <ProcessTimeline
+          title={`Så jobbar vi med ${titleLower}`}
+          steps={service.process.map((step) => ({
             title: step.title,
             description: step.description,
             icon: serviceFeatureIcons[step.icon],
           }))}
-          eyebrow="Vårt arbetssätt"
-          title={`Så jobbar vi med ${titleLower}`}
         />
       )}
 
