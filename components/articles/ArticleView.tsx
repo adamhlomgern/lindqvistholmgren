@@ -1,9 +1,12 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CategoryPill } from "@/components/ui/CategoryPill";
 import { getCategories } from "@/lib/data/categories";
+import { getPublishedArticles } from "@/lib/data/articles";
+import { buildCourse, findLesson } from "@/lib/articles/course";
+import { MarkLessonRead } from "@/components/articles/MarkLessonRead";
 import { resolveCategoryVisual } from "@/lib/articles/visuals";
 import { Button } from "@/components/ui/Button";
 import { CtaReassurance } from "@/components/ui/CtaReassurance";
@@ -53,8 +56,11 @@ function formatDate(date: string) {
 // preview genuinely shows "the real article rendering" rather than a
 // lookalike that could drift from what visitors actually see.
 export async function ArticleView({ article }: { article: Article }) {
-  const categories = await getCategories();
+  const [categories, published] = await Promise.all([getCategories(), getPublishedArticles()]);
   const { accent } = resolveCategoryVisual(categories, article.category);
+  // Artikeln som lektion i Kunskapsbanken (lib/articles/course.ts).
+  const course = buildCourse(published, categories);
+  const lesson = findLesson(course, article.slug);
   return (
     <>
       <Section tone="light" className="pb-10 pt-16 md:pb-14 md:pt-24">
@@ -66,12 +72,19 @@ export async function ArticleView({ article }: { article: Article }) {
               </Link>
               <ChevronRight size={12} strokeWidth={2.5} />
               <Link href="/artiklar" className="transition-colors hover:text-fg">
-                Artiklar
+                Kunskapsbanken
               </Link>
               <ChevronRight size={12} strokeWidth={2.5} />
-              <span className="truncate text-fg-subtle">{article.title}</span>
+              <span className="truncate text-fg-subtle">
+                {lesson ? `Modul ${lesson.mod.number}: ${lesson.mod.name}` : article.title}
+              </span>
             </nav>
-            <div className="mt-4 flex items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              {lesson && (
+                <span className="rounded-full bg-fg px-2.5 py-0.5 text-xs font-medium text-canvas">
+                  Lektion {lesson.mod.number}.{lesson.index + 1} av {lesson.mod.lessons.length}
+                </span>
+              )}
               <CategoryPill accent={accent}>{article.category}</CategoryPill>
               <span className="text-[13px] text-fg-muted">
                 {formatDate(article.date)} · {article.readTime}
@@ -96,6 +109,35 @@ export async function ArticleView({ article }: { article: Article }) {
         <Container>
           <div className="mx-auto max-w-3xl">
             <div className="article-prose" dangerouslySetInnerHTML={{ __html: article.content }} />
+            <MarkLessonRead slug={article.slug} />
+            {lesson && (lesson.previous || lesson.next) && (
+              <nav aria-label="Lektioner" className="mt-14 grid gap-3 sm:grid-cols-2">
+                {lesson.previous ? (
+                  <Link
+                    href={`/artiklar/${lesson.previous.slug}`}
+                    className="group rounded-2xl bg-surface p-5 ring-1 ring-line transition-shadow hover:shadow-raised"
+                  >
+                    <span className="flex items-center gap-1.5 text-sm text-fg-muted">
+                      <ArrowLeft size={14} /> Föregående lektion
+                    </span>
+                    <span className="mt-1 block font-medium leading-snug text-fg">{lesson.previous.title}</span>
+                  </Link>
+                ) : (
+                  <span className="hidden sm:block" />
+                )}
+                {lesson.next && (
+                  <Link
+                    href={`/artiklar/${lesson.next.slug}`}
+                    className="group rounded-2xl bg-fg p-5 text-canvas transition-colors hover:bg-ink-800 sm:text-right"
+                  >
+                    <span className="flex items-center gap-1.5 text-sm text-canvas/70 sm:justify-end">
+                      {lesson.nextIsNewModule ? "Nästa modul" : "Nästa lektion"} <ArrowRight size={14} />
+                    </span>
+                    <span className="mt-1 block font-medium leading-snug">{lesson.next.title}</span>
+                  </Link>
+                )}
+              </nav>
+            )}
             <ArticleCta category={article.category} />
             <RelatedArticles currentSlug={article.slug} category={article.category} />
           </div>

@@ -23,7 +23,7 @@ const details: Record<string, { openHref: string; image: string; fits: string; t
     openHref: "/demo/servicekoll",
     image: "/images/demos/screens/servicekoll.webp",
     fits: "Verkstäder, VVS-firmor och alla som servar kunders bilar, maskiner eller anläggningar.",
-    tryThis: ["Byt bransch mellan bilverkstad, VVS och eget underhåll", "Se vad som är försenat och kontakta kunden direkt", "Registrera en service och se nästa påminnelse"],
+    tryThis: ["Ring, sms:a eller mejla en kund direkt från ett objekt", "Boka en servicetid och se den under Bokningar", "Påminn alla kunder med försenad service med ett klick"],
   },
   mumsa: {
     openHref: "/demo/mumsa",

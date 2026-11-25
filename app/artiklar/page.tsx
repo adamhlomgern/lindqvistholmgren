@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Newspaper } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import { PageHero } from "@/components/ui/PageHero";
-import { ArticlesExplorer } from "@/components/sections/ArticlesExplorer";
+import { CourseLibrary } from "@/components/articles/CourseLibrary";
 import { getPublishedArticles } from "@/lib/data/articles";
 import { getCategories } from "@/lib/data/categories";
 
 export const metadata: Metadata = {
-  title: "Artiklar",
+  title: "Kunskapsbanken: artiklar om webb och marknadsföring",
   description:
     "Tips och råd om webb, design och digital marknadsföring för småföretag — skrivet av Lindqvist / Holmgren.",
   alternates: {
@@ -45,15 +44,24 @@ export default async function ArtiklarPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PageHero
-        icon={Newspaper}
-        eyebrow="Artiklar"
-        title="Tips för er som driver företag"
-        description="Kort läsning om hemsidor, Google, design och system. Skrivet för företagare, inte för andra byråer."
-      />
+      <Section tone="light" className="pb-10 pt-12 md:pb-14 md:pt-16">
+        <Container>
+          <p className="flex items-center gap-2 text-sm font-medium text-fg-muted">
+            <GraduationCap size={16} className="text-primary" />
+            Kunskapsbanken
+          </p>
+          <h1 className="mt-3 max-w-3xl font-display text-[2.6rem] font-semibold leading-[1.05] tracking-[-0.035em] text-fg md:text-[3.25rem]">
+            Lär er det viktigaste om webb, Google och marknadsföring.
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-fg-muted">
+            Korta lektioner skrivna för er som driver företag. Börja från början eller hoppa direkt till
+            det ni undrar över.
+          </p>
+        </Container>
+      </Section>
       <Section tone="light" className="pt-0 md:pt-0">
         <Container>
-          <ArticlesExplorer articles={articles} categories={categories} />
+          <CourseLibrary articles={articles} categories={categories} />
         </Container>
       </Section>
     </>
