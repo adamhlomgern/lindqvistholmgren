@@ -9,8 +9,9 @@ import { services } from "@/lib/data/services";
 import { serviceIcons } from "@/lib/design/service-icons";
 import { badgeClasses, getServiceAccent } from "@/lib/design/accents";
 
-// Interaktiv tjänsteöversikt: välj en tjänst i listan, så byts den kodade
-// illustrationen och de viktigaste punkterna till höger. Ersätter sex
+// Interaktiv tjänsteöversikt: hovra en tjänst i listan, så byts den kodade
+// illustrationen och de viktigaste punkterna till höger; hela raden är en
+// länk till tjänstesidan. På mobil (utan hover) visas bara listan. Ersätter sex
 // likadana kort och visar samtidigt vad vi kan bygga.
 export function ServiceExplorer() {
   const [active, setActive] = useState(services[0]?.slug ?? "webb");
@@ -18,18 +19,15 @@ export function ServiceExplorer() {
 
   return (
     <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-14">
-      <div role="tablist" aria-label="Tjänster" className="flex flex-col">
+      <nav aria-label="Tjänster" className="flex flex-col">
         {services.map((service, index) => {
           const Icon = serviceIcons[service.slug];
           const selected = service.slug === active;
           return (
-            <button
+            <Link
               key={service.slug}
-              role="tab"
-              type="button"
-              aria-selected={selected}
-              aria-controls="service-explorer-panel"
-              onClick={() => setActive(service.slug)}
+              href={`/tjanster/${service.slug}`}
+              aria-current={selected ? "true" : undefined}
               onMouseEnter={() => setActive(service.slug)}
               onFocus={() => setActive(service.slug)}
               className={`group relative flex w-full items-center gap-4 rounded-2xl px-4 py-4 text-left transition-colors sm:px-5 ${
@@ -56,14 +54,14 @@ export function ServiceExplorer() {
               </span>
               <ArrowUpRight
                 size={18}
-                className={`shrink-0 transition-all ${selected ? "text-fg opacity-100" : "opacity-0"}`}
+                className={`shrink-0 transition-all duration-200 ${selected ? "translate-x-0 text-fg opacity-100" : "-translate-x-1 opacity-0"}`}
               />
-            </button>
+            </Link>
           );
         })}
-      </div>
+      </nav>
 
-      <div id="service-explorer-panel" role="tabpanel" className="lg:sticky lg:top-24 lg:self-start">
+      <div className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.slug}

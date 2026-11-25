@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { services } from "@/lib/data/services";
-import { servicePages } from "@/lib/data/service-pages";
 import { getServiceAccent } from "@/lib/design/accents";
 import { serviceIcons, serviceFeatureIcons } from "@/lib/design/service-icons";
 import { ServiceHero } from "@/components/sections/ServiceHero";
@@ -11,6 +9,10 @@ import { FeatureList } from "@/components/sections/FeatureList";
 import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
 import { CaseSpotlight, serviceCaseMatch } from "@/components/sections/CaseSpotlight";
 import { ServiceVisual } from "@/components/visuals/ServiceVisual";
+import { SetupPlanner } from "@/components/sections/SetupPlanner";
+import { SituationPicker } from "@/components/sections/SituationPicker";
+import { EngagementModels } from "@/components/sections/EngagementModels";
+import { seoSituations } from "@/lib/data/service-plans";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBanner } from "@/components/sections/CtaBanner";
@@ -54,7 +56,6 @@ export default async function ServiceCategoryPage({ params }: Props) {
 
   const Icon = serviceIcons[service.slug] ?? Sparkles;
   const accent = getServiceAccent(service.slug);
-  const pages = servicePages.filter((page) => page.category === service.slug);
   const pageUrl = `${SITE_URL}/tjanster/${service.slug}`;
   const titleLower = service.titleLower ?? service.title.toLowerCase();
 
@@ -140,37 +141,25 @@ export default async function ServiceCategoryPage({ params }: Props) {
           title: feature.title,
           description: feature.description,
         }))}
-        aside={
-          pages.length > 0 ? (
-            <nav aria-label={`Mer om ${titleLower}`}>
-              <p className="text-sm font-semibold text-fg">Läs mer om {titleLower}</p>
-              <ul className="mt-3 divide-y divide-line border-y border-line">
-                {pages.map((page) => (
-                  <li key={page.slug}>
-                    <Link
-                      href={`/tjanster/${service.slug}/${page.slug}`}
-                      className="group flex items-center justify-between gap-4 py-2.5 text-[15px] text-fg-muted transition-colors hover:text-fg"
-                    >
-                      {page.title}
-                      <ArrowUpRight
-                        size={15}
-                        className="shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          ) : undefined
-        }
       />
+
+      {/* Upplägg: webben får planeraren (vad + hur man betalar, med länkar till
+          SEO-undersidorna i sammanhang), SEO får "känner ni igen er?" och
+          övriga tjänster de två betalningsmodellerna. */}
+      {service.slug === "webb" ? (
+        <SetupPlanner />
+      ) : service.slug === "seo" ? (
+        <SituationPicker title="Välj det som stämmer bäst, så berättar vi var vi skulle börja." situations={seoSituations} />
+      ) : (
+        <EngagementModels />
+      )}
 
       {/* Systemtjänsten visar demos man kan klicka i — bästa beviset på att vi
           faktiskt bygger system. Övriga tjänster visar case från samma område. */}
       {service.slug === "automation" ? (
         <SystemsShowcase />
       ) : (
-        <CaseSpotlight match={serviceCaseMatch[service.slug]} title={`${service.title} vi har gjort`} />
+        <CaseSpotlight match={serviceCaseMatch[service.slug]} title={`${service.title} vi har gjort`} tone="subtle" />
       )}
 
       {service.process && service.process.length > 0 && (

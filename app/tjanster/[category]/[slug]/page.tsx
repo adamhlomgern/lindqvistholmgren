@@ -7,12 +7,19 @@ import { Section } from "@/components/ui/Section";
 import { services } from "@/lib/data/services";
 import { servicePages } from "@/lib/data/service-pages";
 import { getServiceAccent, iconTextClasses } from "@/lib/design/accents";
-import { serviceIcons } from "@/lib/design/service-icons";
+import { serviceFeatureIcons, serviceIcons } from "@/lib/design/service-icons";
 import { ServiceHero } from "@/components/sections/ServiceHero";
 import { ServiceVisual } from "@/components/visuals/ServiceVisual";
 import { CaseSpotlight, serviceCaseMatch } from "@/components/sections/CaseSpotlight";
 import { Reveal } from "@/components/motion/Reveal";
 import { StartProjectButton } from "@/components/contact/StartProjectButton";
+import { SetupPlanner } from "@/components/sections/SetupPlanner";
+import { SituationPicker } from "@/components/sections/SituationPicker";
+import { EngagementModels } from "@/components/sections/EngagementModels";
+import { ProcessTimeline } from "@/components/sections/ProcessTimeline";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { Faq } from "@/components/sections/Faq";
+import { seoSituations } from "@/lib/data/service-plans";
 import { CtaBanner } from "@/components/sections/CtaBanner";
 
 const SITE_URL = "https://lindqvistholmgren.se";
@@ -158,7 +165,26 @@ export default async function ServiceLandingPage({ params }: Props) {
           </aside>
         </Container>
       </Section>
-      <CaseSpotlight title="Ett case från samma område" limit={1} match={serviceCaseMatch[category]} />
+      {category === "webb" ? (
+        <SetupPlanner />
+      ) : category === "seo" ? (
+        <SituationPicker title="Välj det som stämmer bäst, så berättar vi var vi skulle börja." situations={seoSituations} />
+      ) : (
+        <EngagementModels />
+      )}
+      <CaseSpotlight title="Ett case från samma område" limit={1} match={serviceCaseMatch[category]} tone="subtle" />
+      {service?.process && service.process.length > 0 && (
+        <ProcessTimeline
+          title="Så går det till"
+          steps={service.process.map((step) => ({
+            title: step.title,
+            description: step.description,
+            icon: serviceFeatureIcons[step.icon],
+          }))}
+        />
+      )}
+      <Testimonials />
+      {service?.faq && service.faq.length > 0 && <Faq items={service.faq} title="Vanliga frågor" />}
       <CtaBanner />
     </>
   );
