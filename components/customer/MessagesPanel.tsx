@@ -21,9 +21,14 @@ type MessagesPanelProps = {
   // a customer, so submitting it there would just redirect to /kund/login.
   // Hiding the form avoids that dead end instead of letting someone hit it.
   readOnly?: boolean;
+  // Demoläge (app/demo/kundportal): skicka lokalt i stället för via
+  // servern, utan bilduppladdning, och visa "skriver…" medan ett svar är
+  // på väg.
+  onSend?: (body: string) => void;
+  typingLabel?: string | null;
 };
 
-export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps) {
+export function MessagesPanel({ messages, readOnly = false, onSend, typingLabel = null }: MessagesPanelProps) {
   const [state, formAction, pending] = useActionState(sendCustomerMessage, undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -49,7 +54,7 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
   useLayoutEffect(() => {
     const list = listRef.current;
     if (list) list.scrollTop = list.scrollHeight;
-  }, [messages.length]);
+  }, [messages.length, typingLabel]);
 
   // Local preview only — nothing is uploaded until "Skicka" is pressed.
   const pendingImageUrl = useMemo(() => (pendingImage ? URL.createObjectURL(pendingImage) : null), [pendingImage]);
@@ -109,12 +114,59 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
                 </p>
               </div>
             ))}
+            {typingLabel && (
+              <div className="self-start rounded-xl bg-fg/10 px-3.5 py-2.5 text-sm text-fg-muted">
+                <span className="inline-flex items-center gap-1">
+                  {typingLabel} skriver
+                  <span className="inline-flex gap-0.5">
+                    <span className="h-1 w-1 animate-bounce rounded-full bg-fg-muted [animation-delay:-0.2s]" />
+                    <span className="h-1 w-1 animate-bounce rounded-full bg-fg-muted [animation-delay:-0.1s]" />
+                    <span className="h-1 w-1 animate-bounce rounded-full bg-fg-muted" />
+                  </span>
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="shrink-0 border-t border-line px-4 py-4 sm:px-6 sm:py-6">
           {readOnly ? (
             <p className="text-xs text-fg-subtle">Det här är en förhandsvisning — meddelanden går inte att skicka härifrån.</p>
+          ) : onSend ? (
+            <form
+              className="flex flex-col gap-2 sm:flex-row sm:items-end"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const text = textareaRef.current?.value.trim();
+                if (!text) return;
+                onSend(text);
+                if (textareaRef.current) textareaRef.current.value = "";
+              }}
+            >
+              <textarea
+                ref={textareaRef}
+                name="body"
+                required
+                rows={2}
+                placeholder="Skriv ett meddelande…"
+                className={textareaClasses}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    event.currentTarget.form?.requestSubmit();
+                  }
+                }}
+              />
+              <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-start">
+                <EmojiPickerButton textareaRef={textareaRef} />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
+                >
+                  Skicka
+                </button>
+              </div>
+            </form>
           ) : (
             <>
               {pendingImage && pendingImageUrl && (

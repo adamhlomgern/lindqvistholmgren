@@ -5,7 +5,7 @@ import { ProjectOverviewCard } from "@/components/customer/ProjectOverviewCard";
 import { MessagesPreviewCard } from "@/components/customer/MessagesPreviewCard";
 import { CompactContactCard } from "@/components/customer/CompactContactCard";
 import { useCustomerPortalDemo } from "@/features/customer-portal-demo/state/CustomerPortalDemoProvider";
-import { buildDemoApprovals, buildDemoProject, demoAssignee, demoMessages } from "@/features/customer-portal-demo/data/seed";
+import { buildDemoApprovals, buildDemoProject, demoAssignee } from "@/features/customer-portal-demo/data/seed";
 import type { CustomerActionItem } from "@/lib/data/customer/overview";
 
 const BASE = "/demo/kundportal";
@@ -53,7 +53,7 @@ export function DemoOverview() {
       </div>
 
       <div className="mt-4">
-        <MessagesPreviewCard messages={demoMessages} hrefBase={BASE} />
+        <MessagesPreviewCard messages={demo.messages} hrefBase={BASE} />
       </div>
 
       <div className="mt-4">
