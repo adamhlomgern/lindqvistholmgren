@@ -18,7 +18,7 @@ export function CtaBanner() {
               Har ni ett projekt på gång? <span className="text-highlight">Hör av er.</span>
             </h2>
             <p className="mt-4 text-lg text-fg-muted">
-              Berätta vad ni vill uppnå, så återkommer vi med ett förslag på upplägg och en offert.
+              Skriv några rader om vad ni behöver. Vi svarar inom ett dygn med frågor eller ett förslag.
             </p>
             <CtaReassurance className="mt-6" />
           </div>

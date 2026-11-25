@@ -43,7 +43,7 @@ type ProcessProps = {
 export function Process({
   steps = defaultSteps,
   eyebrow = "Vårt arbetssätt",
-  title = "En nära process, från idé till lansering",
+  title = "Så går det till",
   tone = "subtle",
 }: ProcessProps) {
   return (

@@ -25,7 +25,7 @@ export default function Home() {
       <LogoCarousel />
       <Services />
       <SystemsShowcase />
-      <CaseSpotlight title="Ett urval av vad vi byggt" />
+      <CaseSpotlight title="Några av våra case" />
       <Testimonials tone="subtle" />
       <Process tone="light" />
       <AboutTeaser />

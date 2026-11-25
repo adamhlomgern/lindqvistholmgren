@@ -32,7 +32,7 @@ export function Testimonials({ tone = "light" }: { tone?: "light" | "subtle" }) 
       <Container>
         <Eyebrow icon={Quote}>Våra kunder</Eyebrow>
         <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
-          Det säger kunderna själva
+          Vad kunderna säger
         </h2>
         <div className="mt-12 grid gap-4 md:grid-cols-3">
           {featured && (
@@ -60,7 +60,7 @@ export function Testimonials({ tone = "light" }: { tone?: "light" | "subtle" }) 
         </div>
         <div className="mt-10 flex flex-col items-start gap-4 rounded-2xl bg-surface p-6 shadow-card ring-1 ring-line sm:flex-row sm:items-center sm:justify-between">
           <p className="font-display text-lg font-semibold tracking-[-0.01em] text-fg">
-            Vill ni bli nästa? <span className="text-fg-muted">Vi svarar inom 24 timmar.</span>
+            Nyfikna på vad vi kan göra för er? <span className="text-fg-muted">Hör av er.</span>
           </p>
           <div className="flex flex-wrap gap-3">
             <StartProjectButton trackingLocation="kundcitat">

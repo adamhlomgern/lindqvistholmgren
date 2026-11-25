@@ -76,6 +76,9 @@
 body {
   background: var(--color-canvas);
   color: var(--color-fg);
+  /* clip (inte hidden) så att position: sticky fortsätter fungera. Skyddar
+     mot horisontell scroll om något element råkar sticka ut på mobilen. */
+  overflow-x: clip;
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 

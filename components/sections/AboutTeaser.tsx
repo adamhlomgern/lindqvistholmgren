@@ -27,7 +27,7 @@ export function AboutTeaser() {
         <div>
           <Eyebrow icon={Heart}>Om oss</Eyebrow>
           <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
-            Två personer. Ett gemensamt hantverk.
+            Vi som gör jobbet.
           </h2>
           <div className="mt-6 flex flex-col gap-3">
             {team.map((person) => (
@@ -47,11 +47,9 @@ export function AboutTeaser() {
         </div>
         <div>
           <p className="text-lg leading-relaxed text-fg-muted">
-            Vi är inte en stor byrå med projektledare och mellanhänder — vi är två
-            frilansare som driver Lindqvist / Holmgren tillsammans, med bas i Karlstad.
-            Ni pratar alltid direkt med den som faktiskt gör jobbet, och vi lägger
-            stolthet i att leverera något genomarbetat, oavsett hur stort eller litet
-            projektet är.
+            Vi är ingen stor byrå. Vi är två personer som gör jobbet själva, från första mötet
+            till lansering och efter. Det betyder att ni alltid vet vem ni pratar med, och att
+            den som svarar på era frågor också är den som bygger.
           </p>
           <Button href="/om-oss" variant="secondary" className="mt-6">
             Läs mer om oss

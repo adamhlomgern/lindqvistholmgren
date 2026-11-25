@@ -12,8 +12,7 @@ export function Services() {
           <div>
             <p className="text-sm font-medium text-fg-muted">Våra tjänster</p>
             <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold leading-[1.06] tracking-[-0.03em] text-fg md:text-[2.75rem]">
-              Allt ni behöver för att synas, sälja och{" "}
-              <span className="text-fg-subtle">driva företaget digitalt.</span>
+              Det här hjälper vi till med.
             </h2>
           </div>
           <Button href="/tjanster" variant="secondary" className="shrink-0">

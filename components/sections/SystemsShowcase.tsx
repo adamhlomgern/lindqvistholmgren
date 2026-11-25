@@ -37,13 +37,13 @@ export function SystemsShowcase() {
           <div>
             <p className="text-sm font-medium text-fg-muted">Affärssystem</p>
             <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.05] tracking-[-0.035em] md:text-5xl">
-              Mer än hemsidor. <span className="text-highlight">Vi bygger systemen</span> ni driver företaget i.
+              Vi bygger <span className="text-highlight">system</span> också.
             </h2>
           </div>
           <div>
             <p className="text-lg leading-relaxed text-fg-muted">
-              Bokning, beställningar, kundportaler eller ett internt verktyg som ersätter Excel och
-              mejltrådar — byggt för hur just ni jobbar, inte en färdig mall ni får anpassa er efter.
+              Bokning, beställningar, kundportaler och interna verktyg. Vi bygger dem efter hur ni
+              jobbar, så att ni slipper Excel-filer och långa mejltrådar.
             </p>
           </div>
         </div>
@@ -92,8 +92,8 @@ export function SystemsShowcase() {
               Vi kör vårt eget företag i ett system vi byggt själva.
             </p>
             <p className="mt-2 text-fg-muted">
-              Kunder, projekt, fakturor, inkorg och en kundportal där våra kunder godkänner leveranser —
-              samma sorts lösning kan vi bygga åt er.
+              Kunder, projekt, fakturor, inkorg och en kundportal där våra kunder godkänner leveranser.
+              Något liknande kan vi bygga åt er.
             </p>
           </div>
           <StartProjectButton trackingLocation="system-sektion" className="shrink-0">

@@ -43,7 +43,7 @@ export function MobileMenu({ open, onClose, navItems }: MobileMenuProps) {
 
   return (
     <div
-      className={`fixed inset-0 z-[60] flex h-dvh w-screen flex-col bg-canvas transition-opacity duration-300 ease-out md:hidden ${
+      className={`fixed inset-0 z-[60] flex h-dvh flex-col bg-canvas transition-opacity duration-300 ease-out md:hidden ${
         open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
       }`}
       aria-hidden={!open}

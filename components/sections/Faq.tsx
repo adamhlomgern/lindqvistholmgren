@@ -60,7 +60,7 @@ type FaqProps = {
 export function Faq({
   items = defaultFaqs,
   eyebrow = "Vanliga frågor",
-  title = "Bra att veta innan ni hör av er",
+  title = "Vanliga frågor",
   tone = "olive",
 }: FaqProps) {
   const [open, setOpen] = useState<number | null>(0);
