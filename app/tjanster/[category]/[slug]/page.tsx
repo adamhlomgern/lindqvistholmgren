@@ -13,6 +13,7 @@ import { ServiceVisual } from "@/components/visuals/ServiceVisual";
 import { CaseSpotlight, serviceCaseMatch } from "@/components/sections/CaseSpotlight";
 import { Reveal } from "@/components/motion/Reveal";
 import { StartProjectButton } from "@/components/contact/StartProjectButton";
+import { ToolsShowcase } from "@/components/sections/ToolsShowcase";
 import { SetupPlanner } from "@/components/sections/SetupPlanner";
 import { SituationPicker } from "@/components/sections/SituationPicker";
 import { EngagementModels } from "@/components/sections/EngagementModels";
@@ -172,7 +173,13 @@ export default async function ServiceLandingPage({ params }: Props) {
       ) : (
         <EngagementModels />
       )}
-      <CaseSpotlight title="Ett case från samma område" limit={1} match={serviceCaseMatch[category]} tone="subtle" />
+      {(category === "webb" || category === "seo") && <ToolsShowcase only="kollen" eyebrow="Gratis koll" />}
+      <CaseSpotlight
+        title="Ett case från samma område"
+        limit={1}
+        match={serviceCaseMatch[category]}
+        tone={category === "webb" || category === "seo" ? "light" : "subtle"}
+      />
       {service?.process && service.process.length > 0 && (
         <ProcessTimeline
           title="Så går det till"

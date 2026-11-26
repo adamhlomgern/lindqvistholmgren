@@ -21,6 +21,7 @@ const serviceLinks: FooterLink[] = [
 const pageLinks: FooterLink[] = [
   { href: "/", label: "Hem" },
   { href: "/demos", label: "Demos" },
+  { href: "/verktyg", label: "Gratis verktyg" },
   { href: "/projekt", label: "Projekt" },
   { href: "/artiklar", label: "Artiklar" },
   { href: "/om-oss", label: "Om oss" },

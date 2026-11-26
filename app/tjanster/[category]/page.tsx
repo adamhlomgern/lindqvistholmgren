@@ -16,6 +16,7 @@ import { seoSituations } from "@/lib/data/service-plans";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Faq } from "@/components/sections/Faq";
 import { CtaBanner } from "@/components/sections/CtaBanner";
+import { ToolsShowcase } from "@/components/sections/ToolsShowcase";
 import { SystemsShowcase } from "@/components/sections/SystemsShowcase";
 
 const SITE_URL = "https://lindqvistholmgren.se";
@@ -154,12 +155,16 @@ export default async function ServiceCategoryPage({ params }: Props) {
         <EngagementModels />
       )}
 
+      {/* Gratisverktygen: webben får båda, SEO bara Hemsidekollen. */}
+      {service.slug === "webb" && <ToolsShowcase />}
+      {service.slug === "seo" && <ToolsShowcase only="kollen" eyebrow="Gratis SEO-koll" />}
+
       {/* Systemtjänsten visar demos man kan klicka i — bästa beviset på att vi
           faktiskt bygger system. Övriga tjänster visar case från samma område. */}
       {service.slug === "automation" ? (
         <SystemsShowcase />
       ) : (
-        <CaseSpotlight match={serviceCaseMatch[service.slug]} title={`${service.title} vi har gjort`} tone="subtle" />
+        <CaseSpotlight match={serviceCaseMatch[service.slug]} title={`${service.title} vi har gjort`} tone={service.slug === "webb" || service.slug === "seo" ? "light" : "subtle"} />
       )}
 
       {service.process && service.process.length > 0 && (

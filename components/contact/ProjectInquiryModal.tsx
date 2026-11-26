@@ -23,6 +23,7 @@ import { trackConversion } from "@/lib/analytics";
 type ProjectInquiryModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  prefill?: { description?: string; company?: string };
 };
 
 const CATEGORY_OPTIONS: { value: ProjectCategory; label: string; icon: LucideIcon }[] = [
@@ -132,11 +133,11 @@ function Dropdown<T extends string>({
   );
 }
 
-export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProps) {
+export function ProjectInquiryModal({ isOpen, onClose, prefill }: ProjectInquiryModalProps) {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState(initialState);
+  const [form, setForm] = useState(() => ({ ...initialState, ...prefill }));
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
-  const [quick, setQuick] = useState(false);
+  const [quick, setQuick] = useState(Boolean(prefill?.description));
 
   useEffect(() => {
     if (!isOpen) return;
@@ -301,7 +302,7 @@ export function ProjectInquiryModal({ isOpen, onClose }: ProjectInquiryModalProp
                       <Field label="Meddelande *">
                         <textarea
                           autoFocus
-                          rows={4}
+                          rows={prefill?.description ? 7 : 4}
                           value={form.description}
                           onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
                           placeholder="T.ex. Vi funderar på en ny hemsida och vill veta hur ni brukar lägga upp det…"

@@ -3,8 +3,12 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { ProjectInquiryModal } from "@/components/contact/ProjectInquiryModal";
 
+export type InquiryPrefill = { description?: string; company?: string };
+
 type ProjectInquiryContextValue = {
-  open: () => void;
+  // Med prefill öppnas "Snabbt meddelande" med texten redan ifylld, t.ex.
+  // från Sajtbyggaren.
+  open: (prefill?: InquiryPrefill) => void;
   isOpen: boolean;
 };
 
@@ -12,11 +16,19 @@ const ProjectInquiryContext = createContext<ProjectInquiryContextValue | null>(n
 
 export function ProjectInquiryProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [prefill, setPrefill] = useState<InquiryPrefill | undefined>(undefined);
+  const [openCount, setOpenCount] = useState(0);
+
+  function open(next?: InquiryPrefill) {
+    setPrefill(next);
+    setOpenCount((n) => n + 1);
+    setIsOpen(true);
+  }
 
   return (
-    <ProjectInquiryContext.Provider value={{ open: () => setIsOpen(true), isOpen }}>
+    <ProjectInquiryContext.Provider value={{ open, isOpen }}>
       {children}
-      <ProjectInquiryModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <ProjectInquiryModal key={openCount} isOpen={isOpen} prefill={prefill} onClose={() => setIsOpen(false)} />
     </ProjectInquiryContext.Provider>
   );
 }

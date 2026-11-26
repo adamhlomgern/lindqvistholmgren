@@ -4,6 +4,7 @@ import { LogoCarousel } from "@/components/sections/LogoCarousel";
 import { Services } from "@/components/sections/Services";
 import { SystemsShowcase } from "@/components/sections/SystemsShowcase";
 import { CaseSpotlight } from "@/components/sections/CaseSpotlight";
+import { ToolsShowcase } from "@/components/sections/ToolsShowcase";
 import { Process } from "@/components/sections/Process";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { AboutTeaser } from "@/components/sections/AboutTeaser";
@@ -26,8 +27,9 @@ export default function Home() {
       <Services />
       <SystemsShowcase />
       <CaseSpotlight title="Några av våra case" />
-      <Testimonials tone="subtle" />
-      <Process tone="light" />
+      <ToolsShowcase eyebrow="Våra verktyg" />
+      <Testimonials tone="light" />
+      <Process tone="subtle" />
       <AboutTeaser />
       <Faq />
       <CtaBanner />
