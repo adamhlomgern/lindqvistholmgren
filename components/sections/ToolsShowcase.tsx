@@ -15,7 +15,7 @@ const tools: Record<ToolId, { icon: LucideIcon; name: string; tagline: string; t
     name: "Hemsidekollen",
     tagline: "Hur bra är er sajt?",
     title: "Hur mår er hemsida?",
-    text: "Skriv in adressen så kollar vi hastighet, mobil, Google och förtroende. Ni får ett betyg och en lista på vad som är värt att fixa.",
+    text: "Skriv in adressen så går vi igenom ett 40-tal saker och låter Google mäta sajten i en mobil. Ni får betyg, en åtgärdsplan och konkreta steg att fixa.",
   },
   byggaren: {
     icon: LayoutTemplate,

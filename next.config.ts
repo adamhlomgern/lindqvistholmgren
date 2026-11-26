@@ -19,6 +19,13 @@ const cspHeader = `
 `;
 
 const nextConfig: NextConfig = {
+  // PDF:er (fakturor och Hemsidekollens rapport) läser typsnitt och logga från
+  // disk. De måste följa med in i serverfunktionerna, annars blir PDF:en utan
+  // typsnitt eller går sönder.
+  outputFileTracingIncludes: {
+    "/api/hemsidekollen/rapport": ["./lib/pdf/fonts/**/*", "./lib/pdf/assets/**/*"],
+    "/admin/**/*": ["./lib/pdf/fonts/**/*", "./lib/pdf/assets/**/*", "./public/images/lindqvist-holmgren/lindqvist-holmgren-favicon.png"],
+  },
   async redirects() {
     return [
       // Gamla WordPress-bloggen: index och kategoriarkiv finns inte kvar i

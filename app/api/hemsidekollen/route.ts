@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuditError, auditSite } from "@/lib/site-audit/audit";
 import { isRateLimited } from "@/lib/rate-limit";
-import { signAudit } from "@/lib/site-audit/sign";
+import { sign } from "@/lib/site-audit/sign";
+
+// Startsidan + robots, sitemap, 404- och http-test hämtas, med tidsgränser.
+export const maxDuration = 30;
 
 // POST { url } -> { result: AuditResult, token }. Används av Hemsidekollen (components/tools).
 export async function POST(request: NextRequest) {
@@ -23,7 +26,7 @@ export async function POST(request: NextRequest) {
   try {
     const result = await auditSite(url);
     // token behövs för att kunna mejla rapporten (se lib/site-audit/sign.ts).
-    return NextResponse.json({ result, token: signAudit(result) });
+    return NextResponse.json({ result, token: sign("audit", result) });
   } catch (error) {
     if (error instanceof AuditError) return NextResponse.json({ error: error.message }, { status: 422 });
     console.error("[hemsidekollen] Oväntat fel", error);
