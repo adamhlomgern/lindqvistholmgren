@@ -9,6 +9,7 @@ import type { ArticleIconKey } from "@/lib/types";
 export type CourseModule = {
   number: number;
   name: string;
+  description: string | null;
   icon: ArticleIconKey;
   accent: Accent;
   lessons: ArticleSummary[];
@@ -26,16 +27,23 @@ export function buildCourse(articles: ArticleSummary[], categories: ArticleCateg
 
   const known = categories.filter((c) => byCategory.has(c.name));
   const unknown = [...byCategory.keys()].filter((name) => !categories.some((c) => c.name === name));
-  const ordered: { name: string; icon: ArticleIconKey; accent: Accent }[] = [
+  const ordered: { name: string; icon: ArticleIconKey; accent: Accent; description?: string | null; lessonOrder?: string[] | null }[] = [
     ...known,
     ...unknown.map((name) => ({ name, icon: "layers" as ArticleIconKey, accent: "emerald" as Accent })),
   ];
 
   return ordered.map((cat, index) => {
-    const lessons = [...(byCategory.get(cat.name) ?? [])].sort((a, b) => (a.date < b.date ? -1 : 1));
+    // Ordning från admin först (lesson_order), därefter nya lektioner efter datum.
+    const order = cat.lessonOrder ?? [];
+    const rank = (slug: string) => {
+      const i = order.indexOf(slug);
+      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+    };
+    const lessons = [...(byCategory.get(cat.name) ?? [])].sort((a, b) => rank(a.slug) - rank(b.slug) || (a.date < b.date ? -1 : 1));
     return {
       number: index + 1,
       name: cat.name,
+      description: cat.description ?? null,
       icon: cat.icon,
       accent: cat.accent,
       lessons,
