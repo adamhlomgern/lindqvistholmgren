@@ -23,7 +23,7 @@ import { trackConversion } from "@/lib/analytics";
 type ProjectInquiryModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  prefill?: { description?: string; company?: string };
+  prefill?: { description?: string; company?: string; source?: string };
 };
 
 const CATEGORY_OPTIONS: { value: ProjectCategory; label: string; icon: LucideIcon }[] = [
@@ -135,7 +135,11 @@ function Dropdown<T extends string>({
 
 export function ProjectInquiryModal({ isOpen, onClose, prefill }: ProjectInquiryModalProps) {
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState(() => ({ ...initialState, ...prefill }));
+  const [form, setForm] = useState(() => ({
+    ...initialState,
+    description: prefill?.description ?? "",
+    company: prefill?.company ?? "",
+  }));
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [quick, setQuick] = useState(Boolean(prefill?.description));
 
@@ -211,7 +215,11 @@ export function ProjectInquiryModal({ isOpen, onClose, prefill }: ProjectInquiry
       const response = await fetch("/api/projektforfragan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(quick ? { ...form, ...QUICK_DEFAULTS } : form),
+        body: JSON.stringify({
+          ...(quick ? { ...form, ...QUICK_DEFAULTS } : form),
+          source: prefill?.source,
+          page: window.location.pathname,
+        }),
       });
       if (!response.ok) throw new Error("request failed");
       trackConversion({ name: "inquiry_submit", mode: quick ? "quick" : "full" });

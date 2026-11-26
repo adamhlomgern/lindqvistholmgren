@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuditError, auditSite } from "@/lib/site-audit/audit";
 import { isRateLimited } from "@/lib/rate-limit";
+import { signAudit } from "@/lib/site-audit/sign";
 
-// POST { url } -> AuditResult. Används av Hemsidekollen (components/tools).
+// POST { url } -> { result: AuditResult, token }. Används av Hemsidekollen (components/tools).
 export async function POST(request: NextRequest) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  if (isRateLimited(`hemsidekollen:${ip}`)) {
+  if (isRateLimited(`hemsidekollen:${ip}`, 20)) {
     return NextResponse.json({ error: "Ni har kollat många sajter på kort tid. Vänta en stund och försök igen." }, { status: 429 });
   }
 
@@ -21,7 +22,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = await auditSite(url);
-    return NextResponse.json(result);
+    // token behövs för att kunna mejla rapporten (se lib/site-audit/sign.ts).
+    return NextResponse.json({ result, token: signAudit(result) });
   } catch (error) {
     if (error instanceof AuditError) return NextResponse.json({ error: error.message }, { status: 422 });
     console.error("[hemsidekollen] Oväntat fel", error);

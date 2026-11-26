@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Gauge, LayoutTemplate, type LucideIcon } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
@@ -39,7 +39,15 @@ export function ToolsShowcase({
   only?: ToolId;
   eyebrow?: string;
 }) {
-  const [active, setActive] = useState<ToolId>(only ?? initial);
+  // En delad skiss (?bransch=…) öppnar Sajtbyggaren-fliken direkt.
+  const sharedSketch = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).has("bransch"),
+    () => false,
+  );
+  const [chosen, setChosen] = useState<ToolId | null>(null);
+  const active: ToolId = only ?? chosen ?? (sharedSketch ? "byggaren" : initial);
+  const setActive = setChosen;
   const tool = tools[active];
 
   return (

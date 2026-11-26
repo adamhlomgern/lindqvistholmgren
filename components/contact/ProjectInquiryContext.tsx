@@ -3,7 +3,9 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 import { ProjectInquiryModal } from "@/components/contact/ProjectInquiryModal";
 
-export type InquiryPrefill = { description?: string; company?: string };
+// source = vilken knapp/vilket verktyg som öppnade formuläret (sparas på
+// förfrågan, se lib/inquiries/sources.ts).
+export type InquiryPrefill = { description?: string; company?: string; source?: string };
 
 type ProjectInquiryContextValue = {
   // Med prefill öppnas "Snabbt meddelande" med texten redan ifylld, t.ex.

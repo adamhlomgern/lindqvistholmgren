@@ -7,10 +7,10 @@ const hits = new Map<string, number[]>();
 // alongside the honeypot and the Supabase-backed check in the route itself.
 // A shared store (e.g. Redis) would be needed for a hard guarantee across
 // serverless instances.
-export function isRateLimited(key: string): boolean {
+export function isRateLimited(key: string, max = MAX_REQUESTS): boolean {
   const now = Date.now();
   const recent = (hits.get(key) ?? []).filter((timestamp) => now - timestamp < WINDOW_MS);
   recent.push(now);
   hits.set(key, recent);
-  return recent.length > MAX_REQUESTS;
+  return recent.length > max;
 }

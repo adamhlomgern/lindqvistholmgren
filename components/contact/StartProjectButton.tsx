@@ -25,7 +25,7 @@ export function StartProjectButton({ children, onClick, trackingLocation = "okan
       onClick={(event) => {
         event.preventDefault();
         trackConversion({ name: "cta_click", location: trackingLocation });
-        open();
+        open({ source: trackingLocation });
         onClick?.(event);
       }}
       {...props}

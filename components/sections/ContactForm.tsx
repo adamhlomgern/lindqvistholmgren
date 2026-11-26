@@ -34,6 +34,8 @@ export function ContactForm() {
           email,
           phone: "",
           website,
+          source: "kontaktformular",
+          page: window.location.pathname,
         }),
       });
       if (!response.ok) throw new Error("request failed");

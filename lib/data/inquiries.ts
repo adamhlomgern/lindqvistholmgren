@@ -15,6 +15,8 @@ function toInquiry(row: Record<string, unknown>): Inquiry {
     company: row.company as string,
     email: row.email as string,
     phone: row.phone as string,
+    source: (row.source as string | null | undefined) ?? null,
+    page: (row.page as string | null | undefined) ?? null,
   };
 }
 

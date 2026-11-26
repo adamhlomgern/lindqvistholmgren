@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowRight,
+  ArrowUpRight,
+  Share2,
   Briefcase,
   Check,
   Hammer,
@@ -32,6 +36,8 @@ type IndustryCopy = {
   proof: string;
   badge: [string, string];
   feature: string;
+  // Demon som visar funktionen på riktigt (app/demo/*).
+  demo: { slug: string; name: string; text: string };
 };
 
 const industries: Record<Industry, IndustryCopy> = {
@@ -51,6 +57,7 @@ const industries: Record<Industry, IndustryCopy> = {
     proof: "4,9 av 5 från 120 kunder",
     badge: ["Gratis hembesök", "Svar inom en dag"],
     feature: "Offertformulär med bilder",
+    demo: { slug: "servicekoll", name: "Servicekoll", text: "Kundregister med påminnelser, bokningar och sms." },
   },
   restaurang: {
     label: "Restaurang",
@@ -68,6 +75,7 @@ const industries: Record<Industry, IndustryCopy> = {
     proof: "Över 2 000 beställningar i månaden",
     badge: ["Öppet idag", "11–22"],
     feature: "Egen beställning utan provision",
+    demo: { slug: "mumsa", name: "Mumsa", text: "Beställ som kund och följ ordern i köket." },
   },
   salong: {
     label: "Frisör & salong",
@@ -85,6 +93,7 @@ const industries: Record<Industry, IndustryCopy> = {
     proof: "Lediga tider redan i morgon",
     badge: ["Nästa lediga tid", "I morgon 09:30"],
     feature: "Onlinebokning med sms-påminnelse",
+    demo: { slug: "bokad", name: "Bokad", text: "Boka en tid som kund och se salongens kalender." },
   },
   konsult: {
     label: "Konsult & byrå",
@@ -102,6 +111,7 @@ const industries: Record<Industry, IndustryCopy> = {
     proof: "Över 80 företag litar på oss",
     badge: ["Fast pris", "från 2 900 kr/mån"],
     feature: "Kundportal för underlag",
+    demo: { slug: "kundportal", name: "Kundportalen", text: "Kunden godkänner, hittar filer och skriver till er." },
   },
   butik: {
     label: "Butik & webbshop",
@@ -119,6 +129,7 @@ const industries: Record<Industry, IndustryCopy> = {
     proof: "Skickas inom 24 timmar",
     badge: ["Fri frakt", "över 500 kr"],
     feature: "Webbshop med Klarna och Swish",
+    demo: { slug: "forma", name: "Forma", text: "Kunden bygger sin produkt och ser priset direkt." },
   },
 };
 
@@ -233,16 +244,86 @@ function Choice({ active, onClick, children, label }: { active: boolean; onClick
   );
 }
 
+const demoLogos: Record<string, string | undefined> = {
+  servicekoll: "/images/demos/servicekoll-logo.svg",
+  mumsa: "/images/demos/mumsa-logo.svg",
+  bokad: "/images/demos/bokad-logo.svg",
+};
+
+// Skissen sparas i adressen (?bransch=…&namn=…&farg=…&stil=…) så att den går
+// att dela och finns kvar om man går till en demo och tillbaka.
+type Config = { industry: Industry; name: string; paletteId: Palette["id"]; styleId: Style["id"] };
+
+function subscribe(callback: () => void) {
+  window.addEventListener("popstate", callback);
+  return () => window.removeEventListener("popstate", callback);
+}
+
+function parseConfig(search: string): Partial<Config> {
+  const params = new URLSearchParams(search);
+  const config: Partial<Config> = {};
+  const industry = params.get("bransch");
+  if (industry && industry in industries) config.industry = industry as Industry;
+  const name = params.get("namn");
+  if (name) config.name = name.slice(0, 32);
+  const palette = palettes.find((p) => p.id === params.get("farg"));
+  if (palette) config.paletteId = palette.id;
+  const style = styles.find((x) => x.id === params.get("stil"));
+  if (style) config.styleId = style.id;
+  return config;
+}
+
+function configQuery(config: Config) {
+  const params = new URLSearchParams({ bransch: config.industry, farg: config.paletteId, stil: config.styleId });
+  if (config.name.trim()) params.set("namn", config.name.trim());
+  return params.toString();
+}
+
 // Sajtbyggaren: välj bransch, namn, färg och stil och se en liten hemsida
 // byggas live. "Vill ni ha den på riktigt?" öppnar förfrågan med valen ifyllda.
 export function SiteBuilder() {
   const { open } = useProjectInquiry();
   const reduce = useReducedMotion();
-  const [industry, setIndustry] = useState<Industry>("hantverk");
-  const [name, setName] = useState("");
-  const [paletteId, setPaletteId] = useState<Palette["id"]>("skog");
-  const [styleId, setStyleId] = useState<Style["id"]>("mjuk");
+  const search = useSyncExternalStore(subscribe, () => window.location.search, () => "");
+  const fromUrl = useMemo(() => parseConfig(search), [search]);
+  const [changes, setChanges] = useState<Partial<Config>>({});
   const [mobile, setMobile] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  const config: Config = { industry: "hantverk", name: "", paletteId: "skog", styleId: "mjuk", ...fromUrl, ...changes };
+  const { industry, name, paletteId, styleId } = config;
+
+  function update(patch: Partial<Config>) {
+    const next = { ...changes, ...patch };
+    setChanges(next);
+    const url = new URL(window.location.href);
+    url.search = configQuery({ ...config, ...patch });
+    window.history.replaceState(window.history.state, "", url);
+  }
+  const setIndustry = (value: Industry) => update({ industry: value });
+  const setName = (value: string) => update({ name: value });
+  const setPaletteId = (value: Palette["id"]) => update({ paletteId: value });
+  const setStyleId = (value: Style["id"]) => update({ styleId: value });
+
+  function shareUrl() {
+    return `${window.location.origin}/verktyg?${configQuery(config)}#sajtbyggaren`;
+  }
+
+  async function share() {
+    const url = shareUrl();
+    trackConversion({ name: "cta_click", location: "sajtbyggaren-dela" });
+    try {
+      if (navigator.share && window.matchMedia("(pointer: coarse)").matches) {
+        await navigator.share({ title: `Skiss: ${shownName}`, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShared(true);
+      setTimeout(() => setShared(false), 2500);
+    } catch {
+      // Avbruten delning eller blockerat urklipp — inget att göra.
+    }
+  }
 
   const copy = industries[industry];
   const palette = palettes.find((p) => p.id === paletteId)!;
@@ -253,8 +334,9 @@ export function SiteBuilder() {
   function requestIt() {
     trackConversion({ name: "cta_click", location: "sajtbyggaren" });
     open({
+      source: "sajtbyggaren",
       company: name.trim(),
-      description: `Från Sajtbyggaren: vi vill ha en hemsida${name.trim() ? ` för ${name.trim()}` : ""}.\nBransch: ${copy.label}\nFärg: ${palette.label}\nStil: ${style.label}\n\nMer om oss: `,
+      description: `Från Sajtbyggaren: vi vill ha en hemsida${name.trim() ? ` för ${name.trim()}` : ""}.\nBransch: ${copy.label}\nFärg: ${palette.label}\nStil: ${style.label}\nSkiss: ${shareUrl()}\n\nMer om oss: `,
     });
   }
 
@@ -318,6 +400,24 @@ export function SiteBuilder() {
         <div className="rounded-2xl bg-surface p-5 shadow-card ring-1 ring-line">
           <p className="text-sm text-fg-muted">Vi skulle också bygga in</p>
           <p className="mt-1 font-medium text-fg">{copy.feature}</p>
+          <Link
+            href={`/demo/${copy.demo.slug}`}
+            onClick={() => trackConversion({ name: "cta_click", location: `sajtbyggaren-demo-${copy.demo.slug}` })}
+            className="group mt-4 flex items-center gap-3 rounded-xl bg-surface-sunken p-3 ring-1 ring-line transition-colors hover:bg-fg/[0.05] hover:ring-line-strong"
+          >
+            {demoLogos[copy.demo.slug] ? (
+              <Image src={demoLogos[copy.demo.slug]!} alt="" width={36} height={36} className="h-9 w-9 shrink-0" />
+            ) : (
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-fg text-canvas">
+                <copy.icon size={17} />
+              </span>
+            )}
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-medium text-fg">Testa {copy.demo.name}-demon</span>
+              <span className="block text-xs leading-snug text-fg-muted">{copy.demo.text}</span>
+            </span>
+            <ArrowUpRight size={16} className="shrink-0 text-fg-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
           <button
             type="button"
             onClick={requestIt}
@@ -332,7 +432,14 @@ export function SiteBuilder() {
 
       <div className="order-first min-w-0 lg:order-none">
         <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="text-sm text-fg-muted">Förhandsvisning</p>
+          <button
+            type="button"
+            onClick={share}
+            className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3.5 py-2 text-xs font-medium text-fg ring-1 ring-line transition-colors hover:ring-line-strong"
+          >
+            {shared ? <Check size={14} className="text-pine-700" /> : <Share2 size={14} />}
+            {shared ? "Länken är kopierad" : "Dela skissen"}
+          </button>
           <div className="inline-flex rounded-full bg-surface p-1 ring-1 ring-line">
             {[
               { m: false, icon: Monitor, label: "Dator" },
