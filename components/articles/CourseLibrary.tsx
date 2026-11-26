@@ -85,7 +85,8 @@ export function CourseLibrary({ articles, categories }: { articles: ArticleSumma
                   <span className="min-w-0 flex-1">
                     <span className="block text-xs font-medium uppercase tracking-label text-fg-subtle">Modul {mod.number}</span>
                     <span className="block font-display text-xl font-semibold tracking-[-0.015em] text-fg">{mod.name}</span>
-                    <span className="mt-0.5 block text-sm text-fg-muted">
+                    {mod.description && <span className="mt-0.5 block text-sm leading-snug text-fg-muted">{mod.description}</span>}
+                    <span className="mt-0.5 block text-sm text-fg-subtle">
                       {mod.lessons.length} {mod.lessons.length === 1 ? "lektion" : "lektioner"} · {mod.minutes} min
                       {moduleDone > 0 && ` · ${moduleDone} av ${mod.lessons.length} lästa`}
                     </span>

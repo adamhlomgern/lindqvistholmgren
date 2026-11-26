@@ -7,6 +7,11 @@ export type ArticleCategory = {
   name: string;
   icon: ArticleIconKey;
   accent: Accent;
+  // Kunskapsbanken: modulens plats, beskrivning och lektionsordning (slugs).
+  // Saknas tills migrationen 2026-11-26-course-modules.sql körts.
+  position?: number | null;
+  description?: string | null;
+  lessonOrder?: string[] | null;
 };
 
 // Throws on failure instead of returning [] so a transient Supabase error
@@ -21,7 +26,18 @@ const fetchCategoriesCached = unstable_cache(
 
     if (error) throw new Error(`[getCategories] ${error.message}`);
 
-    return data as ArticleCategory[];
+    // Sorteras här i stället för i frågan, så att det fungerar även innan
+    // kolumnen position finns. Moduler utan plats hamnar sist, i bokstavsordning.
+    return (data as Record<string, unknown>[])
+      .map((row) => ({
+        name: row.name as string,
+        icon: row.icon as ArticleIconKey,
+        accent: row.accent as Accent,
+        position: (row.position as number | null | undefined) ?? null,
+        description: (row.description as string | null | undefined) ?? null,
+        lessonOrder: (row.lesson_order as string[] | null | undefined) ?? null,
+      }))
+      .sort((a, b) => (a.position ?? 1e9) - (b.position ?? 1e9) || a.name.localeCompare(b.name, "sv"));
   },
   ["article-categories"],
   { tags: ["categories"], revalidate: 300 },

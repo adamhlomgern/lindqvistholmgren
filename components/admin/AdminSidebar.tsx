@@ -39,7 +39,7 @@ const settingsItem: NavItem = { href: "/admin/installningar", label: "Inställni
 // destinationer i egen rätt — visas som indenterad subnav under Artiklar
 // istället för som egna toppnivå-länkar.
 const articleSubItems: SubNavItem[] = [
-  { href: "/admin/kategorier", label: "Kategorier" },
+  { href: "/admin/kategorier", label: "Kategorier & moduler" },
   { href: "/admin/taggar", label: "Taggar" },
 ];
 

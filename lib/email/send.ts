@@ -9,6 +9,9 @@ type SendBrandedEmailOptions = {
   ctaLabel: string;
   ctaUrl: string;
   footerHtml?: string;
+  preheader?: string;
+  // Textversion för mejlprogram som inte visar HTML (hjälper även mot spamfilter).
+  text?: string;
   replyTo?: string;
   attachments?: { filename: string; content: Buffer; contentType: string }[];
 };
@@ -21,6 +24,8 @@ export async function sendBrandedEmail({
   ctaLabel,
   ctaUrl,
   footerHtml,
+  preheader,
+  text,
   replyTo,
   attachments,
 }: SendBrandedEmailOptions) {
@@ -30,7 +35,8 @@ export async function sendBrandedEmail({
     to,
     subject,
     replyTo,
-    html: renderBrandedEmailHtml({ heading, bodyHtml, ctaLabel, ctaUrl, footerHtml }),
+    text,
+    html: renderBrandedEmailHtml({ heading, bodyHtml, ctaLabel, ctaUrl, footerHtml, preheader }),
     attachments,
   });
 }

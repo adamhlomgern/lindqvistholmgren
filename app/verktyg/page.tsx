@@ -65,8 +65,8 @@ export default function ToolsPage() {
               Hur mår er hemsida?
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-fg-muted">
-              Vi kollar 15 saker som påverkar om besökare stannar och om Google hittar er: hastighet, mobil,
-              sökmotorer och förtroende. Allt förklarat på vanlig svenska.
+              Ett 40-tal kontroller av hastighet, Google, mobil, säkerhet och förtroende, plus Googles egen mätning i
+              mobilen. Ni får en åtgärdsplan med det som ger mest effekt först, anpassad efter plattformen ni kör på.
             </p>
           </div>
           <div className="mt-10">
