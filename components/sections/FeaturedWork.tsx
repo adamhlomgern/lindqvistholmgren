@@ -5,10 +5,11 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { Button } from "@/components/ui/Button";
 import { getProjects } from "@/lib/data/projects";
-import { accentForKey, iconTextClasses } from "@/lib/design/accents";
+import { accentForKey } from "@/lib/design/accents";
+import { ProjectResultBadge } from "@/components/projects/ProjectResultBadge";
 
 export async function FeaturedWork() {
   const projects = await getProjects();
@@ -20,7 +21,7 @@ export async function FeaturedWork() {
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div>
             <Eyebrow icon={Briefcase}>Utvalda projekt</Eyebrow>
-            <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+            <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
               Ett urval av vad vi byggt
             </h2>
           </div>
@@ -45,19 +46,20 @@ export async function FeaturedWork() {
                         quality={90}
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
+                      <ProjectResultBadge project={project} className="absolute bottom-3 left-3" />
                     </div>
-                    <Tag>{project.category}</Tag>
-                    <h3 className="mt-4 font-display text-lg font-bold text-bone">
+                    <CategoryPill accent={accent}>{project.category}</CategoryPill>
+                    <h3 className="mt-4 font-display text-lg font-semibold text-fg">
                       {project.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-stone">
+                    <p className="mt-2 text-sm leading-relaxed text-fg-muted">
                       {project.summary}
                     </p>
                   </div>
-                  <ArrowUpRight
-                    className={`mt-6 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 ${iconTextClasses[accent]}`}
-                    size={18}
-                  />
+                  <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-fg transition-[gap] duration-200 group-hover:gap-2.5">
+                    Se caset
+                    <ArrowUpRight size={16} strokeWidth={2.25} />
+                  </span>
                 </GlassCard>
               </Link>
             );

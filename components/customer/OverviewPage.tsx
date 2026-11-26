@@ -25,8 +25,8 @@ type Props = {
 export function OverviewPage({ activeProjects, actionItems, recentMessages, contact }: Props) {
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Välkommen till din kundportal</h1>
-      <p className="mt-1 text-sm text-stone">
+      <h1 className="font-display text-2xl font-semibold text-fg">Välkommen till din kundportal</h1>
+      <p className="mt-1 text-sm text-fg-muted">
         {activeProjects.length > 0
           ? `${activeProjects.length} ${activeProjects.length === 1 ? "aktivt projekt" : "aktiva projekt"} hos oss just nu.`
           : "Inga aktiva projekt just nu."}
@@ -39,7 +39,7 @@ export function OverviewPage({ activeProjects, actionItems, recentMessages, cont
       <div className="mt-8 flex flex-col gap-4">
         {activeProjects.length === 0 ? (
           <Card>
-            <p className="text-sm text-stone">Inget aktivt projekt just nu — hör av dig om ni vill starta något nytt.</p>
+            <p className="text-sm text-fg-muted">Inget aktivt projekt just nu — hör av dig om ni vill starta något nytt.</p>
           </Card>
         ) : (
           activeProjects.map((project) => <ProjectOverviewCard key={project.id} project={project} />)

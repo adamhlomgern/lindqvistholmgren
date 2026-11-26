@@ -31,10 +31,10 @@ export function ProjectChecklist({ projectId, items }: { projectId: string; item
   return (
     <Card>
       <div className="flex items-center justify-between gap-2">
-        <h2 className="font-display text-sm font-bold text-bone">Att göra</h2>
+        <h2 className="font-display text-sm font-semibold text-fg">Att göra</h2>
         <div className="flex items-center gap-2">
           {optimisticItems.length > 0 && (
-            <span className="text-xs text-stone">
+            <span className="text-xs text-fg-muted">
               {doneCount} av {optimisticItems.length} klara
             </span>
           )}
@@ -44,7 +44,7 @@ export function ProjectChecklist({ projectId, items }: { projectId: string; item
 
       <div className="mt-3 flex flex-col gap-1">
         {optimisticItems.map((item) => (
-          <div key={item.id} className="group flex items-center gap-2.5 rounded-lg px-1 py-1.5 hover:bg-bone/[0.04]">
+          <div key={item.id} className="group flex items-center gap-2.5 rounded-lg px-1 py-1.5 hover:bg-fg/[0.04]">
             <button
               type="button"
               onClick={() => {
@@ -57,13 +57,13 @@ export function ProjectChecklist({ projectId, items }: { projectId: string; item
               aria-pressed={item.done}
               aria-label={item.done ? "Markera som ej klar" : "Markera som klar"}
               className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-colors ${
-                item.done ? "border-emerald bg-emerald text-charcoal" : "border-bone/30 text-transparent"
+                item.done ? "border-primary bg-primary text-on-primary" : "border-line-strong text-transparent"
               }`}
             >
               ✓
             </button>
             <span className="flex min-w-0 flex-1 items-center gap-1.5">
-              <span className={`truncate text-sm ${item.done ? "text-stone line-through" : "text-bone"}`}>
+              <span className={`truncate text-sm ${item.done ? "text-fg-muted line-through" : "text-fg"}`}>
                 {item.label}
               </span>
               {item.id === nextId && (
@@ -88,7 +88,7 @@ export function ProjectChecklist({ projectId, items }: { projectId: string; item
             </button>
           </div>
         ))}
-        {optimisticItems.length === 0 && <p className="px-1 py-1 text-sm text-stone">Inga punkter ännu.</p>}
+        {optimisticItems.length === 0 && <p className="px-1 py-1 text-sm text-fg-muted">Inga punkter ännu.</p>}
       </div>
 
       <form
@@ -113,19 +113,19 @@ export function ProjectChecklist({ projectId, items }: { projectId: string; item
             await addChecklistItem(projectId, value, position);
           });
         }}
-        className="mt-3 flex items-center gap-2 border-t border-bone/10 pt-3"
+        className="mt-3 flex items-center gap-2 border-t border-line pt-3"
       >
         <input
           value={label}
           onChange={(event) => setLabel(event.target.value)}
           placeholder="Lägg till punkt…"
-          className="w-full rounded-lg border border-bone/10 bg-bone/5 px-3 py-2 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+          className="w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
         />
         <button
           type="submit"
           disabled={!label.trim()}
           aria-label="Lägg till punkt"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald text-charcoal transition-colors hover:bg-bone disabled:opacity-40"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-40"
         >
           <Plus size={16} strokeWidth={2.5} />
         </button>

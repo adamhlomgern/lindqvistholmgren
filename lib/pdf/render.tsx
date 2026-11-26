@@ -2,6 +2,8 @@ import { renderToBuffer } from "@react-pdf/renderer";
 import { getInvoiceById } from "@/lib/data/invoices";
 import { getBillingEntityById, getBankAccountById } from "@/lib/data/billing";
 import { InvoiceDocument } from "@/lib/pdf/InvoiceDocument";
+import { AuditReportDocument } from "@/lib/pdf/AuditReportDocument";
+import type { AuditResult } from "@/lib/site-audit/audit";
 
 export async function renderInvoicePdf(id: string): Promise<Buffer> {
   const invoice = await getInvoiceById(id);
@@ -17,4 +19,8 @@ export async function renderInvoicePdf(id: string): Promise<Buffer> {
   return renderToBuffer(
     <InvoiceDocument invoice={invoice} billingEntity={billingEntity} bankAccount={bankAccount} />,
   );
+}
+
+export async function renderAuditReportPdf(result: AuditResult): Promise<Buffer> {
+  return renderToBuffer(<AuditReportDocument result={result} date={new Date()} />);
 }

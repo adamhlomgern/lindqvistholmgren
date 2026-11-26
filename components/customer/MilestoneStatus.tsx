@@ -14,16 +14,16 @@ export function MilestoneStatus({ project, hrefBase = "/kund" }: Props) {
   const state = getMilestoneState(project);
 
   if (state === "none") {
-    return <p className="text-sm text-stone">Inget bestämt datum just nu.</p>;
+    return <p className="text-sm text-fg-muted">Inget bestämt datum just nu.</p>;
   }
 
   if (state === "delivered") {
     return (
       <div>
-        <p className="text-sm text-bone">
+        <p className="text-sm text-fg">
           <span className="font-medium">{project.nextMilestoneLabel}</span> finns att granska
         </p>
-        <Link href={`${hrefBase}/projekt/${project.id}`} className="mt-1 inline-block text-sm text-emerald hover:underline">
+        <Link href={`${hrefBase}/projekt/${project.id}`} className="mt-1 inline-block text-sm text-primary hover:underline">
           Visa förslag
         </Link>
       </div>
@@ -33,7 +33,7 @@ export function MilestoneStatus({ project, hrefBase = "/kund" }: Props) {
   if (state === "overdue") {
     return (
       <div>
-        <p className="text-sm font-medium text-bone">{project.nextMilestoneLabel}</p>
+        <p className="text-sm font-medium text-fg">{project.nextMilestoneLabel}</p>
         <p className="mt-0.5 text-sm text-coral">Planerat datum har passerat — ny tidsplan inväntas</p>
       </div>
     );
@@ -41,9 +41,9 @@ export function MilestoneStatus({ project, hrefBase = "/kund" }: Props) {
 
   return (
     <div>
-      <p className="text-sm font-medium text-bone">{project.nextMilestoneLabel}</p>
+      <p className="text-sm font-medium text-fg">{project.nextMilestoneLabel}</p>
       {project.nextMilestoneDate && (
-        <p className="mt-0.5 text-sm text-stone">Planerad leverans {formatDateSv(project.nextMilestoneDate)}</p>
+        <p className="mt-0.5 text-sm text-fg-muted">Planerad leverans {formatDateSv(project.nextMilestoneDate)}</p>
       )}
     </div>
   );

@@ -45,17 +45,17 @@ export function ProjectStatusSelect({ projectId, status }: { projectId: string; 
         <RadixSelect.Content
           position="popper"
           sideOffset={6}
-          className="z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-bone/10 bg-forest shadow-xl"
+          className="z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-line bg-surface shadow-pop"
         >
           <RadixSelect.Viewport className="p-1.5">
             {statusOptions.map((option) => (
               <RadixSelect.Item
                 key={option.value}
                 value={option.value}
-                className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-8 pr-3 text-sm text-bone outline-none data-[highlighted]:bg-bone/10"
+                className="relative flex cursor-pointer select-none items-center rounded-lg py-2.5 pl-8 pr-3 text-sm text-fg outline-none data-[highlighted]:bg-fg/10"
               >
                 <RadixSelect.ItemIndicator className="absolute left-2.5 inline-flex items-center">
-                  <Check size={14} strokeWidth={2.5} className="text-emerald" />
+                  <Check size={14} strokeWidth={2.5} className="text-primary" />
                 </RadixSelect.ItemIndicator>
                 <RadixSelect.ItemText>{option.label}</RadixSelect.ItemText>
               </RadixSelect.Item>

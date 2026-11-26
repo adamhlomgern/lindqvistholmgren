@@ -15,7 +15,7 @@ export function CustomerKundvyTabs({ customerId }: { customerId: string }) {
   ];
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto border-b border-bone/10">
+    <div className="flex items-center gap-1 overflow-x-auto border-b border-line">
       {tabs.map((tab) => {
         const active = tab.href === base ? pathname === base : pathname.startsWith(tab.href);
         return (
@@ -23,7 +23,7 @@ export function CustomerKundvyTabs({ customerId }: { customerId: string }) {
             key={tab.href}
             href={tab.href}
             className={`shrink-0 border-b-2 px-3 pb-3 text-sm font-medium transition-colors ${
-              active ? "border-emerald text-bone" : "border-transparent text-stone hover:text-bone"
+              active ? "border-primary text-fg" : "border-transparent text-fg-muted hover:text-fg"
             }`}
           >
             {tab.label}

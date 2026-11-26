@@ -10,7 +10,7 @@ import { formatRelativeSv } from "@/lib/format";
 import type { CustomerMessage } from "@/lib/types";
 
 const textareaClasses =
-  "w-full min-w-0 rounded-lg border border-bone/10 bg-bone/5 px-3.5 py-2.5 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
+  "w-full min-w-0 rounded-lg border border-line-strong bg-surface px-3.5 py-2.5 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none";
 
 type MessagesPanelProps = {
   messages: CustomerMessage[];
@@ -21,9 +21,14 @@ type MessagesPanelProps = {
   // a customer, so submitting it there would just redirect to /kund/login.
   // Hiding the form avoids that dead end instead of letting someone hit it.
   readOnly?: boolean;
+  // Demoläge (app/demo/kundportal): skicka lokalt i stället för via
+  // servern, utan bilduppladdning, och visa "skriver…" medan ett svar är
+  // på väg.
+  onSend?: (body: string) => void;
+  typingLabel?: string | null;
 };
 
-export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps) {
+export function MessagesPanel({ messages, readOnly = false, onSend, typingLabel = null }: MessagesPanelProps) {
   const [state, formAction, pending] = useActionState(sendCustomerMessage, undefined);
   const formRef = useRef<HTMLFormElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -49,7 +54,7 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
   useLayoutEffect(() => {
     const list = listRef.current;
     if (list) list.scrollTop = list.scrollHeight;
-  }, [messages.length]);
+  }, [messages.length, typingLabel]);
 
   // Local preview only — nothing is uploaded until "Skicka" is pressed.
   const pendingImageUrl = useMemo(() => (pendingImage ? URL.createObjectURL(pendingImage) : null), [pendingImage]);
@@ -68,27 +73,27 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="shrink-0">
-        <h1 className="font-display text-2xl font-bold text-bone">Meddelanden</h1>
-        <p className="mt-1 text-sm text-stone">Chatta direkt med oss om ert projekt.</p>
+        <h1 className="font-display text-2xl font-semibold text-fg">Meddelanden</h1>
+        <p className="mt-1 text-sm text-fg-muted">Chatta direkt med oss om ert projekt.</p>
       </div>
 
       {/* min-h-0 lets this flex-col actually shrink below its content size —
           without it, a nested flex-1 scroll area can't get smaller than the
           full unscrolled message list, and the chat pane just grows past the
           viewport instead of scrolling internally. */}
-      <div className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-bone/5">
+      <div className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-fg/5">
         <div ref={listRef} className="min-h-64 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
           <div className="flex flex-col gap-2">
             {messages.length === 0 && (
-              <p className="text-sm text-stone">Inga meddelanden ännu — skriv gärna om du har en fråga.</p>
+              <p className="text-sm text-fg-muted">Inga meddelanden ännu — skriv gärna om du har en fråga.</p>
             )}
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm ${
                   message.authorRole === "customer"
-                    ? "self-end bg-emerald/15 text-bone"
-                    : "self-start bg-bone/10 text-bone"
+                    ? "self-end bg-primary/15 text-fg"
+                    : "self-start bg-fg/10 text-fg"
                 }`}
               >
                 {message.attachment?.url && (
@@ -104,17 +109,64 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
                 {message.body && (
                   <p className={message.attachment ? "mt-2 whitespace-pre-wrap" : "whitespace-pre-wrap"}>{message.body}</p>
                 )}
-                <p className="mt-1 text-[11px] text-stone/60">
+                <p className="mt-1 text-[11px] text-fg-subtle">
                   {message.authorLabel} · {formatRelativeSv(message.createdAt)}
                 </p>
               </div>
             ))}
+            {typingLabel && (
+              <div className="self-start rounded-xl bg-fg/10 px-3.5 py-2.5 text-sm text-fg-muted">
+                <span className="inline-flex items-center gap-1">
+                  {typingLabel} skriver
+                  <span className="inline-flex gap-0.5">
+                    <span className="h-1 w-1 animate-bounce rounded-full bg-fg-muted [animation-delay:-0.2s]" />
+                    <span className="h-1 w-1 animate-bounce rounded-full bg-fg-muted [animation-delay:-0.1s]" />
+                    <span className="h-1 w-1 animate-bounce rounded-full bg-fg-muted" />
+                  </span>
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-bone/10 px-4 py-4 sm:px-6 sm:py-6">
+        <div className="shrink-0 border-t border-line px-4 py-4 sm:px-6 sm:py-6">
           {readOnly ? (
-            <p className="text-xs text-stone/60">Det här är en förhandsvisning — meddelanden går inte att skicka härifrån.</p>
+            <p className="text-xs text-fg-subtle">Det här är en förhandsvisning — meddelanden går inte att skicka härifrån.</p>
+          ) : onSend ? (
+            <form
+              className="flex flex-col gap-2 sm:flex-row sm:items-end"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const text = textareaRef.current?.value.trim();
+                if (!text) return;
+                onSend(text);
+                if (textareaRef.current) textareaRef.current.value = "";
+              }}
+            >
+              <textarea
+                ref={textareaRef}
+                name="body"
+                required
+                rows={2}
+                placeholder="Skriv ett meddelande…"
+                className={textareaClasses}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    event.currentTarget.form?.requestSubmit();
+                  }
+                }}
+              />
+              <div className="flex shrink-0 items-center justify-between gap-2 sm:justify-start">
+                <EmojiPickerButton textareaRef={textareaRef} />
+                <button
+                  type="submit"
+                  className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
+                >
+                  Skicka
+                </button>
+              </div>
+            </form>
           ) : (
             <>
               {pendingImage && pendingImageUrl && (
@@ -145,7 +197,7 @@ export function MessagesPanel({ messages, readOnly = false }: MessagesPanelProps
                     type={pendingImage ? "button" : "submit"}
                     disabled={pending || imagePending}
                     onClick={pendingImage ? () => void handleSendImage() : undefined}
-                    className="shrink-0 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+                    className="shrink-0 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
                   >
                     Skicka
                   </button>

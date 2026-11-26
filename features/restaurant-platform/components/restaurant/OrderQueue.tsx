@@ -6,6 +6,7 @@ import { AlertTriangle, ChefHat, ChevronDown, ChevronUp } from "lucide-react";
 import { EmptyState } from "@/components/demo/EmptyState";
 import { useRestaurantPlatform } from "@/features/restaurant-platform/state/RestaurantPlatformProvider";
 import { DeliveryToggle } from "@/features/restaurant-platform/components/restaurant/DeliveryToggle";
+import { MenuAvailability } from "@/features/restaurant-platform/components/restaurant/MenuAvailability";
 import { OrderCard } from "@/features/restaurant-platform/components/restaurant/OrderCard";
 import { OrderDetailDrawer } from "@/features/restaurant-platform/components/restaurant/OrderDetailDrawer";
 import type { Order, OrderStatus } from "@/features/restaurant-platform/types";
@@ -369,6 +370,8 @@ export function OrderQueue() {
         </div>
         <DeliveryToggle />
       </div>
+
+      <MenuAvailability />
 
       <LayoutGroup id="order-queue">
         {/* Nya/Tillagas carry the actual work and get ~36% each; Redo is a

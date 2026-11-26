@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { ProjectResultBadge } from "@/components/projects/ProjectResultBadge";
 import { getProjects } from "@/lib/data/projects";
 import { accentForKey, iconTextClasses } from "@/lib/design/accents";
 
@@ -23,8 +24,8 @@ export async function RelatedProjects({ currentSlug, category }: RelatedProjects
   }
 
   return (
-    <div className="mt-16 border-t border-bone/10 pt-10">
-      <h2 className="font-display text-xl font-bold text-bone">Fler projekt</h2>
+    <div className="mt-16 border-t border-line pt-10">
+      <h2 className="font-display text-xl font-semibold text-fg">Fler projekt</h2>
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         {related.map((project) => {
           const accent = accentForKey(project.category);
@@ -41,9 +42,10 @@ export async function RelatedProjects({ currentSlug, category }: RelatedProjects
                       quality={90}
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
+                    <ProjectResultBadge project={project} className="absolute bottom-3 left-3" />
                   </div>
-                  <Tag>{project.category}</Tag>
-                  <h3 className="mt-3 font-display text-sm font-bold leading-snug text-bone">
+                  <CategoryPill accent={accent}>{project.category}</CategoryPill>
+                  <h3 className="mt-3 font-display text-sm font-semibold leading-snug text-fg">
                     {project.title}
                   </h3>
                 </div>

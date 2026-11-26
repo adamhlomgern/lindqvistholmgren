@@ -14,7 +14,7 @@ export function EmailHtmlView({ html }: { html: string }) {
       sandbox=""
       srcDoc={html}
       style={{ height }}
-      className="w-full rounded-lg border border-bone/10 bg-bone"
+      className="w-full rounded-lg border border-line bg-fg"
       onLoad={(event) => {
         try {
           const doc = event.currentTarget.contentDocument;

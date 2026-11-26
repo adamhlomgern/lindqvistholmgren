@@ -12,14 +12,14 @@ export default function CustomerError({ error, retry }: { error: Error & { diges
 
   return (
     <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
-      <h2 className="font-display text-lg font-bold text-bone">Något gick fel</h2>
-      <p className="max-w-sm text-sm text-stone">
+      <h2 className="font-display text-lg font-semibold text-fg">Något gick fel</h2>
+      <p className="max-w-sm text-sm text-fg-muted">
         Sidan kunde inte laddas just nu. Prova igen, eller hör av dig till oss om felet kvarstår.
       </p>
       <button
         type="button"
         onClick={() => retry()}
-        className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+        className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
       >
         Försök igen
       </button>

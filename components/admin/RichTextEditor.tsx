@@ -67,7 +67,7 @@ function ToolbarButton({
       aria-label={label}
       title={label}
       className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg px-2 text-xs font-semibold transition-colors disabled:opacity-40 ${
-        active ? "bg-emerald/15 text-emerald" : "text-stone hover:bg-bone/10 hover:text-bone"
+        active ? "bg-pine-100 text-pine-800" : "text-fg-muted hover:bg-fg/10 hover:text-fg"
       }`}
     >
       {children}
@@ -146,7 +146,7 @@ export function RichTextEditor({
 
   if (!editor) {
     return (
-      <div className="flex min-h-64 items-center justify-center rounded-lg border border-bone/10 bg-bone/5 text-sm text-stone">
+      <div className="flex min-h-64 items-center justify-center rounded-lg border border-line bg-fg/5 text-sm text-fg-muted">
         <input type="hidden" name={name} value={content} />
         Laddar redigerare…
       </div>
@@ -186,8 +186,8 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="rounded-lg border border-bone/10 bg-bone/5">
-      <div className="sticky top-28 z-10 flex flex-nowrap items-center gap-1 overflow-x-auto rounded-t-lg border-b border-bone/10 bg-charcoal/95 p-2 backdrop-blur sm:top-16 sm:flex-wrap sm:overflow-visible">
+    <div className="rounded-lg border border-line bg-fg/5">
+      <div className="sticky top-28 z-10 flex flex-nowrap items-center gap-1 overflow-x-auto rounded-t-lg border-b border-line bg-canvas/90 backdrop-blur p-2 backdrop-blur sm:top-16 sm:flex-wrap sm:overflow-visible">
         <ToolbarButton
           label="Rubrik H2"
           active={toolbarState.h2}
@@ -209,7 +209,7 @@ export function RichTextEditor({
         >
           H4
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-fg/10" />
         <ToolbarButton
           label="Fet text"
           active={toolbarState.bold}
@@ -224,7 +224,7 @@ export function RichTextEditor({
         >
           <Italic size={14} strokeWidth={2.5} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-fg/10" />
         <ToolbarButton
           label="Punktlista"
           active={toolbarState.bulletList}
@@ -246,7 +246,7 @@ export function RichTextEditor({
         >
           <Quote size={14} strokeWidth={2.5} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-fg/10" />
         <div className="relative shrink-0">
           <ToolbarButton
             label="Länk"
@@ -259,7 +259,7 @@ export function RichTextEditor({
             <LinkIcon size={14} strokeWidth={2.5} />
           </ToolbarButton>
           {linkPopoverOpen && (
-            <div className="absolute left-0 top-full z-20 mt-1.5 flex w-64 items-center gap-1.5 rounded-xl border border-bone/10 bg-forest p-2 shadow-xl">
+            <div className="absolute left-0 top-full z-20 mt-1.5 flex w-64 items-center gap-1.5 rounded-xl border border-line bg-surface p-2 shadow-pop">
               <input
                 autoFocus
                 value={linkDraft}
@@ -277,7 +277,7 @@ export function RichTextEditor({
                   if (event.key === "Escape") setLinkPopoverOpen(false);
                 }}
                 placeholder="https://…"
-                className="w-full rounded-lg border border-bone/10 bg-bone/5 px-2.5 py-1.5 text-xs text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+                className="w-full rounded-lg border border-line-strong bg-surface px-2.5 py-1.5 text-xs text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
               />
               {toolbarState.link && (
                 <button
@@ -303,7 +303,7 @@ export function RichTextEditor({
           {uploadingImage ? "…" : <ImageIcon size={14} strokeWidth={2.5} />}
         </ToolbarButton>
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChoice} />
-        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-fg/10" />
         <ToolbarButton
           label="Infoga tabell"
           onClick={() =>
@@ -312,7 +312,7 @@ export function RichTextEditor({
         >
           <TableIcon size={14} strokeWidth={2.5} />
         </ToolbarButton>
-        <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+        <div className="mx-1 h-5 w-px shrink-0 bg-fg/10" />
         <ToolbarButton label="Ångra" onClick={() => editor.chain().focus().undo().run()}>
           <Undo size={14} strokeWidth={2.5} />
         </ToolbarButton>
@@ -321,12 +321,12 @@ export function RichTextEditor({
         </ToolbarButton>
         {onOpenStructure && (
           <div className="flex shrink-0 items-center gap-1 lg:hidden">
-            <div className="mx-1 h-5 w-px shrink-0 bg-bone/10" />
+            <div className="mx-1 h-5 w-px shrink-0 bg-fg/10" />
             <button
               type="button"
               onMouseDown={(event) => event.preventDefault()}
               onClick={onOpenStructure}
-              className="flex h-8 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+              className="flex h-8 shrink-0 items-center gap-1 rounded-lg px-2 text-xs font-semibold text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
             >
               <ListTree size={14} strokeWidth={2.5} />
               Struktur

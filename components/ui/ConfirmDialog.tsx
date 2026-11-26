@@ -31,17 +31,17 @@ export function ConfirmDialog({
     <AlertDialog.Root>
       <AlertDialog.Trigger asChild>{trigger}</AlertDialog.Trigger>
       <AlertDialog.Portal>
-        <AlertDialog.Overlay className="fixed inset-0 z-50 bg-charcoal/80 backdrop-blur-sm" />
-        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-bone/10 bg-forest p-6 shadow-2xl focus:outline-none">
-          <AlertDialog.Title className="font-display text-base font-bold text-bone">{title}</AlertDialog.Title>
+        <AlertDialog.Overlay className="fixed inset-0 z-50 bg-ink-950/40 backdrop-blur-sm" />
+        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-line bg-surface p-6 shadow-pop focus:outline-none">
+          <AlertDialog.Title className="font-display text-lg font-semibold tracking-[-0.01em] text-fg">{title}</AlertDialog.Title>
           {description && (
-            <AlertDialog.Description className="mt-2 text-sm text-stone">{description}</AlertDialog.Description>
+            <AlertDialog.Description className="mt-2 text-sm text-fg-muted">{description}</AlertDialog.Description>
           )}
           <div className="mt-6 flex justify-end gap-2">
             <AlertDialog.Cancel asChild>
               <button
                 type="button"
-                className="rounded-full px-4 py-2 text-sm font-medium text-stone transition-colors hover:text-bone"
+                className="rounded-full px-4 py-2 text-sm font-medium text-fg ring-1 ring-inset ring-line-strong transition-colors hover:bg-surface-sunken"
               >
                 {cancelLabel}
               </button>
@@ -53,8 +53,8 @@ export function ConfirmDialog({
                 onClick={() => startTransition(onConfirm)}
                 className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60 ${
                   destructive
-                    ? "bg-coral text-charcoal hover:bg-coral/90"
-                    : "bg-emerald text-charcoal hover:bg-bone"
+                    ? "bg-danger text-white hover:bg-red-700"
+                    : "bg-primary text-on-primary hover:bg-primary-hover"
                 }`}
               >
                 {pending ? "…" : confirmLabel}

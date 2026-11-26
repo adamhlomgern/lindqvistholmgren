@@ -67,7 +67,7 @@ export function ChatImageUploadButton({ pending, onPick }: { pending: boolean; o
   return (
     <label
       aria-label="Bifoga bild"
-      className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone ${
+      className={`flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg ${
         pending ? "opacity-60" : ""
       }`}
     >

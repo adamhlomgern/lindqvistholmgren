@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Store } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Store } from "lucide-react";
+import { NewBookingModal } from "@/features/booking-platform/components/kalender/NewBookingModal";
 import { EmptyState } from "@/components/demo/EmptyState";
 import { useBookingPlatform } from "@/features/booking-platform/state/BookingPlatformProvider";
 import { BookingCard } from "@/features/booking-platform/components/kalender/BookingCard";
@@ -25,6 +26,7 @@ export function BookingQueue() {
     useBookingPlatform();
   const [showHistory, setShowHistory] = useState(false);
   const [view, setView] = useState<"lista" | "kalender">("lista");
+  const [newOpen, setNewOpen] = useState(false);
   const organization = organizations.find((org) => org.slug === currentOrgSlug);
 
   if (!organization) {
@@ -60,10 +62,21 @@ export function BookingQueue() {
             {open ? "Öppet nu" : "Stängt"}
           </p>
         </div>
-        <p className="text-sm text-demo-text-muted">
-          <span className="font-display text-lg font-bold text-demo-text">{todayConfirmedCount}</span> bokningar idag
-        </p>
+        <div className="flex items-center gap-4">
+          <p className="text-sm text-demo-text-muted">
+            <span className="font-display text-lg font-bold text-demo-text">{todayConfirmedCount}</span> bokningar idag
+          </p>
+          <button
+            type="button"
+            onClick={() => setNewOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-full bg-demo-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-demo-primary-hover"
+          >
+            <Plus size={15} />
+            Ny bokning
+          </button>
+        </div>
       </div>
+      <NewBookingModal open={newOpen} onClose={() => setNewOpen(false)} organization={organization} />
 
       <div className="flex items-center gap-1 self-start rounded-full border border-demo-border bg-demo-neutral-soft p-1">
         {(

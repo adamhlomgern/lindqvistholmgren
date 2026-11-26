@@ -1,46 +1,82 @@
 export const accents = ["emerald", "moss", "peach", "lavender", "coral", "sky", "rose"] as const;
 export type Accent = (typeof accents)[number];
 
+// Varje accent pekar på en skala i designsystemet (app/globals.css). Namnen
+// (emerald, peach …) ligger kvar eftersom de kan vara sparade som data, men
+// färgerna är nu ljusa toner med mörk text: steg 100 som bakgrund och 800
+// som text ger 8–9:1 i kontrast.
+export const accentScale: Record<Accent, string> = {
+  emerald: "pine",
+  moss: "teal",
+  peach: "amber",
+  lavender: "lilac",
+  coral: "red",
+  sky: "blue",
+  rose: "rose",
+};
+
 export const badgeClasses: Record<Accent, string> = {
-  emerald: "bg-emerald/15 text-emerald",
-  moss: "bg-moss/15 text-moss",
-  peach: "bg-peach/15 text-peach",
-  lavender: "bg-lavender/15 text-lavender",
-  coral: "bg-coral/15 text-coral",
-  sky: "bg-sky/15 text-sky",
-  rose: "bg-rose/15 text-rose",
+  emerald: "bg-pine-100 text-pine-800",
+  moss: "bg-teal-100 text-teal-800",
+  peach: "bg-amber-100 text-amber-800",
+  lavender: "bg-lilac-100 text-lilac-800",
+  coral: "bg-red-100 text-red-800",
+  sky: "bg-blue-100 text-blue-800",
+  rose: "bg-rose-100 text-rose-800",
+};
+
+// Liten pill för kategorier och taggar (artiklar, projekt, admin-listor).
+export const pillClasses: Record<Accent, string> = {
+  emerald: "bg-pine-50 text-pine-800 ring-1 ring-inset ring-pine-200",
+  moss: "bg-teal-50 text-teal-800 ring-1 ring-inset ring-teal-200",
+  peach: "bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200",
+  lavender: "bg-lilac-50 text-lilac-800 ring-1 ring-inset ring-lilac-200",
+  coral: "bg-red-50 text-red-800 ring-1 ring-inset ring-red-200",
+  sky: "bg-blue-50 text-blue-800 ring-1 ring-inset ring-blue-200",
+  rose: "bg-rose-50 text-rose-800 ring-1 ring-inset ring-rose-200",
 };
 
 export const iconTextClasses: Record<Accent, string> = {
-  emerald: "text-emerald",
-  moss: "text-moss",
-  peach: "text-peach",
-  lavender: "text-lavender",
-  coral: "text-coral",
-  sky: "text-sky",
-  rose: "text-rose",
+  emerald: "text-pine-700",
+  moss: "text-teal-700",
+  peach: "text-amber-700",
+  lavender: "text-lilac-700",
+  coral: "text-red-700",
+  sky: "text-blue-700",
+  rose: "text-rose-700",
 };
 
 export const blobClasses: Record<Accent, { big: string; small: string }> = {
-  emerald: { big: "bg-emerald/10", small: "bg-emerald/[0.06]" },
-  moss: { big: "bg-moss/10", small: "bg-moss/[0.06]" },
-  peach: { big: "bg-peach/10", small: "bg-peach/[0.06]" },
-  lavender: { big: "bg-lavender/10", small: "bg-lavender/[0.06]" },
-  coral: { big: "bg-coral/10", small: "bg-coral/[0.06]" },
-  sky: { big: "bg-sky/10", small: "bg-sky/[0.06]" },
-  rose: { big: "bg-rose/10", small: "bg-rose/[0.06]" },
+  emerald: { big: "bg-pine-100", small: "bg-pine-50" },
+  moss: { big: "bg-teal-100", small: "bg-teal-50" },
+  peach: { big: "bg-amber-100", small: "bg-amber-50" },
+  lavender: { big: "bg-lilac-100", small: "bg-lilac-50" },
+  coral: { big: "bg-red-100", small: "bg-red-50" },
+  sky: { big: "bg-blue-100", small: "bg-blue-50" },
+  rose: { big: "bg-rose-100", small: "bg-rose-50" },
 };
 
 // Hex values matching the CSS custom properties in globals.css, for contexts
 // (like generated OG images) that can't resolve Tailwind classes or CSS vars.
 export const accentHex: Record<Accent, string> = {
-  emerald: "#34d399",
-  moss: "#4ca37a",
-  peach: "#f5b87e",
-  lavender: "#d7b4ea",
-  coral: "#e28a87",
-  sky: "#8ec5e8",
-  rose: "#e8a0c0",
+  emerald: "#026a49",
+  moss: "#016767",
+  peach: "#804b01",
+  lavender: "#664b81",
+  coral: "#a71116",
+  sky: "#015b9f",
+  rose: "#96295e",
+};
+
+// Ljus ton av samma accent, för ytor i OG-bilder.
+export const accentSoftHex: Record<Accent, string> = {
+  emerald: "#e1f3e9",
+  moss: "#def3f2",
+  peach: "#feead7",
+  lavender: "#f1eaf9",
+  coral: "#ffe8e5",
+  sky: "#e2f0fe",
+  rose: "#fee7ef",
 };
 
 // Fixed per-service assignments so the six service cards read as six
@@ -48,12 +84,10 @@ export const accentHex: Record<Accent, string> = {
 // service category pages).
 export const serviceAccents: Record<string, Accent> = {
   webb: "emerald",
-  // "moss" reads too close to the forest/olive background to pop as an
-  // accent — rose gives SEO real contrast instead of blending in.
   seo: "rose",
   design: "peach",
   tillvaxt: "lavender",
-  automation: "coral",
+  automation: "moss",
   support: "sky",
 };
 

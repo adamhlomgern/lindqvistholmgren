@@ -11,8 +11,8 @@ export default async function AdminCategoriesPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Kategorier</h1>
-      <p className="mt-1 text-sm text-stone">
+      <h1 className="font-display text-2xl font-semibold text-fg">Kategorier</h1>
+      <p className="mt-1 text-sm text-fg-muted">
         Styr vilka kategorier som går att välja för artiklar, samt vilken ikon och färg de får.
       </p>
 
@@ -22,17 +22,17 @@ export default async function AdminCategoriesPage() {
           return (
             <div
               key={category.name}
-              className="flex items-center justify-between rounded-2xl bg-bone/5 px-5 py-3"
+              className="flex items-center justify-between rounded-2xl bg-fg/5 px-5 py-3"
             >
               <div className="flex items-center gap-3">
                 <AccentBadge icon={Icon} accent={category.accent} size={16} className="h-9 w-9" />
-                <span className="text-sm font-medium text-bone">{category.name}</span>
+                <span className="text-sm font-medium text-fg">{category.name}</span>
               </div>
               <form action={deleteCategory.bind(null, category.name)}>
                 <button
                   type="submit"
                   aria-label={`Ta bort ${category.name}`}
-                  className="text-stone hover:text-coral"
+                  className="text-fg-muted hover:text-coral"
                 >
                   <X size={16} strokeWidth={2.25} />
                 </button>
@@ -40,11 +40,11 @@ export default async function AdminCategoriesPage() {
             </div>
           );
         })}
-        {categories.length === 0 && <p className="text-sm text-stone">Inga kategorier ännu.</p>}
+        {categories.length === 0 && <p className="text-sm text-fg-muted">Inga kategorier ännu.</p>}
       </div>
 
       <Card className="mt-8 max-w-md">
-        <h2 className="font-display text-base font-bold text-bone">Lägg till kategori</h2>
+        <h2 className="font-display text-base font-semibold text-fg">Lägg till kategori</h2>
         <div className="mt-5">
           <CategoryForm />
         </div>

@@ -1,11 +1,11 @@
 "use client";
 
 import { MessagesPanel } from "@/components/customer/MessagesPanel";
-import { demoMessages } from "@/features/customer-portal-demo/data/seed";
+import { useCustomerPortalDemo } from "@/features/customer-portal-demo/state/CustomerPortalDemoProvider";
 
-// A fixed, scripted conversation for the visitor to read — not something to
-// type into, so this just reuses MessagesPanel's existing readOnly mode
-// (built for the admin Kundvy preview).
+// Samma chatt som i den riktiga kundportalen, men i demoläge: man kan skriva
+// och får ett skriptat svar från "Ada" (se CustomerPortalDemoProvider).
 export function DemoMessagesPage() {
-  return <MessagesPanel messages={demoMessages} readOnly />;
+  const { messages, typing, sendMessage } = useCustomerPortalDemo();
+  return <MessagesPanel messages={messages} onSend={sendMessage} typingLabel={typing ? "Ada" : null} />;
 }

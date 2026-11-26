@@ -10,13 +10,13 @@ import type { BillingEntity, ClientProjectWithCustomer } from "@/lib/types";
 
 const fieldSelectClasses = "w-full rounded-lg px-3 py-2 text-sm";
 const fieldInputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-3 py-2 text-sm text-bone focus:border-emerald focus:outline-none";
+  "w-full rounded-lg border border-line bg-fg/5 px-3 py-2 text-sm text-fg focus:border-primary focus:outline-none";
 
 function Row({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
-      <span className="text-xs font-medium uppercase tracking-label text-stone">{label}</span>
-      <div className="mt-1 text-sm text-bone">{children}</div>
+      <span className="text-xs font-medium uppercase tracking-label text-fg-muted">{label}</span>
+      <div className="mt-1 text-sm text-fg">{children}</div>
     </div>
   );
 }
@@ -39,8 +39,8 @@ export function ProjectInfoPanel({
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-sm font-bold text-bone">Projektinfo</h2>
-        <button type="button" onClick={onEdit} className="text-xs font-medium text-emerald hover:underline">
+        <h2 className="font-display text-sm font-semibold text-fg">Projektinfo</h2>
+        <button type="button" onClick={onEdit} className="text-xs font-medium text-primary hover:underline">
           Redigera
         </button>
       </div>
@@ -48,17 +48,17 @@ export function ProjectInfoPanel({
       <div className="mt-4 flex flex-col gap-4">
         <Row label="Kund">
           {project.customer ? (
-            <Link href={`/admin/kunder/${project.customer.id}`} className="hover:text-emerald hover:underline">
+            <Link href={`/admin/kunder/${project.customer.id}`} className="hover:text-primary hover:underline">
               {project.customer.company || project.customer.name}
             </Link>
           ) : (
-            <span className="text-stone">Ingen kund kopplad</span>
+            <span className="text-fg-muted">Ingen kund kopplad</span>
           )}
         </Row>
 
         {project.customer?.company && (
           <Row label="Kontakt">
-            <Link href={`/admin/kunder/${project.customer.id}`} className="hover:text-emerald hover:underline">
+            <Link href={`/admin/kunder/${project.customer.id}`} className="hover:text-primary hover:underline">
               {project.customer.name}
             </Link>
           </Row>

@@ -5,6 +5,7 @@ import {
   FileText,
   Gauge,
   Layers,
+  LayoutDashboard,
   LayoutTemplate,
   LifeBuoy,
   LineChart,
@@ -31,7 +32,7 @@ export const serviceIcons: Record<string, LucideIcon> = {
   seo: Search,
   design: Palette,
   tillvaxt: TrendingUp,
-  automation: Zap,
+  automation: LayoutDashboard,
   support: LifeBuoy,
 };
 

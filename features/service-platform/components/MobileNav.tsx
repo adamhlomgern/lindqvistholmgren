@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { LayoutDashboard, Package, Users } from "lucide-react";
+import { CalendarCheck, LayoutDashboard, Package, Users } from "lucide-react";
 import { MobileNavShell } from "@/components/demo/MobileNavShell";
 import { serviceRoutes } from "@/features/service-platform/config/product";
 import { useServicePlatform } from "@/features/service-platform/state/ServicePlatformProvider";
@@ -20,6 +20,7 @@ export function MobileNav() {
       items.push({ href: serviceRoutes.customers(), label: "Kunder", icon: Users });
     }
     items.push({ href: serviceRoutes.assets(), label: "Objekt", icon: Package });
+    items.push({ href: serviceRoutes.bookings(), label: "Bokningar", icon: CalendarCheck });
     return items;
   }, [preset.ownership]);
 

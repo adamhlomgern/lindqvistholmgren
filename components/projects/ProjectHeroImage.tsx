@@ -18,7 +18,7 @@ export function ProjectHeroImage({ src, alt }: ProjectHeroImageProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-2xl shadow-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald"
+        className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-pop shadow-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <Image
           src={src}
@@ -29,7 +29,7 @@ export function ProjectHeroImage({ src, alt }: ProjectHeroImageProps) {
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           priority
         />
-        <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-charcoal/70 text-bone opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+        <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink-950/70 text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
           <Expand size={16} />
         </span>
       </button>

@@ -81,10 +81,10 @@ export default function BokadMarketingPage() {
       <Section tone="olive">
         <Container>
           <Eyebrow icon={Layers}>Egen produkt, inte kundleverans</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Vi bygger byråarbete varje dag. Bokad äger vi själva.
           </h2>
-          <p className="mt-4 max-w-xl text-stone">
+          <p className="mt-4 max-w-xl text-fg-muted">
             De flesta av våra demos visar hur vi kan bygga en lösning åt ert företag. Bokad är annorlunda — det är en
             plattform vi utvecklar, driver och på sikt kan skala som en riktig utmanare till Bokadirekt. Samma
             bokningsmotor som driver varje salong i katalogen nedan är den vi själva sitter och bygger vidare på.
@@ -95,8 +95,8 @@ export default function BokadMarketingPage() {
               return (
                 <GlassCard key={item.title} accent={accent}>
                   <AccentBadge icon={item.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{item.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{item.description}</p>
                 </GlassCard>
               );
             })}
@@ -107,7 +107,7 @@ export default function BokadMarketingPage() {
       <Section tone="forest">
         <Container>
           <Eyebrow icon={UserCog}>Tre vyer, en bokningsmotor</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Kund, salong och ägare ser samma bokning
           </h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-3">
@@ -116,8 +116,8 @@ export default function BokadMarketingPage() {
               return (
                 <GlassCard key={view.title} accent={accent}>
                   <AccentBadge icon={view.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{view.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{view.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{view.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{view.description}</p>
                 </GlassCard>
               );
             })}
@@ -129,17 +129,17 @@ export default function BokadMarketingPage() {
         <Container>
           <GlassCard accent="sky" className="-m-6 items-start gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg md:text-3xl">
                 Vill ni ha en yta i Bokad — eller bygga en egen plattform?
               </h2>
-              <p className="mt-2 text-stone">
+              <p className="mt-2 text-fg-muted">
                 Som salong kan ni höra av er om en plats i katalogen längre fram. Driver ni en annan typ av
                 marknadsplats eller bokningstjänst? Vi bygger gärna er egen version av samma idé.
               </p>
             </div>
             <Link
               href={bokadRoutes.contactCta()}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-sky px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-sky px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-fg"
             >
               Prata med oss
               <ArrowUpRight size={16} strokeWidth={2.5} />
@@ -152,17 +152,17 @@ export default function BokadMarketingPage() {
         <Container>
           <GlassCard accent="emerald" className="-m-6 items-start gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg md:text-3xl">
                 Klicka runt i en färdig demo
               </h2>
-              <p className="mt-2 text-stone">
+              <p className="mt-2 text-fg-muted">
                 Ingen inloggning behövs — sök bland åtta seedade salonger i Karlstad och Värmland, boka en tid som
                 kund och se den dyka upp i salongens kö direkt.
               </p>
             </div>
             <Link
               href={bokadRoutes.directory()}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
             >
               Öppna Bokad
               <ArrowUpRight size={16} strokeWidth={2.5} />

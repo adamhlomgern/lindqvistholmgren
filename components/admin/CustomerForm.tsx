@@ -5,12 +5,12 @@ import type { Customer } from "@/lib/types";
 import { createCustomer, updateCustomer, type CustomerFormState } from "@/lib/actions/customers";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="block">
-      <span className="block text-xs font-medium uppercase tracking-label text-stone">{label}</span>
+      <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">{label}</span>
       <div className="mt-2">{children}</div>
     </div>
   );
@@ -19,7 +19,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div>
-      <h2 className="font-display text-sm font-bold text-bone">{title}</h2>
+      <h2 className="font-display text-sm font-semibold text-fg">{title}</h2>
       <div className="mt-4 flex flex-col gap-5">{children}</div>
     </div>
   );
@@ -46,7 +46,7 @@ export function CustomerForm({ customer, onSaved, onCancel }: CustomerFormProps)
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
-      <div className="divide-y divide-bone/10 [&>*+*]:pt-6 [&>*:not(:last-child)]:pb-6">
+      <div className="divide-y divide-line [&>*+*]:pt-6 [&>*:not(:last-child)]:pb-6">
         <Section title="Kontaktuppgifter">
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label="Namn">
@@ -90,13 +90,13 @@ export function CustomerForm({ customer, onSaved, onCancel }: CustomerFormProps)
         </Section>
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-bone/10 pt-6">
+      <div className="flex flex-col gap-3 border-t border-line pt-6">
         {state?.error && <p className="text-sm text-coral">{state.error}</p>}
         <div className="flex items-center gap-3">
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
           >
             {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa kund"}
           </button>
@@ -104,7 +104,7 @@ export function CustomerForm({ customer, onSaved, onCancel }: CustomerFormProps)
             <button
               type="button"
               onClick={onCancel}
-              className="text-sm font-medium text-stone transition-colors hover:text-bone"
+              className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
             >
               Avbryt
             </button>

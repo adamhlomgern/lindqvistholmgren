@@ -22,7 +22,7 @@ export function CollapsibleSection({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-label text-stone/50 transition-colors hover:text-stone"
+        className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-label text-fg-subtle transition-colors hover:text-fg-muted"
       >
         <ChevronRight size={12} strokeWidth={2.5} className={`transition-transform ${open ? "rotate-90" : ""}`} />
         {label} {count}

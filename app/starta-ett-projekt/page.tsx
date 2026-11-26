@@ -23,7 +23,7 @@ export default function StartaEttProjektPage() {
         title="Redo att sätta igång?"
         description="Svara på några korta frågor om vad ni behöver hjälp med, er budget och tidsram — det tar ett par minuter, och sen hör vi av oss inom 24 timmar."
       >
-        <StartProjectButton>
+        <StartProjectButton trackingLocation="starta-ett-projekt">
           Starta ett projekt
           <ChevronRight size={16} strokeWidth={2.5} />
         </StartProjectButton>

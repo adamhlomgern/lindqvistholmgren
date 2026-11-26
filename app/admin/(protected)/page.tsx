@@ -137,14 +137,14 @@ export default async function AdminDashboardPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">Översikt</h1>
-      <p className="mt-1 text-sm text-stone">{subtitle}</p>
+      <h1 className="font-display text-2xl font-semibold text-fg">Översikt</h1>
+      <p className="mt-1 text-sm text-fg-muted">{subtitle}</p>
 
       <Card className="mt-8">
-        <h2 className="font-display text-sm font-bold text-bone">Att hantera</h2>
+        <h2 className="font-display text-sm font-semibold text-fg">Att hantera</h2>
         {actionItems.length === 0 ? (
-          <p className="mt-3 flex items-center gap-2 text-sm text-stone">
-            <CheckCircle2 size={16} className="text-emerald" />
+          <p className="mt-3 flex items-center gap-2 text-sm text-fg-muted">
+            <CheckCircle2 size={16} className="text-primary" />
             Inget som kräver din uppmärksamhet just nu.
           </p>
         ) : (
@@ -153,20 +153,20 @@ export default async function AdminDashboardPage() {
               <Link
                 key={item.text}
                 href={item.href}
-                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-bone/[0.06]"
+                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-fg/[0.06]"
               >
-                <span className="flex items-center gap-2.5 text-sm font-medium text-bone">
+                <span className="flex items-center gap-2.5 text-sm font-medium text-fg">
                   <item.icon size={16} className={iconTextClasses[item.accent]} />
                   {item.text}
                 </span>
-                <ChevronRight size={16} className="text-stone/50" />
+                <ChevronRight size={16} className="text-fg-subtle" />
               </Link>
             ))}
           </div>
         )}
       </Card>
 
-      <h2 className="mt-8 font-display text-lg font-bold text-bone">Ekonomi</h2>
+      <h2 className="mt-8 font-display text-lg font-semibold text-fg">Ekonomi</h2>
       <Card className="mt-4">
         <div className="grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4">
           <EconomyStat
@@ -200,13 +200,13 @@ export default async function AdminDashboardPage() {
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
-          <h3 className="font-display text-sm font-bold text-bone">Omsättning, senaste 6 månaderna</h3>
+          <h3 className="font-display text-sm font-semibold text-fg">Omsättning, senaste 6 månaderna</h3>
           <div className="mt-5">
             <RevenueChart data={monthlyRevenue} />
           </div>
         </Card>
         <Card>
-          <h3 className="font-display text-sm font-bold text-bone">Verksamhet</h3>
+          <h3 className="font-display text-sm font-semibold text-fg">Verksamhet</h3>
           <div className="mt-4 flex flex-col gap-1">
             <VerksamhetRow
               href="/admin/projekt"
@@ -233,8 +233,8 @@ export default async function AdminDashboardPage() {
             />
           </div>
           {revenueByEntity.length > 1 && (
-            <div className="mt-5 border-t border-bone/10 pt-4">
-              <h4 className="text-xs font-medium uppercase tracking-label text-stone">Omsättning per firma</h4>
+            <div className="mt-5 border-t border-line pt-4">
+              <h4 className="text-xs font-medium uppercase tracking-label text-fg-muted">Omsättning per firma</h4>
               <div className="mt-3">
                 <EntityRevenueBars data={revenueByEntity} colorByEntityId={colorByEntityId} />
               </div>
@@ -245,16 +245,16 @@ export default async function AdminDashboardPage() {
 
       {activity.length > 0 && (
         <div className="mt-10">
-          <h2 className="font-display text-lg font-bold text-bone">Senaste aktivitet</h2>
+          <h2 className="font-display text-lg font-semibold text-fg">Senaste aktivitet</h2>
           <div className="mt-4 flex flex-col gap-1">
             {activity.map((item) => (
               <Link
                 key={item.id}
                 href={item.href}
-                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-bone/[0.08]"
+                className="flex items-center justify-between rounded-xl px-3 py-2.5 transition-colors hover:bg-fg/[0.08]"
               >
-                <span className="text-sm text-bone">{item.label}</span>
-                <span className="shrink-0 text-xs text-stone">{formatRelativeSv(item.timestamp)}</span>
+                <span className="text-sm text-fg">{item.label}</span>
+                <span className="shrink-0 text-xs text-fg-muted">{formatRelativeSv(item.timestamp)}</span>
               </Link>
             ))}
           </div>
@@ -281,8 +281,8 @@ function EconomyStat({
     <div className="flex items-start gap-2.5">
       <AccentBadge icon={Icon} accent={accent} boxSize="compact" size={14} />
       <div>
-        <p className="font-display text-base font-bold text-bone sm:text-lg">{value}</p>
-        <p className="text-xs text-stone">
+        <p className="font-display text-base font-semibold text-fg sm:text-lg">{value}</p>
+        <p className="text-xs text-fg-muted">
           {label}
           {sub ? ` · ${sub}` : ""}
         </p>
@@ -307,17 +307,17 @@ function VerksamhetRow({
   return (
     <Link
       href={href}
-      className="group flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors hover:bg-bone/[0.06]"
+      className="group flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors hover:bg-fg/[0.06]"
     >
-      <span className="flex items-center gap-2 text-sm text-bone">
+      <span className="flex items-center gap-2 text-sm text-fg">
         <Icon size={14} className={iconTextClasses[accent]} />
         {label}
       </span>
-      <span className="flex items-center gap-1 text-sm font-semibold text-bone">
+      <span className="flex items-center gap-1 text-sm font-semibold text-fg">
         {count}
         <ArrowUpRight
           size={12}
-          className="text-stone/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+          className="text-fg-subtle transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
         />
       </span>
     </Link>

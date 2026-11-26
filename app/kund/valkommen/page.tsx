@@ -1,12 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { acceptCustomerInvite } from "@/lib/actions/customer-invites";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none";
 
 type Status = "checking" | "ready" | "expired" | "saving" | "error";
 
@@ -98,15 +99,16 @@ export default function CustomerWelcomePage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-forest px-6">
-      <div className="w-full max-w-sm rounded-2xl bg-bone/5 p-8">
-        <h1 className="font-display text-xl font-bold text-bone">Välkommen</h1>
-        <p className="mt-1 text-sm text-stone">Sätt ett lösenord för att komma igång med kundportalen.</p>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-surface-sunken px-6">
+      <Image src="/images/lindqvist-holmgren/lindqvist-holmgren-full-logo-on-light.svg" alt="Lindqvist / Holmgren" width={6065} height={2124} priority className="h-8 w-auto" />
+      <div className="w-full max-w-sm rounded-2xl bg-surface p-8 shadow-raised ring-1 ring-line">
+        <h1 className="font-display text-2xl font-semibold tracking-[-0.02em] text-fg">Välkommen</h1>
+        <p className="mt-1 text-sm text-fg-muted">Sätt ett lösenord för att komma igång med kundportalen.</p>
 
-        {status === "checking" && <p className="mt-6 text-sm text-stone">Kontrollerar inbjudan…</p>}
+        {status === "checking" && <p className="mt-6 text-sm text-fg-muted">Kontrollerar inbjudan…</p>}
 
         {status === "expired" && (
-          <p className="mt-6 text-sm text-coral">
+          <p className="mt-6 text-sm text-danger">
             Länken har gått ut eller redan använts. Be din kontaktperson hos oss om en ny inbjudan.
           </p>
         )}
@@ -116,7 +118,7 @@ export default function CustomerWelcomePage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-xs font-medium uppercase tracking-label text-stone"
+                className="block text-sm font-medium text-fg"
               >
                 Lösenord
               </label>
@@ -133,7 +135,7 @@ export default function CustomerWelcomePage() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-xs font-medium uppercase tracking-label text-stone"
+                className="block text-sm font-medium text-fg"
               >
                 Bekräfta lösenord
               </label>
@@ -147,11 +149,11 @@ export default function CustomerWelcomePage() {
                 className={`${inputClasses} mt-2`}
               />
             </div>
-            {error && <p className="text-sm text-coral">{error}</p>}
+            {error && <p className="text-sm text-danger">{error}</p>}
             <button
               type="submit"
               disabled={status === "saving"}
-              className="mt-2 inline-flex items-center justify-center rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+              className="mt-2 inline-flex items-center justify-center h-11 rounded-full bg-primary px-5 text-[15px] font-medium shadow-card text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
             >
               {status === "saving" ? "Sparar…" : "Kom igång"}
             </button>

@@ -161,10 +161,10 @@ export function AdminSidebar({
 
   return (
     <>
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-bone/10 bg-charcoal/60 md:flex md:h-screen">
-        <div className="shrink-0 border-b border-bone/10 px-6 py-5">
-          <p className="font-display text-base font-bold text-bone">Lindqvist / Holmgren</p>
-          <p className="mt-0.5 text-xs text-stone/70">Admin</p>
+      <aside className="hidden w-64 shrink-0 flex-col border-r border-line bg-surface-sunken md:flex md:h-screen">
+        <div className="shrink-0 border-b border-line px-6 py-5">
+          <p className="font-display text-base font-semibold text-fg">Lindqvist / Holmgren</p>
+          <p className="mt-0.5 text-xs text-fg-subtle">Admin</p>
         </div>
         <nav className="scroll-area-dark flex flex-1 flex-col overflow-y-auto px-3 py-5">
           <NavGroups
@@ -178,12 +178,12 @@ export function AdminSidebar({
         <SidebarFooter email={email} displayName={displayName} size="sm" />
       </aside>
 
-      <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-bone/10 bg-charcoal/95 px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-canvas/90 backdrop-blur px-4 py-3 md:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Öppna meny"
-          className="-ml-1.5 flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-3 text-bone active:bg-bone/5"
+          className="-ml-1.5 flex items-center gap-2 rounded-lg py-1.5 pl-1.5 pr-3 text-fg active:bg-fg/5"
         >
           <span className="relative flex">
             <Menu size={20} strokeWidth={2} />
@@ -194,14 +194,14 @@ export function AdminSidebar({
               />
             )}
           </span>
-          <span className="font-display text-sm font-bold">{currentLabel}</span>
+          <span className="font-display text-sm font-semibold">{currentLabel}</span>
           {hasNewInboxActivity && <span className="sr-only">Nya mejl eller meddelanden</span>}
         </button>
         <form action={logout}>
           <button
             type="submit"
             aria-label="Logga ut"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-stone active:bg-bone/5 active:text-coral"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-fg-muted active:bg-fg/5 active:text-coral"
           >
             <LogOut size={18} strokeWidth={2} />
           </button>
@@ -209,21 +209,21 @@ export function AdminSidebar({
       </div>
 
       <div
-        className={`fixed inset-0 z-40 flex h-dvh w-screen flex-col bg-forest transition-opacity duration-300 ease-out md:hidden ${
+        className={`fixed inset-0 z-40 flex h-dvh flex-col bg-canvas transition-opacity duration-300 ease-out md:hidden ${
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={!open}
       >
-        <div className="flex shrink-0 items-center justify-between border-b border-bone/10 px-6 py-5">
+        <div className="flex shrink-0 items-center justify-between border-b border-line px-6 py-5">
           <div>
-            <p className="font-display text-base font-bold text-bone">Lindqvist / Holmgren</p>
-            <p className="mt-0.5 text-xs text-stone/70">Admin</p>
+            <p className="font-display text-base font-semibold text-fg">Lindqvist / Holmgren</p>
+            <p className="mt-0.5 text-xs text-fg-subtle">Admin</p>
           </div>
           <button
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Stäng meny"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-bone/10 bg-bone/10 text-bone transition-colors hover:bg-bone/15"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-fg ring-1 ring-inset ring-line-strong transition-colors hover:bg-surface-sunken"
           >
             <X size={20} strokeWidth={2} />
           </button>
@@ -267,7 +267,7 @@ function NavGroups({
       {groups.map((group) => (
         <div key={group.label} className="mt-4">
           <p
-            className={`pb-1 text-[11px] font-semibold uppercase tracking-label text-stone/65 ${
+            className={`pb-1 text-[11px] font-semibold uppercase tracking-label text-fg-subtle ${
               size === "sm" ? "px-3" : "px-4"
             }`}
           >
@@ -286,7 +286,7 @@ function NavGroups({
                         onClick={onToggleArticles}
                         aria-label={articlesExpanded ? "Dölj artikelundermeny" : "Visa artikelundermeny"}
                         aria-expanded={articlesExpanded}
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-stone/60 transition-colors hover:bg-bone/5 hover:text-bone"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-fg-subtle transition-colors hover:bg-fg/5 hover:text-fg"
                       >
                         <ChevronDown
                           size={16}
@@ -300,7 +300,7 @@ function NavGroups({
                   )}
                   {hasChildren && articlesExpanded && (
                     <div
-                      className={`mt-1 flex flex-col gap-0.5 border-l border-bone/10 ${
+                      className={`mt-1 flex flex-col gap-0.5 border-l border-line ${
                         size === "sm" ? "ml-[21px] pl-5" : "ml-[26px] pl-[22px]"
                       }`}
                     >
@@ -326,9 +326,9 @@ function NavGroups({
 }
 
 const badgeAccentClasses = {
-  emerald: "bg-emerald/15 text-emerald",
-  coral: "bg-coral/15 text-coral",
-  sky: "bg-sky/15 text-sky",
+  emerald: "bg-pine-100 text-pine-800",
+  coral: "bg-red-100 text-red-800",
+  sky: "bg-blue-100 text-blue-800",
 };
 
 function NavLink({
@@ -353,7 +353,7 @@ function NavLink({
       href={item.href}
       onClick={onNavigate}
       className={`flex items-center justify-between rounded-lg font-medium transition-colors ${sizeClasses} ${
-        active ? "bg-emerald/10 text-emerald" : "text-stone hover:bg-bone/5 hover:text-bone"
+        active ? "bg-surface text-fg shadow-card ring-1 ring-line" : "text-fg-muted hover:bg-fg/[0.04] hover:text-fg"
       } ${className}`}
     >
       <span className="flex items-center gap-3">
@@ -388,7 +388,7 @@ function SubNavLink({
       href={item.href}
       onClick={onNavigate}
       className={`rounded-lg px-3 py-1.5 font-medium transition-colors ${size === "sm" ? "text-[13px]" : "text-sm"} ${
-        active ? "bg-emerald/10 text-emerald" : "text-stone/70 hover:bg-bone/5 hover:text-bone"
+        active ? "bg-fg/[0.05] text-fg" : "text-fg-muted hover:bg-fg/[0.04] hover:text-fg"
       }`}
     >
       {item.label}
@@ -412,9 +412,9 @@ function SidebarFooter({
 }) {
   const pathname = usePathname();
   return (
-    <div className={`shrink-0 border-t border-bone/10 ${size === "sm" ? "px-3 py-3" : "px-4 py-4"}`}>
+    <div className={`shrink-0 border-t border-line ${size === "sm" ? "px-3 py-3" : "px-4 py-4"}`}>
       <NavLink item={settingsItem} pathname={pathname} size={size} onNavigate={onNavigate} />
-      <div className="mt-2 border-t border-bone/10 pt-2">
+      <div className="mt-2 border-t border-line pt-2">
         <AccountMenu email={email} displayName={displayName} size={size} />
       </div>
     </div>
@@ -449,27 +449,27 @@ function AccountMenu({ email, displayName, size }: { email: string; displayName:
         aria-label="Kontomeny"
         aria-haspopup="menu"
         aria-expanded={open}
-        className={`flex w-full items-center gap-2.5 rounded-lg text-left transition-colors hover:bg-bone/5 ${
+        className={`flex w-full items-center gap-2.5 rounded-lg text-left transition-colors hover:bg-fg/5 ${
           size === "sm" ? "px-3 py-2" : "px-4 py-2.5"
         }`}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald/15 text-xs font-bold text-emerald">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">
           {initialOf(displayName)}
         </span>
         <span className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium text-bone">{displayName}</p>
-          <p className="truncate text-xs text-stone/60">{email}</p>
+          <p className="truncate text-sm font-medium text-fg">{displayName}</p>
+          <p className="truncate text-xs text-fg-subtle">{email}</p>
         </span>
         <ChevronDown
           size={14}
           strokeWidth={2}
-          className={`shrink-0 text-stone/50 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`shrink-0 text-fg-subtle transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
       {open && (
         <div
           role="menu"
-          className="absolute bottom-full left-0 z-20 mb-1.5 w-full min-w-[13rem] rounded-xl border border-bone/10 bg-forest p-1.5 shadow-xl"
+          className="absolute bottom-full left-0 z-20 mb-1.5 w-full min-w-[13rem] rounded-xl border border-line bg-surface p-1.5 shadow-pop"
         >
           <form action={logout}>
             <button

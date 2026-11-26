@@ -5,7 +5,7 @@ import { ProjectOverviewCard } from "@/components/customer/ProjectOverviewCard";
 import { MessagesPreviewCard } from "@/components/customer/MessagesPreviewCard";
 import { CompactContactCard } from "@/components/customer/CompactContactCard";
 import { useCustomerPortalDemo } from "@/features/customer-portal-demo/state/CustomerPortalDemoProvider";
-import { buildDemoApprovals, buildDemoProject, demoAssignee, demoMessages } from "@/features/customer-portal-demo/data/seed";
+import { buildDemoApprovals, buildDemoProject, demoAssignee } from "@/features/customer-portal-demo/data/seed";
 import type { CustomerActionItem } from "@/lib/data/customer/overview";
 
 const BASE = "/demo/kundportal";
@@ -35,10 +35,10 @@ export function DemoOverview() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-bold text-bone">
+      <h1 className="font-display text-2xl font-semibold text-fg">
         {demo.finalMaterialsUnlocked ? "Klart! Er identitet är levererad" : "Ditt sista godkännande behövs"}
       </h1>
-      <p className="mt-1 text-sm text-stone">
+      <p className="mt-1 text-sm text-fg-muted">
         {demo.finalMaterialsUnlocked
           ? "Slutleveransen finns i materialbiblioteket, redo att användas."
           : "1 aktivt projekt hos oss just nu."}
@@ -53,7 +53,7 @@ export function DemoOverview() {
       </div>
 
       <div className="mt-4">
-        <MessagesPreviewCard messages={demoMessages} hrefBase={BASE} />
+        <MessagesPreviewCard messages={demo.messages} hrefBase={BASE} />
       </div>
 
       <div className="mt-4">

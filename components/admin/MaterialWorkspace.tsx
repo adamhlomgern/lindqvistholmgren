@@ -208,12 +208,12 @@ export function MaterialWorkspace({
       <Breadcrumbs items={crumbs} />
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold text-bone">{currentFolderName ?? "Material"}</h1>
+        <h1 className="font-display text-2xl font-semibold text-fg">{currentFolderName ?? "Material"}</h1>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setUploadOpen(true)}
-            className="flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+            className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
           >
             <Upload size={13} strokeWidth={2.5} />
             Ladda upp
@@ -221,7 +221,7 @@ export function MaterialWorkspace({
           <button
             type="button"
             onClick={() => setFolderDialog({})}
-            className="flex items-center gap-1.5 rounded-full bg-bone/10 px-4 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/15"
+            className="flex items-center gap-1.5 rounded-full bg-fg/10 px-4 py-2 text-xs font-medium text-fg transition-colors hover:bg-fg/15"
           >
             <FolderPlus size={13} strokeWidth={2.5} />
             Ny mapp
@@ -229,7 +229,7 @@ export function MaterialWorkspace({
           <button
             type="button"
             onClick={() => setInstructionOpen(true)}
-            className="flex items-center gap-1.5 rounded-full bg-bone/10 px-4 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/15"
+            className="flex items-center gap-1.5 rounded-full bg-fg/10 px-4 py-2 text-xs font-medium text-fg transition-colors hover:bg-fg/15"
           >
             <FileText size={13} strokeWidth={2.5} />
             Skapa instruktion
@@ -237,7 +237,7 @@ export function MaterialWorkspace({
           <button
             type="button"
             onClick={() => setLinkOpen(true)}
-            className="flex items-center gap-1.5 rounded-full bg-bone/10 px-4 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/15"
+            className="flex items-center gap-1.5 rounded-full bg-fg/10 px-4 py-2 text-xs font-medium text-fg transition-colors hover:bg-fg/15"
           >
             <Link2 size={13} strokeWidth={2.5} />
             Lägg till länk
@@ -247,7 +247,7 @@ export function MaterialWorkspace({
               trigger={
                 <button
                   type="button"
-                  className="flex items-center gap-1.5 rounded-full bg-bone/10 px-4 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/15"
+                  className="flex items-center gap-1.5 rounded-full bg-fg/10 px-4 py-2 text-xs font-medium text-fg transition-colors hover:bg-fg/15"
                 >
                   <MessageSquareText size={13} strokeWidth={2.5} />
                   Meddela kund
@@ -264,15 +264,15 @@ export function MaterialWorkspace({
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <div className="relative min-w-[10rem] flex-1 sm:max-w-xs">
-          <Search size={14} strokeWidth={2.25} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone" />
+          <Search size={14} strokeWidth={2.25} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Sök material…"
-            className="w-full rounded-full border border-bone/10 bg-bone/5 py-2 pl-9 pr-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+            className="w-full rounded-full border border-line-strong bg-surface py-2 pl-9 pr-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
           />
         </div>
-        <div className="flex items-center gap-0.5 rounded-full bg-bone/5 p-0.5">
+        <div className="flex items-center gap-0.5 rounded-full bg-fg/5 p-0.5">
           {(
             [
               { value: "all", label: "Allt" },
@@ -286,7 +286,7 @@ export function MaterialWorkspace({
               onClick={() => setVisibilityFilter(option.value)}
               aria-pressed={visibilityFilter === option.value}
               className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                visibilityFilter === option.value ? "bg-emerald text-charcoal" : "text-stone hover:text-bone"
+                visibilityFilter === option.value ? "bg-primary text-on-primary" : "text-fg-muted hover:text-fg"
               }`}
             >
               {option.label}
@@ -311,12 +311,12 @@ export function MaterialWorkspace({
           onViewModeChange={setMaterialViewMode}
         />
         {selectionCount > 0 && (
-          <div className="flex items-center gap-2 rounded-full bg-emerald/10 py-1.5 pl-4 pr-1.5">
-            <p className="text-sm font-medium text-bone">{selectionCount} valda</p>
+          <div className="flex items-center gap-2 rounded-full bg-primary/10 py-1.5 pl-4 pr-1.5">
+            <p className="text-sm font-medium text-fg">{selectionCount} valda</p>
             <button
               type="button"
               onClick={openBulkMove}
-              className="flex items-center gap-1.5 rounded-full bg-emerald px-3.5 py-1.5 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
             >
               <FolderInput size={13} strokeWidth={2.5} />
               Flytta
@@ -326,7 +326,7 @@ export function MaterialWorkspace({
               onClick={clearSelection}
               aria-label="Avmarkera allt"
               title="Avmarkera allt"
-              className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
             >
               <X size={14} strokeWidth={2.25} />
             </button>
@@ -336,11 +336,11 @@ export function MaterialWorkspace({
 
       {folders.length === 0 && items.length === 0 ? (
         <Card className="mt-6">
-          <p className="text-sm text-stone">Mappen är tom. Ladda upp filer, skapa en instruktion eller en ny undermapp.</p>
+          <p className="text-sm text-fg-muted">Mappen är tom. Ladda upp filer, skapa en instruktion eller en ny undermapp.</p>
         </Card>
       ) : sortedFolders.length === 0 && sortedItems.length === 0 ? (
         <Card className="mt-6">
-          <p className="text-sm text-stone">Inget matchar sökningen eller filtret.</p>
+          <p className="text-sm text-fg-muted">Inget matchar sökningen eller filtret.</p>
         </Card>
       ) : viewMode === "list" ? (
         <div className="mt-4 flex flex-col gap-2">
@@ -473,7 +473,7 @@ function ReorderButtons({
         disabled={isFirst}
         aria-label="Flytta upp"
         title="Flytta upp"
-        className="flex h-8 w-8 items-center justify-center text-stone transition-colors hover:text-bone disabled:opacity-30"
+        className="flex h-8 w-8 items-center justify-center text-fg-muted transition-colors hover:text-fg disabled:opacity-30"
       >
         <ChevronUp size={14} strokeWidth={2.25} />
       </button>
@@ -483,7 +483,7 @@ function ReorderButtons({
         disabled={isLast}
         aria-label="Flytta ner"
         title="Flytta ner"
-        className="flex h-8 w-8 items-center justify-center text-stone transition-colors hover:text-bone disabled:opacity-30"
+        className="flex h-8 w-8 items-center justify-center text-fg-muted transition-colors hover:text-fg disabled:opacity-30"
       >
         <ChevronDown size={14} strokeWidth={2.25} />
       </button>
@@ -506,7 +506,7 @@ function SelectCheckbox({ checked, onToggle, label }: { checked: boolean; onTogg
       aria-pressed={checked}
       aria-label={label}
       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-colors ${
-        checked ? "border-emerald bg-emerald text-charcoal" : "border-bone/30 text-transparent hover:border-bone/50"
+        checked ? "border-primary bg-primary text-on-primary" : "border-line-strong text-transparent hover:border-fg/50"
       }`}
     >
       <Check size={12} strokeWidth={3} />
@@ -542,7 +542,7 @@ function FolderSharedBadge({ hasSharedContent, compact = false }: { hasSharedCon
       <span
         title={title}
         className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-          hasSharedContent ? "bg-emerald/15 text-emerald" : "bg-bone/10 text-stone"
+          hasSharedContent ? "bg-pine-100 text-pine-800" : "bg-fg/10 text-fg-muted"
         }`}
       >
         <Icon size={10} strokeWidth={2.5} />
@@ -554,7 +554,7 @@ function FolderSharedBadge({ hasSharedContent, compact = false }: { hasSharedCon
     <span
       title={title}
       className={`flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${
-        hasSharedContent ? "bg-emerald/15 text-emerald" : "bg-bone/10 text-stone"
+        hasSharedContent ? "bg-pine-100 text-pine-800" : "bg-fg/10 text-fg-muted"
       }`}
     >
       <Icon size={10} strokeWidth={2.5} />
@@ -584,8 +584,8 @@ function FolderListRow({
         <Link href={`${basePath}/${folder.id}`} className="flex min-w-0 flex-1 items-center gap-3">
           <FolderIcon size={18} strokeWidth={2} className="shrink-0 text-peach" />
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-bone">{folder.name}</p>
-            {folder.description && <p className="truncate text-xs text-stone">{folder.description}</p>}
+            <p className="truncate text-sm font-medium text-fg">{folder.name}</p>
+            {folder.description && <p className="truncate text-xs text-fg-muted">{folder.description}</p>}
           </div>
         </Link>
       </div>
@@ -597,7 +597,7 @@ function FolderListRow({
           onClick={onRename}
           aria-label="Byt namn"
           title="Byt namn"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <Pencil size={14} strokeWidth={2.25} />
         </button>
@@ -606,7 +606,7 @@ function FolderListRow({
           onClick={onMoveTo}
           aria-label="Flytta"
           title="Flytta till en annan mapp"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <FolderInput size={14} strokeWidth={2.25} />
         </button>
@@ -616,7 +616,7 @@ function FolderListRow({
               type="button"
               aria-label="Radera mapp"
               title="Radera mappen"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-coral/10 hover:text-coral"
             >
               <Trash2 size={14} strokeWidth={2.25} />
             </button>
@@ -647,7 +647,7 @@ function FolderGridCard({
   hasSharedContent,
 }: FolderRowProps) {
   return (
-    <div className="relative flex flex-col items-center gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3">
+    <div className="relative flex flex-col items-center gap-2 rounded-xl border border-line bg-fg/5 p-3">
       <div className="absolute left-1.5 top-1.5">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${folder.name}"`} />
       </div>
@@ -656,7 +656,7 @@ function FolderGridCard({
       </div>
       <Link href={`${basePath}/${folder.id}`} className="flex w-full flex-1 flex-col items-center gap-2 text-center">
         <FolderIcon size={26} strokeWidth={1.75} className="text-peach" />
-        <p className="line-clamp-2 text-xs font-medium text-bone">{folder.name}</p>
+        <p className="line-clamp-2 text-xs font-medium text-fg">{folder.name}</p>
       </Link>
       <div className="flex shrink-0 items-center gap-0.5">
         {canReorder && <ReorderButtons isFirst={isFirst} isLast={isLast} onMove={onMove} />}
@@ -665,7 +665,7 @@ function FolderGridCard({
           onClick={onRename}
           aria-label="Byt namn"
           title="Byt namn"
-          className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <Pencil size={12} strokeWidth={2.25} />
         </button>
@@ -674,7 +674,7 @@ function FolderGridCard({
           onClick={onMoveTo}
           aria-label="Flytta"
           title="Flytta till en annan mapp"
-          className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <FolderInput size={12} strokeWidth={2.25} />
         </button>
@@ -684,7 +684,7 @@ function FolderGridCard({
               type="button"
               aria-label="Radera mapp"
               title="Radera mappen"
-              className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
+              className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-coral/10 hover:text-coral"
             >
               <Trash2 size={12} strokeWidth={2.25} />
             </button>
@@ -721,16 +721,16 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
         {isImage && item.downloadUrl ? (
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-bone/10 bg-checkered p-1">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line bg-checkered p-1">
             {/* eslint-disable-next-line @next/next/no-img-element -- signed Supabase Storage URL, not a static/optimizable asset */}
             <img src={item.downloadUrl} alt="" className="h-full w-full object-contain" />
           </div>
         ) : (
-          <TypeIcon size={18} strokeWidth={2} className="shrink-0 text-stone" />
+          <TypeIcon size={18} strokeWidth={2} className="shrink-0 text-fg-muted" />
         )}
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-bone">{item.title}</p>
-          <p className="truncate text-xs text-stone">
+          <p className="truncate text-sm font-medium text-fg">{item.title}</p>
+          <p className="truncate text-xs text-fg-muted">
             {item.type === "file" && item.filename && `${item.filename}${item.size ? ` · ${formatBytes(item.size)}` : ""}`}
             {item.type === "link" && item.url}
             {item.type === "instruction" && "Instruktion"}
@@ -746,8 +746,8 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
           onClick={() => togglePinned(customerId, item.id, !item.pinned)}
           aria-label={item.pinned ? "Ta bort nål" : "Fäst överst"}
           title={item.pinned ? "Ta bort från fästa objekt" : "Fäst överst i listan"}
-          className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-bone/10 ${
-            item.pinned ? "text-peach" : "text-stone hover:text-bone"
+          className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-fg/10 ${
+            item.pinned ? "text-peach" : "text-fg-muted hover:text-fg"
           }`}
         >
           <Star size={14} strokeWidth={2.25} fill={item.pinned ? "currentColor" : "none"} />
@@ -757,7 +757,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
           onClick={onRename}
           aria-label="Byt namn"
           title="Byt namn"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <Pencil size={14} strokeWidth={2.25} />
         </button>
@@ -766,7 +766,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
           onClick={onMoveTo}
           aria-label="Flytta"
           title="Flytta till en annan mapp"
-          className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <FolderInput size={14} strokeWidth={2.25} />
         </button>
@@ -776,7 +776,7 @@ function ItemListRow({ item, customerId, canReorder, isFirst, isLast, onMove, on
               type="button"
               aria-label="Radera"
               title="Radera"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-coral/10 hover:text-coral"
             >
               <Trash2 size={14} strokeWidth={2.25} />
             </button>
@@ -797,7 +797,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
   const isImage = item.type === "file" && item.contentType?.startsWith("image/");
 
   return (
-    <div className="relative flex flex-col overflow-hidden rounded-xl border border-bone/10 bg-bone/5">
+    <div className="relative flex flex-col overflow-hidden rounded-xl border border-line bg-fg/5">
       <div className="absolute left-1.5 top-1.5 z-10">
         <SelectCheckbox checked={selected} onToggle={onToggleSelect} label={`Markera "${item.title}"`} />
       </div>
@@ -814,12 +814,12 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
           </div>
         ) : (
           <>
-            <TypeIcon size={22} strokeWidth={1.75} className="text-stone" />
-            <span className="line-clamp-2 text-[11px] text-stone">{item.title}</span>
+            <TypeIcon size={22} strokeWidth={1.75} className="text-fg-muted" />
+            <span className="line-clamp-2 text-[11px] text-fg-muted">{item.title}</span>
           </>
         )}
         {isImage && (
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-charcoal/90 to-transparent px-2 pb-1.5 pt-4 text-[11px] text-bone">
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 truncate bg-gradient-to-t from-canvas/90 to-transparent px-2 pb-1.5 pt-4 text-[11px] text-fg">
             {item.title}
           </span>
         )}
@@ -827,7 +827,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
           <Star size={13} strokeWidth={2.25} fill="currentColor" className="absolute right-1.5 top-1.5 text-peach" />
         )}
       </a>
-      <div className="flex flex-wrap items-center justify-between gap-1 border-t border-bone/10 p-1.5">
+      <div className="flex flex-wrap items-center justify-between gap-1 border-t border-line p-1.5">
         <MaterialVisibilityToggle customerId={customerId} itemId={item.id} visibility={item.visibility} itemTitle={item.title} />
         <div className="flex shrink-0 items-center gap-0.5">
           {canReorder && <ReorderButtons isFirst={isFirst} isLast={isLast} onMove={onMove} />}
@@ -836,8 +836,8 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             onClick={() => togglePinned(customerId, item.id, !item.pinned)}
             aria-label={item.pinned ? "Ta bort nål" : "Fäst överst"}
             title={item.pinned ? "Ta bort från fästa objekt" : "Fäst överst i listan"}
-            className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors hover:bg-bone/10 ${
-              item.pinned ? "text-peach" : "text-stone hover:text-bone"
+            className={`flex h-7 w-7 items-center justify-center rounded-full transition-colors hover:bg-fg/10 ${
+              item.pinned ? "text-peach" : "text-fg-muted hover:text-fg"
             }`}
           >
             <Star size={12} strokeWidth={2.25} fill={item.pinned ? "currentColor" : "none"} />
@@ -847,7 +847,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             onClick={onRename}
             aria-label="Byt namn"
             title="Byt namn"
-            className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
           >
             <Pencil size={12} strokeWidth={2.25} />
           </button>
@@ -856,7 +856,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
             onClick={onMoveTo}
             aria-label="Flytta"
             title="Flytta till en annan mapp"
-            className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+            className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
           >
             <FolderInput size={12} strokeWidth={2.25} />
           </button>
@@ -866,7 +866,7 @@ function ItemGridCard({ item, customerId, canReorder, isFirst, isLast, onMove, o
                 type="button"
                 aria-label="Radera"
                 title="Radera"
-                className="flex h-7 w-7 items-center justify-center rounded-full text-stone transition-colors hover:bg-coral/10 hover:text-coral"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-coral/10 hover:text-coral"
               >
                 <Trash2 size={12} strokeWidth={2.25} />
               </button>

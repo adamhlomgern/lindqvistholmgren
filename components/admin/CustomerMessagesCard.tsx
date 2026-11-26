@@ -11,7 +11,7 @@ import { formatRelativeSv } from "@/lib/format";
 import type { CustomerMessage } from "@/lib/types";
 
 const textareaClasses =
-  "w-full min-w-0 rounded-lg border border-bone/10 bg-bone/5 px-3.5 py-2.5 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
+  "w-full min-w-0 rounded-lg border border-line-strong bg-surface px-3.5 py-2.5 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none";
 
 export function CustomerMessagesCard({ customerId, messages }: { customerId: string; messages: CustomerMessage[] }) {
   const action = sendAdminMessage.bind(null, customerId);
@@ -54,15 +54,15 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
 
   return (
     <Card>
-      <h2 className="font-display text-sm font-bold text-bone">Meddelanden</h2>
+      <h2 className="font-display text-sm font-semibold text-fg">Meddelanden</h2>
 
       <div className="mt-3 flex max-h-80 flex-col gap-2 overflow-y-auto">
-        {messages.length === 0 && <p className="text-sm text-stone">Inga meddelanden ännu.</p>}
+        {messages.length === 0 && <p className="text-sm text-fg-muted">Inga meddelanden ännu.</p>}
         {messages.map((message) => (
           <div
             key={message.id}
             className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm ${
-              message.authorRole === "admin" ? "self-end bg-emerald/15 text-bone" : "self-start bg-bone/10 text-bone"
+              message.authorRole === "admin" ? "self-end bg-primary/15 text-fg" : "self-start bg-fg/10 text-fg"
             }`}
           >
             {message.attachment?.url && (
@@ -76,7 +76,7 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
               </button>
             )}
             {message.body && <p className={message.attachment ? "mt-2 whitespace-pre-wrap" : "whitespace-pre-wrap"}>{message.body}</p>}
-            <p className="mt-1 text-[11px] text-stone/60">
+            <p className="mt-1 text-[11px] text-fg-subtle">
               {message.authorLabel} · {formatRelativeSv(message.createdAt)}
             </p>
           </div>
@@ -113,7 +113,7 @@ export function CustomerMessagesCard({ customerId, messages }: { customerId: str
             type={pendingImage ? "button" : "submit"}
             disabled={pending || imagePending}
             onClick={pendingImage ? () => void handleSendImage() : undefined}
-            className="shrink-0 rounded-full bg-emerald px-4 py-2.5 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="shrink-0 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
           >
             Skicka
           </button>

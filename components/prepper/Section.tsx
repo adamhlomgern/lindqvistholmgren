@@ -141,7 +141,7 @@ export function Section({
               }
             }}
             autoFocus
-            className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 text-[21px] font-bold tracking-[-0.02em] text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+            className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 text-[21px] font-prepper-display font-semibold tracking-[-0.02em] text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
           />
         ) : (
           <button
@@ -150,7 +150,7 @@ export function Section({
             disabled={reorderMode}
             className="flex min-h-11 min-w-0 flex-1 items-center justify-between gap-3"
           >
-            <span className="min-w-0 truncate text-[21px] font-bold tracking-[-0.02em] text-prepper-text">
+            <span className="min-w-0 truncate text-[21px] font-prepper-display font-semibold tracking-[-0.02em] text-prepper-text">
               {title}
             </span>
             <span className="flex shrink-0 items-center gap-2 text-[13px] font-medium text-prepper-text-muted">

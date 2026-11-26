@@ -441,6 +441,9 @@ export type ProjectInquiry = {
   company: string;
   email: string;
   phone: string;
+  // Var förfrågan kom ifrån (lib/inquiries/sources.ts). Saknas på äldre rader.
+  source?: string | null;
+  page?: string | null;
 };
 
 // Prepper (privat checklist-app, app/admin/appar/prepper/*) —

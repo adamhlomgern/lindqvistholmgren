@@ -13,7 +13,7 @@ export function CompactContactCard({ contact, hrefBase = "/kund" }: Props) {
   if (!contact) {
     return (
       <Card>
-        <p className="text-sm text-stone">Ingen kontaktuppgift satt ännu.</p>
+        <p className="text-sm text-fg-muted">Ingen kontaktuppgift satt ännu.</p>
       </Card>
     );
   }
@@ -22,32 +22,32 @@ export function CompactContactCard({ contact, hrefBase = "/kund" }: Props) {
     <Card>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald/15 text-sm font-bold text-emerald">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary">
             {contact.name.trim().charAt(0).toUpperCase() || "?"}
           </span>
           <div>
-            <p className="text-sm font-medium text-bone">{contact.name}</p>
-            <p className="text-xs text-stone">Din kontakt hos oss</p>
+            <p className="text-sm font-medium text-fg">{contact.name}</p>
+            <p className="text-xs text-fg-muted">Din kontakt hos oss</p>
           </div>
         </div>
         <Link
           href={`${hrefBase}/meddelanden`}
-          className="flex items-center gap-1.5 rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone"
+          className="flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover"
         >
           <MessageCircle size={13} strokeWidth={2.5} />
           Skriv till {contact.name.split(" ")[0]}
         </Link>
       </div>
       {(contact.email || contact.phone) && (
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-bone/10 pt-3">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line pt-3">
           {contact.email && (
-            <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 text-xs text-stone hover:text-bone">
+            <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 text-xs text-fg-muted hover:text-fg">
               <Mail size={12} />
               {contact.email}
             </a>
           )}
           {contact.phone && (
-            <a href={`tel:${contact.phone}`} className="flex items-center gap-1.5 text-xs text-stone hover:text-bone">
+            <a href={`tel:${contact.phone}`} className="flex items-center gap-1.5 text-xs text-fg-muted hover:text-fg">
               <Phone size={12} />
               {contact.phone}
             </a>

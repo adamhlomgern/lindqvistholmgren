@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
-import { Tag } from "@/components/ui/Tag";
+import { CategoryPill } from "@/components/ui/CategoryPill";
 import { Select } from "@/components/ui/Select";
 import { ArticleCardMenu } from "@/components/admin/ArticleCardMenu";
 import { articleIcons, resolveCategoryVisual } from "@/lib/articles/visuals";
@@ -65,19 +65,19 @@ export function AdminArticlesGrid({
   }, [articles, search, status, category, sort]);
 
   if (articles.length === 0) {
-    return <p className="mt-8 text-sm text-stone">Inga artiklar ännu.</p>;
+    return <p className="mt-8 text-sm text-fg-muted">Inga artiklar ännu.</p>;
   }
 
   return (
     <div>
       <div className="mt-6 flex flex-wrap items-center gap-2">
         <div className="relative flex-1 sm:max-w-xs">
-          <Search size={14} strokeWidth={2.25} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-stone" />
+          <Search size={14} strokeWidth={2.25} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-fg-muted" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Sök artiklar…"
-            className="w-full rounded-full border border-bone/10 bg-bone/5 py-2 pl-9 pr-3.5 text-xs text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none"
+            className="w-full rounded-full border border-line-strong bg-surface py-2 pl-9 pr-3.5 text-xs text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none"
           />
         </div>
         <Select
@@ -110,7 +110,7 @@ export function AdminArticlesGrid({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="mt-8 text-sm text-stone">Inga artiklar matchar filtret.</p>
+        <p className="mt-8 text-sm text-fg-muted">Inga artiklar matchar filtret.</p>
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((article) => {
@@ -136,11 +136,11 @@ export function AdminArticlesGrid({
                       <ArticleCardMenu slug={article.slug} title={article.title} status={article.status} />
                     </div>
                   </div>
-                  <h2 className="mt-3 line-clamp-2 font-display text-base font-bold text-bone">{article.title}</h2>
-                  <p className="mt-1.5 line-clamp-2 text-sm text-stone">{article.excerpt}</p>
+                  <h2 className="mt-3 line-clamp-2 font-display text-base font-semibold text-fg">{article.title}</h2>
+                  <p className="mt-1.5 line-clamp-2 text-sm text-fg-muted">{article.excerpt}</p>
                   <div className="mt-auto flex items-center gap-2 pt-3">
-                    <Tag className="bg-bone/10 text-bone">{article.category}</Tag>
-                    <span className="text-xs text-stone">
+                    <CategoryPill accent={accent}>{article.category}</CategoryPill>
+                    <span className="text-xs text-fg-muted">
                       {article.status === "publicerad"
                         ? `Publicerad ${formatDateSv(article.date)}`
                         : `Ändrad ${formatRelativeSv(article.updatedAt)}`}

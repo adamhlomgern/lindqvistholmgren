@@ -41,7 +41,7 @@ export function ProjectFileUploadForm({ projectId, customerId }: { projectId: st
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-bone/20 px-4 py-4 text-sm text-stone transition-colors hover:border-emerald/40 hover:text-bone">
+      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-line-strong px-4 py-4 text-sm text-fg-muted transition-colors hover:border-primary/40 hover:text-fg">
         <Upload size={16} strokeWidth={2.25} />
         {pending ? "Laddar upp…" : "Bifoga fil"}
         <input

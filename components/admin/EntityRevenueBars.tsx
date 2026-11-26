@@ -6,8 +6,8 @@ import { formatCurrencySek } from "@/lib/format";
 // per-entity order (not by revenue rank) so a firma's color never changes
 // just because it had a slower month — see the dataviz skill's
 // "color follows the entity, never its rank" rule.
-const colors = ["bg-emerald", "bg-lavender"];
-const textColors = ["text-emerald", "text-lavender"];
+const colors = ["bg-primary", "bg-lavender"];
+const textColors = ["text-primary", "text-lavender"];
 
 export function EntityRevenueBars({
   data,
@@ -26,14 +26,14 @@ export function EntityRevenueBars({
         return (
           <div key={entity.entityId}>
             <div className="flex items-baseline justify-between gap-3">
-              <span className="text-sm font-medium text-bone">{entity.entityName}</span>
-              <span className={`text-sm font-bold ${textColors[colorIndex] ?? "text-emerald"}`}>
+              <span className="text-sm font-medium text-fg">{entity.entityName}</span>
+              <span className={`text-sm font-bold ${textColors[colorIndex] ?? "text-primary"}`}>
                 {formatCurrencySek(entity.total)}
               </span>
             </div>
-            <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-bone/5">
+            <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-fg/5">
               <div
-                className={`h-full rounded-full ${colors[colorIndex] ?? "bg-emerald"}`}
+                className={`h-full rounded-full ${colors[colorIndex] ?? "bg-primary"}`}
                 style={{ width: `${width}%` }}
               />
             </div>

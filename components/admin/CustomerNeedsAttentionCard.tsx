@@ -18,7 +18,7 @@ export function CustomerNeedsAttentionCard({
 
   return (
     <Card>
-      <h2 className="font-display text-sm font-bold text-bone">Behöver hanteras</h2>
+      <h2 className="font-display text-sm font-semibold text-fg">Behöver hanteras</h2>
 
       {waitingForReply && latestMessage ? (
         <Link
@@ -28,15 +28,15 @@ export function CustomerNeedsAttentionCard({
           <MessageSquareText size={16} className="mt-0.5 shrink-0 text-coral" />
           <div className="min-w-0">
             <p className="text-sm font-medium text-coral">Obesvarat meddelande från {latestMessage.authorLabel}</p>
-            <p className="mt-0.5 line-clamp-1 text-sm text-stone">
+            <p className="mt-0.5 line-clamp-1 text-sm text-fg-muted">
               {latestMessage.body || (latestMessage.attachment ? "📷 Bild" : "")}
             </p>
-            <p className="mt-0.5 text-xs text-stone/60">{formatRelativeSv(latestMessage.createdAt)}</p>
+            <p className="mt-0.5 text-xs text-fg-subtle">{formatRelativeSv(latestMessage.createdAt)}</p>
           </div>
         </Link>
       ) : (
-        <p className="mt-3 flex items-center gap-2 text-sm text-stone">
-          <CheckCircle2 size={16} className="text-emerald" />
+        <p className="mt-3 flex items-center gap-2 text-sm text-fg-muted">
+          <CheckCircle2 size={16} className="text-primary" />
           Inget som kräver er uppmärksamhet just nu.
         </p>
       )}

@@ -8,14 +8,15 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { AccentBadge } from "@/components/ui/AccentBadge";
 import { Tag } from "@/components/ui/Tag";
 import { FacebookIcon, InstagramIcon } from "@/components/ui/SocialIcons";
-import { accents, type Accent } from "@/lib/design/accents";
+import type { Accent } from "@/lib/design/accents";
 import { CtaBanner } from "@/components/sections/CtaBanner";
-import { contactInfo, businessInfo, socialLinks } from "@/lib/data/site-info";
+import { Reveal } from "@/components/motion/Reveal";
+import { contactInfo, businessInfo, paymentInfo, socialLinks } from "@/lib/data/site-info";
 
 export const metadata: Metadata = {
   title: "Om oss",
   description:
-    "Lindqvist / Holmgren är två frilansare, Ada och Malin, som tillsammans hjälper småföretag i Karlstad och hela Sverige med webb, design och marknadsföring.",
+    "Lindqvist / Holmgren är två frilansare, Ada och Malin, som tillsammans hjälper småföretag i Karlstad och hela Sverige med webb, design, affärssystem och marknadsföring.",
   alternates: {
     canonical: "/om-oss",
   },
@@ -74,47 +75,54 @@ export default function OmOssPage() {
         title="Två personer. Ett gemensamt hantverk."
         description="Vi är inte en stor byrå med projektledare och mellanhänder — vi är två frilansare som driver Lindqvist / Holmgren tillsammans, med bas i Karlstad. Ni pratar alltid direkt med den som faktiskt gör jobbet, och vi lägger stolthet i att leverera något genomarbetat, oavsett hur stort eller litet projektet är."
       />
-      <Section tone="olive">
+      <Section tone="light" className="pt-4 md:pt-6">
         <Container>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {team.map((person) => (
-              <GlassCard key={person.name} accent={person.accent}>
-                <div className="flex flex-col gap-5 sm:flex-row">
-                  <div className="relative mx-auto h-44 w-36 shrink-0 sm:mx-0 sm:h-40 sm:w-32">
-                    <Image
-                      src={person.avatar}
-                      alt={person.name}
-                      fill
-                      sizes="144px"
-                      className="object-contain object-top"
+          <div className="grid gap-6 md:grid-cols-2">
+            {team.map((person, index) => (
+              <Reveal key={person.name} delay={index * 0.1}>
+                <article className="overflow-hidden rounded-3xl bg-surface shadow-card ring-1 ring-line">
+                  <div className={`relative flex h-80 items-end justify-center overflow-hidden ${index === 0 ? "bg-lilac-200" : "bg-amber-100"}`}>
+                    <span
+                      aria-hidden
+                      className={`absolute -right-10 -top-10 h-56 w-56 rounded-full ${index === 0 ? "bg-lilac-300" : "bg-amber-200"}`}
                     />
+                    <div className="relative h-72 w-60">
+                      <Image src={person.avatar} alt={person.name} fill sizes="240px" className="object-contain object-bottom" />
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1 text-center sm:text-left">
-                    <p className="font-display text-lg font-bold text-bone">{person.name}</p>
-                    <p className="mt-1 text-sm text-stone">{person.role}</p>
-                    <p className="mt-4 text-sm leading-relaxed text-bone/80">{person.bio}</p>
-                    <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
+                  <div className="p-8">
+                    <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] text-fg">{person.name}</h2>
+                    <p className="mt-1 text-fg-muted">{person.role}</p>
+                    <p className="mt-5 leading-relaxed text-fg">{person.bio}</p>
+                    <div className="mt-6 flex flex-wrap gap-2">
                       {person.tags.map((tag) => (
                         <Tag key={tag}>{tag}</Tag>
                       ))}
                     </div>
                   </div>
-                </div>
-              </GlassCard>
+                </article>
+              </Reveal>
             ))}
           </div>
-          <div className="mt-12 grid gap-4 sm:grid-cols-3">
-            {values.map((value, index) => {
-              const accent = accents[index % accents.length];
-              return (
-                <GlassCard key={value.title} accent={accent}>
-                  <AccentBadge icon={value.icon} accent={accent} />
-                  <h2 className="mt-4 font-display text-lg font-bold text-bone">{value.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{value.description}</p>
-                </GlassCard>
-              );
-            })}
-          </div>
+        </Container>
+      </Section>
+
+      <Section tone="pine">
+        <Container>
+          <p className="text-sm font-medium text-fg-muted">Det vi står för</p>
+          <ol className="mt-8 divide-y divide-line border-y border-line">
+            {values.map((value, index) => (
+              <li key={value.title}>
+                <Reveal delay={index * 0.08} className="grid gap-3 py-10 md:grid-cols-[6rem_1fr_1fr] md:items-baseline md:gap-10">
+                  <span className="font-display text-lg font-semibold tabular-nums text-highlight">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h2 className="font-display text-3xl font-semibold tracking-[-0.03em] md:text-5xl">{value.title}</h2>
+                  <p className="max-w-md text-lg leading-relaxed text-fg-muted">{value.description}</p>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
         </Container>
       </Section>
       <Section tone="olive">
@@ -122,25 +130,25 @@ export default function OmOssPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             <GlassCard accent="emerald">
               <AccentBadge icon={Mail} accent="emerald" />
-              <h2 className="mt-4 font-display text-lg font-bold text-bone">Kontakta oss</h2>
-              <ul className="mt-3 flex flex-col gap-2 text-sm text-stone">
+              <h2 className="mt-4 font-display text-lg font-semibold text-fg">Kontakta oss</h2>
+              <ul className="mt-3 flex flex-col gap-2 text-sm text-fg-muted">
                 <li>
                   E-post:{" "}
                   <a
                     href={`mailto:${contactInfo.email}`}
-                    className="text-bone transition-colors hover:text-emerald"
+                    className="text-fg transition-colors hover:text-primary"
                   >
                     {contactInfo.email}
                   </a>
                 </li>
                 <li className="flex items-center gap-2">
-                  <MessageCircle size={16} strokeWidth={2} className="text-emerald" />
+                  <MessageCircle size={16} strokeWidth={2} className="text-primary" />
                   WhatsApp:{" "}
                   <a
                     href={contactInfo.whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-bone transition-colors hover:text-emerald"
+                    className="text-fg transition-colors hover:text-primary"
                   >
                     {contactInfo.whatsapp}
                   </a>
@@ -152,7 +160,7 @@ export default function OmOssPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Lindqvist / Holmgren på Facebook"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-fg/5 text-fg-muted transition-colors hover:bg-fg/10 hover:text-primary"
                 >
                   <FacebookIcon size={16} strokeWidth={2} />
                 </a>
@@ -161,7 +169,7 @@ export default function OmOssPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Lindqvist / Holmgren på Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-bone/5 text-bone/70 transition-colors hover:bg-bone/10 hover:text-emerald"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-fg/5 text-fg-muted transition-colors hover:bg-fg/10 hover:text-primary"
                 >
                   <InstagramIcon size={16} strokeWidth={2} />
                 </a>
@@ -169,15 +177,16 @@ export default function OmOssPage() {
             </GlassCard>
             <GlassCard accent="peach">
               <AccentBadge icon={MapPin} accent="peach" />
-              <h2 className="mt-4 font-display text-lg font-bold text-bone">Företagsuppgifter</h2>
-              <p className="mt-1 text-xs text-stone/70">
+              <h2 className="mt-4 font-display text-lg font-semibold text-fg">Företagsuppgifter</h2>
+              <p className="mt-1 text-xs text-fg-subtle">
                 Två enskilda firmor som samarbetar under varumärket Lindqvist / Holmgren.
               </p>
-              <ul className="mt-3 flex flex-col gap-2 text-sm text-stone">
+              <ul className="mt-3 flex flex-col gap-2 text-sm text-fg-muted">
                 <li>Adress: {contactInfo.address}</li>
+                <li>Bankgiro: {paymentInfo.bankgiro}</li>
                 <li>
                   {businessInfo.ada.name} — Org.nr: {businessInfo.ada.orgNumber}
-                  <span className="block text-xs text-stone/70">
+                  <span className="block text-xs text-fg-subtle">
                     Momsreg.nr: {businessInfo.ada.vatNumber}
                   </span>
                 </li>

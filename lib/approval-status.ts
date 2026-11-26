@@ -18,9 +18,9 @@ export function approvalStatusLabel(status: ApprovalStatus, kind: ApprovalKind):
 }
 
 export const approvalStatusClasses: Record<ApprovalStatus, string> = {
-  pending: "bg-peach/15 text-peach",
-  approved: "bg-emerald/15 text-emerald",
-  changes_requested: "bg-peach/15 text-peach",
+  pending: "bg-amber-100 text-amber-800",
+  approved: "bg-pine-100 text-pine-800",
+  changes_requested: "bg-amber-100 text-amber-800",
 };
 
 export const approvalStatusIcons: Record<ApprovalStatus, LucideIcon> = {

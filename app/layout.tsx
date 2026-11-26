@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Space_Grotesk } from "next/font/google";
+import { Geist, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { ProjectInquiryProvider } from "@/components/contact/ProjectInquiryContext";
@@ -13,9 +13,11 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+// Rubriker (font-display / font-heading i globals.css).
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,13 +27,15 @@ export const metadata: Metadata = {
     template: "%s — Lindqvist / Holmgren",
   },
   description:
-    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design och digital marknadsföring — personligt och utan mellanhänder.",
+    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design, egna affärssystem och digital marknadsföring — personligt och utan mellanhänder.",
   keywords: [
     "webbyrå Karlstad",
     "webbdesign",
     "digital marknadsföring",
     "hemsida företag",
     "grafisk design",
+    "affärssystem",
+    "systemutveckling Karlstad",
     "Värmland",
   ],
   authors: [{ name: "Lindqvist / Holmgren" }],
@@ -41,7 +45,7 @@ export const metadata: Metadata = {
     siteName: "Lindqvist / Holmgren",
     title: "Lindqvist / Holmgren — Kreativ digital byrå i Karlstad",
     description:
-      "Två frilansare, ett team. Er digitala partner i Karlstad — webb, design och digital marknadsföring.",
+      "Två frilansare, ett team. Er digitala partner i Karlstad — webb, design, affärssystem och digital marknadsföring.",
   },
   robots: {
     index: true,
@@ -57,7 +61,7 @@ const organizationJsonLd = {
   logo: "https://lindqvistholmgren.se/images/lindqvist-holmgren/lindqvist-holmgren-full-logo.svg",
   image: "https://lindqvistholmgren.se/images/lindqvist-holmgren/lindqvist-holmgren-full-logo.svg",
   description:
-    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design och digital marknadsföring.",
+    "Vi är två frilansare i Karlstad som hjälper småföretag i hela Sverige med webb, design, egna affärssystem och digital marknadsföring.",
   email: "info@lindqvistholmgren.se",
   areaServed: { "@type": "Country", name: "Sverige" },
   address: {
@@ -71,9 +75,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="sv"
-      className={`${geistSans.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-forest text-bone">
+      <body className="min-h-full flex flex-col bg-canvas text-fg">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

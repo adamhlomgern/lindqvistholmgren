@@ -1,4 +1,4 @@
-import { CalendarCheck, Home, Palette, Pizza, Wrench, type LucideIcon } from "lucide-react";
+import { CalendarCheck, Home, Pizza, Users, Wrench, type LucideIcon } from "lucide-react";
 
 export type DemoStatus = "live" | "kommer-snart";
 
@@ -60,7 +60,7 @@ export const demos: DemoListing[] = [
     tagline: "Kundhubb för byråer och konsulter",
     description:
       "Vår egen kundportal — granska ett designförslag, godkänn en leverans och hitta rätt fil i ett organiserat materialbibliotek, precis som en riktig kund hos oss.",
-    icon: Palette,
-    status: "kommer-snart",
+    icon: Users,
+    status: "live",
   },
 ];

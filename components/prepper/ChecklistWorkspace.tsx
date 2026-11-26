@@ -203,7 +203,7 @@ export function ChecklistWorkspace({
               >
                 {notebookName}
               </Link>
-              <h1 className="truncate text-[32px] font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text sm:text-[34px]">
+              <h1 className="truncate text-[32px] font-prepper-display font-semibold leading-[1.1] tracking-[-0.03em] text-prepper-text sm:text-[34px]">
                 {checklist.title}
               </h1>
             </div>
@@ -232,7 +232,7 @@ export function ChecklistWorkspace({
           {sections.length === 0 && (
             <div className="rounded-2xl border border-prepper-border bg-prepper-surface-soft px-6 py-14 text-center">
               <div className="mx-auto max-w-xs border-y border-prepper-border/70 py-5">
-                <p className="text-[21px] font-bold tracking-[-0.02em] text-prepper-text">Här är det tomt än så länge</p>
+                <p className="text-[21px] font-prepper-display font-semibold tracking-[-0.02em] text-prepper-text">Här är det tomt än så länge</p>
                 <p className="mt-1.5 text-[15px] leading-[1.55] text-prepper-text-muted">
                   Lägg till första sektionen ni vill få ordning på.
                 </p>

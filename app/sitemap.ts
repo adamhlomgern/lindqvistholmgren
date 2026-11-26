@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/tjanster`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/projekt`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/artiklar`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${baseUrl}/verktyg`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/om-oss`, changeFrequency: "yearly", priority: 0.6 },
     { url: `${baseUrl}/kontakt`, changeFrequency: "yearly", priority: 0.8 },
     { url: `${baseUrl}/integritetspolicy`, changeFrequency: "yearly", priority: 0.3 },

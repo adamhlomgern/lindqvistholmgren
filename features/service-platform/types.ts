@@ -32,6 +32,9 @@ export type Asset = {
   // Cleared whenever a new service is registered, since it's a note about
   // the *current* upcoming cycle.
   manualContactedAt: string | null;
+  // Bokad tid för nästa service (ISO datum + tid), satt via "Boka tid" eller
+  // när ett samtal slutar med en bokning. Nollställs när servicen registreras.
+  bookedAt: string | null;
   createdAt: string;
 };
 
@@ -55,4 +58,20 @@ export type Reminder = {
   channel: ReminderChannel;
   scheduledAt: string;
   state: ReminderState;
+};
+
+// Kontakt som personalen själv tagit med kunden från Servicekoll (utöver de
+// automatiska påminnelserna): ett skickat SMS eller mejl, eller ett samtal
+// med utfall. Visas i objektets och kundens tidslinje och i översikten.
+export type ContactChannel = "sms" | "email" | "call";
+export type CallOutcome = "booked" | "no_answer" | "call_back" | "talked";
+
+export type ContactEvent = {
+  id: string;
+  customerId: string;
+  assetId: string | null;
+  channel: ContactChannel;
+  at: string;
+  message?: string;
+  outcome?: CallOutcome;
 };

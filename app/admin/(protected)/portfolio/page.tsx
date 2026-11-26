@@ -13,24 +13,24 @@ export default async function AdminPortfolioPage() {
     <div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold text-bone">Kundcase</h1>
-          <p className="mt-1 text-sm text-stone">{projects.length} case i portföljen.</p>
+          <h1 className="font-display text-2xl font-semibold text-fg">Kundcase</h1>
+          <p className="mt-1 text-sm text-fg-muted">{projects.length} case i portföljen.</p>
         </div>
         <Link
           href="/admin/portfolio/ny"
-          className="flex items-center justify-center gap-1.5 self-start rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+          className="flex items-center justify-center gap-1.5 self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
         >
           <Plus size={16} strokeWidth={2.5} />
           Nytt case
         </Link>
       </div>
       {projects.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-bone/15 px-6 py-16 text-center">
-          <GalleryHorizontalEnd size={24} strokeWidth={2} className="text-stone" />
-          <p className="text-sm text-stone">Inga case ännu.</p>
+        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
+          <GalleryHorizontalEnd size={24} strokeWidth={2} className="text-fg-muted" />
+          <p className="text-sm text-fg-muted">Inga case ännu.</p>
           <Link
             href="/admin/portfolio/ny"
-            className="mt-1 text-sm font-medium text-emerald hover:underline"
+            className="mt-1 text-sm font-medium text-primary hover:underline"
           >
             Skapa ditt första case
           </Link>
@@ -53,8 +53,8 @@ export default async function AdminPortfolioPage() {
                     />
                   </div>
                   <Tag className="self-start">{project.category}</Tag>
-                  <h2 className="mt-4 font-display text-base font-bold text-bone">{project.title}</h2>
-                  <p className="mt-2 line-clamp-2 text-sm text-stone">{project.summary}</p>
+                  <h2 className="mt-4 font-display text-base font-semibold text-fg">{project.title}</h2>
+                  <p className="mt-2 line-clamp-2 text-sm text-fg-muted">{project.summary}</p>
                 </GlassCard>
               </Link>
             );

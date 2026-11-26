@@ -14,12 +14,12 @@ export function ProjectRow({ project, showCustomer = true }: { project: ClientPr
 
   return (
     <Link href={`/admin/projekt/${project.id}`} className="block">
-      <Card className={`transition-colors hover:bg-bone/[0.08] ${project.status === "klar" ? "opacity-70" : ""}`}>
+      <Card className={`transition-colors hover:bg-fg/[0.08] ${project.status === "klar" ? "opacity-70" : ""}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate font-display text-base font-bold text-bone">{project.title}</p>
+            <p className="truncate font-display text-base font-semibold text-fg">{project.title}</p>
             {showCustomer && (
-              <p className="mt-0.5 text-sm text-stone">
+              <p className="mt-0.5 text-sm text-fg-muted">
                 {project.customer ? project.customer.company || project.customer.name : "Ingen kund kopplad"}
               </p>
             )}
@@ -32,31 +32,31 @@ export function ProjectRow({ project, showCustomer = true }: { project: ClientPr
           </span>
         </div>
 
-        {project.overview && <p className="mt-2 line-clamp-2 text-sm text-stone">{project.overview}</p>}
+        {project.overview && <p className="mt-2 line-clamp-2 text-sm text-fg-muted">{project.overview}</p>}
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-bone/10 pt-3 text-xs">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line pt-3 text-xs">
           {project.nextTask ? (
-            <span className="flex min-w-0 items-center gap-1.5 text-bone">
+            <span className="flex min-w-0 items-center gap-1.5 text-fg">
               <ArrowRight size={12} strokeWidth={2.25} className="shrink-0 text-peach" />
               <span className="truncate">{project.nextTask}</span>
             </span>
           ) : project.checklistTotal > 0 ? (
-            <span className="text-stone">Allt avklarat</span>
+            <span className="text-fg-muted">Allt avklarat</span>
           ) : (
-            <span className="text-stone">Ingen att göra-lista ännu</span>
+            <span className="text-fg-muted">Ingen att göra-lista ännu</span>
           )}
           {project.checklistTotal > 0 && (
-            <span className="shrink-0 text-stone">
+            <span className="shrink-0 text-fg-muted">
               {project.checklistDone} av {project.checklistTotal} klara
             </span>
           )}
           {project.deadline && (
-            <span className={`shrink-0 ${isOverdue ? "font-medium text-coral" : "text-stone"}`}>
+            <span className={`shrink-0 ${isOverdue ? "font-medium text-coral" : "text-fg-muted"}`}>
               {isOverdue ? "Försenad · " : "Deadline "}
               {formatDateSv(project.deadline)}
             </span>
           )}
-          <span className="shrink-0 text-stone/70">Uppdaterad {formatRelativeSv(project.updatedAt)}</span>
+          <span className="shrink-0 text-fg-subtle">Uppdaterad {formatRelativeSv(project.updatedAt)}</span>
         </div>
       </Card>
     </Link>

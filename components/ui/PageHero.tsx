@@ -23,18 +23,18 @@ export function PageHero({ icon, eyebrow, title, description, children, breadcru
     <div>
       {breadcrumbs && <Breadcrumbs items={breadcrumbs} className="mb-6" />}
       <Eyebrow icon={icon}>{eyebrow}</Eyebrow>
-      <h1 className="mt-4 max-w-3xl font-display text-4xl font-bold leading-[0.95] tracking-tight text-bone md:text-6xl">
+      <h1 className="mt-5 max-w-3xl font-display text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.035em] text-fg md:text-[3.25rem]">
         {title}
       </h1>
       {description && (
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-stone">{description}</p>
+        <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg-muted">{description}</p>
       )}
       {children && <div className="mt-8 flex flex-wrap items-center gap-4">{children}</div>}
     </div>
   );
 
   return (
-    <Section tone="forest" className="pt-20 md:pt-28">
+    <Section tone="light" className="pb-14 pt-12 md:pb-20 md:pt-16">
       <Container>
         {visual ? (
           <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-16">

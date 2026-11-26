@@ -11,7 +11,7 @@ const defaultFaqs = [
   {
     question: "Vad kostar ett projekt?",
     answer:
-      "Det beror helt på omfattning och behov — varje projekt är skräddarsytt. Hör av er så tar vi fram en tydlig offert innan något påbörjas.",
+      "Vi har ingen prislista, eftersom inga två projekt är lika. Så här går det till: ni berättar vad ni behöver, vi går igenom det tillsammans och sedan får ni en offert med omfattning och pris. Inget påbörjas innan ni har sagt ja, och ni binder er inte till något genom att fråga. Har ni en budget i huvudet berättar vi vad som går att göra för den.",
   },
   {
     question: "Hur lång tid tar det?",
@@ -54,13 +54,13 @@ type FaqProps = {
   items?: { question: string; answer: string }[];
   eyebrow?: string;
   title?: string;
-  tone?: "forest" | "charcoal" | "olive";
+  tone?: "forest" | "charcoal" | "olive" | "light" | "subtle" | "lilac";
 };
 
 export function Faq({
   items = defaultFaqs,
   eyebrow = "Vanliga frågor",
-  title = "Bra att veta innan ni hör av er",
+  title = "Vanliga frågor",
   tone = "olive",
 }: FaqProps) {
   const [open, setOpen] = useState<number | null>(0);
@@ -69,12 +69,12 @@ export function Faq({
     <Section tone={tone}>
       <Container>
         <Eyebrow icon={HelpCircle}>{eyebrow}</Eyebrow>
-        <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+        <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
           {title}
         </h2>
-        <div className="mt-8">
+        <div className="mt-10">
           <GlassCard accent="emerald">
-            <div className="-m-6 divide-y divide-bone/10">
+            <div className="-m-6 divide-y divide-line">
               {items.map((faq, index) => {
                 const isOpen = open === index;
                 return (
@@ -82,13 +82,13 @@ export function Faq({
                     <button
                       type="button"
                       onClick={() => setOpen(isOpen ? null : index)}
-                      className="flex w-full items-center justify-between gap-4 px-6 py-3.5 text-left"
+                      className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-fg/[0.02]"
                       aria-expanded={isOpen}
                     >
-                      <span className="text-sm font-semibold text-bone">{faq.question}</span>
+                      <span className="text-[15px] font-medium text-fg">{faq.question}</span>
                       <ChevronDown
                         size={16}
-                        className={`shrink-0 text-emerald transition-transform duration-300 ${
+                        className={`shrink-0 text-fg-muted transition-transform duration-300 ${
                           isOpen ? "rotate-180" : ""
                         }`}
                       />
@@ -99,7 +99,7 @@ export function Faq({
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <p className="px-6 pb-3.5 text-sm leading-relaxed text-stone">{faq.answer}</p>
+                        <p className="max-w-2xl px-6 pb-5 text-[15px] leading-relaxed text-fg-muted">{faq.answer}</p>
                       </div>
                     </div>
                   </div>
@@ -107,6 +107,16 @@ export function Faq({
               })}
             </div>
           </GlassCard>
+          <p className="mt-6 text-[15px] text-fg-muted">
+            Hittar ni inte svaret?{" "}
+            <a
+              href="mailto:info@lindqvistholmgren.se"
+              className="font-medium text-fg underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-fg"
+            >
+              Mejla oss
+            </a>{" "}
+            så svarar vi inom 24 timmar.
+          </p>
         </div>
       </Container>
     </Section>

@@ -52,7 +52,7 @@ export function TagPicker({ name, availableTags, defaultValue = [], onChange }: 
             key={tag}
             type="button"
             onClick={() => toggle(tag)}
-            className="flex items-center gap-1 rounded-full bg-emerald/15 px-3 py-1 text-xs font-medium text-emerald"
+            className="flex items-center gap-1 rounded-full bg-primary/15 px-3 py-1 text-xs font-medium text-primary"
           >
             {tag}
             <X size={12} strokeWidth={2.5} />
@@ -61,7 +61,7 @@ export function TagPicker({ name, availableTags, defaultValue = [], onChange }: 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex items-center gap-1 rounded-full border border-dashed border-bone/20 px-3 py-1 text-xs font-medium text-stone transition-colors hover:border-emerald/40 hover:text-emerald"
+          className="flex items-center gap-1 rounded-full border border-dashed border-line-strong px-3 py-1 text-xs font-medium text-fg-muted transition-colors hover:border-primary/40 hover:text-primary"
         >
           <Plus size={12} strokeWidth={2.5} />
           Lägg till taggar
@@ -69,9 +69,9 @@ export function TagPicker({ name, availableTags, defaultValue = [], onChange }: 
       </div>
 
       {open && (
-        <div className="absolute left-0 top-full z-20 mt-1.5 w-64 overflow-hidden rounded-xl border border-bone/10 bg-forest shadow-xl">
-          <div className="flex items-center gap-2 border-b border-bone/10 px-3 py-2">
-            <Search size={13} strokeWidth={2.25} className="shrink-0 text-stone" />
+        <div className="absolute left-0 top-full z-20 mt-1.5 w-64 overflow-hidden rounded-xl border border-line bg-surface shadow-pop">
+          <div className="flex items-center gap-2 border-b border-line px-3 py-2">
+            <Search size={13} strokeWidth={2.25} className="shrink-0 text-fg-muted" />
             <input
               autoFocus
               value={query}
@@ -88,7 +88,7 @@ export function TagPicker({ name, availableTags, defaultValue = [], onChange }: 
                 }
               }}
               placeholder="Sök taggar…"
-              className="w-full bg-transparent text-xs text-bone placeholder:text-stone/60 focus:outline-none"
+              className="w-full bg-transparent text-xs text-fg placeholder:text-fg-subtle focus:outline-none"
             />
           </div>
           <div className="max-h-48 overflow-y-auto p-1.5">
@@ -100,17 +100,17 @@ export function TagPicker({ name, availableTags, defaultValue = [], onChange }: 
                   toggle(tag);
                   setQuery("");
                 }}
-                className="flex w-full items-center rounded-lg px-2.5 py-2 text-left text-sm text-bone transition-colors hover:bg-bone/10"
+                className="flex w-full items-center rounded-lg px-2.5 py-2 text-left text-sm text-fg transition-colors hover:bg-fg/10"
               >
                 {tag}
               </button>
             ))}
-            {matches.length === 0 && !query && <p className="px-2.5 py-2 text-xs text-stone">Inga fler taggar.</p>}
+            {matches.length === 0 && !query && <p className="px-2.5 py-2 text-xs text-fg-muted">Inga fler taggar.</p>}
             {query.trim() && !exactMatchExists && (
               <button
                 type="button"
                 onClick={addNew}
-                className="flex w-full items-center gap-1.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-emerald transition-colors hover:bg-emerald/10"
+                className="flex w-full items-center gap-1.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium text-primary transition-colors hover:bg-primary/10"
               >
                 <Plus size={13} strokeWidth={2.5} />
                 Skapa &quot;{query.trim()}&quot;

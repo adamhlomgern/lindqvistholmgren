@@ -5,7 +5,7 @@ import { updateInvoiceStatus } from "@/lib/actions/invoices";
 import type { InvoiceStatus } from "@/lib/types";
 
 const buttonClasses =
-  "rounded-full border border-bone/15 px-3.5 py-2 text-xs font-medium text-bone transition-colors hover:bg-bone/10";
+  "rounded-full border border-line-strong px-3.5 py-2 text-xs font-medium text-fg transition-colors hover:bg-fg/10";
 
 function StatusButton({
   id,

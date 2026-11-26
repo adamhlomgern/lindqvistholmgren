@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { Mail, MessageSquare, Phone } from "lucide-react";
-import type { Asset, Customer } from "@/features/service-platform/types";
+import { useRouter } from "next/navigation";
+import { CalendarCheck, Mail, MessageSquare } from "lucide-react";
+import { useServicePlatform } from "@/features/service-platform/state/ServicePlatformProvider";
+import { ContactButtons } from "@/features/service-platform/components/ContactButtons";
+import type { Asset, ContactChannel, Customer } from "@/features/service-platform/types";
 import { getAssetStatus } from "@/features/service-platform/utils/status";
 import { getReminderTimeline } from "@/features/service-platform/utils/reminders";
 import { formatRelativeSv } from "@/features/service-platform/utils/dates";
@@ -17,19 +22,39 @@ type AssetsTableProps = {
   showOwnerColumn?: boolean;
 };
 
-function ContactStatusIcons({ asset }: { asset: Asset }) {
+function useUsedChannels(asset: Asset): Partial<Record<ContactChannel, boolean>> {
+  const { contactEvents } = useServicePlatform();
   const reminders = getReminderTimeline(asset);
-  const emailSent = reminders.some((r) => r.channel === "email" && r.state === "sent");
-  const smsSent = reminders.some((r) => r.channel === "sms" && r.state === "sent");
+  const mine = contactEvents.filter((e) => e.assetId === asset.id);
+  return {
+    email: reminders.some((r) => r.channel === "email" && r.state === "sent") || mine.some((e) => e.channel === "email"),
+    sms: reminders.some((r) => r.channel === "sms" && r.state === "sent") || mine.some((e) => e.channel === "sms"),
+    call: Boolean(asset.manualContactedAt) || mine.some((e) => e.channel === "call"),
+  };
+}
 
+// Utan kund (eget underhåll) finns ingen att kontakta: visa bara status.
+function ContactCell({ asset, customer }: { asset: Asset; customer?: Customer }) {
+  const used = useUsedChannels(asset);
+  if (!customer) {
+    return (
+      <div className="flex items-center gap-2.5 text-demo-text-faint">
+        <Mail size={14} className={used.email ? "text-demo-primary" : ""} />
+        <MessageSquare size={14} className={used.sms ? "text-demo-primary" : ""} />
+      </div>
+    );
+  }
+  return <ContactButtons customer={customer} asset={asset} variant="icons" used={used} />;
+}
+
+function BookedChip({ asset }: { asset: Asset }) {
+  if (!asset.bookedAt) return null;
+  const d = new Date(asset.bookedAt);
   return (
-    <div className="flex items-center gap-2.5" title="Status för påminnelser och egen kontakt">
-      <Mail size={14} className={emailSent ? "text-demo-primary" : "text-demo-text-faint"} />
-      <MessageSquare size={14} className={smsSent ? "text-demo-primary" : "text-demo-text-faint"} />
-      {asset.customerId && (
-        <Phone size={14} className={asset.manualContactedAt ? "text-demo-primary" : "text-demo-text-faint"} />
-      )}
-    </div>
+    <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-demo-info-soft px-2 py-0.5 text-[11px] font-medium text-demo-info">
+      <CalendarCheck size={11} />
+      Bokad {d.toLocaleDateString("sv-SE", { day: "numeric", month: "short" })} {asset.bookedAt.slice(11, 16)}
+    </span>
   );
 }
 
@@ -51,13 +76,19 @@ function AssetCard({ asset, customer, showOwnerColumn }: { asset: Asset; custome
           {showOwnerColumn && <p>{customer ? customer.name : "Internt"}</p>}
           <p>{formatRelativeSv(asset.nextServiceDate)}</p>
         </div>
-        <ContactStatusIcons asset={asset} />
+        <ContactCell asset={asset} customer={customer} />
       </div>
+      {asset.bookedAt && (
+        <div className="mt-2">
+          <BookedChip asset={asset} />
+        </div>
+      )}
     </Link>
   );
 }
 
 export function AssetsTable({ assets, customers, showOwnerColumn = true }: AssetsTableProps) {
+  const router = useRouter();
   const customerById = new Map(customers.map((customer) => [customer.id, customer]));
 
   return (
@@ -92,25 +123,40 @@ export function AssetsTable({ assets, customers, showOwnerColumn = true }: Asset
               {assets.map((asset) => {
                 const customer = asset.customerId ? customerById.get(asset.customerId) : undefined;
                 return (
-                  <tr key={asset.id} className="border-b border-demo-border last:border-0 hover:bg-demo-surface-hover">
+                  <tr
+                    key={asset.id}
+                    onClick={() => router.push(serviceRoutes.asset(asset.id))}
+                    className="cursor-pointer border-b border-demo-border transition-colors last:border-0 hover:bg-demo-surface-hover"
+                  >
                     <td className="whitespace-nowrap px-4 py-3">
                       <Link href={serviceRoutes.asset(asset.id)} className="block">
                         <span className="font-medium text-demo-text">{asset.name}</span>
                         <span className="ml-2 text-xs text-demo-text-muted">
                           {asset.identifier ?? categoryLabels[asset.category]}
                         </span>
+                        <BookedChip asset={asset} />
                       </Link>
                     </td>
                     {showOwnerColumn && (
                       <td className="whitespace-nowrap px-4 py-3 text-demo-text-muted">
-                        {customer ? customer.name : "Internt"}
+                        {customer ? (
+                          <Link
+                            href={serviceRoutes.customer(customer.id)}
+                            onClick={(event) => event.stopPropagation()}
+                            className="hover:text-demo-text hover:underline"
+                          >
+                            {customer.name}
+                          </Link>
+                        ) : (
+                          "Internt"
+                        )}
                       </td>
                     )}
                     <td className="whitespace-nowrap px-4 py-3 text-demo-text-muted">
                       {formatRelativeSv(asset.nextServiceDate)}
                     </td>
-                    <td className="px-4 py-3">
-                      <ContactStatusIcons asset={asset} />
+                    <td className="px-2 py-1.5">
+                      <ContactCell asset={asset} customer={customer} />
                     </td>
                     <td className="whitespace-nowrap px-4 py-3">
                       <StatusBadge status={getAssetStatus(asset)} />

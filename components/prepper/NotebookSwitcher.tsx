@@ -55,11 +55,11 @@ function NotebookRow({ notebook }: { notebook: PrepperNotebook }) {
             }
           }}
           autoFocus
-          className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 text-[17px] font-semibold tracking-[-0.02em] text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
+          className="min-w-0 flex-1 rounded-lg border border-prepper-border bg-prepper-surface px-2 py-1 text-[17px] font-prepper-display font-semibold tracking-[-0.02em] text-prepper-text focus:outline-none focus:ring-2 focus:ring-prepper-focus/30"
         />
       ) : (
         <Link href={`/admin/appar/prepper/${notebook.id}`} className="min-w-0 flex-1 py-1">
-          <span className="block truncate text-[17px] font-semibold tracking-[-0.02em] text-prepper-text">
+          <span className="block truncate text-[17px] font-prepper-display font-semibold tracking-[-0.02em] text-prepper-text">
             {notebook.name}
           </span>
           {notebook.description && (
@@ -107,7 +107,7 @@ export function NotebookSwitcher({ notebooks }: { notebooks: PrepperNotebook[] }
   return (
     <div className="mx-auto max-w-[720px] px-4 pt-10 pb-16 sm:px-8 sm:pt-16">
       <p className="text-xs font-bold uppercase tracking-[0.15em] text-prepper-primary/70">Prepper</p>
-      <h1 className="mt-2 text-[40px] font-semibold leading-[1.08] tracking-[-0.035em] text-prepper-text sm:text-[42px]">
+      <h1 className="mt-2 text-[40px] font-prepper-display font-semibold leading-[1.08] tracking-[-0.035em] text-prepper-text sm:text-[42px]">
         Arbetsböcker
       </h1>
       <p className="mt-3 max-w-md text-[16px] leading-[1.55] text-prepper-text-muted">
@@ -119,7 +119,7 @@ export function NotebookSwitcher({ notebooks }: { notebooks: PrepperNotebook[] }
         <div className="mt-10 rounded-2xl border border-prepper-border bg-prepper-surface-soft px-6 py-14 text-center">
           <div className="mx-auto max-w-xs border-y border-prepper-border/70 py-5">
             <BookOpen size={20} strokeWidth={1.5} className="mx-auto text-prepper-text-faint" />
-            <p className="mt-3 text-[21px] font-bold tracking-[-0.02em] text-prepper-text">Inga arbetsböcker än</p>
+            <p className="mt-3 text-[21px] font-prepper-display font-semibold tracking-[-0.02em] text-prepper-text">Inga arbetsböcker än</p>
             <p className="mt-1.5 text-sm text-prepper-text-muted">
               Lägg till den första arbetsboken ni vill börja planera i.
             </p>

@@ -26,6 +26,8 @@ export {
   iconTextClasses,
   blobClasses,
   accentHex,
+  accentSoftHex,
+  pillClasses,
 } from "@/lib/design/accents";
 
 export const articleIcons: Record<ArticleIconKey, LucideIcon> = {

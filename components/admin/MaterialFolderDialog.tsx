@@ -6,7 +6,7 @@ import { createFolder, renameFolder, type MaterialFormState } from "@/lib/action
 import type { MaterialFolder } from "@/lib/types";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 
 type Props = {
   open: boolean;
@@ -40,7 +40,7 @@ export function MaterialFolderDialog({ open, onClose, customerId, parentFolderId
     <SlideOver open={open} onClose={onClose} title={isEditing ? "Byt namn på mapp" : "Ny mapp"}>
       <form action={formAction} className="flex flex-col gap-5">
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">Namn</span>
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Namn</span>
           <input
             name="name"
             defaultValue={folder?.name}
@@ -50,7 +50,7 @@ export function MaterialFolderDialog({ open, onClose, customerId, parentFolderId
           />
         </div>
         <div>
-          <span className="block text-xs font-medium uppercase tracking-label text-stone">Beskrivning (valfritt)</span>
+          <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">Beskrivning (valfritt)</span>
           <textarea
             name="description"
             defaultValue={folder?.description}
@@ -63,7 +63,7 @@ export function MaterialFolderDialog({ open, onClose, customerId, parentFolderId
           <button
             type="submit"
             disabled={pending}
-            className="rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
           >
             {pending ? "Sparar…" : isEditing ? "Spara" : "Skapa mapp"}
           </button>

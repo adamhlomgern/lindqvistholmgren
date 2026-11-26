@@ -25,15 +25,15 @@ export function ProjectFilesSection({
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-sm font-bold text-bone">
-          Filer {files.length > 0 && <span className="text-stone">({files.length})</span>}
+        <h2 className="font-display text-sm font-semibold text-fg">
+          Filer {files.length > 0 && <span className="text-fg-muted">({files.length})</span>}
         </h2>
       </div>
 
       {files.length === 0 ? (
-        <div className="mt-3 flex flex-col items-center gap-2 rounded-xl border border-dashed border-bone/15 px-6 py-10 text-center">
-          <Paperclip size={20} strokeWidth={2} className="text-stone" />
-          <p className="text-sm text-stone">
+        <div className="mt-3 flex flex-col items-center gap-2 rounded-xl border border-dashed border-line-strong px-6 py-10 text-center">
+          <Paperclip size={20} strokeWidth={2} className="text-fg-muted" />
+          <p className="text-sm text-fg-muted">
             {customerId
               ? "Lägg till referensmaterial, kundunderlag eller andra filer som hör till projektet. Filerna hamnar i kundens materialbibliotek och är interna tills du delar dem."
               : "Koppla en kund till projektet för att lägga till filer."}
@@ -67,7 +67,7 @@ export function ProjectFilesSection({
                       type="button"
                       onClick={() => setRenameTarget({ id: file.id, title: file.title })}
                       aria-label={`Byt namn på "${file.title}"`}
-                      className="flex h-7 w-7 items-center justify-center rounded-full text-stone/70 transition-colors hover:bg-bone/10 hover:text-bone"
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-fg-subtle transition-colors hover:bg-fg/10 hover:text-fg"
                     >
                       <Pencil size={12} strokeWidth={2.25} />
                     </button>

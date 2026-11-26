@@ -47,9 +47,9 @@ export function MaterialMoveDialog({ open, onClose, customerId, folderTree, item
           type="button"
           disabled={pending}
           onClick={() => moveTo(null)}
-          className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5 disabled:opacity-50"
+          className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5 disabled:opacity-50"
         >
-          <FolderTree size={15} strokeWidth={2.25} className="shrink-0 text-stone" />
+          <FolderTree size={15} strokeWidth={2.25} className="shrink-0 text-fg-muted" />
           Bibliotekets rot
         </button>
         {rows.map((row) => (
@@ -59,9 +59,9 @@ export function MaterialMoveDialog({ open, onClose, customerId, folderTree, item
             disabled={pending || folderIds.includes(row.id)}
             onClick={() => moveTo(row.id)}
             style={{ paddingLeft: `${0.75 + row.depth * 1.25}rem` }}
-            className="flex items-center gap-2.5 rounded-lg py-2.5 pr-3 text-left text-sm font-medium text-bone transition-colors hover:bg-bone/5 disabled:opacity-40"
+            className="flex items-center gap-2.5 rounded-lg py-2.5 pr-3 text-left text-sm font-medium text-fg transition-colors hover:bg-fg/5 disabled:opacity-40"
           >
-            <Folder size={15} strokeWidth={2.25} className="shrink-0 text-stone" />
+            <Folder size={15} strokeWidth={2.25} className="shrink-0 text-fg-muted" />
             {row.name}
           </button>
         ))}

@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { setCustomerNotes } from "@/lib/actions/customers";
 
 const textareaClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-3.5 py-2.5 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none";
+  "w-full rounded-lg border border-line-strong bg-surface px-3.5 py-2.5 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none";
 
 export function CustomerNotesCard({ customerId, notes }: { customerId: string; notes?: string }) {
   const [editing, setEditing] = useState(false);
@@ -22,7 +22,7 @@ export function CustomerNotesCard({ customerId, notes }: { customerId: string; n
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-sm font-bold text-bone">Interna anteckningar</h2>
+        <h2 className="font-display text-sm font-semibold text-fg">Interna anteckningar</h2>
         {!editing && (
           <button
             type="button"
@@ -30,13 +30,13 @@ export function CustomerNotesCard({ customerId, notes }: { customerId: string; n
               setValue(notes ?? "");
               setEditing(true);
             }}
-            className="text-xs font-medium text-emerald hover:underline"
+            className="text-xs font-medium text-primary hover:underline"
           >
             Redigera
           </button>
         )}
       </div>
-      <p className="mt-1 text-[11px] uppercase tracking-label text-stone/50">Synligt endast för er, aldrig för kunden</p>
+      <p className="mt-1 text-[11px] uppercase tracking-label text-fg-subtle">Synligt endast för er, aldrig för kunden</p>
 
       {editing ? (
         <div className="mt-3 flex flex-col gap-2">
@@ -52,21 +52,21 @@ export function CustomerNotesCard({ customerId, notes }: { customerId: string; n
               type="button"
               onClick={handleSave}
               disabled={pending}
-              className="rounded-full bg-emerald px-4 py-2 text-xs font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+              className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
             >
               {pending ? "Sparar…" : "Spara"}
             </button>
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="text-xs font-medium text-stone transition-colors hover:text-bone"
+              className="text-xs font-medium text-fg-muted transition-colors hover:text-fg"
             >
               Avbryt
             </button>
           </div>
         </div>
       ) : (
-        <p className="mt-3 whitespace-pre-wrap text-sm text-stone">{notes || "Inga anteckningar ännu."}</p>
+        <p className="mt-3 whitespace-pre-wrap text-sm text-fg-muted">{notes || "Inga anteckningar ännu."}</p>
       )}
     </Card>
   );

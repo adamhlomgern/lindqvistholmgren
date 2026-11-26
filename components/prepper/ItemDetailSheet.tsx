@@ -244,7 +244,7 @@ export function ItemDetailSheet({
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ duration: 0.22, ease: "easeOut" }}
-          className="absolute inset-x-0 bottom-0 mx-auto max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-prepper-background px-5 pb-8 pt-4 shadow-xl sm:bottom-8 sm:rounded-3xl"
+          className="absolute inset-x-0 bottom-0 mx-auto max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-prepper-background px-5 pb-8 pt-4 shadow-pop sm:bottom-8 sm:rounded-3xl"
         >
           <div className="flex items-center justify-between">
             <div className="h-1 w-10 rounded-full bg-prepper-border sm:hidden" />
@@ -273,7 +273,7 @@ export function ItemDetailSheet({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onBlur={saveTitle}
-              className={`min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-1 py-0.5 text-[28px] font-semibold leading-[1.12] tracking-[-0.03em] text-prepper-text focus:border-prepper-border focus:bg-prepper-surface focus:outline-none ${
+              className={`min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-1 py-0.5 text-[28px] font-prepper-display font-semibold leading-[1.12] tracking-[-0.03em] text-prepper-text focus:border-prepper-border focus:bg-prepper-surface focus:outline-none ${
                 derivedCompleted ? "text-prepper-text-muted line-through" : ""
               }`}
             />

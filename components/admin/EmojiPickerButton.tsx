@@ -39,7 +39,7 @@ export function EmojiPickerButton({ textareaRef }: Props) {
         <button
           type="button"
           aria-label="Lägg till emoji"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-stone transition-colors hover:bg-bone/10 hover:text-bone"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-fg/10 hover:text-fg"
         >
           <Smile size={17} strokeWidth={2} />
         </button>
@@ -53,13 +53,13 @@ export function EmojiPickerButton({ textareaRef }: Props) {
             event.preventDefault();
             textareaRef.current?.focus();
           }}
-          className="z-50 grid w-60 grid-cols-6 gap-0.5 rounded-xl border border-bone/10 bg-forest p-2 shadow-xl focus:outline-none"
+          className="z-50 grid w-60 grid-cols-6 gap-0.5 rounded-xl border border-line bg-surface p-2 shadow-pop focus:outline-none"
         >
           {EMOJIS.map((emoji) => (
             <DropdownMenu.Item
               key={emoji}
               onSelect={() => insertEmoji(emoji)}
-              className="flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-lg text-base outline-none transition-colors data-[highlighted]:bg-bone/10"
+              className="flex h-8 w-8 cursor-pointer select-none items-center justify-center rounded-lg text-base outline-none transition-colors data-[highlighted]:bg-fg/10"
             >
               {emoji}
             </DropdownMenu.Item>

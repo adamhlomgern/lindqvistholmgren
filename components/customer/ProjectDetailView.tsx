@@ -41,8 +41,8 @@ export function ProjectDetailView({
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-bold text-bone">{project.title}</h1>
-          {project.assignee && <p className="mt-1 text-sm text-stone">Ansvarig: {project.assignee.name}</p>}
+          <h1 className="font-display text-2xl font-semibold text-fg">{project.title}</h1>
+          {project.assignee && <p className="mt-1 text-sm text-fg-muted">Ansvarig: {project.assignee.name}</p>}
         </div>
         <span
           className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${statusClasses[project.status]}`}
@@ -55,25 +55,25 @@ export function ProjectDetailView({
       <Card className="mt-6">
         <ProjectPhaseIndicator project={project} />
 
-        <div className="mt-4 flex flex-col gap-4 border-t border-bone/10 pt-4">
+        <div className="mt-4 flex flex-col gap-4 border-t border-line pt-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-label text-stone/65">Vad händer nu?</p>
-            <p className="mt-1.5 whitespace-pre-wrap text-sm text-bone">
+            <p className="text-xs font-semibold uppercase tracking-label text-fg-subtle">Vad händer nu?</p>
+            <p className="mt-1.5 whitespace-pre-wrap text-sm text-fg">
               {project.customerUpdate || "Ingen uppdatering ännu."}
             </p>
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-label text-stone/65">Nästa steg</p>
+            <p className="text-xs font-semibold uppercase tracking-label text-fg-subtle">Nästa steg</p>
             <div className="mt-1.5">
               <MilestoneStatus project={project} hrefBase={hrefBase} />
             </div>
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-bone/10 pt-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
           <Tag>{getNextStepOwnerLabel(project.status)}</Tag>
           {project.customerUpdateAt && (
-            <span className="text-xs text-stone/60">
+            <span className="text-xs text-fg-subtle">
               Senast uppdaterat {formatRelativeSv(project.customerUpdateAt)}
             </span>
           )}
@@ -82,16 +82,16 @@ export function ProjectDetailView({
 
       {approvals.length > 0 && (
         <div className="mt-4 flex flex-col gap-2">
-          <h2 className="font-display text-sm font-bold text-bone">Godkännanden</h2>
+          <h2 className="font-display text-sm font-semibold text-fg">Godkännanden</h2>
           {approvals.map((approval) => {
             const ApprovalIcon = approvalStatusIcons[approval.status];
             return (
               <Link
                 key={approval.id}
                 href={approvalHref(approval.id)}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-bone/10 px-4 py-3 transition-colors hover:bg-bone/5"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-line px-4 py-3 transition-colors hover:bg-fg/5"
               >
-                <span className="text-sm font-medium text-bone">{approval.title}</span>
+                <span className="text-sm font-medium text-fg">{approval.title}</span>
                 <span
                   className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${approvalStatusClasses[approval.status]}`}
                 >

@@ -4,7 +4,7 @@
 // it. Same reasoning as the demo site's DemoApprovalDecisionForm override.
 export function ReadOnlyApprovalDecisionForm() {
   return (
-    <p className="text-sm text-stone">
+    <p className="text-sm text-fg-muted">
       Förhandsvisning — beslutet kan bara fattas av kunden i deras egen portal.
     </p>
   );

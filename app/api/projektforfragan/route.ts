@@ -3,6 +3,7 @@ import type { ProjectInquiry } from "@/lib/types";
 import { createServiceRoleClient } from "@/lib/supabase/server";
 import { projectBudgets, projectCategories, projectTimelines } from "@/lib/constants";
 import { isRateLimited } from "@/lib/rate-limit";
+import { cleanPage, cleanSource } from "@/lib/inquiries/sources";
 
 function isValidInquiry(body: unknown): body is ProjectInquiry {
   if (typeof body !== "object" || body === null) return false;
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "För många förfrågningar, försök igen senare" }, { status: 429 });
     }
 
-    const { error } = await supabase.from("projektforfragningar").insert({
+    const row = {
       categories: body.categories,
       budget: body.budget,
       timeline: body.timeline,
@@ -81,7 +82,17 @@ export async function POST(request: NextRequest) {
       company: body.company,
       email: body.email,
       phone: body.phone,
-    });
+    };
+    const raw = body as unknown as Record<string, unknown>;
+    const source = cleanSource(raw.source);
+    const page = cleanPage(raw.page);
+
+    let { error } = await supabase.from("projektforfragningar").insert({ ...row, source, page });
+    // Om migrationen för källa (docs/migrations/2026-11-26-add-inquiry-source.sql)
+    // inte körts än saknas kolumnerna — spara då utan dem hellre än att tappa leadet.
+    if (error && (error.code === "PGRST204" || error.code === "42703")) {
+      ({ error } = await supabase.from("projektforfragningar").insert(row));
+    }
 
     if (error) {
       console.error("[projektförfrågan] Supabase insert misslyckades", error);

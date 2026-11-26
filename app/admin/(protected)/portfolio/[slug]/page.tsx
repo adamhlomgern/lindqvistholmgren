@@ -28,14 +28,14 @@ export default async function EditPortfolioProjectPage({ params }: Props) {
       <BackLink href="/admin/portfolio" label="Tillbaka till portfolio" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h1 className="truncate font-display text-2xl font-bold text-bone">{project.title}</h1>
-          <div className="mt-1.5 flex items-center gap-3 text-xs text-stone">
+          <h1 className="truncate font-display text-2xl font-semibold text-fg">{project.title}</h1>
+          <div className="mt-1.5 flex items-center gap-3 text-xs text-fg-muted">
             <span>Redigera case</span>
             <Link
               href={`/projekt/${project.slug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-emerald hover:underline"
+              className="flex items-center gap-1 text-primary hover:underline"
             >
               Visa på sajten
               <ArrowUpRight size={12} strokeWidth={2.5} />

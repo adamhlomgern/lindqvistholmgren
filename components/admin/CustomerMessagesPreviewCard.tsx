@@ -16,10 +16,10 @@ export function CustomerMessagesPreviewCard({
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-sm font-bold text-bone">Meddelanden</h2>
+        <h2 className="font-display text-sm font-semibold text-fg">Meddelanden</h2>
         <Link
           href={`/admin/kunder/${customerId}/meddelanden`}
-          className="flex items-center gap-1 text-xs font-medium text-emerald hover:underline"
+          className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
         >
           Öppna meddelanden
           <ArrowUpRight size={12} />
@@ -28,16 +28,16 @@ export function CustomerMessagesPreviewCard({
 
       {latest ? (
         <div className="mt-3 flex items-start gap-2.5">
-          <MessageSquareText size={16} className="mt-0.5 shrink-0 text-stone" />
+          <MessageSquareText size={16} className="mt-0.5 shrink-0 text-fg-muted" />
           <div className="min-w-0">
-            <p className="line-clamp-2 text-sm text-bone">{latest.body || (latest.attachment ? "📷 Bild" : "")}</p>
-            <p className="mt-1 text-xs text-stone/60">
+            <p className="line-clamp-2 text-sm text-fg">{latest.body || (latest.attachment ? "📷 Bild" : "")}</p>
+            <p className="mt-1 text-xs text-fg-subtle">
               {latest.authorLabel} · {formatRelativeSv(latest.createdAt)}
             </p>
           </div>
         </div>
       ) : (
-        <p className="mt-3 text-sm text-stone">Ingen konversation ännu.</p>
+        <p className="mt-3 text-sm text-fg-muted">Ingen konversation ännu.</p>
       )}
     </Card>
   );

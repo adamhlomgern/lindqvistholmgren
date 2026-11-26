@@ -8,14 +8,29 @@ type SendBrandedEmailOptions = {
   bodyHtml: string;
   ctaLabel: string;
   ctaUrl: string;
+  footerHtml?: string;
+  replyTo?: string;
+  attachments?: { filename: string; content: Buffer; contentType: string }[];
 };
 
-export async function sendBrandedEmail({ to, subject, heading, bodyHtml, ctaLabel, ctaUrl }: SendBrandedEmailOptions) {
+export async function sendBrandedEmail({
+  to,
+  subject,
+  heading,
+  bodyHtml,
+  ctaLabel,
+  ctaUrl,
+  footerHtml,
+  replyTo,
+  attachments,
+}: SendBrandedEmailOptions) {
   const transport = getSmtpTransport();
   await transport.sendMail({
     from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
     to,
     subject,
-    html: renderBrandedEmailHtml({ heading, bodyHtml, ctaLabel, ctaUrl }),
+    replyTo,
+    html: renderBrandedEmailHtml({ heading, bodyHtml, ctaLabel, ctaUrl, footerHtml }),
+    attachments,
   });
 }

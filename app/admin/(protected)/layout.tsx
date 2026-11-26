@@ -43,7 +43,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const [{ user }, counts] = await Promise.all([verifySession(), getCachedSidebarCounts()]);
 
   return (
-    <div className="flex flex-col bg-forest text-bone md:h-screen md:flex-row">
+    <div className="flex flex-col bg-canvas text-fg md:h-screen md:flex-row">
       <AdminSidebar
         email={user.email ?? ""}
         displayName={resolveAdminDisplayName(user)}

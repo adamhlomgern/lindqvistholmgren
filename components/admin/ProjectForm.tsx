@@ -6,7 +6,7 @@ import type { Project } from "@/lib/types";
 import { createProject, updateProject, type ProjectFormState } from "@/lib/actions/projects";
 
 const inputClasses =
-  "w-full rounded-lg border border-bone/10 bg-bone/5 px-4 py-3 text-sm text-bone placeholder:text-stone/60 focus:border-emerald focus:outline-none disabled:opacity-50";
+  "w-full rounded-lg border border-line-strong bg-surface px-4 py-3 text-sm text-fg placeholder:text-fg-subtle focus:border-primary focus:ring-4 focus:ring-primary/10 focus:outline-none disabled:opacity-50";
 
 function slugify(value: string): string {
   return value
@@ -40,7 +40,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   // meant for something else.
   return (
     <div className="block">
-      <span className="block text-xs font-medium uppercase tracking-label text-stone">{label}</span>
+      <span className="block text-xs font-medium uppercase tracking-label text-fg-muted">{label}</span>
       <div className="mt-2">{children}</div>
     </div>
   );
@@ -56,9 +56,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <div className="border-t border-bone/10 pt-6 first:border-t-0 first:pt-0">
-      <h2 className="font-display text-sm font-bold text-bone">{title}</h2>
-      {description && <p className="mt-1 text-xs text-stone">{description}</p>}
+    <div className="border-t border-line pt-6 first:border-t-0 first:pt-0">
+      <h2 className="font-display text-sm font-semibold text-fg">{title}</h2>
+      {description && <p className="mt-1 text-xs text-fg-muted">{description}</p>}
       <div className="mt-4 flex flex-col gap-5">{children}</div>
     </div>
   );
@@ -99,11 +99,11 @@ function Dropzone({
       }}
       className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed text-center transition-colors ${
         compact ? "px-4 py-5 text-xs" : "aspect-[16/10] text-sm"
-      } ${active ? "border-emerald bg-emerald/5 text-emerald" : "border-bone/15 text-stone hover:border-bone/30 hover:text-bone"}`}
+      } ${active ? "border-primary bg-primary/5 text-primary" : "border-line-strong text-fg-muted hover:border-line-strong hover:text-fg"}`}
     >
       <ImagePlus size={compact ? 16 : 22} strokeWidth={1.75} />
       <p>{uploading ? "Laddar upp…" : label}</p>
-      {!compact && <p className="text-xs text-stone/70">PNG, JPG eller WebP — dra hit eller klicka</p>}
+      {!compact && <p className="text-xs text-fg-subtle">PNG, JPG eller WebP — dra hit eller klicka</p>}
     </div>
   );
 }
@@ -135,7 +135,7 @@ function MainImageField({ name, defaultValue }: { name: string; defaultValue: st
   return (
     <div>
       {image && !imageBroken ? (
-        <div className="group relative aspect-[16/10] overflow-hidden rounded-xl border border-bone/10 bg-bone/5">
+        <div className="group relative aspect-[16/10] overflow-hidden rounded-xl border border-line bg-fg/5">
           {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded/pasted URL, can't be pre-approved for next/image's remote patterns */}
           <img
             src={image}
@@ -143,11 +143,11 @@ function MainImageField({ name, defaultValue }: { name: string; defaultValue: st
             className="h-full w-full object-cover"
             onError={() => setImageBroken(true)}
           />
-          <div className="absolute inset-0 flex items-center justify-center gap-2 bg-charcoal/0 opacity-0 transition-all group-hover:bg-charcoal/60 group-hover:opacity-100">
+          <div className="absolute inset-0 flex items-center justify-center gap-2 bg-ink-950/0 opacity-0 transition-all group-hover:bg-ink-950/50 group-hover:opacity-100">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="rounded-full bg-bone px-4 py-2 text-xs font-semibold text-charcoal"
+              className="rounded-full bg-fg px-4 py-2 text-xs font-semibold text-on-primary"
             >
               Byt bild
             </button>
@@ -157,7 +157,7 @@ function MainImageField({ name, defaultValue }: { name: string; defaultValue: st
                 setImage("");
                 setImageBroken(false);
               }}
-              className="rounded-full bg-coral px-4 py-2 text-xs font-semibold text-charcoal"
+              className="rounded-full bg-coral px-4 py-2 text-xs font-semibold text-on-primary"
             >
               Ta bort
             </button>
@@ -201,7 +201,7 @@ function MainImageField({ name, defaultValue }: { name: string; defaultValue: st
       <button
         type="button"
         onClick={() => setUrlMode((v) => !v)}
-        className="mt-2 text-xs font-medium text-stone transition-colors hover:text-emerald"
+        className="mt-2 text-xs font-medium text-fg-muted transition-colors hover:text-primary"
       >
         {urlMode ? "Dölj URL-fält" : "eller klistra in en bild-URL"}
       </button>
@@ -257,7 +257,7 @@ function GalleryField({ name, defaultValue }: { name: string; defaultValue: stri
           {items.map((item, index) => (
             <div
               key={index}
-              className="group relative aspect-square overflow-hidden rounded-lg border border-bone/10 bg-bone/5"
+              className="group relative aspect-square overflow-hidden rounded-lg border border-line bg-fg/5"
             >
               {item && (
                 // eslint-disable-next-line @next/next/no-img-element -- arbitrary uploaded/pasted URL, can't be pre-approved for next/image's remote patterns
@@ -274,7 +274,7 @@ function GalleryField({ name, defaultValue }: { name: string; defaultValue: stri
                 type="button"
                 onClick={() => remove(index)}
                 aria-label="Ta bort bild från galleriet"
-                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-charcoal/80 text-bone opacity-0 transition-opacity group-hover:opacity-100"
+                className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-ink-950/80 text-white opacity-0 transition-opacity group-hover:opacity-100"
               >
                 <X size={12} strokeWidth={2.5} />
               </button>
@@ -316,7 +316,7 @@ function GalleryField({ name, defaultValue }: { name: string; defaultValue: stri
       <button
         type="button"
         onClick={() => setManualMode((v) => !v)}
-        className="self-start text-xs font-medium text-stone transition-colors hover:text-emerald"
+        className="self-start text-xs font-medium text-fg-muted transition-colors hover:text-primary"
       >
         {manualMode ? "Dölj URL-hantering" : "eller hantera bild-URL:er manuellt"}
       </button>
@@ -334,7 +334,7 @@ function GalleryField({ name, defaultValue }: { name: string; defaultValue: stri
                 type="button"
                 onClick={() => remove(index)}
                 aria-label="Ta bort bild"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-stone transition-colors hover:text-coral"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-fg-muted transition-colors hover:text-coral"
               >
                 <X size={16} strokeWidth={2.25} />
               </button>
@@ -343,7 +343,7 @@ function GalleryField({ name, defaultValue }: { name: string; defaultValue: stri
           <button
             type="button"
             onClick={() => setItems((prev) => [...prev, ""])}
-            className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1.5 text-xs font-medium text-emerald transition-colors hover:bg-emerald/10"
+            className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
           >
             <Plus size={14} strokeWidth={2.5} />
             Lägg till URL
@@ -381,9 +381,9 @@ function StatsField({ name, defaultValue }: { name: string; defaultValue: StatRo
   return (
     <div className="flex flex-col gap-3">
       {rows.map((row, index) => (
-        <div key={index} className="flex flex-col gap-2 rounded-xl border border-bone/10 bg-bone/5 p-3 sm:flex-row">
+        <div key={index} className="flex flex-col gap-2 rounded-xl border border-line bg-fg/5 p-3 sm:flex-row">
           <div className="sm:w-32 sm:shrink-0">
-            <span className="block text-[10px] font-medium uppercase tracking-label text-stone/70">
+            <span className="block text-[10px] font-medium uppercase tracking-label text-fg-subtle">
               Siffra
             </span>
             <input
@@ -394,7 +394,7 @@ function StatsField({ name, defaultValue }: { name: string; defaultValue: StatRo
             />
           </div>
           <div className="min-w-0 flex-1">
-            <span className="block text-[10px] font-medium uppercase tracking-label text-stone/70">
+            <span className="block text-[10px] font-medium uppercase tracking-label text-fg-subtle">
               Beskrivning
             </span>
             <input
@@ -408,7 +408,7 @@ function StatsField({ name, defaultValue }: { name: string; defaultValue: StatRo
             type="button"
             onClick={() => remove(index)}
             aria-label="Ta bort statistikrad"
-            className="flex h-11 w-11 shrink-0 items-center justify-center self-end rounded-lg text-stone transition-colors hover:text-coral sm:self-end"
+            className="flex h-11 w-11 shrink-0 items-center justify-center self-end rounded-lg text-fg-muted transition-colors hover:text-coral sm:self-end"
           >
             <X size={16} strokeWidth={2.25} />
           </button>
@@ -418,7 +418,7 @@ function StatsField({ name, defaultValue }: { name: string; defaultValue: StatRo
       <button
         type="button"
         onClick={() => setRows((prev) => [...prev, { value: "", label: "" }])}
-        className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1.5 text-xs font-medium text-emerald transition-colors hover:bg-emerald/10"
+        className="flex items-center gap-1.5 self-start rounded-lg px-2 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
       >
         <Plus size={14} strokeWidth={2.5} />
         Lägg till statistik
@@ -426,14 +426,14 @@ function StatsField({ name, defaultValue }: { name: string; defaultValue: StatRo
 
       {valid.length > 0 && (
         <div>
-          <p className="mb-2 text-[10px] font-medium uppercase tracking-label text-stone/70">
+          <p className="mb-2 text-[10px] font-medium uppercase tracking-label text-fg-subtle">
             Förhandsvisning
           </p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {valid.map((row, index) => (
-              <div key={index} className="rounded-xl border border-bone/10 bg-bone/5 p-3 text-center">
-                <p className="font-display text-lg font-bold text-emerald">{row.value}</p>
-                <p className="mt-1 text-xs leading-snug text-stone">{row.label}</p>
+              <div key={index} className="rounded-xl border border-line bg-fg/5 p-3 text-center">
+                <p className="font-display text-lg font-semibold text-primary">{row.value}</p>
+                <p className="mt-1 text-xs leading-snug text-fg-muted">{row.label}</p>
               </div>
             ))}
           </div>
@@ -573,12 +573,12 @@ export function ProjectForm({ project, existingCategories = [] }: ProjectFormPro
         <StatsField name="stats" defaultValue={project?.stats ?? []} />
       </Section>
 
-      <div className="flex flex-col gap-3 border-t border-bone/10 pt-6">
+      <div className="flex flex-col gap-3 border-t border-line pt-6">
         {state?.error && <p className="text-sm text-coral">{state.error}</p>}
         <button
           type="submit"
           disabled={pending}
-          className="self-start rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone disabled:opacity-60"
+          className="self-start rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover disabled:opacity-60"
         >
           {pending ? "Sparar…" : isEditing ? "Spara ändringar" : "Skapa case"}
         </button>

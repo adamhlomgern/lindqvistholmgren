@@ -62,7 +62,7 @@ export default function ServicekollMarketingPage() {
                 long strip of app stacked under the hero copy. Full
                 screenshot, normal corners and no shift on desktop, where it
                 sits beside the text instead of above the next section. */}
-            <div className="animate-float relative h-[290px] overflow-hidden rounded-t-2xl border border-bone/10 shadow-2xl shadow-charcoal/50 ring-1 ring-bone/5 sm:h-[340px] lg:h-[493px] lg:rounded-2xl">
+            <div className="animate-float relative h-[290px] overflow-hidden rounded-t-2xl border border-line shadow-pop shadow-ink-950/50 ring-1 ring-line sm:h-[340px] lg:h-[493px] lg:rounded-2xl">
               <Image
                 src="/images/demos/servicekoll-mobileview.png"
                 alt="Servicekoll i mobilen"
@@ -89,10 +89,10 @@ export default function ServicekollMarketingPage() {
       <Section tone="olive" className="relative z-10">
         <Container>
           <Eyebrow icon={Sparkles}>Passar er bransch</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             En plattform, många branscher
           </h2>
-          <p className="mt-4 max-w-xl text-stone">
+          <p className="mt-4 max-w-xl text-fg-muted">
             Samma system fungerar oavsett om ni servar kunders utrustning eller vill hålla koll på er egen.
           </p>
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -101,8 +101,8 @@ export default function ServicekollMarketingPage() {
               return (
                 <GlassCard key={useCase.title} accent={accent}>
                   <AccentBadge icon={useCase.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{useCase.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{useCase.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{useCase.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{useCase.description}</p>
                 </GlassCard>
               );
             })}
@@ -113,7 +113,7 @@ export default function ServicekollMarketingPage() {
       <Section tone="forest">
         <Container>
           <Eyebrow icon={Gauge}>Så fungerar det</Eyebrow>
-          <h2 className="mt-4 max-w-xl font-display text-3xl font-bold leading-[0.95] tracking-tight text-bone md:text-4xl">
+          <h2 className="mt-4 max-w-xl font-display text-3xl font-semibold leading-[1.05] tracking-[-0.025em] text-fg md:text-4xl">
             Från kundlista till skickad påminnelse
           </h2>
           <div className="mt-12 grid gap-4 sm:grid-cols-3">
@@ -122,8 +122,8 @@ export default function ServicekollMarketingPage() {
               return (
                 <GlassCard key={step.title} accent={accent}>
                   <AccentBadge icon={step.icon} accent={accent} />
-                  <h3 className="mt-5 font-display text-lg font-bold text-bone">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-stone">{step.description}</p>
+                  <h3 className="mt-5 font-display text-lg font-semibold text-fg">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step.description}</p>
                 </GlassCard>
               );
             })}
@@ -135,16 +135,16 @@ export default function ServicekollMarketingPage() {
         <Container>
           <GlassCard accent="emerald" className="-m-6 items-start gap-6 p-8 md:flex-row md:items-center md:justify-between md:p-10">
             <div>
-              <h2 className="font-display text-2xl font-bold tracking-tight text-bone md:text-3xl">
+              <h2 className="font-display text-2xl font-semibold tracking-[-0.025em] text-fg md:text-3xl">
                 Klicka runt i en färdig demo
               </h2>
-              <p className="mt-2 text-stone">
+              <p className="mt-2 text-fg-muted">
                 Ingen inloggning behövs — testa med färdig exempeldata direkt, för bilverkstad, VVS eller eget underhåll.
               </p>
             </div>
             <Link
               href={serviceRoutes.dashboard()}
-              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-emerald px-5 py-2.5 text-sm font-semibold text-charcoal transition-colors hover:bg-bone"
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-hover"
             >
               Öppna Servicekoll
               <ArrowUpRight size={16} strokeWidth={2.5} />
